@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a967e2b4a6ad9d1e25af0580e94f12c7",
+    "content-hash": "87199754947946fe98526cbd27f150da",
     "packages": [
         {
             "name": "brick/math",
@@ -1981,6 +1981,108 @@
             "time": "2024-04-12T21:02:21+00:00"
         },
         {
+            "name": "mrclay/shibalike",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/mrclay/shibalike.git",
+                "reference": "04242301ed18f5a1b02493bcc193f5efd255112e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/mrclay/shibalike/zipball/04242301ed18f5a1b02493bcc193f5efd255112e",
+                "reference": "04242301ed18f5a1b02493bcc193f5efd255112e",
+                "shasum": ""
+            },
+            "require": {
+                "mrclay/userland-session": "3.*",
+                "php": ">=5.3.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Shibalike\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Steve Clay",
+                    "homepage": "http://www.mrclay.org/",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Provides a PHP library for emulating a Shibboleth environment.",
+            "homepage": "https://github.com/mrclay/shibalike",
+            "keywords": [
+                "SSO",
+                "http",
+                "session",
+                "shibboleth",
+                "single sign-on"
+            ],
+            "support": {
+                "issues": "https://github.com/mrclay/shibalike/issues",
+                "source": "https://github.com/mrclay/shibalike/tree/1.0.0"
+            },
+            "time": "2014-08-24T05:06:41+00:00"
+        },
+        {
+            "name": "mrclay/userland-session",
+            "version": "3.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/mrclay/UserlandSession.git",
+                "reference": "12f2604248e9db03bee334612580574e9d776eed"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/mrclay/UserlandSession/zipball/12f2604248e9db03bee334612580574e9d776eed",
+                "reference": "12f2604248e9db03bee334612580574e9d776eed",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "require-dev": {
+                "mikey179/vfsstream": "1.3.*@dev",
+                "php": ">=5.4.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "UserlandSession\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Steve Clay",
+                    "homepage": "http://www.mrclay.org/",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Provides a an HTTP cookie-based session in plain PHP, allowing concurrent use with existing native sessions.",
+            "homepage": "https://github.com/mrclay/UserlandSession",
+            "keywords": [
+                "SSO",
+                "http",
+                "session",
+                "single sign-on"
+            ],
+            "support": {
+                "issues": "https://github.com/mrclay/UserlandSession/issues",
+                "source": "https://github.com/mrclay/UserlandSession/tree/master"
+            },
+            "time": "2014-05-25T01:38:09+00:00"
+        },
+        {
             "name": "nesbot/carbon",
             "version": "3.5.0",
             "source": {
@@ -2379,6 +2481,61 @@
                 }
             ],
             "time": "2024-03-06T16:17:14+00:00"
+        },
+        {
+            "name": "onelogin/php-saml",
+            "version": "3.5.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/onelogin/php-saml.git",
+                "reference": "593aca859b67d607923fe50d8ad7315373f5b6dd"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/onelogin/php-saml/zipball/593aca859b67d607923fe50d8ad7315373f5b6dd",
+                "reference": "593aca859b67d607923fe50d8ad7315373f5b6dd",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.4",
+                "robrichards/xmlseclibs": ">=3.1.1"
+            },
+            "require-dev": {
+                "pdepend/pdepend": "^2.5.0",
+                "php-coveralls/php-coveralls": "^1.0.2 || ^2.0",
+                "phploc/phploc": "^2.1 || ^3.0 || ^4.0",
+                "phpunit/phpunit": "^4.8.35 || ^5.7 || ^6.5 || ^7.1",
+                "sebastian/phpcpd": "^2.0 || ^3.0 || ^4.0",
+                "squizlabs/php_codesniffer": "^3.1.1"
+            },
+            "suggest": {
+                "ext-curl": "Install curl lib to be able to use the IdPMetadataParser for parsing remote XMLs",
+                "ext-gettext": "Install gettext and php5-gettext libs to handle translations",
+                "ext-openssl": "Install openssl lib in order to handle with x509 certs (require to support sign and encryption)"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "OneLogin\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "OneLogin PHP SAML Toolkit",
+            "homepage": "https://developers.onelogin.com/saml/php",
+            "keywords": [
+                "SAML2",
+                "onelogin",
+                "saml"
+            ],
+            "support": {
+                "email": "sixto.garcia@onelogin.com",
+                "issues": "https://github.com/onelogin/php-saml/issues",
+                "source": "https://github.com/onelogin/php-saml/"
+            },
+            "time": "2020-12-03T20:08:41+00:00"
         },
         {
             "name": "phpoption/phpoption",
@@ -3170,6 +3327,116 @@
                 }
             ],
             "time": "2024-04-27T21:32:50+00:00"
+        },
+        {
+            "name": "razorbacks/laravel-shibboleth",
+            "version": "dev-feature/laravel-11",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/UMN-LATIS/laravel-shibboleth.git",
+                "reference": "f10ec5019e07fedc80f89a3361238dd4e1662a87"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/UMN-LATIS/laravel-shibboleth/zipball/f10ec5019e07fedc80f89a3361238dd4e1662a87",
+                "reference": "f10ec5019e07fedc80f89a3361238dd4e1662a87",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/support": ">=6",
+                "laravel/framework": ">=5",
+                "mrclay/shibalike": "1.0.0",
+                "onelogin/php-saml": "~3.5.1"
+            },
+            "require-dev": {
+                "orchestra/testbench": ">5",
+                "phpunit/phpunit": ">6.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "StudentAffairsUwm\\Shibboleth\\ShibbolethServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "StudentAffairsUwm\\Shibboleth\\": "src/StudentAffairsUwm/Shibboleth"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "StudentAffairsUwm\\Shibboleth\\Tests\\Stubs\\": "tests/setup/Stubs",
+                    "App\\": "tests/setup/app"
+                }
+            },
+            "authors": [
+                {
+                    "name": "Christopher Maio",
+                    "email": "cjmaio@uwm.edu"
+                },
+                {
+                    "name": "Michael Schuett",
+                    "email": "michaeljs1990@gmail.com"
+                },
+                {
+                    "name": "Taylor Donald Harvey Smith",
+                    "email": "smit2482@uwm.edu"
+                },
+                {
+                    "name": "Jeff Puckett",
+                    "email": "jpucket@uark.edu"
+                }
+            ],
+            "description": "Enable basic Shibboleth support for Laravel 5.x",
+            "support": {
+                "source": "https://github.com/UMN-LATIS/laravel-shibboleth/tree/feature/laravel-11",
+                "issues": "https://github.com/UMN-LATIS/laravel-shibboleth/issues"
+            },
+            "time": "2024-06-10T22:52:43+00:00"
+        },
+        {
+            "name": "robrichards/xmlseclibs",
+            "version": "3.1.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/robrichards/xmlseclibs.git",
+                "reference": "f8f19e58f26cdb42c54b214ff8a820760292f8df"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/robrichards/xmlseclibs/zipball/f8f19e58f26cdb42c54b214ff8a820760292f8df",
+                "reference": "f8f19e58f26cdb42c54b214ff8a820760292f8df",
+                "shasum": ""
+            },
+            "require": {
+                "ext-openssl": "*",
+                "php": ">= 5.4"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "RobRichards\\XMLSecLibs\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "description": "A PHP library for XML Security",
+            "homepage": "https://github.com/robrichards/xmlseclibs",
+            "keywords": [
+                "security",
+                "signature",
+                "xml",
+                "xmldsig"
+            ],
+            "support": {
+                "issues": "https://github.com/robrichards/xmlseclibs/issues",
+                "source": "https://github.com/robrichards/xmlseclibs/tree/3.1.1"
+            },
+            "time": "2020-09-05T13:00:25+00:00"
         },
         {
             "name": "symfony/clock",
@@ -6978,16 +7245,16 @@
         },
         {
             "name": "pestphp/pest",
-            "version": "v2.34.7",
+            "version": "v2.34.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/pestphp/pest.git",
-                "reference": "a7a3e4240e341d0fee1c54814ce18adc26ce5a76"
+                "reference": "e8f122bf47585c06431e0056189ec6bfd6f41f57"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/pestphp/pest/zipball/a7a3e4240e341d0fee1c54814ce18adc26ce5a76",
-                "reference": "a7a3e4240e341d0fee1c54814ce18adc26ce5a76",
+                "url": "https://api.github.com/repos/pestphp/pest/zipball/e8f122bf47585c06431e0056189ec6bfd6f41f57",
+                "reference": "e8f122bf47585c06431e0056189ec6bfd6f41f57",
                 "shasum": ""
             },
             "require": {
@@ -7006,8 +7273,8 @@
             },
             "require-dev": {
                 "pestphp/pest-dev-tools": "^2.16.0",
-                "pestphp/pest-plugin-type-coverage": "^2.8.1",
-                "symfony/process": "^6.4.0|^7.0.4"
+                "pestphp/pest-plugin-type-coverage": "^2.8.3",
+                "symfony/process": "^6.4.0|^7.1.1"
             },
             "bin": [
                 "bin/pest"
@@ -7070,7 +7337,7 @@
             ],
             "support": {
                 "issues": "https://github.com/pestphp/pest/issues",
-                "source": "https://github.com/pestphp/pest/tree/v2.34.7"
+                "source": "https://github.com/pestphp/pest/tree/v2.34.8"
             },
             "funding": [
                 {
@@ -7082,7 +7349,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2024-04-05T07:44:17+00:00"
+            "time": "2024-06-10T22:02:16+00:00"
         },
         {
             "name": "pestphp/pest-plugin",
@@ -9160,7 +9427,9 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "razorbacks/laravel-shibboleth": 20
+    },
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {

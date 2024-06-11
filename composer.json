@@ -6,12 +6,19 @@
         "laravel",
         "framework"
     ],
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/UMN-LATIS/laravel-shibboleth"
+        }
+    ],
     "license": "MIT",
     "require": {
         "php": "^8.2",
         "laravel/framework": "^11.9",
         "laravel/sanctum": "^4.0",
-        "laravel/tinker": "^2.9"
+        "laravel/tinker": "^2.9",
+        "razorbacks/laravel-shibboleth": "dev-feature/laravel-11"
     },
     "require-dev": {
         "barryvdh/laravel-ide-helper": "^3.0",
@@ -58,7 +65,10 @@
         "laravel": {
             "dont-discover": [
                 "laravel/telescope"
-            ]
+            ],
+            "aliases": {
+                "Debugbar": "Barryvdh\\Debugbar\\Facade"
+            }
         }
     },
     "config": {
