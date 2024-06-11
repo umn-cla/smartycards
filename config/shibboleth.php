@@ -14,7 +14,7 @@ return [
 
     'idp_login' => '/Shibboleth.sso/Login',
     'idp_logout' => '/Shibboleth.sso/Logout?return=https%3a%2f%2flogin.umn.edu%2fidp%2fLogoutUMN',
-    'authenticated' => '/',
+    'authenticated' => env('AUTH_REDIRECT_URI', '/'),
     'authfield' => 'email',
     /*
     |--------------------------------------------------------------------------
