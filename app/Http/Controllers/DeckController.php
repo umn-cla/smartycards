@@ -44,7 +44,7 @@ class DeckController extends Controller
     {
         Gate::authorize('view', $deck);
 
-        return response()->json($deck->toArray());
+        return response()->json($deck->load('cards')->toArray());
     }
 
     /**
@@ -52,7 +52,19 @@ class DeckController extends Controller
      */
     public function update(Request $request, Deck $deck)
     {
-        //
+        Gate::authorize('update', $deck);
+
+        $validated = $request->validate([
+            'name' => 'string',
+            'description' => 'string|nullable',
+        ]);
+
+        $deck->update([
+            'name' => $validated['name'] ?? $deck->name,
+            'description' => $validated['description'] ?? $deck->description,
+        ]);
+
+        return response()->json($deck->toArray());
     }
 
     /**

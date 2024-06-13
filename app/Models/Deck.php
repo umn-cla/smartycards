@@ -19,4 +19,14 @@ class Deck extends Model
     {
         return $this->belongsTo(User::class, 'owner_id');
     }
+
+    public function cards()
+    {
+        return $this->hasMany(Card::class);
+    }
+
+    public function isOwnedBy(User $user): bool
+    {
+        return $this->owner_id === $user->id;
+    }
 }

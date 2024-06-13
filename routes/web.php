@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CardController;
 use App\Http\Controllers\DeckController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -21,7 +22,7 @@ Route::middleware(['auth'])
         });
 
         Route::resource('decks', DeckController::class);
-
+        Route::resource('cards', CardController::class)->shallow();
     });
 
 require __DIR__.'/shib.php';
