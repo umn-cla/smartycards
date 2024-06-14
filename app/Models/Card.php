@@ -9,6 +9,11 @@ class Card extends Model
 {
     use HasFactory;
 
+    protected $casts = [
+        'front' => 'array',
+        'back' => 'array',
+    ];
+
     protected $fillable = [
         'front',
         'back',

@@ -13,10 +13,21 @@ class CardController extends Controller
      */
     public function store(Request $request)
     {
+
         $validated = $request->validate([
-            'front' => 'required|string',
-            'back' => 'required|string',
             'deck_id' => 'required|exists:decks,id',
+
+            // json
+            'front' => 'required|array',
+            'front.type' => 'required|string|in:text,image',
+            'front.content' => 'required|string',
+            'front.metadata' => 'nullable|array',
+
+            // json
+            'back' => 'required|array',
+            'back.type' => 'required|string|in:text,image',
+            'back.content' => 'required|string',
+            'back.metadata' => 'nullable|array',
         ]);
 
         Gate::authorize('create', [
@@ -24,7 +35,11 @@ class CardController extends Controller
             $validated['deck_id'],
         ]);
 
-        return Card::create($validated);
+        return Card::create([
+            'deck_id' => $validated['deck_id'],
+            'front' => $validated['front'],
+            'back' => $validated['back'],
+        ]);
     }
 
     /**
