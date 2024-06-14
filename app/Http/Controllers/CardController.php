@@ -19,13 +19,13 @@ class CardController extends Controller
 
             // json
             'front' => 'required|array',
-            'front.type' => 'required|string|in:text,image',
+            'front.type' => 'required|string|in:text,image,audio,embed',
             'front.content' => 'required|string',
             'front.metadata' => 'nullable|array',
 
             // json
             'back' => 'required|array',
-            'back.type' => 'required|string|in:text,image',
+            'back.type' => 'required|string|in:text,image,audio,embed',
             'back.content' => 'required|string',
             'back.metadata' => 'nullable|array',
         ]);
