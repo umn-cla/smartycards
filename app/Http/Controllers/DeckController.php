@@ -15,7 +15,9 @@ class DeckController extends Controller
     {
         Gate::authorize('viewOwn', Deck::class);
 
-        return response()->json($request->user()->decks->toArray());
+        $usersDecks = $request->user()->decks;
+
+        return response()->json($usersDecks->toArray());
     }
 
     /**
@@ -23,6 +25,8 @@ class DeckController extends Controller
      */
     public function store(Request $request)
     {
+        Gate::authorize('create', Deck::class);
+
         $validated = $request->validate([
             'name' => 'required|string',
             'description' => 'string|nullable',
@@ -31,7 +35,11 @@ class DeckController extends Controller
         $deck = Deck::create([
             'name' => $validated['name'],
             'description' => $validated['description'] ?? null,
-            'owner_id' => $request->user()->id,
+        ]);
+
+        $deck->memberships()->create([
+            'user_id' => $request->user()->id,
+            'role' => 'owner',
         ]);
 
         return response()->json($deck->toArray(), 201);
@@ -40,11 +48,33 @@ class DeckController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Deck $deck)
+    public function show(Request $request, Deck $deck)
     {
         Gate::authorize('view', $deck);
 
-        return response()->json($deck->load('cards')->toArray());
+        // always load cards
+
+        $permittedRelationships = ['memberships', 'cards'];
+
+        $withArray = $request->query('with', ['cards']);
+
+        // query param could be like `?with=memberships,cards`
+        // or `?with[]=memberships&with[]=cards`. In the latter case,
+        // laravel will automatically convert it to an array.
+        // but in the former case, it will be a string, which we need to handle.
+        if (is_string($withArray)) {
+            $withArray = explode(',', $withArray);
+        }
+
+        // filter out any relationships that are not allowed
+        $relationshipsToLoad = array_filter($withArray,
+            fn ($relationship) => in_array($relationship, $permittedRelationships)
+        );
+
+        // load the relationships
+        $deck->load($relationshipsToLoad);
+
+        return response()->json($deck->toArray());
     }
 
     /**

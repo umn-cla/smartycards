@@ -49,21 +49,28 @@ class User extends Authenticatable
         ];
     }
 
-    /**
-     * Get the decks that belong to the user.
-     */
     public function decks()
     {
-        return $this->hasMany(Deck::class, 'owner_id');
-    }
-
-    public function isOwnerOfDeck(Deck $deck): bool
-    {
-        return $this->id === $deck->owner_id;
+        return $this->belongsToMany(Deck::class, 'deck_memberships')->withPivot('role');
     }
 
     public function cardAttempts()
     {
         return $this->hasMany(CardAttempt::class);
+    }
+
+    public function memberships()
+    {
+        return $this->hasMany(DeckMembership::class);
+    }
+
+    public function isOwnerOfDeck(Deck $deck): bool
+    {
+        return $this->memberships()->where('deck_id', $deck->id)->where('role', 'owner')->exists();
+    }
+
+    public function isMemberOfDeck(Deck $deck): bool
+    {
+        return $deck->memberships()->where('user_id', $this->id)->exists();
     }
 }

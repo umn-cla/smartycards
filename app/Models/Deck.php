@@ -12,12 +12,11 @@ class Deck extends Model
     protected $fillable = [
         'name',
         'description',
-        'owner_id',
     ];
 
-    public function owner()
+    public function users()
     {
-        return $this->belongsTo(User::class, 'owner_id');
+        return $this->belongsToMany(User::class, 'deck_memberships')->withPivot('role');
     }
 
     public function cards()
@@ -25,8 +24,18 @@ class Deck extends Model
         return $this->hasMany(Card::class);
     }
 
+    public function memberships()
+    {
+        return $this->hasMany(DeckMembership::class);
+    }
+
     public function isOwnedBy(User $user): bool
     {
-        return $this->owner_id === $user->id;
+        return $this->memberships()->where('user_id', $user->id)->where('role', 'owner')->exists();
+    }
+
+    public function hasMember(User $user): bool
+    {
+        return $this->memberships()->where('user_id', $user->id)->exists();
     }
 }

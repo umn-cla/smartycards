@@ -21,7 +21,7 @@ class CardPolicy
      */
     public function view(User $user, Card $card): bool
     {
-        return $card->deck->isOwnedBy($user);
+        return $user->can('view', $card->deck);
     }
 
     /**
@@ -31,7 +31,7 @@ class CardPolicy
     {
         $deck = Deck::findOrFail($deckId);
 
-        return $deck->isOwnedBy($user);
+        return $user->can('update', $deck);
     }
 
     /**
@@ -39,7 +39,7 @@ class CardPolicy
      */
     public function update(User $user, Card $card): bool
     {
-        return $card->deck->isOwnedBy($user);
+        return $user->can('update', $card->deck);
     }
 
     /**
@@ -47,7 +47,7 @@ class CardPolicy
      */
     public function delete(User $user, Card $card): bool
     {
-        return $card->deck->isOwnedBy($user);
+        return $user->can('update', $card->deck);
     }
 
     /**
@@ -55,7 +55,7 @@ class CardPolicy
      */
     public function restore(User $user, Card $card): bool
     {
-        return $card->deck->isOwnedBy($user);
+        return $user->can('update', $card->deck);
     }
 
     /**

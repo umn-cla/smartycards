@@ -2,30 +2,26 @@
 
 namespace App\Policies;
 
-use App\Models\Deck;
+use App\Models\DeckMembership;
 use App\Models\User;
+use Illuminate\Auth\Access\Response;
 
-class DeckPolicy
+class DeckMembershipPolicy
 {
     /**
      * Determine whether the user can view any models.
      */
     public function viewAny(User $user): bool
     {
-        return false;
-    }
-
-    public function viewOwn(User $user): bool
-    {
-        return true;
+        //
     }
 
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, Deck $deck): bool
+    public function view(User $user, DeckMembership $deckMembership): bool
     {
-        return $user->isMemberOfDeck($deck);
+        //
     }
 
     /**
@@ -33,38 +29,38 @@ class DeckPolicy
      */
     public function create(User $user): bool
     {
-        return true;
+        //
     }
 
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, Deck $deck): bool
+    public function update(User $user, DeckMembership $deckMembership): bool
     {
-        return $user->memberships()->where('deck_id', $deck->id)->whereIn('role', ['editor', 'owner'])->exists();
+        //
     }
 
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, Deck $deck): bool
+    public function delete(User $user, DeckMembership $deckMembership): bool
     {
-        return $user->isOwnerOfDeck($deck);
+        //
     }
 
     /**
      * Determine whether the user can restore the model.
      */
-    public function restore(User $user, Deck $deck): bool
+    public function restore(User $user, DeckMembership $deckMembership): bool
     {
-        return $user->isOwnerOfDeck($deck);
+        //
     }
 
     /**
      * Determine whether the user can permanently delete the model.
      */
-    public function forceDelete(User $user, Deck $deck): bool
+    public function forceDelete(User $user, DeckMembership $deckMembership): bool
     {
-        return false;
+        //
     }
 }
