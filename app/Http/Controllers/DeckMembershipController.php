@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Deck;
 use App\Models\DeckMembership;
 use App\Models\User;
+use Gate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
@@ -13,9 +14,13 @@ class DeckMembershipController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request, Deck $deck)
     {
-        //
+        Gate::authorize('view', $deck);
+
+        $memberships = $deck->memberships->load('user');
+
+        return response()->json($memberships);
     }
 
     /**

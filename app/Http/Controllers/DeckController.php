@@ -52,27 +52,8 @@ class DeckController extends Controller
     {
         Gate::authorize('view', $deck);
 
-        // always load cards
-
-        $permittedRelationships = ['memberships', 'cards'];
-
-        $withArray = $request->query('with', ['cards']);
-
-        // query param could be like `?with=memberships,cards`
-        // or `?with[]=memberships&with[]=cards`. In the latter case,
-        // laravel will automatically convert it to an array.
-        // but in the former case, it will be a string, which we need to handle.
-        if (is_string($withArray)) {
-            $withArray = explode(',', $withArray);
-        }
-
-        // filter out any relationships that are not allowed
-        $relationshipsToLoad = array_filter($withArray,
-            fn ($relationship) => in_array($relationship, $permittedRelationships)
-        );
-
         // load the relationships
-        $deck->load($relationshipsToLoad);
+        $deck->load(['cards'])->loadCount('memberships');
 
         return response()->json($deck->toArray());
     }
