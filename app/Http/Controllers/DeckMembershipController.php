@@ -29,21 +29,21 @@ class DeckMembershipController extends Controller
     public function store(Request $request, Deck $deck)
     {
         $validated = $request->validate([
-            'deck_id' => 'required|exists:decks,id',
-            'email' => 'required|email|',
+            'email' => 'required|email',
             'role' => 'required|string|in:viewer,editor',
         ]);
 
         // check if user exists, and create it if not
         // TODO: make sure Shib refreshes user data
         // if user is created here
-        $user = User::firstOrCreate([
-            'email' => $validated['email'],
+        $user = User::firstOrCreate(
+            ['email' => $validated['email']],
             [
-                'name' => Str::before($validated['email'], '@'),
+                'name' => $validated['email'],
                 'password' => bcrypt(Str::random(16)),
+                'umndid' => $validated['email'],
             ],
-        ]);
+        );
 
         // check if user is already a member of the deck
         if ($deck->memberships()->where('user_id', $user->id)->exists()) {
@@ -52,7 +52,11 @@ class DeckMembershipController extends Controller
             ], 409);
         }
 
-        $deckMembership = DeckMembership::create($validated);
+        $deckMembership = DeckMembership::create([
+            'deck_id' => $deck->id,
+            'user_id' => $user->id,
+            'role' => $validated['role'],
+        ]);
 
         return response()->json($deckMembership, 201);
     }
