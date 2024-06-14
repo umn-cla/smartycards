@@ -61,4 +61,9 @@ class User extends Authenticatable
     {
         return $this->id === $deck->owner_id;
     }
+
+    public function cardAttempts()
+    {
+        return $this->hasMany(CardAttempt::class);
+    }
 }

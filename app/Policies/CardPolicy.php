@@ -21,7 +21,7 @@ class CardPolicy
      */
     public function view(User $user, Card $card): bool
     {
-        return $user->id === $card->deck->user_id;
+        return $card->deck->isOwnedBy($user);
     }
 
     /**

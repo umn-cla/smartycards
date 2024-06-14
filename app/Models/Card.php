@@ -19,4 +19,9 @@ class Card extends Model
     {
         return $this->belongsTo(Deck::class);
     }
+
+    public function attempts()
+    {
+        return $this->hasMany(CardAttempt::class);
+    }
 }
