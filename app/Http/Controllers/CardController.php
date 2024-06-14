@@ -55,12 +55,21 @@ class CardController extends Controller
      */
     public function update(Request $request, Card $card)
     {
-        Gate::authorize('update', $card);
-
         $validated = $request->validate([
-            'front' => 'required|string',
-            'back' => 'required|string',
+            // json
+            'front' => 'required|array',
+            'front.type' => 'required|string|in:text,image,audio,embed',
+            'front.content' => 'required|string',
+            'front.metadata' => 'nullable|array',
+
+            // json
+            'back' => 'required|array',
+            'back.type' => 'required|string|in:text,image,audio,embed',
+            'back.content' => 'required|string',
+            'back.metadata' => 'nullable|array',
         ]);
+
+        Gate::authorize('update', $card);
 
         $card->update($validated);
 
