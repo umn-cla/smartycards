@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\DeckResource;
 use App\Models\Deck;
 use Gate;
 use Illuminate\Http\Request;
@@ -15,9 +16,9 @@ class DeckController extends Controller
     {
         Gate::authorize('viewOwn', Deck::class);
 
-        $usersDecks = $request->user()->decks;
+        $usersDecks = $request->user()->decks->loadCount(['cards']);
 
-        return response()->json($usersDecks->toArray());
+        return DeckResource::collection($usersDecks);
     }
 
     /**
@@ -42,7 +43,9 @@ class DeckController extends Controller
             'role' => 'owner',
         ]);
 
-        return response()->json($deck->toArray(), 201);
+        return DeckResource::make($deck->fresh())
+            ->response()
+            ->setStatusCode(201);
     }
 
     /**
@@ -52,10 +55,14 @@ class DeckController extends Controller
     {
         Gate::authorize('view', $deck);
 
-        // load the relationships
-        $deck->load(['cards'])->loadCount('memberships');
+        $relationsToLoad = ['cards'];
+        if ($request->user()->can('viewMemberships', $deck)) {
+            $relationsToLoad[] = 'memberships';
+        }
 
-        return response()->json($deck->toArray());
+        $deck->load($relationsToLoad);
+
+        return DeckResource::make($deck);
     }
 
     /**
@@ -75,7 +82,7 @@ class DeckController extends Controller
             'description' => $validated['description'] ?? $deck->description,
         ]);
 
-        return response()->json($deck->toArray());
+        return DeckResource::make($deck->fresh());
     }
 
     /**

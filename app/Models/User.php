@@ -66,11 +66,25 @@ class User extends Authenticatable
 
     public function isOwnerOfDeck(Deck $deck): bool
     {
-        return $this->memberships()->where('deck_id', $deck->id)->where('role', 'owner')->exists();
+        return $this->hasRoleInDeck($deck, 'owner');
     }
 
     public function isMemberOfDeck(Deck $deck): bool
     {
-        return $deck->memberships()->where('user_id', $this->id)->exists();
+        return $deck->memberships()
+            ->where('user_id', $this->id)
+            ->exists();
+    }
+
+    public function hasRoleInDeck(Deck $deck, string|array $roleArray): bool
+    {
+        if (is_string($roleArray)) {
+            $roleArray = [$roleArray];
+        }
+
+        return $deck->memberships()
+            ->where('user_id', $this->id)
+            ->whereIn('role', $roleArray)
+            ->exists();
     }
 }

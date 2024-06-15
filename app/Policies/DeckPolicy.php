@@ -67,4 +67,14 @@ class DeckPolicy
     {
         return false;
     }
+
+    public function viewMemberships(User $user, Deck $deck): bool
+    {
+        return $user->hasRoleInDeck($deck, ['owner', 'editor']);
+    }
+
+    public function updateMemberships(User $user, Deck $deck): bool
+    {
+        return $user->hasRoleInDeck($deck, ['owner', 'editor']);
+    }
 }
