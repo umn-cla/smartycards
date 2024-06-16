@@ -82,13 +82,13 @@ class DeckMembershipController extends Controller
             ], 409); // conflict
         }
 
-        $deckMembership = DeckMembership::create([
+        $membership = DeckMembership::create([
             'deck_id' => $deck->id,
             'user_id' => $user->id,
             'role' => $validated['role'],
         ]);
 
-        return DeckMembershipResource::make($deckMembership)
+        return DeckMembershipResource::make($membership)
             ->response()
             ->setStatusCode(201);
     }
@@ -96,9 +96,9 @@ class DeckMembershipController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(DeckMembership $deckMembership)
+    public function show(DeckMembership $membership)
     {
-        Gate::authorize('view', $deckMembership);
+        Gate::authorize('view', $membership);
     }
 
     /**
@@ -121,11 +121,11 @@ class DeckMembershipController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(DeckMembership $deckMembership)
+    public function destroy(DeckMembership $membership)
     {
-        Gate::authorize('delete', $deckMembership);
+        Gate::authorize('delete', $membership);
 
-        $deckMembership->delete();
+        $membership->delete();
 
         return response()->noContent();
     }
