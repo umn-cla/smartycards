@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\DeckMembershipResource;
+use App\Ldap\LdapUser;
 use App\Models\Deck;
 use App\Models\DeckMembership;
 use App\Models\User;
@@ -33,27 +34,52 @@ class DeckMembershipController extends Controller
         Gate::authorize('create', [DeckMembership::class, $deck]);
 
         $validated = $request->validate([
-            'email' => 'required|email',
+            'umndid' => 'required|string',
             'role' => 'required|string|in:viewer,editor',
         ]);
 
-        // check if user exists, and create it if not
-        // TODO: make sure Shib refreshes user data
-        // if user is created here
-        $user = User::firstOrCreate(
-            ['email' => $validated['email']],
-            [
-                'name' => $validated['email'],
+        $umndid = $validated['umndid'];
+
+        // check if user exists
+        $user = User::query()
+            ->where('umndid', $umndid)
+            ->first();
+
+        // if there is no user with the given umndid,
+        // then search LDAP for the user info and create one
+
+        if (! $user) {
+            $ldapUser = LdapUser::query()
+                ->where('umndid', $umndid)
+                ->first();
+
+            if (! $ldapUser) {
+                return response()->json([
+                    'message' => 'User not found.',
+                ], 404);
+            }
+
+            // create a new user
+            $user = User::create([
+                'umndid' => $umndid,
+                'name' => $ldapUser->getFirstAttribute('displayname'),
+                'email' => $ldapUser->getFirstAttribute('umndisplaymail'),
+                'first_name' => $ldapUser->getFirstAttribute('givenname'),
+                'last_name' => $ldapUser->getFirstAttribute('sn'),
+                'email' => $ldapUser->getFirstAttribute('mail'),
                 'password' => bcrypt(Str::random(16)),
-                'umndid' => $validated['email'],
-            ],
-        );
+            ]);
+        }
+
+        if (! $user) {
+            throw new \Exception('Error creating user.');
+        }
 
         // check if user is already a member of the deck
         if ($deck->memberships()->where('user_id', $user->id)->exists()) {
             return response()->json([
                 'message' => 'User is already a member of this deck.',
-            ], 409);
+            ], 409); // conflict
         }
 
         $deckMembership = DeckMembership::create([
