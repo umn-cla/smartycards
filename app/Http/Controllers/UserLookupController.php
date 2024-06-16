@@ -16,16 +16,16 @@ class UserLookupController extends Controller
         $searchValue = $validated['q'];
 
         $users = LdapUser::query()
-            ->where('uid', 'contains', $searchValue)
-            ->orWhere('displayname', 'contains', $searchValue)
+            ->whereStartsWith('uid', $searchValue)
+            ->orWhereContains('displayname', $searchValue)
             ->select(['uid', 'displayname', 'umndisplaymail', 'umndid'])
             ->limit(10)
             ->get()
             ->map(function ($user) {
                 return [
-                    'uid' => $user->uid[0],
-                    'displayname' => $user->displayname[0],
-                    'umndisplaymail' => $user->umndisplaymail[0] ?? null,
+                    'internet_id' => $user->uid[0],
+                    'display_name' => $user->displayname[0],
+                    'email' => $user->umndisplaymail[0] ?? null,
                     'umndid' => $user->umndid[0] ?? null,
                 ];
             });
