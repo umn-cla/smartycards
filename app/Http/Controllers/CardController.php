@@ -2,12 +2,20 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\CardResource;
 use App\Models\Card;
 use Gate;
 use Illuminate\Http\Request;
 
 class CardController extends Controller
 {
+    public function show(Card $card)
+    {
+        Gate::authorize('view', $card);
+
+        return CardResource::make($card);
+    }
+
     /**
      * Store a newly created resource in storage.
      */
@@ -35,19 +43,15 @@ class CardController extends Controller
             $validated['deck_id'],
         ]);
 
-        return Card::create([
+        $card = Card::create([
             'deck_id' => $validated['deck_id'],
             'front' => $validated['front'],
             'back' => $validated['back'],
         ]);
-    }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Card $card)
-    {
-        //
+        return CardResource::make($card)
+            ->response()
+            ->setStatusCode(201);
     }
 
     /**
@@ -73,7 +77,7 @@ class CardController extends Controller
 
         $card->update($validated);
 
-        return $card->fresh();
+        return CardResource::make($card->fresh());
     }
 
     /**

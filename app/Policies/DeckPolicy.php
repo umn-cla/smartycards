@@ -3,6 +3,7 @@
 namespace App\Policies;
 
 use App\Models\Deck;
+use App\Models\DeckMembership;
 use App\Models\User;
 
 class DeckPolicy
@@ -70,11 +71,11 @@ class DeckPolicy
 
     public function viewMemberships(User $user, Deck $deck): bool
     {
-        return $user->hasRoleInDeck($deck, ['owner', 'editor']);
+        return $user->can('viewAny', [DeckMembership::class, $deck]);
     }
 
-    public function updateMemberships(User $user, Deck $deck): bool
+    public function createMembership(User $user, Deck $deck): bool
     {
-        return $user->hasRoleInDeck($deck, ['owner', 'editor']);
+        return $user->can('create', [DeckMembership::class, $deck]);
     }
 }

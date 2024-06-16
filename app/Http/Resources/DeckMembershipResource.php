@@ -14,6 +14,16 @@ class DeckMembershipResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        return parent::toArray($request);
+        return [
+            'id' => $this->id,
+            'deck_id' => $this->deck_id,
+            'user_id' => $this->user_id,
+            'user' => UserResource::make($this->whenLoaded('user')),
+            'role' => $this->role,
+            'capabilities' => [
+                'canUpdate' => $request->user()->can('update', $this->resource),
+                'canDelete' => $request->user()->can('delete', $this->resource),
+            ],
+        ];
     }
 }

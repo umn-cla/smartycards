@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\DeckMembershipResource;
 use App\Models\Deck;
 use App\Models\DeckMembership;
 use App\Models\User;
@@ -16,11 +17,11 @@ class DeckMembershipController extends Controller
      */
     public function index(Request $request, Deck $deck)
     {
-        Gate::authorize('view', $deck);
+        Gate::authorize('viewAny', [DeckMembership::class, $deck]);
 
         $memberships = $deck->memberships->load('user');
 
-        return response()->json($memberships);
+        return DeckMembershipResource::collection($memberships);
     }
 
     /**
@@ -28,6 +29,9 @@ class DeckMembershipController extends Controller
      */
     public function store(Request $request, Deck $deck)
     {
+
+        Gate::authorize('create', [DeckMembership::class, $deck]);
+
         $validated = $request->validate([
             'email' => 'required|email',
             'role' => 'required|string|in:viewer,editor',
@@ -58,7 +62,9 @@ class DeckMembershipController extends Controller
             'role' => $validated['role'],
         ]);
 
-        return response()->json($deckMembership, 201);
+        return DeckMembershipResource::make($deckMembership)
+            ->response()
+            ->setStatusCode(201);
     }
 
     /**
@@ -66,15 +72,24 @@ class DeckMembershipController extends Controller
      */
     public function show(DeckMembership $deckMembership)
     {
-        //
+        Gate::authorize('view', $deckMembership);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, DeckMembership $deckMembership)
+    public function update(Request $request, DeckMembership $membership)
     {
-        //
+        Gate::authorize('update', $membership);
+
+        $validated = $request->validate([
+            'role' => 'required|string|in:viewer,editor',
+        ]);
+
+        $membership->update($validated);
+
+        return DeckMembershipResource::make($membership);
+
     }
 
     /**
@@ -82,6 +97,10 @@ class DeckMembershipController extends Controller
      */
     public function destroy(DeckMembership $deckMembership)
     {
-        //
+        Gate::authorize('delete', $deckMembership);
+
+        $deckMembership->delete();
+
+        return response()->noContent();
     }
 }
