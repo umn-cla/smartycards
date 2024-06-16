@@ -4,7 +4,8 @@ use App\Http\Controllers\CardAttemptController;
 use App\Http\Controllers\CardController;
 use App\Http\Controllers\DeckController;
 use App\Http\Controllers\DeckMembershipController;
-use Illuminate\Http\Request;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\UserLookupController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -17,17 +18,17 @@ Route::get('/', function () {
 Route::middleware(['auth'])
     ->prefix('api')
     ->group(function () {
-        Route::get('profile', function (Request $request) {
-            return response()->json(
-                $request->user()
-            );
-        });
+        Route::singleton('profile', ProfileController::class);
 
         Route::resource('decks', DeckController::class);
+
         Route::resource('decks.memberships', DeckMembershipController::class)->shallow();
+
         Route::resource('cards', CardController::class)->shallow();
+
         Route::resource('cards.attempts', CardAttemptController::class)->shallow();
 
+        Route::get('users/lookup', UserLookupController::class);
     });
 
 require __DIR__.'/shib.php';
