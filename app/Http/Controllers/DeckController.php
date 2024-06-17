@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\DeckResource;
+use App\Imports\CardsImport;
 use App\Models\Deck;
 use Gate;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class DeckController extends Controller
 {
@@ -93,6 +95,19 @@ class DeckController extends Controller
         Gate::authorize('delete', $deck);
 
         $deck->delete();
+
+        return response()->json(null, 204);
+    }
+
+    public function import(Deck $deck)
+    {
+        Gate::authorize('update', $deck);
+
+        $validated = request()->validate([
+            'file' => 'required|file|mimes:xlsx,xls,csv',
+        ]);
+
+        Excel::import(new CardsImport($deck->id), $validated['file']);
 
         return response()->json(null, 204);
     }
