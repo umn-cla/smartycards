@@ -9,6 +9,7 @@ use App\Models\DeckMembership;
 use App\Models\User;
 use Gate;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
 
 class DeckMembershipController extends Controller
@@ -128,5 +129,30 @@ class DeckMembershipController extends Controller
         $membership->delete();
 
         return response()->noContent();
+    }
+
+    public function acceptInvite(Request $request, Deck $deck)
+    {
+        // add the user to the deck with the role of viewer
+        $membership = DeckMembership::create([
+            'deck_id' => $deck->id,
+            'user_id' => $request->user()->id,
+            'role' => 'viewer',
+        ]);
+
+        return DeckMembershipResource::make($membership);
+    }
+
+    public function share(Deck $deck)
+    {
+        Gate::authorize('update', $deck);
+
+        $signedURL = URL::signedRoute('decks.memberships.acceptInvite', [
+            'deck' => $deck->id,
+            'user' => auth()->user()->id,
+            'role' => 'viewer',
+        ]);
+
+        return response()->json(['url' => $signedURL]);
     }
 }

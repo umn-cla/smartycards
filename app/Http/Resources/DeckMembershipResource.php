@@ -20,6 +20,7 @@ class DeckMembershipResource extends JsonResource
             'user_id' => $this->user_id,
             'user' => UserResource::make($this->whenLoaded('user')),
             'role' => $this->role,
+            'share_link' => $this->when($this->share_link, $this->share_link),
             'capabilities' => [
                 'canUpdate' => $request->user()->can('update', $this->resource),
                 'canDelete' => $request->user()->can('delete', $this->resource),
