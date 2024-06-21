@@ -24,6 +24,8 @@ Route::middleware(['auth'])
 
         Route::resource('decks.memberships', DeckMembershipController::class)
             ->shallow();
+        Route::delete('decks/{deck}/memberships/self', [DeckMembershipController::class, 'leave'])
+            ->name('decks.memberships.leave');
 
         Route::get('decks/{deck}/memberships/share', [DeckMembershipController::class, 'share'])
             ->name('decks.memberships.share');

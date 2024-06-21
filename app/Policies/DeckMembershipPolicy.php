@@ -51,12 +51,31 @@ class DeckMembershipPolicy
      */
     public function delete(User $user, DeckMembership $deckMembership): bool
     {
+
+        // a user can remove themselves from a deck
+        if ($user->id === $deckMembership->user_id) {
+            return $user->can('removeSelf', $deckMembership);
+        }
+
         // prevent deletion of owner roles
         if ($deckMembership->role === 'owner') {
             return false;
         }
 
         return $user->hasRoleInDeck($deckMembership->deck, ['owner', 'editor']);
+    }
+
+    public function removeSelf(User $user, DeckMembership $deckMembership): bool
+    {
+        $deck = $deckMembership->deck;
+        if (! $user->isOwnerOfDeck($deck)) {
+            return true;
+        }
+
+        // if the user is the only owner, they cannot remove themselves
+        $ownerCount = $deck->memberships()->where('role', 'owner')->count();
+
+        return $ownerCount > 1;
     }
 
     /**

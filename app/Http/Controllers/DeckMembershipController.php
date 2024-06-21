@@ -131,8 +131,48 @@ class DeckMembershipController extends Controller
         return response()->noContent();
     }
 
+    public function leave(Request $request, Deck $deck)
+    {
+        Gate::authorize('leave', $deck);
+
+        $membership = $deck->memberships()->where('user_id', $request->user()->id)->first();
+
+        if (! $membership) {
+            return response()->json([
+                'message' => 'User is not a member of this deck.',
+            ], 404);
+        }
+
+        $membership->delete();
+
+        return response()->noContent();
+    }
+
     public function acceptInvite(Request $request, Deck $deck)
     {
+
+        $validated = $request->validate([
+            'fromUserId' => 'required|integer',
+        ]);
+
+        // verify that the invitingUser has permission to invite
+        $fromUser = User::find($validated['fromUserId']);
+
+        // if the invitation is from a user who
+        // no longer has privileges to update the deck, 403
+        if ($fromUser?->cannot('update', $deck)) {
+            return response()->json([
+                'message' => 'Invalid invitation.',
+            ], 403);
+        }
+
+        // if user is already a member of the deck, we're done
+        if ($deck->memberships()->where('user_id', $request->user()->id)->exists()) {
+            return response()->json([
+                'message' => 'User is already a member of this deck.',
+            ], 200);
+        }
+
         // add the user to the deck with the role of viewer
         $membership = DeckMembership::create([
             'deck_id' => $deck->id,
@@ -140,18 +180,23 @@ class DeckMembershipController extends Controller
             'role' => 'viewer',
         ]);
 
-        return DeckMembershipResource::make($membership);
+        return DeckMembershipResource::make($membership)
+            ->response()
+            ->setStatusCode(201);
     }
 
     public function share(Deck $deck)
     {
         Gate::authorize('update', $deck);
 
-        $signedURL = URL::signedRoute('decks.memberships.acceptInvite', [
-            'deck' => $deck->id,
-            'user' => auth()->user()->id,
-            'role' => 'viewer',
-        ]);
+        $signedURL = URL::signedRoute(
+            'decks.memberships.acceptInvite',
+            [
+                'deck' => $deck->id,
+                'fromUserId' => auth()->user()->id,
+            ],
+            expiration: null,
+        );
 
         return response()->json(['url' => $signedURL]);
     }
