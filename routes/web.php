@@ -5,6 +5,7 @@ use App\Http\Controllers\CardController;
 use App\Http\Controllers\DeckController;
 use App\Http\Controllers\DeckMembershipController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\UploadImageController;
 use App\Http\Controllers\UserLookupController;
 use Illuminate\Support\Facades\Route;
 
@@ -43,6 +44,8 @@ Route::middleware(['auth'])
         Route::get('users/lookup', UserLookupController::class);
 
         Route::post('decks/{deck}/import', [DeckController::class, 'import']);
+
+        Route::post('decks/{deck}/upload/images', UploadImageController::class);
 
     });
 
