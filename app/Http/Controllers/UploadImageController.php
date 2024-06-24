@@ -17,7 +17,7 @@ class UploadImageController extends Controller
         Gate::authorize('update', $deck);
 
         $validated = $request->validate([
-            'image' => 'required|image',
+            'image' => 'required|image|max:5120',
         ]);
 
         $path = $validated['image']->store("decks/{$deck->id}/images", 'public');
