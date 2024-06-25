@@ -64,13 +64,23 @@ class CardController extends Controller
             'front' => 'required|array',
             'front.type' => 'required|string|in:text,image,audio,embed',
             'front.content' => 'required|string',
-            'front.metadata' => 'nullable|array',
+            'front.meta' => 'required|array',
+            'front.meta.hints' => 'required|array',
+            'front.meta.hints.*.id' => 'required|string',
+            'front.meta.hints.*.content' => 'required|string',
+            'front.meta.hints.*.type' => 'required|string|in:text',
+            'front.meta.alt' => 'nullable|string',
 
             // json
             'back' => 'required|array',
             'back.type' => 'required|string|in:text,image,audio,embed',
             'back.content' => 'required|string',
-            'back.metadata' => 'nullable|array',
+            'back.meta' => 'required|array',
+            'back.meta.hints' => 'required|array',
+            'back.meta.hints.*.id' => 'required|string',
+            'back.meta.hints.*.content' => 'required|string',
+            'back.meta.hints.*.type' => 'required|string|in:text',
+            'back.meta.alt' => 'nullable|string',
         ]);
 
         Gate::authorize('update', $card);
