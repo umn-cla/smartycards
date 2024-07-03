@@ -22,6 +22,10 @@ class DeckResource extends JsonResource
             'memberships_count' => $this->when(isset($this->memberships_count), $this->memberships_count),
             'cards' => CardResource::collection($this->whenLoaded('cards')),
             'memberships' => DeckMembershipResource::collection($this->whenLoaded('memberships')),
+            'current_user_role' => $this->when(
+                isset($this->currentUserMemberships) && $this->currentUserMemberships->count() >= 1,
+                $this->currentUserMemberships->first()->role
+            ),
             'capabilities' => [
                 'canUpdate' => $request->user()->can('update', $this->resource),
                 'canDelete' => $request->user()->can('delete', $this->resource),

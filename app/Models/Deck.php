@@ -38,4 +38,11 @@ class Deck extends Model
     {
         return $this->memberships()->where('user_id', $user->id)->exists();
     }
+
+    public function currentUserMemberships()
+    {
+        $currentUserId = auth()->id();
+
+        return $this->memberships()->where('user_id', $currentUserId);
+    }
 }

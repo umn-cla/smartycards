@@ -18,7 +18,13 @@ class DeckController extends Controller
     {
         Gate::authorize('viewOwn', Deck::class);
 
-        $usersDecks = $request->user()->decks->loadCount(['cards']);
+        $currentUser = $request->user();
+
+        $usersDecks = $currentUser
+            ->decks()
+            ->withCount(['cards', 'memberships'])
+            ->with(['currentUserMemberships'])
+            ->get();
 
         return DeckResource::collection($usersDecks);
     }
@@ -57,7 +63,8 @@ class DeckController extends Controller
     {
         Gate::authorize('view', $deck);
 
-        $relationsToLoad = ['cards'];
+        $relationsToLoad = ['cards', 'currentUserMemberships'];
+
         if ($request->user()->can('viewMemberships', $deck)) {
             $relationsToLoad[] = 'memberships';
         }
