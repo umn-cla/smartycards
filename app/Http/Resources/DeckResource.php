@@ -33,6 +33,8 @@ class DeckResource extends JsonResource
                 'canCreateMembership' => $request->user()->can('createMembership', $this->resource),
                 'canLeave' => $request->user()->can('leave', $this->resource),
             ],
+            'created_at' => $this->created_at->format('Y-m-d H:i:s'),
+            'updated_at' => $this->updated_at->format('Y-m-d H:i:s'),
         ];
     }
 }
