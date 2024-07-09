@@ -9,6 +9,23 @@ use Illuminate\Http\Request;
 
 class CardController extends Controller
 {
+    private function getCardSideRules()
+    {
+        return [
+            'type' => 'required|string|in:text,image,audio,embed',
+            'content' => 'required|string',
+            'meta' => [
+                'required',
+                'array',
+                'hints' => ['required', 'array'],
+                'hints.*.id' => 'required|string',
+                'hints.*.content' => 'required|string',
+                'hints.*.type' => 'required|string|in:text',
+                'alt' => 'nullable|string',
+            ],
+        ];
+    }
+
     public function show(Card $card)
     {
         Gate::authorize('view', $card);
@@ -24,18 +41,8 @@ class CardController extends Controller
 
         $validated = $request->validate([
             'deck_id' => 'required|exists:decks,id',
-
-            // json
-            'front' => 'required|array',
-            'front.type' => 'required|string|in:text,image,audio,embed',
-            'front.content' => 'required|string',
-            'front.metadata' => 'nullable|array',
-
-            // json
-            'back' => 'required|array',
-            'back.type' => 'required|string|in:text,image,audio,embed',
-            'back.content' => 'required|string',
-            'back.metadata' => 'nullable|array',
+            'front' => ['required', 'array', $this->getCardSideRules()],
+            'back' => ['required', 'array', $this->getCardSideRules()],
         ]);
 
         Gate::authorize('create', [
@@ -60,27 +67,11 @@ class CardController extends Controller
     public function update(Request $request, Card $card)
     {
         $validated = $request->validate([
-            // json
-            'front' => 'required|array',
-            'front.type' => 'required|string|in:text,image,audio,embed',
-            'front.content' => 'required|string',
-            'front.meta' => 'required|array',
-            'front.meta.hints' => 'required|array',
-            'front.meta.hints.*.id' => 'required|string',
-            'front.meta.hints.*.content' => 'required|string',
-            'front.meta.hints.*.type' => 'required|string|in:text',
-            'front.meta.alt' => 'nullable|string',
+            'front' => [
+                'required', 'array', $this->getCardSideRules()],
 
-            // json
-            'back' => 'required|array',
-            'back.type' => 'required|string|in:text,image,audio,embed',
-            'back.content' => 'required|string',
-            'back.meta' => 'required|array',
-            'back.meta.hints' => 'required|array',
-            'back.meta.hints.*.id' => 'required|string',
-            'back.meta.hints.*.content' => 'required|string',
-            'back.meta.hints.*.type' => 'required|string|in:text',
-            'back.meta.alt' => 'nullable|string',
+            'back' => [
+                'required', 'array', $this->getCardSideRules()],
         ]);
 
         Gate::authorize('update', $card);
