@@ -17,10 +17,7 @@ class CardController extends Controller
             'meta' => [
                 'required',
                 'array',
-                'hints' => ['required', 'array'],
-                'hints.*.id' => 'required|string',
-                'hints.*.content' => 'required|string',
-                'hints.*.type' => 'required|string|in:text',
+                'hint' => 'string',
                 'alt' => 'nullable|string',
             ],
         ];
@@ -68,10 +65,11 @@ class CardController extends Controller
     {
         $validated = $request->validate([
             'front' => [
-                'required', 'array', $this->getCardSideRules()],
-
+                'required', 'array', $this->getCardSideRules(),
+            ],
             'back' => [
-                'required', 'array', $this->getCardSideRules()],
+                'required', 'array', $this->getCardSideRules(),
+            ],
         ]);
 
         Gate::authorize('update', $card);
