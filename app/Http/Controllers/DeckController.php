@@ -22,8 +22,7 @@ class DeckController extends Controller
 
         $usersDecks = $currentUser
             ->decks()
-            ->withCount(['cards', 'memberships'])
-            ->with(['currentUserMemberships'])
+            ->withUserDetails($currentUser->id)
             ->get();
 
         return DeckResource::collection($usersDecks);
@@ -59,17 +58,20 @@ class DeckController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Request $request, Deck $deck)
+    public function show(Request $request, $deckId)
     {
+        $user = $request->user();
+
+        $deck = Deck::query()
+            ->withUserDetails($user->id)
+            ->with('cards')
+            ->findOrFail($deckId);
+
         Gate::authorize('view', $deck);
 
-        $relationsToLoad = ['cards', 'currentUserMemberships'];
-
-        if ($request->user()->can('viewMemberships', $deck)) {
-            $relationsToLoad[] = 'memberships';
+        if ($user->can('viewMemberships', $deck)) {
+            $deck->load('memberships');
         }
-
-        $deck->load($relationsToLoad);
 
         return DeckResource::make($deck);
     }
