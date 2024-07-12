@@ -10,6 +10,11 @@ class Deck extends Model
 {
     use HasFactory;
 
+    protected $casts = [
+        'last_attempted_at' => 'datetime',
+        'avg_score' => 'float',
+    ];
+
     protected $fillable = [
         'name',
         'description',
@@ -47,13 +52,20 @@ class Deck extends Model
         ]);
     }
 
+    public function scopeWithUserAvgScore(Builder $query, $userId): Builder
+    {
+        return $query->withAvg(['cardAttempts as avg_score' => function ($query) use ($userId) {
+            $query->where('user_id', $userId);
+        }], 'score');
+    }
+
     public function scopeWithUserDetails(Builder $query, $userId): Builder
     {
         return $query->with('currentUserMemberships')
             ->withCount('cards')
             ->withCount('memberships')
             ->withLastAttemptedAt($userId)
-            ->withAvg('cardAttempts as avg_card_score', 'score');
+            ->withUserAvgScore($userId);
     }
 
     public function isOwnedBy(User $user): bool

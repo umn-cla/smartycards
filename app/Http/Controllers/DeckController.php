@@ -64,7 +64,11 @@ class DeckController extends Controller
 
         $deck = Deck::query()
             ->withUserDetails($user->id)
-            ->with('cards')
+            ->with([
+                'cards' => function ($query) use ($user) {
+                    $query->withUserDetails($user->id);
+                },
+            ])
             ->findOrFail($deckId);
 
         Gate::authorize('view', $deck);

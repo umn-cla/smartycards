@@ -2,7 +2,6 @@
 
 namespace App\Http\Resources;
 
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -24,16 +23,19 @@ class DeckResource extends JsonResource
 
             'memberships_count' => $this->when(isset($this->memberships_count), $this->memberships_count),
 
-            'last_attempted_at' => Carbon::parse($this->last_attempted_at)->toIso8601String(),
+            'last_attempted_at' => $this->when(isset($this->last_attempted_at), $this->last_attempted_at),
 
-            'avg_card_score' => $this->when(isset($this->avg_card_score), $this->avg_card_score),
+            'avg_score' => $this->when(isset($this->avg_score), $this->avg_score),
 
             'cards' => CardResource::collection($this->whenLoaded('cards')),
+
             'memberships' => DeckMembershipResource::collection($this->whenLoaded('memberships')),
+
             'current_user_role' => $this->when(
                 isset($this->currentUserMemberships) && $this->currentUserMemberships->count() >= 1,
                 $this->currentUserMemberships->first()->role
             ),
+
             'capabilities' => [
                 'canUpdate' => $request->user()->can('update', $this->resource),
                 'canDelete' => $request->user()->can('delete', $this->resource),

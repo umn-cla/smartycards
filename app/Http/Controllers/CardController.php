@@ -23,8 +23,11 @@ class CardController extends Controller
         ];
     }
 
-    public function show(Card $card)
+    public function show($cardId)
     {
+        $user = auth()->user();
+        $card = Card::withUserDetails($user->id)->findOrFail($cardId);
+
         Gate::authorize('view', $card);
 
         return CardResource::make($card);
