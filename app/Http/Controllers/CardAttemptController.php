@@ -39,6 +39,8 @@ class CardAttemptController extends Controller
             'score' => $validated['score'],
         ]);
 
+        $attempt->deck_id = $attempt->card->deck_id;
+
         return response()->json($attempt, 201);
     }
 
