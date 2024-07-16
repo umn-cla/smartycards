@@ -1,0 +1,15 @@
+export { default as IconArrowRight } from './IconArrowRight.vue';
+export { default as IconAvatar } from './IconAvatar.vue';
+export { default as IconBlockM } from './IconBlockM.vue';
+export { default as IconCheck } from './IconCheck.vue';
+export { default as IconChevronLeft } from './IconChevronLeft.vue';
+export { default as IconCopy } from './IconCopy.vue';
+export { default as IconDeck } from './IconDeck.vue';
+export { default as IconEllipsesVertical } from './IconEllipsesVertical.vue';
+export { default as IconExclamationTriangle } from './IconExclamationTriangle.vue';
+export { default as IconExit } from './IconExit.vue';
+export { default as IconMenu } from './IconMenu.vue';
+export { default as IconPencil } from './IconPencil.vue';
+export { default as IconTrash } from './IconTrash.vue';
+export { default as IconUpload } from './IconUpload.vue';
+export { default as IconX } from './IconX.vue';
