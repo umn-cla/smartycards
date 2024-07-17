@@ -1,8 +1,0 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-/* util for adding borders depending on media query size */
-.size-borders {
-  @apply border-2 border-blue-500 sm:border-green-500 md:border-orange-500 lg:border-red-500;
-}
