@@ -1,11 +1,11 @@
 <?php
 
 use App\Http\Controllers\CardAttemptController;
-use App\Http\Controllers\CardController;
+use App\Http\Controllers\DeckCardController;
 use App\Http\Controllers\DeckController;
 use App\Http\Controllers\DeckMembershipController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\UploadImageController;
+use App\Http\Controllers\UploadFileController;
 use App\Http\Controllers\UserLookupController;
 use Illuminate\Support\Facades\Route;
 
@@ -35,7 +35,7 @@ Route::middleware(['auth'])
             ->name('decks.memberships.acceptInvite')
             ->middleware('signed');
 
-        Route::resource('cards', CardController::class)
+        Route::resource('decks.cards', DeckCardController::class)
             ->shallow();
 
         Route::resource('cards.attempts', CardAttemptController::class)
@@ -45,7 +45,7 @@ Route::middleware(['auth'])
 
         Route::post('decks/{deck}/import', [DeckController::class, 'import']);
 
-        Route::post('decks/{deck}/upload/images', UploadImageController::class);
+        Route::post('files', UploadFileController::class);
 
     });
 

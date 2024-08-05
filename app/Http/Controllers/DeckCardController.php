@@ -4,23 +4,31 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\CardResource;
 use App\Models\Card;
+use App\Models\Deck;
 use Gate;
 use Illuminate\Http\Request;
 
-class CardController extends Controller
+class DeckCardController extends Controller
 {
-    private function getCardSideRules()
+    private function validateCardRequest(Request $request)
     {
-        return [
-            'type' => 'required|string|in:text,image,audio,embed',
-            'content' => 'required|string',
-            'meta' => [
-                'required',
-                'array',
-                'hint' => 'string',
-                'alt' => 'nullable|string',
-            ],
-        ];
+        return $request->validate([
+            // front content blocks
+            'front' => ['required', 'array'],
+            'front.*.id' => ['required', 'uuid'],
+            'front.*.type' => ['required', 'string', 'in:text,image,audio,embed'],
+            'front.*.content' => ['required', 'string'],
+            'front.*.meta' => ['nullable', 'array'],
+            'front.*.meta.*' => ['nullable', 'string'],
+
+            // back content blocks
+            'back' => ['required', 'array'],
+            'back.*.id' => ['required', 'uuid'],
+            'back.*.type' => ['required', 'string', 'in:text,image,audio,embed'],
+            'back.*.content' => ['required', 'string'],
+            'back.*.meta' => ['nullable', 'array'],
+            'back.*.meta.*' => ['nullable', 'string'],
+        ]);
     }
 
     public function show($cardId)
@@ -36,22 +44,18 @@ class CardController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request, Deck $deck)
     {
 
-        $validated = $request->validate([
-            'deck_id' => 'required|exists:decks,id',
-            'front' => ['required', 'array', $this->getCardSideRules()],
-            'back' => ['required', 'array', $this->getCardSideRules()],
-        ]);
+        $validated = $this->validateCardRequest($request);
 
         Gate::authorize('create', [
             Card::class,
-            $validated['deck_id'],
+            $deck->id,
         ]);
 
         $card = Card::create([
-            'deck_id' => $validated['deck_id'],
+            'deck_id' => $deck->id,
             'front' => $validated['front'],
             'back' => $validated['back'],
         ]);
@@ -66,14 +70,7 @@ class CardController extends Controller
      */
     public function update(Request $request, Card $card)
     {
-        $validated = $request->validate([
-            'front' => [
-                'required', 'array', $this->getCardSideRules(),
-            ],
-            'back' => [
-                'required', 'array', $this->getCardSideRules(),
-            ],
-        ]);
+        $validated = $this->validateCardRequest($request);
 
         Gate::authorize('update', $card);
 
