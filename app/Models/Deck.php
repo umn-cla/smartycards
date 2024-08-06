@@ -43,29 +43,29 @@ class Deck extends Model
     /**
      * Scope a query to include the last attempted at date for the deck.
      */
-    public function scopeWithLastAttemptedAt(Builder $query, $userId): Builder
+    public function scopeWithLastAttemptedAt(Builder $query, User $user): Builder
     {
         return $query->addSelect(['last_attempted_at' => CardAttempt::select('created_at')
-            ->where('user_id', $userId)
+            ->where('user_id', $user->id)
             ->latest()
             ->take(1),
         ]);
     }
 
-    public function scopeWithUserAvgScore(Builder $query, $userId): Builder
+    public function scopeWithUserAvgScore(Builder $query, User $user): Builder
     {
-        return $query->withAvg(['cardAttempts as avg_score' => function ($query) use ($userId) {
-            $query->where('user_id', $userId);
+        return $query->withAvg(['cardAttempts as avg_score' => function ($query) use ($user) {
+            $query->where('user_id', $user->id);
         }], 'score');
     }
 
-    public function scopeWithUserDetails(Builder $query, $userId): Builder
+    public function scopeWithUserStats(Builder $query, User $user): Builder
     {
         return $query->with('currentUserMemberships')
             ->withCount('cards')
             ->withCount('memberships')
-            ->withLastAttemptedAt($userId)
-            ->withUserAvgScore($userId);
+            ->withLastAttemptedAt($user)
+            ->withUserAvgScore($user);
     }
 
     public function isOwnedBy(User $user): bool

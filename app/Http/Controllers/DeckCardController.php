@@ -34,7 +34,7 @@ class DeckCardController extends Controller
     public function show($cardId)
     {
         $user = auth()->user();
-        $card = Card::withUserDetails($user->id)->findOrFail($cardId);
+        $card = Card::withUserStats($user)->findOrFail($cardId);
 
         Gate::authorize('view', $card);
 

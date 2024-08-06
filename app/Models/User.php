@@ -54,6 +54,11 @@ class User extends Authenticatable
         return $this->belongsToMany(Deck::class, 'deck_memberships')->withPivot('role');
     }
 
+    public function cards()
+    {
+        return $this->hasManyThrough(Card::class, DeckMembership::class, 'user_id', 'deck_id', 'id', 'deck_id');
+    }
+
     public function cardAttempts()
     {
         return $this->hasMany(CardAttempt::class);

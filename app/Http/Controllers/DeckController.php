@@ -22,7 +22,7 @@ class DeckController extends Controller
 
         $usersDecks = $currentUser
             ->decks()
-            ->withUserDetails($currentUser->id)
+            ->withUserStats($currentUser)
             ->get();
 
         return DeckResource::collection($usersDecks);
@@ -63,10 +63,10 @@ class DeckController extends Controller
         $user = $request->user();
 
         $deck = Deck::query()
-            ->withUserDetails($user->id)
+            ->withUserStats($user)
             ->with([
                 'cards' => function ($query) use ($user) {
-                    $query->withUserDetails($user->id);
+                    $query->withUserStats($user);
                 },
             ])
             ->findOrFail($deckId);
