@@ -55,11 +55,18 @@ class Deck extends Model
         return $query->addSelect(['last_attempted_at' => $subQuery]);
     }
 
+    /**
+     * Scope a query to include the user's average score per card.
+     */
     public function scopeWithUserAvgScore(Builder $query, User $user): Builder
     {
-        return $query->withAvg(['cardAttempts as avg_score' => function ($query) use ($user) {
-            $query->where('user_id', $user->id);
-        }], 'score');
+        $subQuery = Card::selectRaw('AVG(card_attempts.score) as avg_card_score')
+            ->join('card_attempts', 'cards.id', '=', 'card_attempts.card_id')
+            ->whereColumn('cards.deck_id', 'decks.id')
+            ->where('card_attempts.user_id', $user->id)
+            ->groupBy('cards.id');
+
+        return $query->addSelect(['avg_score' => $subQuery->avg('avg_card_score')]);
     }
 
     public function scopeWithUserStats(Builder $query, User $user): Builder
