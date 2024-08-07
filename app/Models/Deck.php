@@ -45,11 +45,14 @@ class Deck extends Model
      */
     public function scopeWithLastAttemptedAt(Builder $query, User $user): Builder
     {
-        return $query->addSelect(['last_attempted_at' => CardAttempt::select('created_at')
-            ->where('user_id', $user->id)
-            ->latest()
-            ->take(1),
-        ]);
+        $subQuery = CardAttempt::select('card_attempts.created_at')
+            ->join('cards', 'cards.id', '=', 'card_attempts.card_id')
+            ->whereColumn('cards.deck_id', 'decks.id')
+            ->where('card_attempts.user_id', $user->id)
+            ->latest('card_attempts.created_at')
+            ->take(1);
+
+        return $query->addSelect(['last_attempted_at' => $subQuery]);
     }
 
     public function scopeWithUserAvgScore(Builder $query, User $user): Builder
