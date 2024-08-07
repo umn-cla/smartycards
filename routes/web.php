@@ -28,8 +28,11 @@ Route::middleware(['auth'])
         Route::delete('decks/{deck}/memberships/self', [DeckMembershipController::class, 'leave'])
             ->name('decks.memberships.leave');
 
-        Route::get('decks/{deck}/memberships/share', [DeckMembershipController::class, 'share'])
-            ->name('decks.memberships.share');
+        Route::get('decks/{deck}/memberships/share/view', [DeckMembershipController::class, 'shareView'])
+            ->name('decks.memberships.share.view');
+
+        Route::get('decks/{deck}/memberships/share/edit', [DeckMembershipController::class, 'shareEdit'])
+            ->name('decks.memberships.share.edit');
 
         Route::get('decks/{deck}/memberships/accept', [DeckMembershipController::class, 'acceptInvite'])
             ->name('decks.memberships.acceptInvite')

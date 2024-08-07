@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class Deck extends Model
 {
@@ -55,18 +56,24 @@ class Deck extends Model
         return $query->addSelect(['last_attempted_at' => $subQuery]);
     }
 
-    /**
+     /**
      * Scope a query to include the user's average score per card.
      */
     public function scopeWithUserAvgScore(Builder $query, User $user): Builder
     {
-        $subQuery = Card::selectRaw('AVG(card_attempts.score) as avg_card_score')
+        // Subquery to calculate the average score per card
+        $avgScorePerCardSubQuery = Card::selectRaw('AVG(card_attempts.score) as avg_card_score')
             ->join('card_attempts', 'cards.id', '=', 'card_attempts.card_id')
             ->whereColumn('cards.deck_id', 'decks.id')
             ->where('card_attempts.user_id', $user->id)
             ->groupBy('cards.id');
 
-        return $query->addSelect(['avg_score' => $subQuery->avg('avg_card_score')]);
+        // Subquery to calculate the average of these averages
+        $avgOfAveragesSubQuery = DB::table($avgScorePerCardSubQuery, 'avg_scores')
+            ->selectRaw('AVG(avg_scores.avg_card_score)');
+
+        // this might be a bad idea
+        return $query->addSelect(['avg_score' => $avgOfAveragesSubQuery]);
     }
 
     public function scopeWithUserStats(Builder $query, User $user): Builder

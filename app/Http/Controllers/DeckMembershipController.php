@@ -150,9 +150,13 @@ class DeckMembershipController extends Controller
 
     public function acceptInvite(Request $request, Deck $deck)
     {
+        if (! $request->hasValidSignature()) {
+            abort(401);
+        }
 
         $validated = $request->validate([
-            'fromUserId' => 'required|integer',
+            'fromUserId' => 'required|exists:users,id',
+            'role' => 'required|string|in:viewer,editor',
         ]);
 
         // verify that the invitingUser has permission to invite
@@ -166,18 +170,21 @@ class DeckMembershipController extends Controller
             ], 403);
         }
 
-        // if user is already a member of the deck, we're done
+        // if user is already a member of the deck, update the role
         if ($deck->memberships()->where('user_id', $request->user()->id)->exists()) {
-            return response()->json([
-                'message' => 'User is already a member of this deck.',
-            ], 200);
+            $membership = $deck->memberships()->where('user_id', $request->user()->id)->first();
+            $membership->update([
+                'role' => $validated['role'],
+            ]);
+
+            return DeckMembershipResource::make($membership);
         }
 
         // add the user to the deck with the role of viewer
         $membership = DeckMembership::create([
             'deck_id' => $deck->id,
             'user_id' => $request->user()->id,
-            'role' => 'viewer',
+            'role' => $validated['role'],
         ]);
 
         return DeckMembershipResource::make($membership)
@@ -185,7 +192,7 @@ class DeckMembershipController extends Controller
             ->setStatusCode(201);
     }
 
-    public function share(Deck $deck)
+    public function shareView(Deck $deck)
     {
         Gate::authorize('update', $deck);
 
@@ -194,6 +201,24 @@ class DeckMembershipController extends Controller
             [
                 'deck' => $deck->id,
                 'fromUserId' => auth()->user()->id,
+                'role' => 'viewer',
+            ],
+            expiration: null,
+        );
+
+        return response()->json(['url' => $signedURL]);
+    }
+
+    public function shareEdit(Deck $deck)
+    {
+        Gate::authorize('update', $deck);
+
+        $signedURL = URL::signedRoute(
+            'decks.memberships.acceptInvite',
+            [
+                'deck' => $deck->id,
+                'fromUserId' => auth()->user()->id,
+                'role' => 'editor',
             ],
             expiration: null,
         );
