@@ -67,4 +67,27 @@ class Card extends Model
             ->withLastAttemptedAt($user)
             ->withUserAvgScore($user);
     }
+
+    /**
+     * Load user stats for the card.
+     *
+     * @return $this
+     */
+    public function loadUserStats(User $user)
+    {
+        $this->loadCount(['attempts' => function ($query) use ($user) {
+            $query->where('user_id', $user->id);
+        }]);
+
+        $this->last_attempted_at = $this->attempts()
+            ->where('user_id', $user->id)
+            ->latest('created_at')
+            ->value('created_at');
+
+        $this->avg_score = $this->attempts()
+            ->where('user_id', $user->id)
+            ->avg('score');
+
+        return $this;
+    }
 }

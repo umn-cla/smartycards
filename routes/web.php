@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CardAttemptController;
+use App\Http\Controllers\CardStatsController;
 use App\Http\Controllers\DeckCardController;
 use App\Http\Controllers\DeckController;
 use App\Http\Controllers\DeckMembershipController;
@@ -43,6 +44,8 @@ Route::middleware(['auth'])
 
         Route::resource('cards.attempts', CardAttemptController::class)
             ->shallow();
+
+        Route::get('cards/{card}/stats', [CardStatsController::class, 'show']);
 
         Route::get('users/lookup', UserLookupController::class);
 

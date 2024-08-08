@@ -31,14 +31,14 @@ class DeckCardController extends Controller
         ]);
     }
 
-    public function show($cardId)
+    public function show(Card $card)
     {
-        $user = auth()->user();
-        $card = Card::withUserStats($user)->findOrFail($cardId);
-
         Gate::authorize('view', $card);
 
-        return CardResource::make($card);
+        $user = auth()->user();
+        $cardWithStats = $card->loadUserStats($user);
+
+        return CardResource::make($cardWithStats);
     }
 
     /**
