@@ -5,10 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use OwenIt\Auditing\Auditable as AuditableTrait;
+use OwenIt\Auditing\Contracts\Auditable as AuditableContract;
 
-class Card extends Model
+class Card extends Model implements AuditableContract
 {
-    use HasFactory;
+    use AuditableTrait, HasFactory;
 
     protected $casts = [
         'front' => 'array',

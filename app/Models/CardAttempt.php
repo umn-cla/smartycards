@@ -4,10 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use OwenIt\Auditing\Auditable as AuditableTrait;
+use OwenIt\Auditing\Contracts\Auditable as AuditableContract;
 
-class CardAttempt extends Model
+class CardAttempt extends Model implements AuditableContract
 {
-    use HasFactory;
+    use AuditableTrait, HasFactory;
 
     protected $fillable = [
         'user_id',

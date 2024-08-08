@@ -6,10 +6,12 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
+use OwenIt\Auditing\Auditable as AuditableTrait;
+use OwenIt\Auditing\Contracts\Auditable as AuditableContract;
 
-class Deck extends Model
+class Deck extends Model implements AuditableContract
 {
-    use HasFactory;
+    use AuditableTrait, HasFactory;
 
     protected $casts = [
         'last_attempted_at' => 'datetime',
@@ -56,7 +58,7 @@ class Deck extends Model
         return $query->addSelect(['last_attempted_at' => $subQuery]);
     }
 
-     /**
+    /**
      * Scope a query to include the user's average score per card.
      */
     public function scopeWithUserAvgScore(Builder $query, User $user): Builder
