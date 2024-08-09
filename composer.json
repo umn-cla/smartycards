@@ -27,7 +27,8 @@
         "maatwebsite/excel": "^3.1",
         "owen-it/laravel-auditing": "^13.6",
         "razorbacks/laravel-shibboleth": "dev-umn#c30e9e9afbd7a67c909188408e2bd511c0f741cf",
-        "spatie/laravel-permission": "^6.9"
+        "spatie/laravel-permission": "^6.9",
+        "staudenmeir/belongs-to-through": "^2.5"
     },
     "require-dev": {
         "barryvdh/laravel-ide-helper": "^3.0",
