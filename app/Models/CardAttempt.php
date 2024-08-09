@@ -4,10 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Znck\Eloquent\Relations\BelongsToThrough as RelationsBelongsToThrough;
+use Znck\Eloquent\Traits\BelongsToThrough;
 
 class CardAttempt extends Model
 {
-    use HasFactory;
+    use BelongsToThrough, HasFactory;
 
     protected $fillable = [
         'user_id',
@@ -23,5 +25,10 @@ class CardAttempt extends Model
     public function card()
     {
         return $this->belongsTo(Card::class);
+    }
+
+    public function deck(): RelationsBelongsToThrough
+    {
+        return $this->belongsToThrough(Deck::class, Card::class);
     }
 }
