@@ -3,14 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\DeckMembershipResource;
-use App\Ldap\LdapUser;
 use App\Models\Deck;
 use App\Models\DeckMembership;
 use App\Models\User;
 use Gate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\URL;
-use Illuminate\Support\Str;
 
 class DeckMembershipController extends Controller
 {
@@ -104,12 +102,13 @@ class DeckMembershipController extends Controller
 
         // if user is already a member of the deck, update the role
         if ($deck->memberships()->where('user_id', $request->user()->id)->exists()) {
-            $membership = $deck->memberships()->where('user_id', $request->user()->id)->first();
-            $membership->update([
-                'role' => $validated['role'],
-            ]);
 
-            return DeckMembershipResource::make($membership);
+            // Don't update the membership if the user is already a member.
+            // This is a workaround to allow owners to demote users from editor
+            // to viewer if needed, after the edit link has been shared.
+            return response()->json([
+                'message' => 'User is already a member of this deck.',
+            ], 409); // conflict
         }
 
         // add the user to the deck with the role of viewer
