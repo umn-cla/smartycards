@@ -3,10 +3,10 @@
 namespace Deployer;
 
 require 'recipe/laravel.php';
-require 'contrib/npm.php';
+// require 'contrib/npm.php';
 
 // Config
-set('repository', 'https://github.com/umn-cla/smartycards-api.git');
+set('repository', 'git@github.com:umn-cla/smartycards-api.git');
 set('ssh_type', 'native');
 set('update_code_strategy', 'clone');
 
@@ -22,10 +22,13 @@ host('dev')
     ->set('deploy_path', '/var/www/html/');
 
 // Hooks
-after('deploy:update_code', 'npm:install');
-task('assets:generate', function () {
-    cd('{{release_path}}');
-    run('npm run build');
-})->desc('Assets generation');
-after('deploy:vendors', 'assets:generate');
+
+// NPM tasks - unncecessary right now
+// after('deploy:update_code', 'npm:install');
+// task('assets:generate', function () {
+//     cd('{{release_path}}');
+//     run('npm run build');
+// })->desc('Assets generation');
+// after('deploy:vendors', 'assets:generate');
+
 after('deploy:failed', 'deploy:unlock');
