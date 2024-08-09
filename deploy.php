@@ -21,7 +21,12 @@ host('dev')
     ->set('labels', ['stage' => 'dev'])
     ->set('deploy_path', '/var/www/html/');
 
-// Hooks
+// install private composer packages, like Laravel Nova
+task('composer:private', function () {
+    cd('{{release_path}}');
+    run('source .env && /var/www/html/.dep/composer.phar config "http-basic.nova.laravel.com" "$NOVA_USERNAME" "$NOVA_LICENSE_KEY"');
+});
+before('deploy:vendors', 'composer:private');
 
 // NPM tasks - unncecessary right now
 // after('deploy:update_code', 'npm:install');
