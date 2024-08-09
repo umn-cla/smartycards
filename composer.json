@@ -19,7 +19,6 @@
     "license": "MIT",
     "require": {
         "php": "^8.3",
-        "directorytree/ldaprecord-laravel": "^3.3",
         "laravel/framework": "^11.9",
         "laravel/nova": "^4.0",
         "laravel/sanctum": "^4.0",
