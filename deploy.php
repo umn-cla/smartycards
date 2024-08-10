@@ -3,7 +3,7 @@
 namespace Deployer;
 
 require 'recipe/laravel.php';
-// require 'contrib/npm.php';
+require 'contrib/npm.php';
 
 // Config
 set('repository', 'git@github.com:umn-cla/smartycards-api.git');
@@ -29,11 +29,11 @@ task('composer:private', function () {
 before('deploy:vendors', 'composer:private');
 
 // NPM tasks - unncecessary right now
-// after('deploy:update_code', 'npm:install');
-// task('assets:generate', function () {
-//     cd('{{release_path}}');
-//     run('npm run build');
-// })->desc('Assets generation');
-// after('deploy:vendors', 'assets:generate');
+after('deploy:update_code', 'npm:install');
+task('assets:generate', function () {
+    cd('{{release_path}}');
+    run('npm run build');
+})->desc('Assets generation');
+after('deploy:vendors', 'assets:generate');
 
 after('deploy:failed', 'deploy:unlock');
