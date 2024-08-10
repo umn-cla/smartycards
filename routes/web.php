@@ -10,12 +10,6 @@ use App\Http\Controllers\UploadFileController;
 use App\Http\Controllers\UserLookupController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return response()->json([
-        'message' => 'hello',
-    ]);
-});
-
 // stateful api routes ()
 Route::middleware(['auth'])
     ->prefix('api')
@@ -56,3 +50,7 @@ Route::middleware(['auth'])
     });
 
 require __DIR__.'/shib.php';
+
+Route::fallback(function () {
+    return view('app');
+});
