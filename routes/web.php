@@ -7,7 +7,6 @@ use App\Http\Controllers\DeckController;
 use App\Http\Controllers\DeckMembershipController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UploadFileController;
-use App\Http\Controllers\UserLookupController;
 use Illuminate\Support\Facades\Route;
 
 // stateful api routes ()
@@ -40,8 +39,6 @@ Route::middleware(['auth'])
             ->shallow();
 
         Route::get('cards/{card}/stats', [CardStatsController::class, 'show']);
-
-        Route::get('users/lookup', UserLookupController::class);
 
         Route::post('decks/{deck}/import', [DeckController::class, 'import']);
 

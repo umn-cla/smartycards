@@ -17,14 +17,11 @@
             class="mb-8 flex gap-8 flex-wrap justify-between items-start sticky top-0 bg-white z-10"
           >
             <div>
-              <PageTitle>{{ isCreateMode ? 'Create' : 'Edit' }} Card</PageTitle>
+              <PageTitle>{{ isCreateMode ? "Create" : "Edit" }} Card</PageTitle>
               <PageSubtitle>{{ deck?.name }}</PageSubtitle>
             </div>
             <div class="flex gap-2">
-              <Button
-                asChild
-                variant="secondary"
-              >
+              <Button asChild variant="secondary">
                 <RouterLink
                   :to="{ name: 'decks.show', params: { deckId } }"
                   class="btn"
@@ -71,17 +68,21 @@
   </AuthenticatedLayout>
 </template>
 <script setup lang="ts">
-import { AuthenticatedLayout } from '@/layouts/AuthenticatedLayout';
-import { computed, reactive, watch, ref, onMounted } from 'vue';
-import { useUpdateCardMutation, useCreateCardMutation, useCardByIdQuery } from '@/queries/cards';
-import { useDeckByIdQuery } from '@/queries/decks';
-import { useRouter } from 'vue-router';
-import * as T from '@/types';
-import CardSideInput from '@/components/CardSideInput/CardSideInput.vue';
-import { IconChevronLeft } from '@/components/icons';
-import { Button } from '@/components/ui/button';
-import PageTitle from '@/components/PageTitle.vue';
-import PageSubtitle from '@/components/PageSubtitle.vue';
+import { AuthenticatedLayout } from "@/layouts/AuthenticatedLayout";
+import { computed, reactive, watch, ref, onMounted } from "vue";
+import {
+  useUpdateCardMutation,
+  useCreateCardMutation,
+  useCardByIdQuery,
+} from "@/queries/cards";
+import { useDeckByIdQuery } from "@/queries/decks";
+import { useRouter } from "vue-router";
+import * as T from "@/types";
+import CardSideInput from "@/components/CardSideInput.vue";
+import { IconChevronLeft } from "@/components/icons";
+import { Button } from "@/components/ui/button";
+import PageTitle from "@/components/PageTitle.vue";
+import PageSubtitle from "@/components/PageSubtitle.vue";
 
 const props = defineProps<{
   deckId: number;
@@ -105,8 +106,8 @@ const { data: card } = useCardByIdQuery(cardIdRef);
 function createTextContentBlock(): T.TextContentBlock {
   return {
     id: crypto.randomUUID(),
-    type: 'text',
-    content: '',
+    type: "text",
+    content: "",
     meta: null,
   };
 }
@@ -129,7 +130,7 @@ watch(
       form.back = card.value.back;
     }
   },
-  { immediate: true }
+  { immediate: true },
 );
 
 const { mutate: updateCard } = useUpdateCardMutation();
@@ -140,8 +141,8 @@ const router = useRouter();
 const hasAttemptedSave = ref(false);
 const errors = computed(() => {
   return {
-    front: form.front.length < 1 && 'Front side must have some content blocks',
-    back: form.back.length < 1 && 'Back side must have some content blocks',
+    front: form.front.length < 1 && "Front side must have some content blocks",
+    back: form.back.length < 1 && "Back side must have some content blocks",
   };
 });
 
@@ -157,7 +158,7 @@ function handleSave() {
   }
 
   const onSuccess = () => {
-    router.push({ name: 'decks.show', params: { deckId: props.deckId } });
+    router.push({ name: "decks.show", params: { deckId: props.deckId } });
   };
 
   if (isCreateMode.value) {
@@ -167,13 +168,15 @@ function handleSave() {
         front: form.front,
         back: form.back,
       },
-      { onSuccess }
+      { onSuccess },
     );
     return;
   }
 
   if (!card.value) {
-    throw new Error(`Card with id ${props.cardId} not found in deck with id ${props.deckId}`);
+    throw new Error(
+      `Card with id ${props.cardId} not found in deck with id ${props.deckId}`,
+    );
   }
 
   updateCard(
@@ -182,7 +185,7 @@ function handleSave() {
       front: form.front,
       back: form.back,
     },
-    { onSuccess }
+    { onSuccess },
   );
 }
 </script>

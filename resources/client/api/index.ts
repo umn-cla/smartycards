@@ -1,9 +1,9 @@
-import axios, { AxiosError } from '@/api/axios';
-import { ApiError } from './ApiError';
-import type * as T from '@/types';
-import { useErrorStore } from '@/stores/useErrorStore';
-import config from '@/config';
-import { isEmpty } from 'ramda';
+import axios, { AxiosError } from "@/api/axios";
+import { ApiError } from "./ApiError";
+import type * as T from "@/types";
+import { useErrorStore } from "@/stores/useErrorStore";
+import config from "@/config";
+import { isEmpty } from "ramda";
 
 const NETWORK_ERROR_HTTP_STATUS_CODE = 0;
 
@@ -39,7 +39,7 @@ axios.interceptors.response.use(undefined, async (err: AxiosError) => {
 });
 
 export async function getCurrentUser(
-  opts: T.CustomAxiosRequestConfig = {}
+  opts: T.CustomAxiosRequestConfig = {},
 ): Promise<T.User | null> {
   const res = await axios.get<T.User | null>(`/profile`, opts);
   return isEmpty(res.data) ? null : res.data;
@@ -57,14 +57,17 @@ export async function getDeckById(deckId: number) {
 
 export async function createDeck(
   deck: { name: string; description: string },
-  customConfig: T.CustomAxiosRequestConfig = {}
+  customConfig: T.CustomAxiosRequestConfig = {},
 ) {
   await csrf();
   const res = await axios.post<{ data: T.Deck }>(`/decks`, deck, customConfig);
   return res.data.data;
 }
 
-export async function deleteDeck(deckId: number, customConfig: T.CustomAxiosRequestConfig = {}) {
+export async function deleteDeck(
+  deckId: number,
+  customConfig: T.CustomAxiosRequestConfig = {},
+) {
   await csrf();
   await axios.delete(`/decks/${deckId}`, customConfig);
 }
@@ -81,7 +84,7 @@ export async function createCard(newCardForm: {
 }) {
   const res = await axios.post<{ data: T.Card }>(
     `/decks/${newCardForm.deck_id}/cards`,
-    newCardForm
+    newCardForm,
   );
   return res.data.data;
 }
@@ -110,13 +113,23 @@ export async function getAllUserCardAttempts(cardId: number) {
   return res.data;
 }
 
-export async function createCardAttempt({ cardId, score }: { cardId: number; score: number }) {
-  const res = await axios.post<T.CardAttempt>(`/cards/${cardId}/attempts`, { score });
+export async function createCardAttempt({
+  cardId,
+  score,
+}: {
+  cardId: number;
+  score: number;
+}) {
+  const res = await axios.post<T.CardAttempt>(`/cards/${cardId}/attempts`, {
+    score,
+  });
   return res.data;
 }
 
 export async function getDeckMemberships(deckId: number) {
-  const res = await axios.get<{ data: T.DeckMembership[] }>(`/decks/${deckId}/memberships`);
+  const res = await axios.get<{ data: T.DeckMembership[] }>(
+    `/decks/${deckId}/memberships`,
+  );
   return res.data.data;
 }
 
@@ -127,19 +140,22 @@ export async function createDeckMembership({
 }: {
   deckId: number;
   umndid: string;
-  role: T.DeckMembership['role'];
+  role: T.DeckMembership["role"];
 }) {
-  const res = await axios.post<{ data: T.DeckMembership }>(`/decks/${deckId}/memberships`, {
-    umndid,
-    role,
-  });
+  const res = await axios.post<{ data: T.DeckMembership }>(
+    `/decks/${deckId}/memberships`,
+    {
+      umndid,
+      role,
+    },
+  );
   return res.data.data;
 }
 
 export async function updateDeckMembership(membership: T.DeckMembership) {
   const res = await axios.put<{ data: T.DeckMembership }>(
     `/memberships/${membership.id}`,
-    membership
+    membership,
   );
   return res.data.data;
 }
@@ -153,37 +169,38 @@ export async function leaveDeck(deckId: number) {
 }
 
 export async function getDeckShareViewLink(deckId: number) {
-  const res = await axios.get<{ url: string }>(`/decks/${deckId}/memberships/share/view`);
+  const res = await axios.get<{ url: string }>(
+    `/decks/${deckId}/memberships/share/view`,
+  );
   return res.data.url;
 }
 
 export async function getDeckShareEditLink(deckId: number) {
-  const res = await axios.get<{ url: string }>(`/decks/${deckId}/memberships/share/edit`);
+  const res = await axios.get<{ url: string }>(
+    `/decks/${deckId}/memberships/share/edit`,
+  );
   return res.data.url;
 }
 
 export async function importDeckCards(deckId: number, file: File) {
   const formData = new FormData();
-  formData.append('file', file);
+  formData.append("file", file);
 
-  const res = await axios.post<{ data: T.Card[] }>(`/decks/${deckId}/import`, formData, {
-    headers: {
-      'Content-Type': 'multipart/form-data',
+  const res = await axios.post<{ data: T.Card[] }>(
+    `/decks/${deckId}/import`,
+    formData,
+    {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
     },
-  });
-  return res.data.data;
-}
-
-export async function lookupUsers(query: string) {
-  if (!query) return Promise.resolve([]);
-
-  const res = await axios.get<{ data: T.LDAPUser[] }>(`/users/lookup?q=${query}`);
+  );
   return res.data.data;
 }
 
 export async function redirectToLogin(redirect: string) {
   const url = new URL(config.api.loginUrl);
-  url.searchParams.set('redirect', redirect);
+  url.searchParams.set("redirect", redirect);
   window.location.href = url.toString();
 }
 
@@ -193,24 +210,28 @@ export async function logout() {
 
 export async function uploadImageToDeck(deckId: number, file: File) {
   const formData = new FormData();
-  formData.append('image', file);
+  formData.append("image", file);
 
-  const res = await axios.post<{ path: string }>(`/decks/${deckId}/upload/images`, formData, {
-    headers: {
-      'Content-Type': 'multipart/form-data',
+  const res = await axios.post<{ path: string }>(
+    `/decks/${deckId}/upload/images`,
+    formData,
+    {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
     },
-  });
+  );
 
   return res.data.path;
 }
 
 export async function uploadFile(file: File): Promise<T.UploadedFileInfo> {
   const formData = new FormData();
-  formData.append('file', file);
+  formData.append("file", file);
 
   const res = await axios.post<T.UploadedFileInfo>(`files`, formData, {
     headers: {
-      'Content-Type': 'multipart/form-data',
+      "Content-Type": "multipart/form-data",
     },
   });
 

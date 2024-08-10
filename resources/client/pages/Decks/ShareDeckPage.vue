@@ -1,9 +1,6 @@
 <template>
   <AuthenticatedLayout>
-    <div
-      v-if="deck && deckMemberships"
-      class="max-w-screen-lg mx-auto"
-    >
+    <div v-if="deck && deckMemberships" class="max-w-screen-lg mx-auto">
       <nav class="mb-4">
         <RouterLink
           :to="{ name: 'decks.show', params: { deckId: deck.id } }"
@@ -21,11 +18,7 @@
           </p>
         </div>
         <div class="flex gap-1">
-          <Modal
-            title="Share Link"
-            noFooter
-            triggerButtonVariant="outline"
-          >
+          <Modal title="Share Link" noFooter triggerButtonVariant="outline">
             <div>
               <Label
                 for="share-view-link"
@@ -36,10 +29,7 @@
                   Any user with this link will be added with view permissions.
                 </small>
               </Label>
-              <CopyableInput
-                :value="shareViewLink"
-                id="share-view-link"
-              />
+              <CopyableInput :value="shareViewLink" id="share-view-link" />
             </div>
 
             <div>
@@ -52,18 +42,12 @@
                   Any user with this link will be added with edit permissions.
                 </small>
               </Label>
-              <CopyableInput
-                :value="shareEditLink"
-                id="share-edit-link"
-              />
+              <CopyableInput :value="shareEditLink" id="share-edit-link" />
             </div>
           </Modal>
         </div>
       </header>
-      <ul
-        v-if="deckMemberships"
-        class="flex flex-col gap-2"
-      >
+      <ul v-if="deckMemberships" class="flex flex-col gap-2">
         <DeckMembership
           v-for="membership in deckMemberships"
           :key="membership.id"
@@ -75,24 +59,22 @@
   </AuthenticatedLayout>
 </template>
 <script setup lang="ts">
-import { AuthenticatedLayout } from '@/layouts/AuthenticatedLayout';
-import { reactive, computed } from 'vue';
+import { AuthenticatedLayout } from "@/layouts/AuthenticatedLayout";
+import { computed } from "vue";
 import {
   useDeckMembershipsQuery,
-  useCreateDeckMembershipMutation,
   useDeckShareViewLinkQuery,
   useDeckShareEditLinkQuery,
-} from '@/queries/deckMemberships';
-import { useDeckByIdQuery } from '@/queries/decks';
-import DeckMembership from '@/components/DeckMembership.vue';
-import PersonSearch from '@/components/PersonSearch.vue';
-import * as T from '@/types';
-import config from '@/config';
-import { IconChevronLeft } from '@/components/icons';
-import { Label } from '@/components/ui/label';
-import CopyableInput from '@/components/CopyableInput.vue';
-import Modal from '@/components/Modal.vue';
-import { Button } from '@/components/ui/button';
+} from "@/queries/deckMemberships";
+import { useDeckByIdQuery } from "@/queries/decks";
+import DeckMembership from "@/components/DeckMembership.vue";
+import * as T from "@/types";
+import config from "@/config";
+import { IconChevronLeft } from "@/components/icons";
+import { Label } from "@/components/ui/label";
+import CopyableInput from "@/components/CopyableInput.vue";
+import Modal from "@/components/Modal.vue";
+import { Button } from "@/components/ui/button";
 
 const props = defineProps<{
   deckId: number;
@@ -106,14 +88,14 @@ const { data: apiShareEditUrl } = useDeckShareEditLinkQuery(deckIdRef);
 
 const shareViewLink = computed(() => {
   const url = new URL(`${config.client.baseUrl}/decks/${props.deckId}/invite`);
-  url.searchParams.append('url', apiShareViewUrl.value ?? '');
+  url.searchParams.append("url", apiShareViewUrl.value ?? "");
 
   return url.toString();
 });
 
 const shareEditLink = computed(() => {
   const url = new URL(`${config.client.baseUrl}/decks/${props.deckId}/invite`);
-  url.searchParams.append('url', apiShareEditUrl.value ?? '');
+  url.searchParams.append("url", apiShareEditUrl.value ?? "");
 
   return url.toString();
 });
