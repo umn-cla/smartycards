@@ -56,7 +56,7 @@
                 <CardSideView
                   :side="card[sideName as T.CardSideName]"
                   :label="sideName"
-                  class="flex-1"
+                  class="flex-1 aspect-[3/2]"
                 />
               </RouterLink>
             </div>
