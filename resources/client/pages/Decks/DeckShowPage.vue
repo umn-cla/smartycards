@@ -9,10 +9,7 @@
     >
       <div class="flex gap-2">
         <MoreDeckActions :deck="deck" />
-        <Button
-          asChild
-          variant="secondary"
-        >
+        <Button asChild variant="secondary">
           <RouterLink
             :to="{ name: 'decks.share', params: { deckId } }"
             class="btn"
@@ -34,10 +31,7 @@
     <main v-if="deck">
       <header class="flex justify-between mb-6">
         <h3 class="font-bold text-4xl">Cards</h3>
-        <Button
-          asChild
-          variant="secondary"
-        >
+        <Button asChild variant="secondary">
           <RouterLink
             v-if="canEdit"
             :to="{ name: 'cards.create', params: { deckId } }"
@@ -47,23 +41,16 @@
         </Button>
       </header>
 
-      <ul
-        v-if="deck.cards?.length"
-        class="flex gap-4 flex-col"
-      >
-        <li
-          v-for="card in deck.cards"
-          :key="card.id"
-          class="flex gap-2"
-        >
-          <template
-            v-for="sideName in ['front', 'back']"
-            :key="sideName"
-          >
+      <ul v-if="deck.cards?.length" class="flex gap-4 flex-col">
+        <li v-for="card in deck.cards" :key="card.id" class="flex gap-2">
+          <template v-for="sideName in ['front', 'back']" :key="sideName">
             <div class="flex-1 flex flex-col">
               <ColHeader class="capitalize">{{ sideName }}</ColHeader>
               <RouterLink
-                :to="{ name: 'cards.edit', params: { deckId, cardId: card.id } }"
+                :to="{
+                  name: 'cards.edit',
+                  params: { deckId, cardId: card.id },
+                }"
                 class="contents"
               >
                 <CardSideView
@@ -76,10 +63,7 @@
           </template>
           <div class="flex flex-col">
             <ColHeader>Stats</ColHeader>
-            <CardStats
-              :card="card"
-              class="flex-1"
-            />
+            <CardStats :card="card" class="flex-1" />
           </div>
           <div
             class="flex flex-col"
@@ -100,19 +84,19 @@
   </AuthenticatedLayout>
 </template>
 <script setup lang="ts">
-import { AuthenticatedLayout } from '@/layouts/AuthenticatedLayout';
-import { useDeleteCardMutation } from '@/queries/cards';
-import { useDeckByIdQuery } from '@/queries/decks';
-import * as T from '@/types';
-import { RouterLink } from 'vue-router';
-import { computed } from 'vue';
-import CardSideView from '@/components/CardSideView.vue';
-import CardStats from '@/components/CardStats.vue';
-import CardActions from '@/components/CardActions.vue';
-import ColHeader from '@/components/ColHeader.vue';
-import { Button } from '@/components/ui/button';
-import MoreDeckActions from './DeckIndexPage/MoreDeckActions.vue';
-import PageHeader from '@/components/PageHeader.vue';
+import { AuthenticatedLayout } from "@/layouts/AuthenticatedLayout";
+import { useDeleteCardMutation } from "@/queries/cards";
+import { useDeckByIdQuery } from "@/queries/decks";
+import * as T from "@/types";
+import { RouterLink } from "vue-router";
+import { computed } from "vue";
+import { CardSideView } from "@/components/CardSideView";
+import CardStats from "@/components/CardStats.vue";
+import CardActions from "@/components/CardActions.vue";
+import ColHeader from "@/components/ColHeader.vue";
+import { Button } from "@/components/ui/button";
+import MoreDeckActions from "./DeckIndexPage/MoreDeckActions.vue";
+import PageHeader from "@/components/PageHeader.vue";
 
 const props = defineProps<{
   deckId: number;

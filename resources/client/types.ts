@@ -1,5 +1,5 @@
-import { type AxiosRequestConfig } from 'axios';
-import type { RouteLocationRaw } from 'vue-router';
+import { type AxiosRequestConfig } from "axios";
+import type { RouteLocationRaw } from "vue-router";
 
 /**
  * declare what things might be on the global window object here
@@ -29,7 +29,7 @@ export interface User {
   isAdmin?: boolean;
 }
 
-type MembershipRole = 'viewer' | 'editor' | 'owner';
+type MembershipRole = "viewer" | "editor" | "owner";
 
 export interface DeckMembership {
   id: number;
@@ -37,7 +37,7 @@ export interface DeckMembership {
   deck_id: number;
   user: User;
   role: MembershipRole;
-  status: 'active' | 'pending';
+  status: "active" | "pending";
   created_at: ISODateTime;
   updated_at: ISODateTime;
   capabilities: {
@@ -74,7 +74,7 @@ export interface DeckWithCards extends Deck {
 
 type UUID = string;
 
-export type CardSideName = 'front' | 'back';
+export type CardSideName = "front" | "back";
 
 export type CardSide = ContentBlock[];
 
@@ -117,7 +117,13 @@ export interface NavMenuItem {
   icon?: any;
 }
 
-export type ContentBlockType = 'text' | 'image' | 'audio' | 'video' | 'embed' | 'reveal';
+export type ContentBlockType =
+  | "text"
+  | "image"
+  | "audio"
+  | "video"
+  | "embed"
+  | "reveal";
 
 export interface ContentBlock {
   id: UUID;
@@ -127,12 +133,12 @@ export interface ContentBlock {
 }
 
 export interface TextContentBlock extends ContentBlock {
-  type: 'text';
+  type: "text";
   content: HTMLString;
 }
 
 export interface ImageContentBlock extends ContentBlock {
-  type: 'image';
+  type: "image";
   content: string; // url
   meta: {
     alt: string;
@@ -140,13 +146,21 @@ export interface ImageContentBlock extends ContentBlock {
 }
 
 export interface AudioContentBlock extends ContentBlock {
-  type: 'audio';
+  type: "audio";
   content: string; // url
 }
 
 export interface EmbedContentBlock extends ContentBlock {
-  type: 'embed';
+  type: "embed";
   content: string; // url
+}
+
+export interface RevealContentBlock extends ContentBlock {
+  type: "reveal";
+  content: string;
+  meta: {
+    label: string;
+  };
 }
 
 export interface UploadedFileInfo {

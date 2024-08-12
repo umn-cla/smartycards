@@ -15,11 +15,7 @@
       />
       <p class="text-neutral-400 text-xs text-center">— or —</p>
       <div>
-        <Label
-          class="sr-only"
-          for="image-url"
-          >Audio Url</Label
-        >
+        <Label class="sr-only" for="image-url">Audio Url</Label>
         <Input
           :modelValue="modelValue"
           @update:modelValue="$emit('update:modelValue', $event as string)"
@@ -28,16 +24,9 @@
         />
       </div>
     </div>
-    <div
-      v-else
-      class="flex items-center justify-center"
-    >
+    <div v-else class="flex items-center justify-center">
       <div class="relative pt-2 pr-2">
-        <audio
-          controls
-          :src="modelValue"
-          class="block border-4 rounded-lg"
-        >
+        <audio controls :src="modelValue" class="block border-4 rounded-lg">
           Your browser does not support the
           <code>audio</code> element.
         </audio>
@@ -53,29 +42,29 @@
   </div>
 </template>
 <script setup lang="ts">
-import { ref } from 'vue';
-import * as api from '@/api';
-import { Label } from '@/components/ui/label';
-import { Input } from '@/components/ui/input';
-import vueFilePond from 'vue-filepond';
-import FilePondPluginFileValidateType from 'filepond-plugin-file-validate-type';
-import { IconX } from '../icons';
+import { ref } from "vue";
+import * as api from "@/api";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import vueFilePond from "vue-filepond";
+import FilePondPluginFileValidateType from "filepond-plugin-file-validate-type";
+import { IconX } from "../icons";
 
-import 'filepond/dist/filepond.min.css';
-import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.min.css';
+import "filepond/dist/filepond.min.css";
+import "filepond-plugin-image-preview/dist/filepond-plugin-image-preview.min.css";
 
 defineProps<{
   modelValue: string;
 }>();
 
 const emit = defineEmits<{
-  (event: 'update:modelValue', value: string): void;
+  (event: "update:modelValue", value: string): void;
 }>();
 
 const FilePond = vueFilePond(FilePondPluginFileValidateType);
 
 function handleFilePondInit() {
-  console.log('FilePond has initialized');
+  console.log("FilePond has initialized");
 }
 
 const myFiles = ref<string[]>([]);
@@ -91,13 +80,13 @@ async function handleProcessImage(
   load: any,
   _error: any,
   _progress: any,
-  abort: any
+  abort: any,
 ) {
   const fileInfo = await onFileChange(file);
 
   load(fileInfo.url);
 
-  emit('update:modelValue', fileInfo.url);
+  emit("update:modelValue", fileInfo.url);
 
   return { abort };
 }

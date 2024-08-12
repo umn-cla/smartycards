@@ -8,10 +8,7 @@
       :backTo="{ name: 'decks.show', params: { deckId: deckId } }"
       size="xs"
     >
-      <Button
-        asChild
-        variant="secondary"
-      >
+      <Button asChild variant="secondary">
         <RouterLink
           :to="{ name: 'decks.show', params: { deckId: props.deckId } }"
           class="flex gap-2 items-center"
@@ -22,27 +19,17 @@
     </PageHeader>
 
     <main>
-      <div
-        v-if="totalCards < 2"
-        class="text-center"
-      >
+      <div v-if="totalCards < 2" class="text-center">
         <p>You need at least 2 cards to practice.</p>
-        <Button
-          class="mt-4"
-          asChild
-        >
-          <RouterLink :to="`/decks/${deckId}/cards/create`"> Add a Card </RouterLink>
+        <Button class="mt-4" asChild>
+          <RouterLink :to="`/decks/${deckId}/cards/create`">
+            Add a Card
+          </RouterLink>
         </Button>
       </div>
-      <div
-        v-else-if="!state.activeCard"
-        class="text-center"
-      >
+      <div v-else-if="!state.activeCard" class="text-center">
         <p>You have completed this practice session.</p>
-        <Button
-          @click="initPracticeSession"
-          class="my-4"
-        >
+        <Button @click="initPracticeSession" class="my-4">
           Practice Again
         </Button>
       </div>
@@ -60,10 +47,7 @@
         />
 
         <div class="my-8">
-          <CardAttemptChoices
-            @answer="handleAnswer"
-            :card="state.activeCard"
-          />
+          <CardAttemptChoices @answer="handleAnswer" :card="state.activeCard" />
           <CardAttemptsSummary
             v-if="activeCardWithStats"
             :cardStats="activeCardWithStats"
@@ -74,16 +58,16 @@
   </AuthenticatedLayout>
 </template>
 <script setup lang="ts">
-import { computed, watch, reactive } from 'vue';
-import { AuthenticatedLayout } from '@/layouts/AuthenticatedLayout';
-import { useDeckByIdQuery } from '@/queries/decks';
-import * as T from '@/types';
-import CardSideView from '@/components/CardSideView.vue';
-import CardAttemptsSummary from '@/components/CardAttemptsSummary.vue';
-import CardAttemptChoices from '@/components/CardAttemptChoices.vue';
-import { Button } from '@/components/ui/button';
-import PageHeader from '@/components/PageHeader.vue';
-import { useCardStatsByIdQuery } from '@/queries/cards/useCardStatsByIdQuery';
+import { computed, watch, reactive } from "vue";
+import { AuthenticatedLayout } from "@/layouts/AuthenticatedLayout";
+import { useDeckByIdQuery } from "@/queries/decks";
+import * as T from "@/types";
+import { CardSideView } from "@/components/CardSideView";
+import CardAttemptsSummary from "@/components/CardAttemptsSummary.vue";
+import CardAttemptChoices from "@/components/CardAttemptChoices.vue";
+import { Button } from "@/components/ui/button";
+import PageHeader from "@/components/PageHeader.vue";
+import { useCardStatsByIdQuery } from "@/queries/cards/useCardStatsByIdQuery";
 
 const props = defineProps<{
   deckId: number;
@@ -91,8 +75,8 @@ const props = defineProps<{
 
 const state = reactive({
   activeCard: null as T.Card | null,
-  initialSideName: 'front' as SideName,
-  activeSideName: 'front' as SideName,
+  initialSideName: "front" as SideName,
+  activeSideName: "front" as SideName,
   cardsToPractice: [] as T.Card[],
   isShowingHint: false,
 });
@@ -106,12 +90,14 @@ const { data: activeCardWithStats } = useCardStatsByIdQuery(activeCardId);
 const cards = computed(() => deck.value?.cards ?? []);
 const totalCards = computed(() => cards.value.length);
 
-type SideName = 'front' | 'back';
+type SideName = "front" | "back";
 
-const activeCardSide = computed(() => state.activeCard?.[state.activeSideName] ?? null);
+const activeCardSide = computed(
+  () => state.activeCard?.[state.activeSideName] ?? null,
+);
 
 function getOppositeSideName(sideName: SideName): SideName {
-  return sideName === 'front' ? 'back' : 'front';
+  return sideName === "front" ? "back" : "front";
 }
 
 function toggleActiveSide() {
@@ -139,17 +125,20 @@ function getFuzzyReinsertIndex(score: number, length: number): number {
 
 function handleAnswer(score: number) {
   if (!state.activeCard) {
-    throw new Error('Cannot record score for a card that does not exist');
+    throw new Error("Cannot record score for a card that does not exist");
   }
 
   if (score === 3) {
     // remove the card from the deck
     state.cardsToPractice = state.cardsToPractice.filter(
-      (card) => card.id !== state.activeCard?.id
+      (card) => card.id !== state.activeCard?.id,
     );
   } else {
     // probably should do something more sophisticated here
-    const reinsertIndex = getFuzzyReinsertIndex(score, state.cardsToPractice.length);
+    const reinsertIndex = getFuzzyReinsertIndex(
+      score,
+      state.cardsToPractice.length,
+    );
     state.cardsToPractice.splice(reinsertIndex, 0, state.activeCard);
   }
 
