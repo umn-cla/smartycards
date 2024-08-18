@@ -18,11 +18,10 @@
     "vue-tsc": "vue-tsc --noEmit --skipLibCheck"
   },
   "dependencies": {
-    "@fontsource-variable/material-symbols-outlined": "^5.0.33",
-    "@fontsource-variable/rubik": "^5.0.22",
     "@headlessui/vue": "^1.7.22",
     "@radix-icons/vue": "^1.0.0",
     "@tanstack/vue-query": "^5.45.0",
+    "@umn-latis/cla-vue-template": "^1.2.0",
     "@vueuse/core": "^10.11.0",
     "axios": "^1.7.2",
     "class-variance-authority": "^0.7.0",
