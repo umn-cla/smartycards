@@ -1,5 +1,6 @@
 import TailwindCssForms from "@tailwindcss/forms";
 import animate from "tailwindcss-animate";
+import TailwindScrollbar from "tailwind-scrollbar";
 
 const umnColors = {
   maroon: {
@@ -165,7 +166,7 @@ const tailwindConfig = {
       },
     },
   },
-  plugins: [TailwindCssForms, animate],
+  plugins: [TailwindCssForms, animate, TailwindScrollbar],
 };
 
 export default tailwindConfig;
