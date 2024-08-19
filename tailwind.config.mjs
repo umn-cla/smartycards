@@ -1,5 +1,6 @@
 import TailwindCssForms from "@tailwindcss/forms";
 import animate from "tailwindcss-animate";
+import TailwindScrollbar from "tailwind-scrollbar";
 
 const umnColors = {
   maroon: {
@@ -34,11 +35,38 @@ const tailwindConfig = {
     },
     extend: {
       fontFamily: {
-        sans: ["Rubik Variable", "sans-serif"],
+        serif: ["viroqua", "serif"],
+        sans: ["proxima-soft", "sans-serif"],
+        cheesecake: ["cheesecake", "cursive"],
       },
       colors: {
         umn: umnColors,
-        brand: {},
+        brand: {
+          oatmeal: {
+            100: "#F8F0DF",
+            300: "#E7CAC0",
+            500: "#D6AA9B",
+          },
+          maroon: {
+            500: "#81001E", // umn maroon
+            600: "#700822",
+            700: "#530F20",
+            800: "#451022",
+            900: "#2F0A1F", // dark bg
+            950: "#1F0012", // text dark
+          },
+          gold: {
+            500: "#FFDE7A",
+          },
+          orange: {
+            500: "#DE3B04",
+          },
+          teal: {
+            700: "#09594D",
+            500: "#14917E",
+            300: "#27BEA7",
+          },
+        },
         background: {
           DEFAULT: "hsl(0 0% 98%)",
           dark: "hsl(0 0% 3.9%)",
@@ -138,7 +166,7 @@ const tailwindConfig = {
       },
     },
   },
-  plugins: [TailwindCssForms, animate],
+  plugins: [TailwindCssForms, animate, TailwindScrollbar],
 };
 
 export default tailwindConfig;

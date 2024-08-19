@@ -18,11 +18,10 @@
     "vue-tsc": "vue-tsc --noEmit --skipLibCheck"
   },
   "dependencies": {
-    "@fontsource-variable/material-symbols-outlined": "^5.0.33",
-    "@fontsource-variable/rubik": "^5.0.22",
     "@headlessui/vue": "^1.7.22",
     "@radix-icons/vue": "^1.0.0",
     "@tanstack/vue-query": "^5.45.0",
+    "@umn-latis/cla-vue-template": "^1.2.0",
     "@vueuse/core": "^10.11.0",
     "axios": "^1.7.2",
     "class-variance-authority": "^0.7.0",
@@ -64,6 +63,7 @@
     "prettier": "^3.2.5",
     "start-server-and-test": "^2.0.3",
     "tailwind-merge": "^2.3.0",
+    "tailwind-scrollbar": "^3.1.0",
     "tailwindcss": "^3.4.4",
     "tailwindcss-animate": "^1.0.7",
     "typescript": "~5.4.5",
