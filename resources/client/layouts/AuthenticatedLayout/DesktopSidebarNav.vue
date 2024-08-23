@@ -1,24 +1,17 @@
 <template>
   <div>
-    <div class="flex grow flex-col gap-y-5 overflow-y-auto bg-umn-maroon-900 px-6">
+    <div
+      class="flex grow flex-col gap-y-5 overflow-y-auto bg-brand-maroon-800 px-6"
+    >
       <div class="flex h-16 shrink-0 items-center gap-3">
-        <BlockMIcon class="h-5 text-umn-gold-700" />
+        <BlockMIcon class="h-5 text-brand-gold-500" />
         <span class="font-semibold text-white">SmartyCards</span>
       </div>
       <nav class="flex flex-1 flex-col">
-        <ul
-          role="list"
-          class="flex flex-1 flex-col gap-y-7"
-        >
+        <ul role="list" class="flex flex-1 flex-col gap-y-7">
           <li>
-            <ul
-              role="list"
-              class="-mx-2 space-y-1"
-            >
-              <li
-                v-for="item in navigation"
-                :key="item.name"
-              >
+            <ul role="list" class="-mx-2 space-y-1">
+              <li v-for="item in navigation" :key="item.name">
                 <RouterLink
                   :to="item.to"
                   activeClass="bg-umn-maroon-800 !text-white"
@@ -38,23 +31,14 @@
             </ul>
           </li>
           <li>
-            <NavDeckList
-              label="My Decks"
-              :decks="myDecks"
-            />
+            <NavDeckList label="My Decks" :decks="myDecks" />
           </li>
           <li>
-            <NavDeckList
-              label="Shared Decks"
-              :decks="sharedDecks"
-            />
+            <NavDeckList label="Shared Decks" :decks="sharedDecks" />
           </li>
 
           <li class="-mx-6 mt-auto">
-            <ProfileMenu
-              :currentUser="currentUser"
-              variant="full"
-            />
+            <ProfileMenu :currentUser="currentUser" variant="full" />
           </li>
         </ul>
       </nav>
@@ -62,10 +46,10 @@
   </div>
 </template>
 <script setup lang="ts">
-import * as T from '@/types';
-import ProfileMenu from '@/components/ProfileMenu.vue';
-import BlockMIcon from '@/components/icons/IconBlockM.vue';
-import NavDeckList from './NavDeckList.vue';
+import * as T from "@/types";
+import ProfileMenu from "@/components/ProfileMenu.vue";
+import BlockMIcon from "@/components/icons/IconBlockM.vue";
+import NavDeckList from "./NavDeckList.vue";
 
 defineProps<{
   currentUser: T.User;
