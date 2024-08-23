@@ -1,6 +1,6 @@
 <template>
   <section class="my-8 card-grid">
-    <h3 class="text-3xl font-bold text-black/25">{{ title }}</h3>
+    <h3 class="text-3xl font-bold text-brand-orange-500/75">{{ title }}</h3>
     <ul
       v-if="items.length"
       class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 my-4"

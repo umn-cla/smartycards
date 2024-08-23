@@ -1,12 +1,16 @@
 <template>
   <div>
     <div
-      class="flex grow flex-col gap-y-5 overflow-y-auto bg-brand-maroon-800 px-6"
+      class="flex grow flex-col gap-y-5 overflow-y-auto bg-gradient-to-b from-brand-maroon-800 to-brand-maroon-950 px-6"
     >
-      <div class="flex h-16 shrink-0 items-center gap-3">
-        <BlockMIcon class="h-5 text-brand-gold-500" />
-        <span class="font-semibold text-white">SmartyCards</span>
-      </div>
+      <RouterLink to="/" class="flex shrink-0 items-center gap-4 py-4">
+        <!-- <BlockMIcon class="h-5 text-brand-gold-500" /> -->
+        <img :src="SmartyFoxHead" alt="Smarty Fox Head" class="h-12 w-12" />
+        <span
+          class="text-brand-gold-500 font-black text-2xl font-serif tracking-wide translate-y-1"
+          >Smarty Cards</span
+        >
+      </RouterLink>
       <nav class="flex flex-1 flex-col">
         <ul role="list" class="flex flex-1 flex-col gap-y-7">
           <li>
@@ -50,6 +54,7 @@ import * as T from "@/types";
 import ProfileMenu from "@/components/ProfileMenu.vue";
 import BlockMIcon from "@/components/icons/IconBlockM.vue";
 import NavDeckList from "./NavDeckList.vue";
+import SmartyFoxHead from "@/assets/smartyfox-head.svg";
 
 defineProps<{
   currentUser: T.User;

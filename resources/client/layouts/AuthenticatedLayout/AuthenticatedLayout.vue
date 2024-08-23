@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen">
+  <div class="min-h-screen bg-brand-oatmeal-50">
     <MobileSidebarNav
       v-model:isSidebarOpen="isSidebarOpen"
       :navigation="navigation"

@@ -1,13 +1,13 @@
 <template>
   <AuthenticatedLayout>
     <main class="max-w-screen-lg mx-auto">
-      <PageHeader title="Decks" size="lg"> </PageHeader>
+      <PageHeader title="Decks" size="lg" />
 
       <CardGrid title="My Decks" :items="myDecks" key="id">
         <template #prepend>
           <RouterLink
             :to="{ name: 'decks.create' }"
-            class="bg-black/2 flex w-full h-full items-center justify-center rounded-xl flex-col gap-2 border-2 border-dashed border-black/10 px-4 py-8 hover:bg-brand-oatmeal-100 transition-colors"
+            class="bg-black/2 flex w-full h-full items-center justify-center rounded-xl flex-col gap-2 border-2 border-dashed border-black/10 px-4 py-8 hover:bg-brand-teal-300/10 transition-colors hover:text-brand-teal-500"
           >
             <IconPlusFilled class="w-6 h-6" />
             <span>Create Deck</span>

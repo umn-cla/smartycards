@@ -1,7 +1,7 @@
 <template>
   <RouterLink
     :to="`/decks/${deck.id}`"
-    class="h-full w-full p-2 rounded-xl border-[0.66rem] border-brand-gold-500 bg-brand-gold-500/50 flex flex-col gap-4"
+    class="h-full w-full p-2 pt-1 rounded-xl border-[0.66rem] border-brand-gold-500 bg-brand-gold-500/50 flex flex-col gap-4"
     :class="{
       'shadow-solid-gold-1px translate-y-[-1px]':
         1 <= cardCount && cardCount < 3,
@@ -10,20 +10,22 @@
       'shadow-solid-gold-3 -translate-y-3': 9 <= cardCount,
     }"
   >
-    <aside class="flex justify-end">
+    <aside class="flex justify-end translate-x-2">
       <MoreDeckActions :deck="deck" />
     </aside>
-    <div class="items-center justify-center flex flex-col flex-1">
-      <h3 class="font-bold text-xl text-neutral-900">
+    <div
+      class="items-center justify-center flex flex-col flex-1 font-serif text-center"
+    >
+      <h3 class="font-bold text-2xl text-neutral-900">
         {{ deck.name }}
       </h3>
-      <h4 class="font-bold text-xl text-neutral-900/50" v-if="deck.description">
+      <h4 class="font-bold text-lg text-neutral-900/30" v-if="deck.description">
         {{ deck.description }}
       </h4>
     </div>
 
     <footer
-      class="flex gap-4 justify-end items-center flex-wrap text-xs text-neutral-900/50 py-2"
+      class="flex gap-4 justify-end items-center flex-wrap text-xs text-neutral-900/50 pt-2"
     >
       <p class="text-">
         {{ deck.cards_count }} cards
