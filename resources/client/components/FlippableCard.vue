@@ -1,7 +1,7 @@
 <template>
   <div class="flex items-center gap-4 text-brand-maroon-950">
     <div
-      class="relative w-[340px] aspect-[2/3] perspective"
+      class="relative min-w-56 w-full h-80 perspective"
       @click="isShowingBack = !isShowingBack"
     >
       <div

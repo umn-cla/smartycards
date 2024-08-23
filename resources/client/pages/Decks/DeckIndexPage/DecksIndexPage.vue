@@ -1,6 +1,6 @@
 <template>
   <AuthenticatedLayout>
-    <main class="max-w-screen-lg mx-auto">
+    <main>
       <PageHeader title="Decks" size="lg" />
 
       <CardGrid title="My Decks" :items="myDecks" key="id">

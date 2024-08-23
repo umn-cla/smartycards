@@ -41,6 +41,25 @@
         </Button>
       </header>
 
+      <CardGrid title="Cards" :items="deck.cards">
+        <template #prepend>
+          <RouterLink
+            :to="{ name: 'cards.create' }"
+            class="bg-brand-oatmeal-100/30 flex w-full h-full items-center justify-center rounded-xl flex-col gap-2 border-2 border-dashed border-black/10 px-4 py-8 hover:bg-brand-teal-300/10 transition-colors hover:text-brand-teal-500"
+          >
+            <IconPlusFilled class="w-6 h-6" />
+            <span>Create Card</span>
+          </RouterLink>
+        </template>
+
+        <template v-slot="{ item: card }">
+          <FlippableCard :front="card.front" :back="card.back" />
+          <CardStats :card="card" class="flex-1 mt-4" />
+
+          <!-- <DeckListItem :deck="deck" class="sm:min-h-80" /> -->
+        </template>
+      </CardGrid>
+
       <ul v-if="deck.cards?.length" class="flex gap-4 flex-col">
         <li v-for="card in deck.cards" :key="card.id" class="flex gap-2">
           <template v-for="sideName in ['front', 'back']" :key="sideName">
@@ -97,6 +116,10 @@ import ColHeader from "@/components/ColHeader.vue";
 import { Button } from "@/components/ui/button";
 import MoreDeckActions from "./DeckIndexPage/MoreDeckActions.vue";
 import PageHeader from "@/components/PageHeader.vue";
+import CardGrid from "@/components/CardGrid.vue";
+import FlippableCard from "@/components/FlippableCard.vue";
+import { PlusCircledIcon } from "@radix-icons/vue";
+import IconPlusFilled from "@/components/icons/IconPlusFilled.vue";
 
 const props = defineProps<{
   deckId: number;

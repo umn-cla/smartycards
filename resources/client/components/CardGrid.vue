@@ -1,9 +1,11 @@
 <template>
   <section class="my-8 card-grid">
-    <h3 class="text-3xl font-bold text-brand-orange-500/75">{{ title }}</h3>
+    <h3 v-if="title" class="text-3xl font-bold text-brand-orange-500/75">
+      {{ title }}
+    </h3>
     <ul
       v-if="items.length"
-      class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 my-4"
+      class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4 my-4"
     >
       <li v-if="$slots.prepend" class="prepend-item">
         <slot name="prepend" />
@@ -23,13 +25,14 @@ import { CSSClass } from "@/types";
 
 withDefaults(
   defineProps<{
-    title: string;
+    title?: string;
     items: T[];
     // key in T generic
     key?: string;
     fallback?: string;
   }>(),
   {
+    title: "",
     key: "id",
     fallback: "No items found",
   },
