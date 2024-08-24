@@ -4,10 +4,8 @@
       class="flex grow flex-col gap-y-5 overflow-y-auto bg-gradient-to-b from-brand-maroon-800 to-brand-maroon-950 px-6"
     >
       <RouterLink to="/" class="flex shrink-0 items-center gap-4 py-4">
-        <!-- <BlockMIcon class="h-5 text-brand-gold-500" /> -->
-        <img :src="SmartyFoxHead" alt="Smarty Fox Head" class="h-12 w-12" />
-        <span
-          class="text-brand-gold-500 font-black text-2xl font-serif tracking-wide translate-y-1"
+        <BlockMIcon class="h-5 text-brand-gold-500" />
+        <span class="text-brand-oatmeal-50 font-black text-lg tracking-wide"
           >Smarty Cards</span
         >
       </RouterLink>
