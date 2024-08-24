@@ -1,5 +1,6 @@
 <template>
-  <div class="bg-black/5 rounded-lg p-4 flex flex-col gap-4 font-serif text-xl">
+  <div class="rounded-lg p-2 flex flex-col gap-4 font-serif text-xl">
+    <slot name="prepend" />
     <div
       class="flex items-center justify-center flex-col gap-4 flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-black/10 scrollbar-track-transparent"
     >
@@ -29,7 +30,7 @@
         />
       </template>
     </div>
-    <slot />
+    <slot name="append" />
   </div>
 </template>
 <script setup lang="ts">

@@ -1,6 +1,7 @@
 import TailwindCssForms from "@tailwindcss/forms";
 import animate from "tailwindcss-animate";
 import TailwindScrollbar from "tailwind-scrollbar";
+import colors from "tailwindcss/colors";
 
 const umnColors = {
   maroon: {
@@ -14,6 +15,36 @@ const umnColors = {
     300: "#ffde7a",
     500: "#ffcc33", // Official UMN Gold
     700: "#ffb71e",
+  },
+};
+
+const brandColors = {
+  oatmeal: {
+    50: "#fffbf3",
+    100: "#F8F0DF",
+    300: "#E7CAC0",
+    500: "#D6AA9B",
+  },
+  maroon: {
+    500: "#81001E", // umn maroon
+    600: "#700822",
+    700: "#530F20",
+    800: "#451022",
+    900: "#2F0A1F", // dark bg
+    950: "#1F0012", // text dark
+  },
+  gold: {
+    500: "#FFDE7A",
+    shadow: "#eacb6b",
+  },
+  orange: {
+    500: "#DE3B04",
+  },
+  teal: {
+    700: "#09594D",
+    500: "#14917E",
+    300: "#27BEA7",
+    shadow: "#09594D",
   },
 };
 
@@ -38,35 +69,21 @@ const tailwindConfig = {
         serif: ["viroqua", "serif"],
         sans: ["proxima-soft", "sans-serif"],
         cheesecake: ["cheesecake", "cursive"],
+        dreamboat: ["dreamboat", "cursive"],
+      },
+      boxShadow: {
+        "solid-gold-1px": `0 1px 0 0 ${brandColors.gold.shadow}`,
+        "solid-gold-1": `0 0.25rem 0 0 ${brandColors.gold.shadow}`,
+        "solid-gold-2": `0 0.5rem 0 0 ${brandColors.gold.shadow}`,
+        "solid-gold-3": `0 0.75rem 0 0 ${brandColors.gold.shadow}`,
+        "solid-gold-4": `0 1rem 0 0 ${brandColors.gold.shadow}`,
+        "solid-teal-2": `0 0.5rem 0 0 ${brandColors.teal.shadow}`,
       },
       colors: {
+        "black/1": "hsla(0,0%,0%,0.01)",
+        "black/2": "hsla(0,0%,0%,0.02)",
         umn: umnColors,
-        brand: {
-          oatmeal: {
-            100: "#F8F0DF",
-            300: "#E7CAC0",
-            500: "#D6AA9B",
-          },
-          maroon: {
-            500: "#81001E", // umn maroon
-            600: "#700822",
-            700: "#530F20",
-            800: "#451022",
-            900: "#2F0A1F", // dark bg
-            950: "#1F0012", // text dark
-          },
-          gold: {
-            500: "#FFDE7A",
-          },
-          orange: {
-            500: "#DE3B04",
-          },
-          teal: {
-            700: "#09594D",
-            500: "#14917E",
-            300: "#27BEA7",
-          },
-        },
+        brand: brandColors,
         background: {
           DEFAULT: "hsl(0 0% 98%)",
           dark: "hsl(0 0% 3.9%)",

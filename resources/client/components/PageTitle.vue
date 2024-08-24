@@ -1,7 +1,7 @@
 <template>
   <component
     :is="as"
-    class="font-bold text-neutral-900"
+    class="font-bold text-brand-maroon-950"
     :class="{
       'text-5xl lg:text-6xl': size === 'lg',
       'text-4xl lg:text-5xl': size === 'default',
@@ -15,13 +15,13 @@
 <script setup lang="ts">
 withDefaults(
   defineProps<{
-    size?: 'lg' | 'default' | 'sm' | 'xs';
+    size?: "lg" | "default" | "sm" | "xs";
     as?: string;
   }>(),
   {
-    size: 'default',
-    as: 'h2',
-  }
+    size: "default",
+    as: "h2",
+  },
 );
 </script>
 <style scoped></style>

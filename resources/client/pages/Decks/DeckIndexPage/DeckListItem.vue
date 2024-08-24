@@ -1,54 +1,59 @@
 <template>
-  <li class="flex gap-1 items-stretch">
-    <RouterLink
-      :to="`/decks/${deck.id}`"
-      class="flex-1"
+  <div
+    :to="`/decks/${deck.id}`"
+    class="h-full w-full p-2 pt-1 rounded-xl bg-brand-gold-500/50 flex flex-col gap-4"
+    :class="{
+      'shadow-solid-gold-1px translate-y-[-1px]':
+        1 <= cardCount && cardCount < 3,
+      'shadow-solid-gold-1 -translate-y-1': 3 <= cardCount && cardCount < 6,
+      'shadow-solid-gold-2 -translate-y-2': 6 <= cardCount && cardCount < 9,
+      'shadow-solid-gold-3 -translate-y-3': 9 <= cardCount,
+    }"
+  >
+    <aside class="flex justify-end translate-x-2">
+      <MoreDeckActions :deck="deck" />
+    </aside>
+    <div
+      class="items-center justify-center flex flex-col flex-1 font-serif text-center"
     >
-      <div class="bg-black/5 p-4 rounded-lg flex gap-4 items-start h-full">
-        <div class="flex-1">
-          <h3 class="font-bold text-xl text-neutral-900">
-            {{ deck.name }}
-          </h3>
-          <h4
-            class="font-bold text-xl text-black/30"
-            v-if="deck.description"
-          >
-            {{ deck.description }}
-          </h4>
-
-          <p class="text-sm">
-            {{ deck.cards_count }} cards
-            <span v-if="deck.memberships_count && deck.memberships_count > 1">
-              • You + {{ deck.memberships_count - 1 }} members
-            </span>
-          </p>
-        </div>
-
-        <MoreDeckActions :deck="deck" />
-      </div>
-    </RouterLink>
-
-    <!-- stats -->
-    <div class="flex flex-col gap-2 border rounded-lg py-2 px-4">
-      <Tuple label="Last Practiced">
-        {{ lastAttemptedAtTimeAgo ?? '-' }}
-      </Tuple>
-      <Tuple label="Avg Score">
-        {{ deck.avg_score?.toFixed(2) ?? '-' }}
-      </Tuple>
+      <h3 class="font-bold text-xl text-neutral-900">
+        {{ deck.name }}
+      </h3>
+      <h4 class="font-bold text-neutral-900/50" v-if="deck.description">
+        {{ deck.description }}
+      </h4>
     </div>
-  </li>
+
+    <footer
+      class="flex gap-4 justify-center items-center flex-wrap text-xs text-neutral-900/50 pt-2"
+    >
+      <p class="text-">
+        {{ deck.cards_count }} cards
+        <span v-if="deck.memberships_count && deck.memberships_count > 1">
+          • You + {{ deck.memberships_count - 1 }} members
+        </span>
+      </p>
+    </footer>
+    <Button asChild variant="secondary">
+      <RouterLink :to="`/decks/${deck.id}`">
+        <IconArrowRight class="w-5 h-5" />
+      </RouterLink>
+    </Button>
+  </div>
 </template>
 
 <script setup lang="ts">
-import * as T from '@/types';
-import Tuple from '@/components/Tuple.vue';
-import { useTimeAgo } from '@vueuse/core';
-import MoreDeckActions from './MoreDeckActions.vue';
+import * as T from "@/types";
+import { useTimeAgo } from "@vueuse/core";
+import MoreDeckActions from "./MoreDeckActions.vue";
+import { computed } from "vue";
+import { IconArrowRight } from "@/components/icons";
+import { Button } from "@/components/ui/button";
 
 const props = defineProps<{
   deck: T.Deck;
 }>();
 
 const lastAttemptedAtTimeAgo = useTimeAgo(() => props.deck.last_attempted_at);
+const cardCount = computed(() => props.deck.cards_count ?? 0);
 </script>

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="min-h-screen bg-brand-oatmeal-100">
     <MobileSidebarNav
       v-model:isSidebarOpen="isSidebarOpen"
       :navigation="navigation"
@@ -31,21 +31,21 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue';
-import { IconDeck } from '@/components/icons';
-import DesktopSidebarNav from './DesktopSidebarNav.vue';
-import MobileSidebarNav from './MobileSidebarNav.vue';
-import AppBar from './AppBar.vue';
-import { useAuthQuery } from '@/queries/auth';
-import { useAllDecksQuery } from '@/queries/decks';
-import * as T from '@/types';
+import { computed, ref } from "vue";
+import { IconDeck } from "@/components/icons";
+import DesktopSidebarNav from "./DesktopSidebarNav.vue";
+import MobileSidebarNav from "./MobileSidebarNav.vue";
+import AppBar from "./AppBar.vue";
+import { useAuthQuery } from "@/queries/auth";
+import { useAllDecksQuery } from "@/queries/decks";
+import * as T from "@/types";
 
-console.log('AuthenticatedLayout');
+console.log("AuthenticatedLayout");
 
 const navigation: T.NavMenuItem[] = [
   {
-    name: 'All Decks',
-    to: { name: 'decks.index' },
+    name: "All Decks",
+    to: { name: "decks.index" },
     icon: IconDeck,
   },
 ];
@@ -55,10 +55,14 @@ const { data: currentUser } = useAuthQuery();
 const { data: decks } = useAllDecksQuery();
 
 const myDecks = computed((): T.Deck[] => {
-  return decks.value?.filter((deck) => deck.current_user_role === 'owner') ?? [];
+  return (
+    decks.value?.filter((deck) => deck.current_user_role === "owner") ?? []
+  );
 });
 
 const sharedDecks = computed((): T.Deck[] => {
-  return decks.value?.filter((deck) => deck.current_user_role !== 'owner') ?? [];
+  return (
+    decks.value?.filter((deck) => deck.current_user_role !== "owner") ?? []
+  );
 });
 </script>

@@ -19,41 +19,47 @@
     </PageHeader>
 
     <main>
-      <div v-if="totalCards < 2" class="text-center">
-        <p>You need at least 2 cards to practice.</p>
-        <Button class="mt-4" asChild>
-          <RouterLink :to="`/decks/${deckId}/cards/create`">
-            Add a Card
-          </RouterLink>
-        </Button>
-      </div>
-      <div v-else-if="!state.activeCard" class="text-center">
-        <p>You have completed this practice session.</p>
-        <Button @click="initPracticeSession" class="my-4">
-          Practice Again
-        </Button>
-      </div>
-
-      <div v-else>
-        <CardSideView
-          v-if="activeCardSide"
-          :side="activeCardSide"
-          class="h-[50dvh] portrait:aspect-[2/3] landscape:aspect-[3/2] mx-auto"
-          :class="{
-            'bg-black/50 text-white': state.activeSideName === 'back',
-          }"
-          @click="toggleActiveSide"
-          :cardLabel="state.activeSideName"
-        />
-
-        <div class="my-8">
-          <CardAttemptChoices @answer="handleAnswer" :card="state.activeCard" />
-          <CardAttemptsSummary
-            v-if="activeCardWithStats"
-            :cardStats="activeCardWithStats"
-          />
+      <Transition name="fade" mode="out-in">
+        <div v-if="isDeckLoading" class="text-center">...</div>
+        <div v-else-if="totalCards < 2" class="text-center">
+          <p>You need at least 2 cards to practice.</p>
+          <Button class="mt-4" asChild>
+            <RouterLink :to="`/decks/${deckId}/cards/create`">
+              Add a Card
+            </RouterLink>
+          </Button>
         </div>
-      </div>
+        <div v-else-if="!state.activeCard" class="text-center">
+          <p>You have completed this practice session.</p>
+          <Button @click="initPracticeSession" class="my-4">
+            Practice Again
+          </Button>
+        </div>
+
+        <div v-else class="overflow-hidden">
+          <FlippableCard
+            :front="state.isTransitiongToNext ? [] : state.activeCard?.front"
+            :back="state.isTransitiongToNext ? [] : state.activeCard?.back"
+            :initialSide="state.initialSideName"
+            class="w-60 mx-auto transition-all duration-500"
+            :class="{
+              'opacity-0 translate-x-[100vw]': state.isTransitiongToNext,
+              'opacity-100': !state.isTransitiongToNext,
+            }"
+          />
+
+          <div class="my-8">
+            <CardAttemptChoices
+              @answer="handleAnswer"
+              :card="state.activeCard"
+            />
+            <CardAttemptsSummary
+              v-if="activeCardWithStats"
+              :cardStats="activeCardWithStats"
+            />
+          </div>
+        </div>
+      </Transition>
     </main>
   </AuthenticatedLayout>
 </template>
@@ -68,6 +74,7 @@ import CardAttemptChoices from "@/components/CardAttemptChoices.vue";
 import { Button } from "@/components/ui/button";
 import PageHeader from "@/components/PageHeader.vue";
 import { useCardStatsByIdQuery } from "@/queries/cards/useCardStatsByIdQuery";
+import FlippableCard from "@/components/FlippableCard.vue";
 
 const props = defineProps<{
   deckId: number;
@@ -79,30 +86,19 @@ const state = reactive({
   activeSideName: "front" as SideName,
   cardsToPractice: [] as T.Card[],
   isShowingHint: false,
+  isTransitiongToNext: false,
 });
 
 const deckIdRef = computed(() => props.deckId);
 const activeCardId = computed(() => state.activeCard?.id ?? null);
 
-const { data: deck } = useDeckByIdQuery(deckIdRef);
+const { data: deck, isLoading: isDeckLoading } = useDeckByIdQuery(deckIdRef);
 const { data: activeCardWithStats } = useCardStatsByIdQuery(activeCardId);
 
 const cards = computed(() => deck.value?.cards ?? []);
 const totalCards = computed(() => cards.value.length);
 
 type SideName = "front" | "back";
-
-const activeCardSide = computed(
-  () => state.activeCard?.[state.activeSideName] ?? null,
-);
-
-function getOppositeSideName(sideName: SideName): SideName {
-  return sideName === "front" ? "back" : "front";
-}
-
-function toggleActiveSide() {
-  state.activeSideName = getOppositeSideName(state.activeSideName);
-}
 
 function shuffleCards(cards: T.Card[]): T.Card[] {
   return [...cards].sort(() => Math.random() - 0.5);
@@ -142,8 +138,16 @@ function handleAnswer(score: number) {
     state.cardsToPractice.splice(reinsertIndex, 0, state.activeCard);
   }
 
+  // reset the side
+  state.isTransitiongToNext = true;
+
   // then advance to the next card
   state.activeCard = state.cardsToPractice.shift() ?? null;
+
+  // after animation is complete, show the initial side
+  setTimeout(() => {
+    state.isTransitiongToNext = false;
+  }, 500);
 }
 
 function initPracticeSession() {

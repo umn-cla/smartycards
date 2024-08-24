@@ -38,7 +38,7 @@ const router = createRouter({
     {
       path: "/decks/:deckId",
       name: "decks.show",
-      component: () => import("../pages/Decks/DeckShowPage.vue"),
+      component: () => import("../pages/Decks/DeckShowPage/DeckShowPage.vue"),
       props: (route) => ({
         deckId: Number(route.params.deckId),
       }),

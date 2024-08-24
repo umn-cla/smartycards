@@ -1,36 +1,34 @@
 <template>
   <div class="flex items-center gap-4 text-brand-maroon-950">
-    <div
-      class="relative w-[340px] aspect-[2/3] perspective"
-      @click="isShowingBack = !isShowingBack"
-    >
+    <div class="relative min-w-56 w-full h-80 perspective">
       <div
         :class="{ 'rotate-y-180': isShowingBack }"
         class="relative w-full h-full transition-transform duration-500 transform-style-preserve-3d"
       >
         <CardSideView
-          label="Front"
-          :side="front"
-          class="absolute w-full h-full backface-hidden bg-brand-oatmeal-100 color-maroon-950"
+          v-for="(side, index) in [front, back]"
+          :key="index"
+          :label="index ? 'Back' : 'Front'"
+          :side="side"
+          class="absolute w-full h-full backface-hidden color-maroon-950"
+          :class="{
+            'bg-brand-oatmeal-50': index === 0,
+            'rotate-y-180 bg-brand-gold-500': index === 1,
+          }"
         >
-          <Button
-            variant="ghost"
-            class="bg-black/5 hover:bg-black/10 uppercase text-xs tracking-wider text-brand-maroon-950 font-sans"
-          >
-            Flip
-          </Button>
-        </CardSideView>
-        <CardSideView
-          label="Back"
-          :side="back"
-          class="absolute w-full h-full backface-hidden bg-brand-gold-500 color-maroon-950 rotate-y-180"
-        >
-          <Button
-            variant="ghost"
-            class="bg-black/5 hover:bg-black/10 uppercase text-xs tracking-wider text-brand-maroon-950 font-sans"
-          >
-            Flip
-          </Button>
+          <template #prepend>
+            <slot name="prepend" />
+          </template>
+          <template #append>
+            <slot name="append" />
+            <Button
+              variant="ghost"
+              class="bg-black/5 hover:bg-black/10 uppercase text-xs tracking-wider text-brand-maroon-950 font-sans"
+              @click="isShowingBack = !isShowingBack"
+            >
+              Flip
+            </Button>
+          </template>
         </CardSideView>
       </div>
     </div>
@@ -39,7 +37,7 @@
 
 <script setup lang="ts">
 import { CardSideView } from "@/components/CardSideView";
-import { ref } from "vue";
+import { ref, watch } from "vue";
 import { CardSide } from "@/types";
 import { Button } from "@/components/ui/button";
 
@@ -50,6 +48,11 @@ const props = defineProps<{
 }>();
 
 const isShowingBack = ref(props.initialSide === "back" ?? false);
+
+// if the sides change, reset the initial side
+watch([() => props.front, () => props.back], () => {
+  isShowingBack.value = props.initialSide === "back";
+});
 </script>
 
 <style scoped>

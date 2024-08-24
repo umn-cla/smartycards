@@ -1,5 +1,5 @@
 <template>
-  <div class="">
+  <div>
     <Label class="text-sm text-neutral-400">{{ label }}</Label>
 
     <BlockEditor
@@ -10,9 +10,9 @@
   </div>
 </template>
 <script setup lang="ts">
-import * as T from '@/types';
-import { BlockEditor } from '@/components/BlockEditor';
-import { Label } from '@/components/ui/label';
+import * as T from "@/types";
+import { BlockEditor } from "@/components/BlockEditor";
+import { Label } from "@/components/ui/label";
 
 defineProps<{
   label: string;
@@ -20,7 +20,7 @@ defineProps<{
 }>();
 
 const emit = defineEmits<{
-  (event: 'update:modelValue', value: T.ContentBlock[]): void;
+  (event: "update:modelValue", value: T.ContentBlock[]): void;
 }>();
 </script>
 <style scoped></style>

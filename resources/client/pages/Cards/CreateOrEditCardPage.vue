@@ -14,7 +14,7 @@
       <Transition name="fade">
         <div v-if="deck">
           <header
-            class="mb-8 flex gap-8 flex-wrap justify-between items-start sticky top-0 bg-white z-10"
+            class="mb-8 flex gap-8 flex-wrap justify-between items-start sticky top-0 z-10"
           >
             <div>
               <PageTitle>{{ isCreateMode ? "Create" : "Edit" }} Card</PageTitle>
@@ -34,31 +34,17 @@
           </header>
 
           <div class="my-4 grid sm:grid-cols-2 gap-4">
-            <div>
+            <div v-for="side in ['front', 'back']">
               <CardSideInput
-                :id="`${deckId}-front`"
-                v-model="form.front"
-                label="Front"
+                :id="`${deckId}-${side}`"
+                v-model="form[side]"
+                :label="capitalize(side)"
               />
               <p
                 class="text-sm text-red-500"
-                v-show="hasAttemptedSave && errors.front"
+                v-show="hasAttemptedSave && errors[side]"
               >
-                {{ errors.front }}
-              </p>
-            </div>
-
-            <div>
-              <CardSideInput
-                :id="`${deckId}-back`"
-                v-model="form.back"
-                label="Back"
-              />
-              <p
-                class="text-sm text-red-500"
-                v-show="hasAttemptedSave && errors.back"
-              >
-                {{ errors.back }}
+                {{ errors[side] }}
               </p>
             </div>
           </div>
@@ -69,7 +55,7 @@
 </template>
 <script setup lang="ts">
 import { AuthenticatedLayout } from "@/layouts/AuthenticatedLayout";
-import { computed, reactive, watch, ref, onMounted } from "vue";
+import { computed, reactive, watch, ref, onMounted, capitalize } from "vue";
 import {
   useUpdateCardMutation,
   useCreateCardMutation,

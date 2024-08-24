@@ -1,28 +1,27 @@
 <template>
   <DropdownMenu>
     <DropdownMenuTrigger asChild>
-      <Button
-        variant="ghost"
-        size="icon"
-      >
+      <Button variant="ghost" size="icon">
         <IconEllipsesVertical />
         <span class="sr-only">More</span>
       </Button>
     </DropdownMenuTrigger>
     <DropdownMenuContent align="end">
-      <DropdownMenuItem
-        asChild
-        v-if="deck.capabilities.canUpdate"
-      >
+      <DropdownMenuItem asChild>
+        <RouterLink
+          :to="{ name: 'decks.practice', params: { deckId: deck.id } }"
+        >
+          <IconCirclePlay class="size-5 mr-4" />
+          Practice
+        </RouterLink>
+      </DropdownMenuItem>
+      <DropdownMenuItem asChild v-if="deck.capabilities.canUpdate">
         <RouterLink :to="{ name: 'decks.edit', params: { deckId: deck.id } }">
           <IconPencil class="size-5 mr-4" />
           Edit Name
         </RouterLink>
       </DropdownMenuItem>
-      <DropdownMenuItem
-        asChild
-        v-if="deck.capabilities.canUpdate"
-      >
+      <!-- <DropdownMenuItem asChild v-if="deck.capabilities.canUpdate">
         <RouterLink
           :to="{ name: 'decks.import', params: { deckId: deck.id } }"
           class="btn"
@@ -31,7 +30,7 @@
           <IconUpload class="size-5 mr-4" />
           Import Cards
         </RouterLink>
-      </DropdownMenuItem>
+      </DropdownMenuItem> -->
       <DropdownMenuItem
         v-if="deck.capabilities.canLeave"
         @click="() => leaveDeck(deck.id)"
@@ -68,8 +67,8 @@
     variant="danger"
   >
     <p>
-      Are you sure you want to delete this deck? All members will lose access. This cannot be
-      undone.
+      Are you sure you want to delete this deck? All members will lose access.
+      This cannot be undone.
     </p>
   </Modal>
 </template>
@@ -80,20 +79,21 @@ import {
   IconExit,
   IconTrash,
   IconUpload,
-} from '@/components/icons';
+  IconCirclePlay,
+} from "@/components/icons";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { Button } from '@/components/ui/button';
-import * as T from '@/types';
-import { useDeleteDeckMutation } from '@/queries/decks';
-import { useLeaveDeckMutation } from '@/queries/deckMemberships';
-import Modal from '@/components/Modal.vue';
-import { reactive } from 'vue';
-import { useRouter } from 'vue-router';
+} from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
+import * as T from "@/types";
+import { useDeleteDeckMutation } from "@/queries/decks";
+import { useLeaveDeckMutation } from "@/queries/deckMemberships";
+import Modal from "@/components/Modal.vue";
+import { reactive } from "vue";
+import { useRouter } from "vue-router";
 
 defineProps<{
   deck: T.Deck;
