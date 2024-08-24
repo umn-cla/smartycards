@@ -1,6 +1,6 @@
 <template>
   <AuthenticatedLayout>
-    <PageHeader
+    <!-- <PageHeader
       v-if="deck"
       :title="'Practice'"
       :subtitle="deck.name"
@@ -8,16 +8,40 @@
       :backTo="{ name: 'decks.show', params: { deckId: deckId } }"
       size="xs"
     >
-      <Button asChild variant="secondary">
-        <RouterLink
-          :to="{ name: 'decks.show', params: { deckId: props.deckId } }"
-          class="flex gap-2 items-center"
-        >
-          End Practice
-        </RouterLink>
-      </Button>
-    </PageHeader>
+    </PageHeader> -->
 
+    <header
+      class="flex mb-6 justify-center items-center flex-col border border-black/10 px-4 py-3 rounded-lg mx-auto max-w-screen-sm"
+      v-if="deck"
+    >
+      <h1 class="font-bold text-neutral-900 text-lg">{{ deck?.name }}</h1>
+      <h2 class="text-black/50 text-sm" v-if="deck.description">
+        {{ deck?.description }}
+      </h2>
+      <div class="flex items-center justify-between mt-4 w-full">
+        <div class="flex gap-4 items-start">
+          <Tuple label="Attempts">
+            {{ activeCardWithStats?.attempts_count || "-" }}
+          </Tuple>
+          <Tuple label="Difficulty">
+            <ScoreDotsSvg
+              v-if="activeCardWithStats?.avg_score"
+              :score="activeCardWithStats?.avg_score"
+              class="mt-2 ml-auto"
+            />
+            <span v-else>New</span>
+          </Tuple>
+        </div>
+        <Button asChild variant="secondary">
+          <RouterLink
+            :to="{ name: 'decks.show', params: { deckId: props.deckId } }"
+            class="flex gap-2 items-center"
+          >
+            End Practice
+          </RouterLink>
+        </Button>
+      </div>
+    </header>
     <main>
       <Transition name="fade" mode="out-in">
         <div v-if="isDeckLoading" class="text-center">...</div>
@@ -53,10 +77,6 @@
               @answer="handleAnswer"
               :card="state.activeCard"
             />
-            <CardAttemptsSummary
-              v-if="activeCardWithStats"
-              :cardStats="activeCardWithStats"
-            />
           </div>
         </div>
       </Transition>
@@ -68,13 +88,12 @@ import { computed, watch, reactive } from "vue";
 import { AuthenticatedLayout } from "@/layouts/AuthenticatedLayout";
 import { useDeckByIdQuery } from "@/queries/decks";
 import * as T from "@/types";
-import { CardSideView } from "@/components/CardSideView";
-import CardAttemptsSummary from "@/components/CardAttemptsSummary.vue";
 import CardAttemptChoices from "@/components/CardAttemptChoices.vue";
 import { Button } from "@/components/ui/button";
-import PageHeader from "@/components/PageHeader.vue";
 import { useCardStatsByIdQuery } from "@/queries/cards/useCardStatsByIdQuery";
 import FlippableCard from "@/components/FlippableCard.vue";
+import Tuple from "@/components/Tuple.vue";
+import ScoreDotsSvg from "@/components/ScoreDotsSvg.vue";
 
 const props = defineProps<{
   deckId: number;

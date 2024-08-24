@@ -22,7 +22,7 @@
       :currentUser="currentUser"
     />
 
-    <main class="py-10 lg:pl-72">
+    <main class="pt-6 sm:py-10 lg:pl-72">
       <div class="px-4 sm:px-6 lg:px-8">
         <slot />
       </div>
