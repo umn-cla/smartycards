@@ -36,15 +36,13 @@
 <script setup lang="ts">
 import { computed } from "vue";
 const props = defineProps<{
-  score: number;
+  score: number; // decimal between 0 and 3
 }>();
 
 const circleRadius = 12;
-const totalCircles = 3;
+const totalCircles = 5;
 
-const rectWidthPercent = computed(
-  () => (Math.ceil(props.score) / totalCircles) * 100,
-);
+const rectWidthPercent = computed(() => Math.ceil(props.score * 100));
 </script>
 
 <style scoped></style>

@@ -1,25 +1,29 @@
 <template>
   <AuthenticatedLayout>
-    <!-- <PageHeader
-      v-if="deck"
-      :title="'Practice'"
-      :subtitle="deck.name"
-      :backLabel="deck.name"
-      :backTo="{ name: 'decks.show', params: { deckId: deckId } }"
-      size="xs"
-    >
-    </PageHeader> -->
-
     <header
-      class="flex mb-6 flex-col border border-black/10 px-3 py-2 rounded-lg mx-auto max-w-screen-sm"
+      class="flex mb-6 flex-col border border-black/10 p-2 sm:p-4 rounded-xl mx-auto max-w-screen-sm gap-2"
       v-if="deck"
     >
-      <div class="flex justify-between items-center">
-        <div>
-          <h1 class="font-bold text-neutral-900 text-lg">{{ deck?.name }}</h1>
-          <h2 class="text-black/50 text-sm" v-if="deck.description">
-            {{ deck?.description }}
-          </h2>
+      <div class="flex gap-2 sm:gap-4 items-baseline">
+        <h1 class="font-bold text-neutral-900 text-lg sm:text-xl">
+          {{ deck?.name }}
+        </h1>
+        <h2 class="text-black/50 text-sm sm:text-base" v-if="deck.description">
+          {{ deck?.description }}
+        </h2>
+      </div>
+      <div class="flex items-baseline justify-between w-full">
+        <div class="flex gap-1 items-baseline">
+          <Label for="starting-side-select" class="sr-only">Start Side</Label>
+          <Select v-model="state.initialSideName" id="starting-side-select">
+            <SelectTrigger class="w-28 bg-black/5">
+              <SelectValue placeholder="Starting side" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="front">Front</SelectItem>
+              <SelectItem value="back">Back</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
         <Button asChild variant="secondary">
           <RouterLink
@@ -29,29 +33,6 @@
             End Practice
           </RouterLink>
         </Button>
-      </div>
-      <div class="flex items-center justify-between w-full">
-        <div class="flex items-baseline gap-2">
-          <Label class="sr-only">Difficulty</Label>
-          <ScoreDotsSvg
-            v-if="activeCardWithStats?.avg_score"
-            :score="activeCardWithStats?.avg_score"
-            class="mt-2"
-          />
-          <span v-else>New</span>
-        </div>
-        <div class="flex gap-1 items-baseline">
-          <Label for="starting-side-select" class="sr-only">Start Side</Label>
-          <Select v-model="state.initialSideName" id="starting-side-select">
-            <SelectTrigger class="w-28">
-              <SelectValue placeholder="Starting side" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="front">Front</SelectItem>
-              <SelectItem value="back">Back</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
       </div>
     </header>
     <main>
@@ -134,6 +115,11 @@ const { data: activeCardWithStats } = useCardStatsByIdQuery(activeCardId);
 
 const cards = computed(() => deck.value?.cards ?? []);
 const totalCards = computed(() => cards.value.length);
+const currentCardDifficulty = computed(() =>
+  activeCardWithStats.value?.avg_score
+    ? 1 - activeCardWithStats.value.avg_score / 3
+    : 0,
+);
 
 type SideName = "front" | "back";
 
