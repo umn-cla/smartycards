@@ -11,26 +11,15 @@
     </PageHeader> -->
 
     <header
-      class="flex mb-6 justify-center items-center flex-col border border-black/10 px-4 py-3 rounded-lg mx-auto max-w-screen-sm"
+      class="flex mb-6 flex-col border border-black/10 px-3 py-2 rounded-lg mx-auto max-w-screen-sm"
       v-if="deck"
     >
-      <h1 class="font-bold text-neutral-900 text-lg">{{ deck?.name }}</h1>
-      <h2 class="text-black/50 text-sm" v-if="deck.description">
-        {{ deck?.description }}
-      </h2>
-      <div class="flex items-center justify-between mt-4 w-full">
-        <div class="flex gap-4 items-start">
-          <Tuple label="Attempts">
-            {{ activeCardWithStats?.attempts_count || "-" }}
-          </Tuple>
-          <Tuple label="Difficulty">
-            <ScoreDotsSvg
-              v-if="activeCardWithStats?.avg_score"
-              :score="activeCardWithStats?.avg_score"
-              class="mt-2 ml-auto"
-            />
-            <span v-else>New</span>
-          </Tuple>
+      <div class="flex justify-between items-center">
+        <div>
+          <h1 class="font-bold text-neutral-900 text-lg">{{ deck?.name }}</h1>
+          <h2 class="text-black/50 text-sm" v-if="deck.description">
+            {{ deck?.description }}
+          </h2>
         </div>
         <Button asChild variant="secondary">
           <RouterLink
@@ -40,6 +29,29 @@
             End Practice
           </RouterLink>
         </Button>
+      </div>
+      <div class="flex items-center justify-between w-full">
+        <div class="flex items-baseline gap-2">
+          <Label class="sr-only">Difficulty</Label>
+          <ScoreDotsSvg
+            v-if="activeCardWithStats?.avg_score"
+            :score="activeCardWithStats?.avg_score"
+            class="mt-2"
+          />
+          <span v-else>New</span>
+        </div>
+        <div class="flex gap-1 items-baseline">
+          <Label for="starting-side-select" class="sr-only">Start Side</Label>
+          <Select v-model="state.initialSideName" id="starting-side-select">
+            <SelectTrigger class="w-28">
+              <SelectValue placeholder="Starting side" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="front">Front</SelectItem>
+              <SelectItem value="back">Back</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
       </div>
     </header>
     <main>
@@ -92,8 +104,15 @@ import CardAttemptChoices from "@/components/CardAttemptChoices.vue";
 import { Button } from "@/components/ui/button";
 import { useCardStatsByIdQuery } from "@/queries/cards/useCardStatsByIdQuery";
 import FlippableCard from "@/components/FlippableCard.vue";
-import Tuple from "@/components/Tuple.vue";
 import ScoreDotsSvg from "@/components/ScoreDotsSvg.vue";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Label } from "@/components/ui/label";
 
 const props = defineProps<{
   deckId: number;
@@ -102,7 +121,6 @@ const props = defineProps<{
 const state = reactive({
   activeCard: null as T.Card | null,
   initialSideName: "front" as SideName,
-  activeSideName: "front" as SideName,
   cardsToPractice: [] as T.Card[],
   isShowingHint: false,
   isTransitiongToNext: false,
@@ -176,6 +194,18 @@ function initPracticeSession() {
 }
 
 watch(deck, () => initPracticeSession(), { immediate: true });
+
+watch(
+  () => state.initialSideName,
+  () => {
+    // reset the side
+    // this is a little hacky, but it works
+    state.isTransitiongToNext = true;
+    setTimeout(() => {
+      state.isTransitiongToNext = false;
+    }, 500);
+  },
+);
 </script>
 <style scoped>
 button {
