@@ -15,7 +15,10 @@
         </template>
 
         <template v-slot="{ item: deck }">
-          <DeckListItem :deck="deck" class="sm:min-h-80" />
+          <DeckListItem
+            :deck="deck"
+            class="aspect-[3/2] sm:min-h-80 sm:aspect-auto"
+          />
         </template>
       </CardGrid>
 
