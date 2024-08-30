@@ -1,38 +1,48 @@
 import { fileURLToPath, URL } from "node:url";
-
-import { defineConfig } from "vite";
+import { defineConfig, loadEnv } from "vite";
 import vue from "@vitejs/plugin-vue";
 import laravel from "laravel-vite-plugin";
 
 // https://vitejs.dev/config/
-export default defineConfig({
-  plugins: [
-    laravel({
-      input: ["resources/client/app.ts"],
-      refresh: true,
-    }),
-    vue({
-      template: {
-        transformAssetUrls: {
-          // The Vue plugin will re-write asset URLs, when referenced
-          // in Single File Components, to point to the Laravel web
-          // server. Setting this to `null` allows the Laravel plugin
-          // to instead re-write asset URLs to point to the Vite
-          // server instead.
-          base: null,
+export default defineConfig(({ mode }) => {
+  const env = loadEnv(mode, process.cwd());
 
-          // The Vue plugin will parse absolute URLs and treat them
-          // as absolute paths to files on disk. Setting this to
-          // `false` will leave absolute URLs un-touched so they can
-          // reference assets in the public directory as expected.
-          includeAbsolute: false,
+  return {
+    plugins: [
+      laravel({
+        input: ["resources/client/app.ts"],
+        refresh: true,
+      }),
+      vue({
+        template: {
+          transformAssetUrls: {
+            // The Vue plugin will re-write asset URLs, when referenced
+            // in Single File Components, to point to the Laravel web
+            // server. Setting this to `null` allows the Laravel plugin
+            // to instead re-write asset URLs to point to the Vite
+            // server instead.
+            base: null,
+
+            // The Vue plugin will parse absolute URLs and treat them
+            // as absolute paths to files on disk. Setting this to
+            // `false` will leave absolute URLs un-touched so they can
+            // reference assets in the public directory as expected.
+            includeAbsolute: false,
+          },
         },
+      }),
+    ],
+    resolve: {
+      alias: {
+        "@": fileURLToPath(new URL("./resources/client", import.meta.url)),
       },
-    }),
-  ],
-  resolve: {
-    alias: {
-      "@": fileURLToPath(new URL("./resources/client", import.meta.url)),
     },
-  },
+    server: {
+      host: new URL(env.VITE_CLIENT_BASE_URL).host,
+      https: {
+        cert: "./.cert/cert.pem",
+        key: "./.cert/key.pem",
+      },
+    },
+  };
 });
