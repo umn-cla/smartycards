@@ -1,19 +1,21 @@
 <template>
   <div class="flex items-center gap-4 text-brand-maroon-950">
-    <div class="relative min-w-56 w-full h-80 perspective">
+    <div class="relative w-[20rem] h-[30rem] perspective">
       <div
-        :class="{ 'rotate-y-180': isShowingBack }"
+        :class="{ 'rotate-y-180': currentCardSide === 'back' }"
         class="relative w-full h-full transition-transform duration-500 transform-style-preserve-3d"
       >
         <CardSideView
-          v-for="(side, index) in [front, back]"
-          :key="index"
-          :label="index ? 'Back' : 'Front'"
+          v-for="{ side, label } in labelledCardSides"
+          :key="label"
+          :label="label === 'back' ? 'Back' : 'Front'"
           :side="side"
           class="absolute w-full h-full backface-hidden color-maroon-950"
           :class="{
-            'bg-brand-oatmeal-50': index === 0,
-            'rotate-y-180 bg-brand-gold-500': index === 1,
+            'z-20': label === currentCardSide,
+            'z-10': label !== currentCardSide,
+            'bg-brand-oatmeal-50': label === 'front',
+            'rotate-y-180 bg-brand-gold-500': label === 'back',
           }"
         >
           <template #prepend>
@@ -24,7 +26,7 @@
             <Button
               variant="ghost"
               class="bg-black/5 hover:bg-black/10 uppercase text-xs tracking-wider text-brand-maroon-950 font-sans"
-              @click="isShowingBack = !isShowingBack"
+              @click="flipCard"
             >
               Flip
             </Button>
@@ -37,22 +39,49 @@
 
 <script setup lang="ts">
 import { CardSideView } from "@/components/CardSideView";
-import { ref, watch } from "vue";
-import { CardSide } from "@/types";
+import { ref, watch, computed } from "vue";
+import { CardSide, CardSideName } from "@/types";
 import { Button } from "@/components/ui/button";
 
-const props = defineProps<{
-  front: CardSide;
-  back: CardSide;
-  initialSide?: "front" | "back";
-}>();
+const props = withDefaults(
+  defineProps<{
+    front: CardSide;
+    back: CardSide;
+    initialSideName?: CardSideName;
+  }>(),
+  {
+    initialSideName: "front",
+  },
+);
 
-const isShowingBack = ref(props.initialSide === "back" ?? false);
+const currentCardSide = ref<CardSideName>(props.initialSideName);
+
+interface CardSideWithLabel {
+  label: CardSideName;
+  side: CardSide;
+}
+
+const labelledCardSides = computed((): CardSideWithLabel[] => {
+  return [
+    {
+      label: "front",
+      side: props.front,
+    },
+    {
+      label: "back",
+      side: props.back,
+    },
+  ];
+});
 
 // if the sides change, reset the initial side
-watch([() => props.front, () => props.back], () => {
-  isShowingBack.value = props.initialSide === "back";
+watch(labelledCardSides, () => {
+  currentCardSide.value = props.initialSideName;
 });
+
+function flipCard() {
+  currentCardSide.value = currentCardSide.value === "front" ? "back" : "front";
+}
 </script>
 
 <style scoped>

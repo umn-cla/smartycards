@@ -57,7 +57,7 @@
           <FlippableCard
             :front="state.isTransitiongToNext ? [] : state.activeCard?.front"
             :back="state.isTransitiongToNext ? [] : state.activeCard?.back"
-            :initialSide="state.initialSideName"
+            :initialSideName="state.initialSideName"
             class="w-60 mx-auto transition-all duration-500"
             :class="{
               'opacity-0 translate-x-[100vw]': state.isTransitiongToNext,

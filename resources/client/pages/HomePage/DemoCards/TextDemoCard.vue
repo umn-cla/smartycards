@@ -1,5 +1,5 @@
 <template>
-  <FlippableCard :front="front" :back="back" initialSide="back" />
+  <FlippableCard :front="front" :back="back" initialSideName="back" />
 </template>
 
 <script setup lang="ts">
