@@ -20,11 +20,7 @@
           class="rounded-sm w-full object-contain"
         />
         <EmbedVideo v-else-if="isEmbedBlock(block)" :src="block.content" />
-        <audio
-          v-else-if="isAudioBlock(block)"
-          :src="block.content"
-          controls
-        ></audio>
+        <AudioPlayer v-else-if="isAudioBlock(block)" :src="block.content" />
         <RevealBlockView
           v-else-if="isRevealBlock(block)"
           :modelValue="block.content"
@@ -40,6 +36,7 @@ import * as T from "@/types";
 import { computed } from "vue";
 import EmbedVideo from "@/components/EmbedVideo.vue";
 import RevealBlockView from "./RevealBlockView.vue";
+import AudioPlayer from "@/components/AudioPlayer.vue";
 
 const props = defineProps<{
   label?: string;
