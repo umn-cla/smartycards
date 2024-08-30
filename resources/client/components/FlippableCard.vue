@@ -1,38 +1,38 @@
 <template>
-  <div class="flex items-center gap-4 text-brand-maroon-950">
-    <div class="relative w-[20rem] h-[30rem] perspective">
-      <div
-        :class="{ 'rotate-y-180': currentCardSide === 'back' }"
-        class="relative w-full h-full transition-transform duration-500 transform-style-preserve-3d"
+  <div
+    class="relative w-[14rem] h-[21rem] max-w-full perspective flex items-center gap-4 text-brand-maroon-950"
+  >
+    <div
+      :class="{ 'rotate-y-180': currentCardSide === 'back' }"
+      class="relative w-full h-full transition-transform duration-500 transform-style-preserve-3d"
+    >
+      <CardSideView
+        v-for="{ side, label } in labelledCardSides"
+        :key="label"
+        :label="label === 'back' ? 'Back' : 'Front'"
+        :side="side"
+        class="absolute w-full h-full backface-hidden color-maroon-950"
+        :class="{
+          'z-20': label === currentCardSide,
+          'z-10': label !== currentCardSide,
+          'bg-brand-oatmeal-50': label === 'front',
+          'rotate-y-180 bg-brand-gold-500': label === 'back',
+        }"
       >
-        <CardSideView
-          v-for="{ side, label } in labelledCardSides"
-          :key="label"
-          :label="label === 'back' ? 'Back' : 'Front'"
-          :side="side"
-          class="absolute w-full h-full backface-hidden color-maroon-950"
-          :class="{
-            'z-20': label === currentCardSide,
-            'z-10': label !== currentCardSide,
-            'bg-brand-oatmeal-50': label === 'front',
-            'rotate-y-180 bg-brand-gold-500': label === 'back',
-          }"
-        >
-          <template #prepend>
-            <slot name="prepend" />
-          </template>
-          <template #append>
-            <slot name="append" />
-            <Button
-              variant="ghost"
-              class="bg-black/5 hover:bg-black/10 uppercase text-xs tracking-wider text-brand-maroon-950 font-sans"
-              @click="flipCard"
-            >
-              Flip
-            </Button>
-          </template>
-        </CardSideView>
-      </div>
+        <template #prepend>
+          <slot name="prepend" />
+        </template>
+        <template #append>
+          <slot name="append" />
+          <Button
+            variant="ghost"
+            class="bg-black/5 hover:bg-black/10 uppercase text-xs tracking-wider text-brand-maroon-950 font-sans"
+            @click="flipCard"
+          >
+            Flip
+          </Button>
+        </template>
+      </CardSideView>
     </div>
   </div>
 </template>
