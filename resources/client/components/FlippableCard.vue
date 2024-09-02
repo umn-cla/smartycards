@@ -56,6 +56,13 @@ const props = withDefaults(
 
 const currentCardSide = ref<CardSideName>(props.initialSideName);
 
+watch(
+  () => props.initialSideName,
+  (newInitialSideName) => {
+    currentCardSide.value = newInitialSideName;
+  },
+);
+
 interface CardSideWithLabel {
   label: CardSideName;
   side: CardSide;
