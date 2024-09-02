@@ -25,7 +25,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref } from "vue";
+import { onMounted, onUnmounted, ref, watch } from "vue";
 import { defineProps } from "vue";
 import { IconX } from "./icons";
 
@@ -60,6 +60,11 @@ onUnmounted(() => {
   window.removeEventListener("keydown", closeOnEscape);
   window.removeEventListener("click", closeOnClickOutside);
 });
+
+// watch(isLightboxVisible, () => {
+//  // Disable scrolling when lightbox is visible?
+//   document.body.style.overflow = isLightboxVisible.value ? "hidden" : "";
+// });
 </script>
 
 <style scoped></style>
