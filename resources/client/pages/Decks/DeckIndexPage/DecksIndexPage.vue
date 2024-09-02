@@ -26,7 +26,7 @@
         fallback="No shared decks"
       >
         <template v-slot="{ item: deck }">
-          <DeckListItem :deck="deck" class="sm:min-h-80" />
+          <DeckListItem :deck="deck" />
         </template>
       </CardGrid>
     </main>

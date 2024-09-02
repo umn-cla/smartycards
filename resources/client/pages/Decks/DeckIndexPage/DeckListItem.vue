@@ -1,7 +1,7 @@
 <template>
   <div
     :to="`/decks/${deck.id}`"
-    class="h-full w-full p-2 pt-1 rounded-xl bg-brand-gold-500/50 flex flex-col gap-4 border border-brand-gold-shadow"
+    class="h-full w-full p-2 pt-1 rounded-xl bg-brand-gold-500/50 flex flex-col gap-4 border border-brand-gold-shadow sm:h-[24rem]"
     :class="{
       'shadow-solid-gold-1px translate-y-[-1px]':
         1 <= cardCount && cardCount < 3,
