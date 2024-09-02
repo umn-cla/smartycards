@@ -13,11 +13,10 @@
           @click.stop
           class="text-center"
         />
-        <img
+        <ImageBlockView
           v-else-if="isImageBlock(block)"
           :src="block.content"
-          :alt="block.meta?.alt"
-          class="rounded-sm w-full object-contain"
+          :alt="block.meta?.alt ?? ''"
         />
         <EmbedVideo v-else-if="isEmbedBlock(block)" :src="block.content" />
         <AudioPlayer v-else-if="isAudioBlock(block)" :src="block.content" />
@@ -37,6 +36,7 @@ import { computed } from "vue";
 import EmbedVideo from "@/components/EmbedVideo.vue";
 import RevealBlockView from "./RevealBlockView.vue";
 import AudioPlayer from "@/components/AudioPlayer.vue";
+import ImageBlockView from "@/components/ImageBlockView.vue";
 
 const props = defineProps<{
   label?: string;
