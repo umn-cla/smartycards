@@ -14,15 +14,12 @@
         @init="handleFilePondInit"
       />
     </div>
-    <div
-      v-else
-      class="relative pt-2 pr-2"
-    >
+    <div v-else class="relative pt-2 pr-2">
       <img
         v-if="isValidUrlComputed"
         :src="modelValue"
         alt="Front of card"
-        class="block border-4 rounded-lg object-cover flex-1 aspect-video bg-black/5"
+        class="block border-4 rounded-lg object-contain w-full flex-1 bg-black/5"
       />
       <div
         v-else
@@ -40,11 +37,7 @@
     </div>
     <p class="text-neutral-400 text-xs text-center mt-4">— or —</p>
     <div class="mb-2">
-      <Label
-        for="image-url"
-        class="sr-only"
-        >Image Url</Label
-      >
+      <Label for="image-url" class="sr-only">Image Url</Label>
       <Input
         :modelValue="modelValue"
         @update:modelValue="$emit('update:modelValue', $event as string)"
@@ -56,7 +49,9 @@
       <Label class="sr-only">Alt Text</Label>
       <Input
         :modelValue="meta.alt"
-        @update:modelValue="$emit('update:meta', { ...meta, alt: $event as string })"
+        @update:modelValue="
+          $emit('update:meta', { ...meta, alt: $event as string })
+        "
         placeholder="Alt text"
         class="bg-black/5"
       />
@@ -64,17 +59,17 @@
   </div>
 </template>
 <script setup lang="ts">
-import { computed, ref } from 'vue';
-import * as api from '@/api';
-import { Label } from '@/components/ui/label';
-import { Input } from '@/components/ui/input';
-import vueFilePond from 'vue-filepond';
-import FilePondPluginFileValidateType from 'filepond-plugin-file-validate-type';
-import { IconX } from '../icons';
+import { computed, ref } from "vue";
+import * as api from "@/api";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import vueFilePond from "vue-filepond";
+import FilePondPluginFileValidateType from "filepond-plugin-file-validate-type";
+import { IconX } from "../icons";
 
-import 'filepond/dist/filepond.min.css';
-import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.min.css';
-import { isValidUrl } from '@/lib/utils';
+import "filepond/dist/filepond.min.css";
+import "filepond-plugin-image-preview/dist/filepond-plugin-image-preview.min.css";
+import { isValidUrl } from "@/lib/utils";
 
 const props = defineProps<{
   modelValue: string;
@@ -84,15 +79,15 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-  (event: 'update:modelValue', value: string): void;
-  (event: 'update:meta', value: { alt: string }): void;
+  (event: "update:modelValue", value: string): void;
+  (event: "update:meta", value: { alt: string }): void;
 }>();
 
 const FilePond = vueFilePond(FilePondPluginFileValidateType);
 const isValidUrlComputed = computed(() => isValidUrl(props.modelValue));
 
 function handleFilePondInit() {
-  console.log('FilePond has initialized');
+  console.log("FilePond has initialized");
 }
 
 const myFiles = ref<string[]>([]);
@@ -108,13 +103,13 @@ async function handleProcessImage(
   load: any,
   _error: any,
   _progress: any,
-  abort: any
+  abort: any,
 ) {
   const fileInfo = await onFileChange(file);
 
   load(fileInfo.url);
 
-  emit('update:modelValue', fileInfo.url);
+  emit("update:modelValue", fileInfo.url);
 
   return { abort };
 }
