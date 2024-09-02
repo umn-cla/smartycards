@@ -58,9 +58,9 @@
             :front="state.isTransitiongToNext ? [] : state.activeCard?.front"
             :back="state.isTransitiongToNext ? [] : state.activeCard?.back"
             :initialSideName="state.initialSideName"
-            class="w-60 mx-auto transition-all duration-500"
+            class="!w-60 mx-auto transition-all duration-300"
             :class="{
-              'opacity-0 translate-x-[100vw]': state.isTransitiongToNext,
+              'opacity-0 translate-y-[50vh]': state.isTransitiongToNext,
               'opacity-100': !state.isTransitiongToNext,
             }"
           />
@@ -69,6 +69,7 @@
             <CardAttemptChoices
               @answer="handleAnswer"
               :card="state.activeCard"
+              class="relative z-10"
             />
           </div>
         </div>
