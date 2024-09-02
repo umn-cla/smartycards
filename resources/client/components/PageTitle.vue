@@ -1,7 +1,7 @@
 <template>
   <component
     :is="as"
-    class="font-bold text-brand-maroon-950"
+    class="font-black text-black"
     :class="{
       'text-5xl lg:text-6xl': size === 'lg',
       'text-4xl lg:text-5xl': size === 'default',
