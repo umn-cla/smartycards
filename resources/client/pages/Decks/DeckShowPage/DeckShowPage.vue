@@ -59,6 +59,7 @@
                   :canDelete="canDelete"
                   :canEdit="canEdit"
                   :card="card"
+                  @delete="handleDeleteCard"
                 />
               </div>
             </template>
