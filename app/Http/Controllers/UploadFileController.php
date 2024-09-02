@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Storage;
+use Illuminate\Support\Facades\Storage;
 
 class UploadFileController extends Controller
 {
@@ -26,8 +26,7 @@ class UploadFileController extends Controller
 
         return response()->json([
             'name' => $fileName,
-            'path' => Storage::url($fileName),
-            'url' => asset(Storage::url($fileName)),
+            'url' => secure_asset(Storage::url($fileName)),
             'mime_type' => $file->getClientMimeType(),
             'size' => $file->getSize(),
         ]);
