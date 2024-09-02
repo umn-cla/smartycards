@@ -6,6 +6,10 @@ import { PROFILE_QUERY_KEY } from "@/queries/queryKeys";
 
 const router = createRouter({
   history: createWebHistory(),
+  scrollBehavior(to, from, savedPosition) {
+    // always scroll to top
+    return { top: 0 };
+  },
   routes: [
     {
       path: "/",
