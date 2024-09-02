@@ -66,10 +66,8 @@ const tailwindConfig = {
     },
     extend: {
       fontFamily: {
-        serif: ["viroqua", "serif"],
-        sans: ["proxima-soft", "sans-serif"],
-        cheesecake: ["cheesecake", "cursive"],
-        dreamboat: ["dreamboat", "cursive"],
+        serif: ["Rokkitt Variable", "serif"],
+        sans: ["Nunito Variable", "sans-serif"],
       },
       boxShadow: {
         "solid-gold-1px": `0 1px 0 0 ${brandColors.gold.shadow}`,

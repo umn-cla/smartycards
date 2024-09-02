@@ -19,6 +19,8 @@
     "cert": "rm -rf .cert && mkdir -p .cert && mkcert -key-file ./.cert/key.pem -cert-file ./.cert/cert.pem 'localhost' 127.0.0.1 ::1 `ipconfig getifaddr en0`"
   },
   "dependencies": {
+    "@fontsource-variable/nunito": "^5.0.20",
+    "@fontsource-variable/rokkitt": "^5.0.22",
     "@headlessui/vue": "^1.7.22",
     "@radix-icons/vue": "^1.0.0",
     "@tanstack/vue-query": "^5.45.0",
@@ -44,6 +46,7 @@
     "vuedraggable": "^4.1.0"
   },
   "devDependencies": {
+    "@fontsource-variable/rubik": "^5.0.22",
     "@rushstack/eslint-patch": "^1.8.0",
     "@tailwindcss/forms": "^0.5.7",
     "@tsconfig/node20": "^20.1.4",

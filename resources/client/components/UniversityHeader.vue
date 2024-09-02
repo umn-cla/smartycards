@@ -1,5 +1,7 @@
 <template>
-  <UniversityHeader class="university-header !bg-transparent" />
+  <UniversityHeader
+    class="university-header !bg-transparent border-t-4 border-t-brand-gold-500 pt-1 sm:pt-0"
+  />
 </template>
 <script setup lang="ts">
 import { UniversityHeader } from "@umn-latis/cla-vue-template";

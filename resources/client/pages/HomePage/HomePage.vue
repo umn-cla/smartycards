@@ -5,25 +5,23 @@
     <UniversityHeader />
     <main>
       <section
-        class="text-brand-oatmeal-100 flex items-center justify-center flex-col p-8"
+        class="text-brand-oatmeal-100 flex items-center justify-center flex-col px-4 text-center gap-4"
       >
         <img
           :src="FoxOwlStudyImgUrl"
           alt="A friendly owl and a fox with glasses, studying together at a table with a book. The owl is holding flashcards, chatting with the fox. The fox is slightly smiling while listening and looking at the flashcards."
-          class="w-64 md:w-96"
+          class="block w-[66dvw] max-w-64 md:max-w-full md:w-96"
         />
-        <h1
-          class="text-[3rem] md:text-[6rem] font-cheesecake text-brand-gold-500 leading-none mt-8"
-        >
-          Smarty Cards
-        </h1>
-        <p class="md:text-4xl leading-none mt-4">
-          Digital flashcards for every learner
-        </p>
+        <div>
+          <SmartycardsWordmark class="text-brand-gold-500" />
+          <p class="text-xl md:text-4xl leading-none mt-2">
+            Digital flashcards for every learner
+          </p>
+        </div>
 
         <RouterLink
           :to="{ name: 'auth.login' }"
-          class="bg-brand-oatmeal-100 text-brand-maroon-950 text-xl md:text-2xl px-6 py-3 rounded-xl mt-8"
+          class="bg-brand-oatmeal-100 text-brand-maroon-950 md:text-2xl rounded-xl px-6 py-2"
         >
           Sign In
         </RouterLink>
@@ -58,6 +56,7 @@ import ImageDemoCard from "./DemoCards/ImageDemoCard.vue";
 import AudioDemoCard from "./DemoCards/AudioDemoCard.vue";
 import TextDemoCard from "./DemoCards/TextDemoCard.vue";
 import VideoDemoCard from "./DemoCards/VideoDemoCard.vue";
+import SmartycardsWordmark from "@/components/SmartycardsWordmark.vue";
 </script>
 <style scoped>
 .home-page {

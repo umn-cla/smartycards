@@ -1,8 +1,5 @@
 <template>
-  <TransitionRoot
-    as="template"
-    :show="isSidebarOpen"
-  >
+  <TransitionRoot as="template" :show="isSidebarOpen">
     <Dialog
       class="relative z-50 lg:hidden"
       @close="$emit('update:isSidebarOpen', false)"
@@ -39,17 +36,16 @@
               leaveFrom="opacity-100"
               leaveTo="opacity-0"
             >
-              <div class="absolute left-full top-0 flex w-16 justify-center pt-5">
+              <div
+                class="absolute left-full top-0 flex w-16 justify-center pt-5"
+              >
                 <button
                   type="button"
                   class="-m-2.5 p-2.5"
                   @click="$emit('update:isSidebarOpen', false)"
                 >
                   <span class="sr-only">Close sidebar</span>
-                  <IconX
-                    class="h-6 w-6 text-white"
-                    aria-hidden="true"
-                  />
+                  <IconX class="h-6 w-6 text-white" aria-hidden="true" />
                 </button>
               </div>
             </TransitionChild>
@@ -57,27 +53,19 @@
             <div
               class="flex grow flex-col gap-y-5 overflow-y-auto bg-umn-maroon-900 px-6 pb-2 ring-1 ring-white/10"
             >
-              <div class="flex h-16 shrink-0 items-center gap-3">
+              <div
+                class="flex h-16 shrink-0 items-center justify-center border-b border-white/50"
+              >
                 <IconBlockM
-                  class="h-5 w-auto text-umn-gold-700"
+                  class="h-4 w-auto text-umn-gold-700"
                   alt="University of Minnesota"
                 />
-                <span class="font-semibold text-neutral-50">SmartyCards</span>
               </div>
               <nav class="flex flex-1 flex-col">
-                <ul
-                  role="list"
-                  class="flex flex-1 flex-col gap-y-7"
-                >
+                <ul role="list" class="flex flex-1 flex-col gap-y-7">
                   <li>
-                    <ul
-                      role="list"
-                      class="-mx-2 space-y-1"
-                    >
-                      <li
-                        v-for="item in navigation"
-                        :key="item.name"
-                      >
+                    <ul role="list" class="-mx-2 space-y-1">
+                      <li v-for="item in navigation" :key="item.name">
                         <RouterLink
                           :to="item.to"
                           activeClass="!bg-umn-maroon-800 !text-white"
@@ -97,16 +85,10 @@
                     </ul>
                   </li>
                   <li>
-                    <NavDeckList
-                      label="My Decks"
-                      :decks="myDecks"
-                    />
+                    <NavDeckList label="My Decks" :decks="myDecks" />
                   </li>
                   <li>
-                    <NavDeckList
-                      label="Shared Decks"
-                      :decks="sharedDecks"
-                    />
+                    <NavDeckList label="Shared Decks" :decks="sharedDecks" />
                   </li>
                 </ul>
               </nav>
@@ -118,12 +100,17 @@
   </TransitionRoot>
 </template>
 <script setup lang="ts">
-import { Dialog, DialogPanel, TransitionChild, TransitionRoot } from '@headlessui/vue';
-import { IconBlockM, IconX } from '@/components/icons';
-import type { Deck, NavMenuItem } from '@/types';
-import NavDeckList from './NavDeckList.vue';
+import {
+  Dialog,
+  DialogPanel,
+  TransitionChild,
+  TransitionRoot,
+} from "@headlessui/vue";
+import { IconBlockM, IconX } from "@/components/icons";
+import type { Deck, NavMenuItem } from "@/types";
+import NavDeckList from "./NavDeckList.vue";
 
-const isSidebarOpen = defineModel<boolean>('isSidebarOpen', { required: true });
+const isSidebarOpen = defineModel<boolean>("isSidebarOpen", { required: true });
 
 defineProps<{
   navigation: NavMenuItem[];

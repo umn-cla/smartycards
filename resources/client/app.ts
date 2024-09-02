@@ -1,3 +1,6 @@
+import "@fontsource-variable/nunito";
+import "@fontsource-variable/rokkitt";
+
 import "./app.css";
 import "katex/dist/katex.css";
 
