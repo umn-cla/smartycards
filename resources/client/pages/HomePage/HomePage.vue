@@ -21,29 +21,32 @@
 
         <RouterLink
           :to="{ name: 'auth.login' }"
-          class="bg-brand-oatmeal-100 text-brand-maroon-950 md:text-2xl rounded-xl px-6 py-2"
+          class="bg-brand-oatmeal-100 text-brand-maroon-950 md:text-2xl rounded-xl px-6 py-2 block mt-4"
         >
           Sign In
         </RouterLink>
       </section>
-      <section class="p-8 flex items-center justify-center gap-4 flex-wrap">
-        <article class="flex flex-col gap-2 items-center">
-          <h3 class="text-xl">Audio</h3>
-          <AudioDemoCard />
-        </article>
-        <article class="flex flex-col gap-2 items-center">
-          <h3 class="text-xl">Text</h3>
-          <TextDemoCard />
-        </article>
-        <article class="flex flex-col gap-2 items-center">
-          <h3 class="text-xl">Image</h3>
-          <ImageDemoCard />
-        </article>
+      <section class="p-8 bg-black/10 my-8">
+        <h2 class="my-8 text-2xl text-center font-bold">Multimedia</h2>
+        <div class="card-grid mx-auto max-w-screen-lg !gap-8">
+          <article class="flex flex-col gap-2 items-center">
+            <h3 class="text-xl">Audio</h3>
+            <AudioDemoCard />
+          </article>
+          <article class="flex flex-col gap-2 items-center">
+            <h3 class="text-xl">Text</h3>
+            <TextDemoCard />
+          </article>
+          <article class="flex flex-col gap-2 items-center">
+            <h3 class="text-xl">Image</h3>
+            <ImageDemoCard />
+          </article>
 
-        <article class="flex flex-col gap-2 items-center">
-          <h3 class="text-xl">Video</h3>
-          <VideoDemoCard />
-        </article>
+          <article class="flex flex-col gap-2 items-center">
+            <h3 class="text-xl">Video</h3>
+            <VideoDemoCard />
+          </article>
+        </div>
       </section>
     </main>
   </div>
@@ -57,6 +60,7 @@ import AudioDemoCard from "./DemoCards/AudioDemoCard.vue";
 import TextDemoCard from "./DemoCards/TextDemoCard.vue";
 import VideoDemoCard from "./DemoCards/VideoDemoCard.vue";
 import SmartycardsWordmark from "@/components/SmartycardsWordmark.vue";
+import CardGrid from "@/components/CardGrid.vue";
 </script>
 <style scoped>
 .home-page {

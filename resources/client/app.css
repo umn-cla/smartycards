@@ -16,3 +16,9 @@
 .fade-leave-to {
   opacity: 0;
 }
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr));
+  gap: 1rem;
+}

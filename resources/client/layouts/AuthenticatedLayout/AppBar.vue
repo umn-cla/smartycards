@@ -11,8 +11,8 @@
         <span class="sr-only">Open sidebar</span>
         <IconMenu class="h-6 w-6" aria-hidden="true" />
       </button>
-      <RouterLink :to="{ name: 'decks.index' }">
-        <SmartycardsWordmark class="text-brand-gold-500 h-4 mt-1" />
+      <RouterLink to="/">
+        <SmartycardsWordmark class="text-brand-gold-500 h-6 mt-1" />
       </RouterLink>
     </div>
     <ProfileMenu :currentUser="currentUser" variant="avatar-only" />

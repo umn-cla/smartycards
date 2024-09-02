@@ -1,6 +1,6 @@
 <template>
   <div
-    class="relative w-[14rem] h-[21rem] max-w-full perspective flex items-center gap-4 text-brand-maroon-950"
+    class="flippable-card relative w-full h-[24rem] perspective flex items-center gap-4 text-brand-maroon-950"
   >
     <div
       :class="{ 'rotate-y-180': currentCardSide === 'back' }"

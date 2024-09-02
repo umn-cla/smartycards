@@ -1,11 +1,11 @@
 <template>
-  <section class="my-8 card-grid">
+  <section class="my-8 card-grid-container">
     <h3 v-if="title" class="text-3xl font-bold text-neutral-900">
       {{ title }}
     </h3>
     <ul
       v-if="items.length || $slots.prepend || $slots.append"
-      class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4 my-4"
+      class="card-grid my-4"
     >
       <li v-if="$slots.prepend" class="prepend-item">
         <slot name="prepend" />
