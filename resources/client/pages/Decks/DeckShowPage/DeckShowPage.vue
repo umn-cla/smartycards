@@ -51,8 +51,8 @@
             >
               <template #prepend>
                 <div class="flex justify-between items-center">
-                  <ScoreDotsSvg
-                    :score="card.avg_score"
+                  <ScoreDots
+                    :score="card.avg_score / 3"
                     title="Difficulty"
                     class="my-1"
                     v-if="card.attempts_count"
@@ -89,7 +89,7 @@ import MoreDeckActions from "@/pages/Decks/DeckIndexPage/MoreDeckActions.vue";
 import PageHeader from "@/components/PageHeader.vue";
 import FlippableCard from "@/components/FlippableCard.vue";
 import IconPlusFilled from "@/components/icons/IconPlusFilled.vue";
-import ScoreDotsSvg from "@/components/ScoreDotsSvg.vue";
+import ScoreDots from "@/components/ScoreDots.vue";
 import MoreCardActions from "./MoreCardActions.vue";
 import { ref } from "vue";
 

@@ -86,7 +86,6 @@ import CardAttemptChoices from "@/components/CardAttemptChoices.vue";
 import { Button } from "@/components/ui/button";
 import { useCardStatsByIdQuery } from "@/queries/cards/useCardStatsByIdQuery";
 import FlippableCard from "@/components/FlippableCard.vue";
-import ScoreDotsSvg from "@/components/ScoreDotsSvg.vue";
 import {
   Select,
   SelectContent,

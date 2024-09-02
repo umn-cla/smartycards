@@ -4,19 +4,18 @@
       props.card.attempts_count
     }}</span>
     Difficulty
-    <ScoreDots :score="3 - card.avg_score" />
+    <ScoreDots :score="score" />
   </div>
 </template>
 <script setup lang="ts">
-import Tuple from "@/components/Tuple.vue";
 import * as T from "@/types";
-import { useTimeAgo } from "@vueuse/core";
-import ScoreDots from "./ScoreDotsSvg.vue";
+import ScoreDots from "./ScoreDots.vue";
+import { computed } from "vue";
 
 const props = defineProps<{
   card: T.Card;
 }>();
 
-const timeAgo = useTimeAgo(props.card.last_attempted_at);
+const score = computed(() => props.card.avg_score / 3);
 </script>
 <style scoped></style>
