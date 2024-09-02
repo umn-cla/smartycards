@@ -6,8 +6,8 @@
       @update:modelValue="emit('update:modelValue', $event)"
     >
       <template #item="{ element: block }">
-        <div class="flex overflow-clip border-b border-white/75">
-          <button class="cursor-move bg-black/5 flex items-start px-1 py-3">
+        <div class="flex border-b border-black/5">
+          <button class="cursor-move flex items-start px-1 py-3">
             <Icons.IconDragHandle class="size-4" />
             <span class="sr-only">Drag to reorder</span>
           </button>
@@ -37,7 +37,7 @@
     </DragDrop>
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" class="rounded-none hover:bg-black/10">
+        <Button variant="ghost" class="rounded-t-none hover:bg-black/10">
           <Icons.IconPlusFilled class="size-4 mr-2" />
           Add Block
         </Button>

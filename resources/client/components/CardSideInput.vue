@@ -5,7 +5,7 @@
     <BlockEditor
       :modelValue="modelValue"
       @update:modelValue="emit('update:modelValue', $event)"
-      class="rounded-lg overflow-clip"
+      class="rounded-lg"
     />
   </div>
 </template>
