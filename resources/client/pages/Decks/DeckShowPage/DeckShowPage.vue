@@ -36,6 +36,7 @@
         </header>
         <div class="card-grid">
           <RouterLink
+            v-if="deck.capabilities.canUpdate"
             :to="{ name: 'cards.create' }"
             class="flex w-full h-full items-center justify-center rounded-xl flex-col gap-2 border-2 border-dashed border-black/10 px-4 py-8 hover:bg-brand-teal-300/10 transition-colors hover:text-brand-teal-500"
           >
