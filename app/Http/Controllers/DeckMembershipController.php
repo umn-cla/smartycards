@@ -6,6 +6,7 @@ use App\Http\Resources\DeckMembershipResource;
 use App\Models\Deck;
 use App\Models\DeckMembership;
 use App\Models\User;
+use Auth;
 use Gate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\URL;
@@ -131,7 +132,7 @@ class DeckMembershipController extends Controller
             'decks.memberships.acceptInvite',
             [
                 'deck' => $deck->id,
-                'fromUserId' => auth()->user()->id,
+                'fromUserId' => Auth::user()->id,
                 'role' => 'viewer',
             ],
             expiration: null,
@@ -148,7 +149,7 @@ class DeckMembershipController extends Controller
             'decks.memberships.acceptInvite',
             [
                 'deck' => $deck->id,
-                'fromUserId' => auth()->user()->id,
+                'fromUserId' => Auth::user()->id,
                 'role' => 'editor',
             ],
             expiration: null,

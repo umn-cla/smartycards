@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Auth;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -16,6 +17,7 @@ class Deck extends Model implements AuditableContract
     protected $casts = [
         'last_attempted_at' => 'datetime',
         'avg_score' => 'float',
+        'is_public' => 'boolean',
     ];
 
     protected $fillable = [
@@ -100,7 +102,7 @@ class Deck extends Model implements AuditableContract
 
     public function currentUserMemberships()
     {
-        $currentUserId = auth()->id();
+        $currentUserId = Auth::user()->id();
 
         return $this->memberships()->where('user_id', $currentUserId);
     }

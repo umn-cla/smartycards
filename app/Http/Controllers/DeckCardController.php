@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Resources\CardResource;
 use App\Models\Card;
 use App\Models\Deck;
+use Auth;
 use Gate;
 use Illuminate\Http\Request;
 
@@ -35,7 +36,7 @@ class DeckCardController extends Controller
     {
         Gate::authorize('view', $card);
 
-        $user = auth()->user();
+        $user = Auth::user();
         $cardWithStats = $card->loadUserStats($user);
 
         return CardResource::make($cardWithStats);
