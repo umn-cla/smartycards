@@ -2,7 +2,7 @@
   <img
     :src="src"
     :alt="alt"
-    class="rounded-sm w-full object-contain"
+    class="rounded-sm w-full h-full object-contain"
     @click="isLightboxVisible = true"
   />
   <Teleport to="body">
