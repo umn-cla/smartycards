@@ -30,6 +30,7 @@
     "staudenmeir/belongs-to-through": "^2.5"
   },
   "require-dev": {
+    "barryvdh/laravel-debugbar": "^3.13",
     "barryvdh/laravel-ide-helper": "^3.0",
     "deployer/deployer": "^7.4",
     "fakerphp/faker": "^1.23",
