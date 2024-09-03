@@ -30,7 +30,7 @@
       <p class="text-">
         {{ deck.cards_count }} cards
         <span v-if="deck.memberships_count && deck.memberships_count > 1">
-          • You + {{ deck.memberships_count - 1 }} members
+          • {{ deck.memberships_count }} members
         </span>
       </p>
     </footer>
