@@ -16,10 +16,14 @@ return Application::configure(basePath: dirname(__DIR__))
             \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
         ]);
         $middleware->validateCsrfTokens(except: [
-            '/local-sp/ACS'
+            '/local-sp/ACS',
         ]);
 
-        //
+        // if in development environment, trust proxies since https terminates
+        // at nginx in sail
+        if (env('APP_ENV') === 'local') {
+            $middleware->trustProxies(at: '*');
+        }
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //
