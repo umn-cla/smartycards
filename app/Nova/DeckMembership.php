@@ -2,9 +2,11 @@
 
 namespace App\Nova;
 
+use App\Models\DeckMembership as DeckMembershipModel;
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\ID;
+use Laravel\Nova\Fields\Select;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
@@ -54,7 +56,12 @@ class DeckMembership extends Resource
             ID::make()->sortable(),
             BelongsTo::make('User'),
             BelongsTo::make('Deck'),
-            Text::make('Role')->sortable(),
+            // Text::make('Role')->sortable(),
+            Select::make('Role')->options([
+                DeckMembershipModel::ROLE_OWNER => 'Owner',
+                DeckMembershipModel::ROLE_EDITOR => 'Editor',
+                DeckMembershipModel::ROLE_VIEWER => 'Viewer',
+            ])->displayUsingLabels()->sortable(),
         ];
     }
 

@@ -11,6 +11,12 @@ class DeckMembership extends Model implements AuditableContract
 {
     use AuditableTrait, HasFactory;
 
+    const ROLE_OWNER = 'owner';
+
+    const ROLE_EDITOR = 'editor';
+
+    const ROLE_VIEWER = 'viewer';
+
     protected $fillable = [
         'deck_id',
         'user_id',
