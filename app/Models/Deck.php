@@ -102,7 +102,7 @@ class Deck extends Model implements AuditableContract
 
     public function currentUserMemberships()
     {
-        $currentUserId = Auth::user()->id();
+        $currentUserId = Auth::user()->id;
 
         return $this->memberships()->where('user_id', $currentUserId);
     }
