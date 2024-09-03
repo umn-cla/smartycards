@@ -21,6 +21,7 @@ class Deck extends Model implements AuditableContract
     protected $fillable = [
         'name',
         'description',
+        'is_public',
     ];
 
     public function users()

@@ -5,7 +5,6 @@ namespace App\Nova;
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\ID;
-use Laravel\Nova\Fields\Stack;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
@@ -53,17 +52,8 @@ class DeckMembership extends Resource
     {
         return [
             ID::make()->sortable(),
-
-            Stack::make('User', [
-                BelongsTo::make('User'),
-                Text::make('emplid', 'user.emplid'),
-            ]),
-
-            Stack::make('Deck', [
-                BelongsTo::make('Deck'),
-                Text::make('description', 'deck.description'),
-            ]),
-
+            BelongsTo::make('User'),
+            BelongsTo::make('Deck'),
             Text::make('Role')->sortable(),
         ];
     }

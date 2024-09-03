@@ -3,6 +3,7 @@
 namespace App\Nova;
 
 use Illuminate\Http\Request;
+use Laravel\Nova\Fields\Boolean;
 use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Text;
@@ -44,6 +45,8 @@ class Deck extends Resource
             ID::make()->sortable(),
             Text::make('name')->sortable(),
             Text::make('description')->sortable(),
+            Boolean::make('is_public')->sortable(),
+
             // card count
             Text::make('Card Count', function () {
                 return $this->cards->count();
