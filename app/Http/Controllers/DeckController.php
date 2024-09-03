@@ -124,4 +124,11 @@ class DeckController extends Controller
 
         return response()->json(null, 204);
     }
+
+    public function publicDecks()
+    {
+        $decks = Deck::where('is_public', true)->get();
+
+        return DeckResource::collection($decks);
+    }
 }

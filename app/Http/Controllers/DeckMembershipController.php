@@ -79,6 +79,21 @@ class DeckMembershipController extends Controller
         return response()->noContent();
     }
 
+    public function joinAsViewer(Request $request, Deck $deck)
+    {
+
+        $request->user()->can('joinAsViewer', $deck);
+
+        $membership = $deck->memberships()->create([
+            'user_id' => $request->user()->id,
+            'role' => DeckMembership::ROLE_VIEWER,
+        ]);
+
+        return DeckMembershipResource::make($membership)
+            ->response()
+            ->setStatusCode(201);
+    }
+
     public function acceptInvite(Request $request, Deck $deck)
     {
         if (! $request->hasValidSignature()) {

@@ -40,6 +40,21 @@ const router = createRouter({
       },
     },
     {
+      path: "/community/decks",
+      name: "community.decks.index",
+      component: () =>
+        import("@/pages/CommunityDecks/CommunityDecksIndexPage.vue"),
+    },
+    {
+      path: "/community/decks/:deckId",
+      name: "community.decks.show",
+      component: () =>
+        import("@/pages/CommunityDecks/CommunityDeckShowPage.vue"),
+      props: (route) => ({
+        deckId: Number(route.params.deckId),
+      }),
+    },
+    {
       path: "/decks/:deckId",
       name: "decks.show",
       component: () => import("../pages/Decks/DeckShowPage/DeckShowPage.vue"),

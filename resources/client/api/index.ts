@@ -238,6 +238,17 @@ export async function uploadFile(file: File): Promise<T.UploadedFileInfo> {
   return res.data;
 }
 
+export async function getAllCommunityDecks() {
+  const res = await axios.get<{ data: T.Deck[] }>(`/community/decks`);
+  return res.data.data;
+}
+
+export async function joinCommunityDeck(deckId: number) {
+  await csrf();
+  const res = await axios.post(`/community/decks/${deckId}/join`);
+  console.log({ res });
+}
+
 export async function csrf() {
   await axios.get(`${config.api.origin}/sanctum/csrf-cookie`);
 }

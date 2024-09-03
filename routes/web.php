@@ -32,6 +32,10 @@ Route::middleware(['auth'])
             ->name('decks.memberships.acceptInvite')
             ->middleware('signed');
 
+        Route::get('community/decks', [DeckController::class, 'publicDecks']);
+
+        Route::post('community/decks/{deck}/join', [DeckMembershipController::class, 'joinAsViewer']);
+
         Route::resource('decks.cards', DeckCardController::class)
             ->shallow();
 

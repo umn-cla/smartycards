@@ -18,6 +18,7 @@ class DeckResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'description' => $this->description,
+            'is_public' => $this->is_public,
 
             'cards_count' => $this->when(isset($this->cards_count), $this->cards_count),
 
@@ -32,8 +33,8 @@ class DeckResource extends JsonResource
             'memberships' => DeckMembershipResource::collection($this->whenLoaded('memberships')),
 
             'current_user_role' => $this->when(
-                isset($this->currentUserMemberships) && $this->currentUserMemberships->count() >= 1,
-                $this->currentUserMemberships->first()->role
+                isset($this->currentUserMemberships),
+                $this->currentUserMemberships->first()?->role ?? null,
             ),
 
             'capabilities' => [
@@ -42,6 +43,7 @@ class DeckResource extends JsonResource
                 'canViewMemberships' => $request->user()->can('viewMemberships', $this->resource),
                 'canCreateMembership' => $request->user()->can('createMembership', $this->resource),
                 'canLeave' => $request->user()->can('leave', $this->resource),
+                'canJoinAsViewer' => $request->user()->can('joinAsViewer', $this->resource),
             ],
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,

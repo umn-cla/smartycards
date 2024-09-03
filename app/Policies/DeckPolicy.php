@@ -26,7 +26,7 @@ class DeckPolicy
      */
     public function view(User $user, Deck $deck): bool
     {
-        return $user->isMemberOfDeck($deck);
+        return $user->isMemberOfDeck($deck) || $deck->is_public;
     }
 
     /**
@@ -88,5 +88,10 @@ class DeckPolicy
         }
 
         return $user->can('removeSelf', $deckMembership);
+    }
+
+    public function joinAsViewer(User $user, Deck $deck): bool
+    {
+        return ! $user->isMemberOfDeck($deck) && $deck->is_public;
     }
 }

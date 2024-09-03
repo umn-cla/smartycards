@@ -53,7 +53,7 @@ export interface Deck {
   cards?: Card[];
   cards_count?: number;
   memberships_count?: number;
-  current_user_role: MembershipRole;
+  current_user_role: MembershipRole | null; // could be null if public deck
   avg_score: number; // average card score for current user
   last_attempted_at: ISODateTime; // latest card attempt for current user
   // current user capabilities
@@ -63,6 +63,7 @@ export interface Deck {
     canViewMemberships: boolean;
     canCreateMembership: boolean;
     canLeave: boolean;
+    canJoinAsViewer: boolean; // can join if not already a member, and deck is public
   };
   created_at: ISODateTime;
   updated_at: ISODateTime;

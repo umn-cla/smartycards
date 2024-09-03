@@ -1,6 +1,6 @@
-export const DECKS_QUERY_KEY = 'decks';
-export const MEMBERSHIPS_QUERY_KEY = 'memberships';
-export const CARDS_QUERY_KEY = 'cards';
-export const ATTEMPTS_QUERY_KEY = 'attempts';
-export const PROFILE_QUERY_KEY = 'profile';
-export const SHARE_QUERY_KEY = 'share';
+export const DECKS_QUERY_KEY = "decks";
+export const MEMBERSHIPS_QUERY_KEY = "memberships";
+export const CARDS_QUERY_KEY = "cards";
+export const ATTEMPTS_QUERY_KEY = "attempts";
+export const PROFILE_QUERY_KEY = "profile";
+export const SHARE_QUERY_KEY = "share";

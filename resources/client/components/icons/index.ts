@@ -15,6 +15,7 @@ export { default as IconExclamationTriangle } from "./IconExclamationTriangle.vu
 export { default as IconExit } from "./IconExit.vue";
 export { default as IconEye } from "./IconEye.vue";
 export { default as IconEyeClosed } from "./IconEyeClosed.vue";
+export { default as IconGlobe } from "./IconGlobe.vue";
 export { default as IconMenu } from "./IconMenu.vue";
 export { default as IconPencil } from "./IconPencil.vue";
 export { default as IconPlusFilled } from "./IconPlusFilled.vue";

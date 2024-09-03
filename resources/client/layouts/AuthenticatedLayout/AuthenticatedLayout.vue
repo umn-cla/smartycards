@@ -32,7 +32,7 @@
 
 <script setup lang="ts">
 import { computed, ref } from "vue";
-import { IconDeck } from "@/components/icons";
+import { IconDeck, IconGlobe } from "@/components/icons";
 import DesktopSidebarNav from "./DesktopSidebarNav.vue";
 import MobileSidebarNav from "./MobileSidebarNav.vue";
 import AppBar from "./AppBar.vue";
@@ -44,9 +44,14 @@ console.log("AuthenticatedLayout");
 
 const navigation: T.NavMenuItem[] = [
   {
-    name: "All Decks",
+    name: "Decks",
     to: { name: "decks.index" },
     icon: IconDeck,
+  },
+  {
+    name: "Community",
+    to: { name: "community.decks.index" },
+    icon: IconGlobe,
   },
 ];
 
