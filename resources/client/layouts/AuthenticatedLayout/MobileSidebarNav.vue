@@ -51,13 +51,13 @@
             </TransitionChild>
             <!-- Sidebar component -->
             <div
-              class="flex grow flex-col gap-y-5 overflow-y-auto bg-umn-maroon-900 px-6 pb-2 ring-1 ring-white/10"
+              class="flex grow flex-col gap-y-5 overflow-y-auto bg-gradient-to-b from-brand-maroon-800 to-brand-maroon-950 px-6 pb-2 ring-1 ring-white/10"
             >
               <div
                 class="flex h-16 shrink-0 items-center justify-center border-b border-white/50"
               >
                 <IconBlockM
-                  class="h-4 w-auto text-umn-gold-700"
+                  class="h-4 w-auto text-brand-gold-500"
                   alt="University of Minnesota"
                 />
               </div>
@@ -68,9 +68,9 @@
                       <li v-for="item in navigation" :key="item.name">
                         <RouterLink
                           :to="item.to"
-                          activeClass="!bg-umn-maroon-800 !text-white"
+                          activeClass="!bg-brand-maroon-950 !text-white"
                           :class="[
-                            'text-neutral-400 hover:bg-black/50 hover:text-white',
+                            'text-white/50 hover:bg-black/25 hover:text-white',
                             'group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6',
                           ]"
                         >

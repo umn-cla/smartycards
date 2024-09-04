@@ -3,11 +3,9 @@
     <div
       class="flex grow flex-col gap-y-5 overflow-y-auto bg-gradient-to-b from-brand-maroon-800 to-brand-maroon-950 px-6"
     >
-      <RouterLink to="/" class="flex shrink-0 items-center gap-4 py-4">
+      <RouterLink to="/" class="flex shrink-0 items-center gap-5 py-4 mt-2">
         <BlockMIcon class="h-5 text-brand-gold-500" />
-        <span class="text-brand-oatmeal-50 font-black text-lg tracking-wide"
-          >Smarty Cards</span
-        >
+        <SmartycardsWordmark class="text-brand-oatmeal-100 h-5 mt-1" />
       </RouterLink>
       <nav class="flex flex-1 flex-col">
         <ul role="list" class="flex flex-1 flex-col gap-y-7">
@@ -16,9 +14,9 @@
               <li v-for="item in navigation" :key="item.name">
                 <RouterLink
                   :to="item.to"
-                  activeClass="bg-umn-maroon-800 !text-white"
+                  activeClass="bg-brand-maroon-950 !text-white"
                   :class="[
-                    'text-white/50 hover:bg-black/50 hover:text-white',
+                    'text-white/50 hover:bg-black/25 hover:text-white',
                     'group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6',
                   ]"
                 >
@@ -53,6 +51,7 @@ import ProfileMenu from "@/components/ProfileMenu.vue";
 import BlockMIcon from "@/components/icons/IconBlockM.vue";
 import NavDeckList from "./NavDeckList.vue";
 import SmartyFoxHead from "@/assets/smartyfox-head.svg";
+import SmartycardsWordmark from "@/components/SmartycardsWordmark.vue";
 
 defineProps<{
   currentUser: T.User;

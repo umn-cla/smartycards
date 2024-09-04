@@ -1,11 +1,11 @@
 <template>
   <div
-    class="sticky top-0 z-40 flex items-center justify-between bg-umn-maroon-900 px-4 py-4 shadow-sm sm:px-6 lg:hidden gap-2"
+    class="sticky top-0 z-40 flex items-center justify-between bg-brand-maroon-800 px-4 py-4 shadow-sm sm:px-6 lg:hidden gap-2"
   >
     <div class="flex items-center gap-2">
       <button
         type="button"
-        class="text-neutral-200 lg:hidden"
+        class="text-brand-oatmeal-300 hover:text-brand-oatmeal-50 lg:hidden hover:bg-white/10 p-2 rounded-md -ml-2"
         @click="$emit('update:isSidebarOpen', true)"
       >
         <span class="sr-only">Open sidebar</span>
