@@ -61,4 +61,9 @@ onMounted(() => {
   const quill = editor.value.initialize(Quill);
 });
 </script>
-<style scoped></style>
+<style>
+.ql-editor {
+  /* prevent clipping link tooltips in bubble theme */
+  overflow: visible;
+}
+</style>
