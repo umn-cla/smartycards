@@ -20,7 +20,7 @@
           :modelValue="modelValue"
           @update:modelValue="$emit('update:modelValue', $event as string)"
           placeholder="Audio URL"
-          class="bg-black/5"
+          class="bg-brand-maroon-800/5"
         />
       </div>
     </div>
@@ -31,7 +31,7 @@
           <code>audio</code> element.
         </audio>
         <button
-          class="absolute top-0 right-0 bg-neutral-700 hover:bg-neutral-900 text-neutral-100 rounded-full w-6 h-6 flex items-center justify-center transition-colors"
+          class="absolute top-0 right-0 bg-neutral-700 hover:bg-brand-maroon-800 text-neutral-100 rounded-full w-6 h-6 flex items-center justify-center transition-colors"
           @click="$emit('update:modelValue', '')"
         >
           <IconX />

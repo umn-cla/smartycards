@@ -5,10 +5,13 @@
       v-if="deck"
     >
       <div class="flex gap-2 sm:gap-4 items-baseline">
-        <h1 class="font-bold text-neutral-900 text-lg sm:text-xl">
+        <h1 class="font-bold text-brand-maroon-800 text-lg sm:text-xl">
           {{ deck?.name }}
         </h1>
-        <h2 class="text-black/50 text-sm sm:text-base" v-if="deck.description">
+        <h2
+          class="text-brand-maroon-800/50 text-sm sm:text-base"
+          v-if="deck.description"
+        >
           {{ deck?.description }}
         </h2>
       </div>
@@ -16,7 +19,7 @@
         <div class="flex gap-1 items-baseline">
           <Label for="starting-side-select" class="sr-only">Start Side</Label>
           <Select v-model="state.initialSideName" id="starting-side-select">
-            <SelectTrigger class="w-28 bg-black/5">
+            <SelectTrigger class="w-28 bg-brand-maroon-800/5">
               <SelectValue placeholder="Starting side" />
             </SelectTrigger>
             <SelectContent>

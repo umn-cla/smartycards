@@ -16,7 +16,7 @@
                   :to="item.to"
                   activeClass="bg-brand-maroon-950 !text-white"
                   :class="[
-                    'text-white/50 hover:bg-black/25 hover:text-white',
+                    'text-white/50 hover:bg-brand-maroon-800/25 hover:text-white',
                     'group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6',
                   ]"
                 >

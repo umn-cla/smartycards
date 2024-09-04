@@ -34,6 +34,7 @@ const brandColors = {
     950: "#1F0012", // text dark
   },
   gold: {
+    300: "#f7e6af",
     500: "#FFDE7A",
     shadow: "#eacb6b",
   },

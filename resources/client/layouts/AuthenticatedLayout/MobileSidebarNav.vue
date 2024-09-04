@@ -13,7 +13,7 @@
         leaveFrom="opacity-100"
         leaveTo="opacity-0"
       >
-        <div class="fixed inset-0 bg-neutral-900/80" />
+        <div class="fixed inset-0 bg-brand-maroon-800/80" />
       </TransitionChild>
 
       <div class="fixed inset-0 flex">
@@ -70,7 +70,7 @@
                           :to="item.to"
                           activeClass="!bg-brand-maroon-950 !text-white"
                           :class="[
-                            'text-white/50 hover:bg-black/25 hover:text-white',
+                            'text-white/50 hover:bg-brand-maroon-800/25 hover:text-white',
                             'group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6',
                           ]"
                         >

@@ -8,13 +8,13 @@
   <Teleport to="body">
     <div
       v-if="isLightboxVisible"
-      class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-80 z-50"
+      class="fixed inset-0 flex items-center justify-center bg-brand-maroon-800 bg-opacity-80 z-50"
     >
       <div class="relative" @click.stop>
         <img :src="src" :alt="alt" class="max-w-full max-h-full" />
         <button
           @click="isLightboxVisible = false"
-          class="absolute top-2 right-2 text-white text-3xl rounded-full w-10 h-10 bg-black/50 flex items-center justify-center hover:bg-black/70"
+          class="absolute top-2 right-2 text-white text-3xl rounded-full w-10 h-10 bg-brand-maroon-800/50 flex items-center justify-center hover:bg-brand-maroon-800/70"
         >
           <IconX class="size-5" />
           <span class="sr-only">Close</span>

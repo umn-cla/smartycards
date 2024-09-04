@@ -4,12 +4,12 @@
       <PageHeader title="Decks" size="lg" />
 
       <section>
-        <h3 class="text-3xl font-bold text-neutral-900 mb-4">My Decks</h3>
+        <h3 class="text-3xl font-bold text-brand-maroon-800 mb-4">My Decks</h3>
 
         <div class="card-grid !gap-6 sm:gap-4">
           <RouterLink
             :to="{ name: 'decks.create' }"
-            class="bg-black/2 flex w-full h-full items-center justify-center rounded-xl flex-col gap-2 border-2 border-dashed border-black/10 px-4 py-8 hover:bg-brand-teal-300/10 transition-colors hover:text-brand-teal-500"
+            class="bg-brand-maroon-800/2 flex w-full h-full items-center justify-center rounded-xl flex-col gap-2 border-2 border-dashed border-black/10 px-4 py-8 hover:bg-brand-teal-300/10 transition-colors hover:text-brand-teal-500"
           >
             <IconPlusFilled class="w-6 h-6" />
             <span>Create Deck</span>
@@ -20,7 +20,9 @@
       </section>
 
       <section class="my-8">
-        <h3 class="text-3xl font-bold text-neutral-900 mb-4">Shared Decks</h3>
+        <h3 class="text-3xl font-bold text-brand-maroon-800 mb-4">
+          Shared Decks
+        </h3>
         <div class="card-grid !gap-6 sm:gap-4" v-if="sharedDecks.length">
           <DeckListItem
             :deck="deck"

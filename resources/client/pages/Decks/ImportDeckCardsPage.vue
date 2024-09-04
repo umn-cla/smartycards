@@ -1,9 +1,6 @@
 <template>
   <AuthenticatedLayout>
-    <div
-      v-if="deck"
-      class="max-w-screen-lg mx-auto"
-    >
+    <div v-if="deck" class="max-w-screen-lg mx-auto">
       <nav class="mb-4">
         <RouterLink
           :to="{ name: 'decks.show', params: { deckId: deck?.id } }"
@@ -20,8 +17,8 @@
       <main>
         <section class="my-8">
           <p>
-            Import cards into the <b>{{ deck.name }}</b> deck from a CSV file in the following
-            format:
+            Import cards into the <b>{{ deck.name }}</b> deck from a CSV file in
+            the following format:
           </p>
 
           <div class="font-mono border my-4 rounded-lg p-4">
@@ -56,15 +53,16 @@
               <IconExclamationTriangle />
             </div>
             <p>
-              Supported <code>front_type</code> and <code>back_type</code>: <code>text</code>,
-              <code>image</code>, <code>audio</code>, <code>embed</code>
+              Supported <code>front_type</code> and <code>back_type</code>:
+              <code>text</code>, <code>image</code>, <code>audio</code>,
+              <code>embed</code>
             </p>
           </div>
         </section>
 
         <form
           @submit.prevent="handleImport"
-          class="bg-black/5 p-4 rounded-lg flex flex-col"
+          class="bg-brand-maroon-800/5 p-4 rounded-lg flex flex-col"
         >
           <Label for="import-file">Import file</Label>
           <Input
@@ -86,14 +84,14 @@
   </AuthenticatedLayout>
 </template>
 <script setup lang="ts">
-import { computed, ref } from 'vue';
-import { AuthenticatedLayout } from '@/layouts/AuthenticatedLayout';
-import * as api from '@/api';
-import { useRouter } from 'vue-router';
-import { useDeckByIdQuery } from '@/queries/decks';
-import { IconChevronLeft } from '@/components/icons';
-import PageTitle from '@/components/PageTitle.vue';
-import PageSubtitle from '@/components/PageSubtitle.vue';
+import { computed, ref } from "vue";
+import { AuthenticatedLayout } from "@/layouts/AuthenticatedLayout";
+import * as api from "@/api";
+import { useRouter } from "vue-router";
+import { useDeckByIdQuery } from "@/queries/decks";
+import { IconChevronLeft } from "@/components/icons";
+import PageTitle from "@/components/PageTitle.vue";
+import PageSubtitle from "@/components/PageSubtitle.vue";
 import {
   Table,
   TableBody,
@@ -101,11 +99,11 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table';
-import { IconExclamationTriangle } from '@/components/icons';
-import { Label } from '@/components/ui/label';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
+} from "@/components/ui/table";
+import { IconExclamationTriangle } from "@/components/icons";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
 const props = defineProps<{
   deckId: number;
@@ -121,7 +119,7 @@ const router = useRouter();
 
 async function handleImport() {
   if (!selectedFile.value) {
-    throw new Error('No file selected');
+    throw new Error("No file selected");
   }
 
   await api.importDeckCards(props.deckId, selectedFile.value);

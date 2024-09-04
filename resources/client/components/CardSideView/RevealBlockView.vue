@@ -1,9 +1,9 @@
 <template>
   <button
-    class="flex flex-col items-center justify-center rounded-lg text-xs bg-black/5 px-4 py-2 gap-1"
+    class="flex flex-col items-center justify-center rounded-lg text-xs bg-brand-maroon-800/5 px-4 py-2 gap-1"
     :class="{
-      'text-black': !isHidden,
-      'text-black/50': isHidden,
+      'text-brand-maroon-800': !isHidden,
+      'text-brand-maroon-800/50': isHidden,
     }"
     @click.stop.prevent="isHidden = !isHidden"
   >

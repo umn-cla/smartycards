@@ -26,7 +26,7 @@
           Sign In
         </RouterLink>
       </section>
-      <section class="p-8 bg-black/10 my-8">
+      <section class="p-8 bg-brand-maroon-800/10 my-8">
         <h2 class="my-8 text-2xl text-center font-bold">Multimedia</h2>
         <div class="card-grid mx-auto max-w-screen-lg !gap-8">
           <article class="flex flex-col gap-2 items-center">

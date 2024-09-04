@@ -1,7 +1,9 @@
 <template>
   <AuthenticatedLayout>
     <header class="text-center">
-      <h1 class="text-3xl font-black text-stone-900 mb-4">Community Decks</h1>
+      <h1 class="text-3xl font-black text-brand-maroon-800 mb-4">
+        Community Decks
+      </h1>
 
       <p>SmartyCards shared with everyone.</p>
     </header>

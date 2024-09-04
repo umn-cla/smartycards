@@ -1,5 +1,5 @@
 <template>
-  <PageTitle as="h3" :size="size" class="!text-black/30">
+  <PageTitle as="h3" :size="size" class="!text-brand-maroon-800/30">
     <slot />
   </PageTitle>
 </template>

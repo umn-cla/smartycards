@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen flex flex-col font-sans">
+  <div class="min-h-screen flex flex-col font-sans text-brand-maroon-800">
     <ErrorModal />
     <RouterView />
     <!-- <VueQueryDevtools /> -->

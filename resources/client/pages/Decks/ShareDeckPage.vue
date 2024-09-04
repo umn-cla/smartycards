@@ -13,7 +13,7 @@
       <header class="mb-8 flex gap-8 flex-wrap justify-between items-start">
         <div>
           <h1 class="text-5xl font-bold">Share Deck</h1>
-          <p class="text-5xl text-black/25 font-bold">
+          <p class="text-5xl text-brand-maroon-800/25 font-bold">
             {{ deck.name }}
           </p>
         </div>
@@ -22,7 +22,7 @@
             <div>
               <Label
                 for="share-view-link"
-                class="text-neutral-900 flex gap-1 mt-4 mb-2"
+                class="text-brand-maroon-800 flex gap-1 mt-4 mb-2"
               >
                 View
                 <small class="text-neutral-500 font-normal text-xs">
@@ -35,7 +35,7 @@
             <div>
               <Label
                 for="share-edit-link"
-                class="text-neutral-900 flex gap-1 mt-4 mb-2"
+                class="text-brand-maroon-800 flex gap-1 mt-4 mb-2"
               >
                 Edit
                 <small class="text-neutral-500 font-normal text-xs">

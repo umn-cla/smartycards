@@ -19,16 +19,16 @@
         v-if="isValidUrlComputed"
         :src="modelValue"
         alt="Front of card"
-        class="block border-4 rounded-lg object-contain w-full flex-1 bg-black/5"
+        class="block border-4 rounded-lg object-contain w-full flex-1 bg-brand-maroon-800/5"
       />
       <div
         v-else
-        class="h-16 flex items-center justify-center bg-black/5 rounded-lg"
+        class="h-16 flex items-center justify-center bg-brand-maroon-800/5 rounded-lg"
       >
         <p class="text-neutral-400 text-sm">Invalid image URL</p>
       </div>
       <button
-        class="absolute top-0 right-0 bg-neutral-700 hover:bg-neutral-900 text-neutral-100 rounded-full w-6 h-6 flex items-center justify-center transition-colors"
+        class="absolute top-0 right-0 bg-neutral-700 hover:bg-brand-maroon-800 text-neutral-100 rounded-full w-6 h-6 flex items-center justify-center transition-colors"
         @click="$emit('update:modelValue', '')"
       >
         <IconX />
@@ -42,7 +42,7 @@
         :modelValue="modelValue"
         @update:modelValue="$emit('update:modelValue', $event as string)"
         placeholder="Image URL"
-        class="bg-black/5"
+        class="bg-brand-maroon-800/5"
       />
     </div>
     <div>
@@ -53,7 +53,7 @@
           $emit('update:meta', { ...meta, alt: $event as string })
         "
         placeholder="Alt text"
-        class="bg-black/5"
+        class="bg-brand-maroon-800/5"
       />
     </div>
   </div>

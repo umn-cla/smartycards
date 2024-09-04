@@ -1,7 +1,7 @@
 <template>
   <div
     :to="`/decks/${deck.id}`"
-    class="h-full w-full p-2 pt-1 rounded-xl bg-brand-gold-500/50 flex flex-col gap-4 border border-brand-gold-shadow sm:h-[24rem]"
+    class="h-full w-full p-2 pt-1 rounded-xl bg-brand-gold-300 flex flex-col gap-4 border border-brand-gold-shadow sm:h-[24rem]"
     :class="{
       'shadow-solid-gold-1px translate-y-[-1px]':
         1 <= cardCount && cardCount < 3,
@@ -16,16 +16,16 @@
     <div
       class="items-center justify-center flex flex-col flex-1 font-serif text-center"
     >
-      <h3 class="font-bold text-xl text-neutral-900">
+      <h3 class="font-bold text-xl text-brand-maroon-800">
         {{ deck.name }}
       </h3>
-      <h4 class="font-bold text-neutral-900/50" v-if="deck.description">
+      <h4 class="font-bold text-brand-maroon-800/50" v-if="deck.description">
         {{ deck.description }}
       </h4>
     </div>
 
     <footer
-      class="flex gap-4 justify-center items-center flex-wrap text-xs text-neutral-900/50 pt-2"
+      class="flex gap-4 justify-center items-center flex-wrap text-xs text-brand-maroon-800/50 pt-2"
     >
       <p class="text-">
         {{ deck.cards_count }} cards

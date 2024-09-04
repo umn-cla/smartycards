@@ -16,7 +16,7 @@
           'z-20': label === currentCardSide,
           'z-10': label !== currentCardSide,
           'bg-brand-oatmeal-50': label === 'front',
-          'rotate-y-180 bg-brand-gold-500': label === 'back',
+          'rotate-y-180 bg-brand-gold-300': label === 'back',
         }"
       >
         <template #prepend>
@@ -26,7 +26,7 @@
           <slot name="append" />
           <Button
             variant="ghost"
-            class="bg-black/5 hover:bg-black/10 uppercase text-xs tracking-wider text-brand-maroon-950 font-sans"
+            class="bg-brand-maroon-800/5 hover:bg-brand-maroon-800/10 uppercase text-xs tracking-wider text-brand-maroon-950 font-sans"
             @click="flipCard"
           >
             Flip

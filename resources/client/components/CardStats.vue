@@ -1,6 +1,6 @@
 <template>
   <div class="flex justify-end items-center">
-    <span class="text-xs border text-black/50 px-2 rounded-full">{{
+    <span class="text-xs border text-brand-maroon-800/50 px-2 rounded-full">{{
       props.card.attempts_count
     }}</span>
     Difficulty

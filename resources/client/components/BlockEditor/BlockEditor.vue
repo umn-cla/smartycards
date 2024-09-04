@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-black/5 flex flex-col">
+  <div class="bg-brand-maroon-800/5 flex flex-col">
     <DragDrop
       :modelValue="modelValue"
       group="block-editor"
@@ -13,7 +13,7 @@
           </button>
           <section class="flex-grow">
             <div class="flex justify-between items-center">
-              <h3 class="text-xs text-black/50 font-base">
+              <h3 class="text-xs text-brand-maroon-800/50 font-base">
                 {{ capitalize(block.type) }}
               </h3>
               <button
@@ -39,7 +39,10 @@
     </DragDrop>
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" class="rounded-t-none hover:bg-black/10">
+        <Button
+          variant="ghost"
+          class="rounded-t-none hover:bg-brand-maroon-800/10"
+        >
           <Icons.IconPlusFilled class="size-4 mr-2" />
           Add Block
         </Button>
