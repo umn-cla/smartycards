@@ -21,10 +21,17 @@ host('dev')
     ->set('labels', ['stage' => 'dev'])
     ->set('deploy_path', '/var/www/html/');
 
-// install private composer packages, like Laravel Nova
+    host('prod')
+    ->set('hostname', 'cla-smartcards-prd.oit.umn.edu')
+    ->set('remote_user', 'latis_deploy')
+    ->set('labels', ['stage' => 'prod'])
+    ->set('deploy_path', '/var/www/html/');
+
+
+    // install private composer packages, like Laravel Nova
 task('composer:private', function () {
     cd('{{release_path}}');
-    run('source .env && /var/www/html/.dep/composer.phar config "http-basic.nova.laravel.com" "$NOVA_USERNAME" "$NOVA_LICENSE_KEY"');
+    run('source .env && {{bin/composer}} config "http-basic.nova.laravel.com" "$NOVA_USERNAME" "$NOVA_LICENSE_KEY"');
 });
 before('deploy:vendors', 'composer:private');
 
