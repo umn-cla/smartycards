@@ -13,7 +13,7 @@
         leaveFrom="opacity-100"
         leaveTo="opacity-0"
       >
-        <div class="fixed inset-0 bg-brand-maroon-800/80" />
+        <div class="fixed inset-0 bg-black/80" />
       </TransitionChild>
 
       <div class="fixed inset-0 flex">

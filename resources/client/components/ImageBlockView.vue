@@ -8,7 +8,7 @@
   <Teleport to="body">
     <div
       v-if="isLightboxVisible"
-      class="fixed inset-0 flex items-center justify-center bg-brand-maroon-800 bg-opacity-80 z-50"
+      class="fixed inset-0 flex items-center justify-center bg-black/80 z-50"
     >
       <div class="relative" @click.stop>
         <img :src="src" :alt="alt" class="max-w-full max-h-full" />
