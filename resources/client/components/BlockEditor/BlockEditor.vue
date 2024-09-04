@@ -11,27 +11,29 @@
             <Icons.IconDragHandle class="size-4" />
             <span class="sr-only">Drag to reorder</span>
           </button>
-          <section
-            class="flex-grow px-2 py-3 flex flex-col gap-1 items-stretch justify-start"
-          >
-            <h3 class="text-xs text-neutral-400 font-base">
-              {{ capitalize(block.type) }}
-            </h3>
-            <component
-              :is="getComponentForType(block.type)"
-              :modelValue="block.content"
-              @update:modelValue="handleUpdateBlockContent(block.id, $event)"
-              :meta="block.meta"
-              @update:meta="handleUpdateBlockMeta(block.id, $event)"
-            />
+          <section class="flex-grow">
+            <div class="flex justify-between items-center">
+              <h3 class="text-xs text-black/50 font-base">
+                {{ capitalize(block.type) }}
+              </h3>
+              <button
+                class="cursor-pointer flex items-start px-3 py-3"
+                @click="removeBlock(block.id)"
+              >
+                <Icons.IconX class="size-4" />
+                <span class="sr-only">Remove block</span>
+              </button>
+            </div>
+            <div class="pr-3 pb-3">
+              <component
+                :is="getComponentForType(block.type)"
+                :modelValue="block.content"
+                @update:modelValue="handleUpdateBlockContent(block.id, $event)"
+                :meta="block.meta"
+                @update:meta="handleUpdateBlockMeta(block.id, $event)"
+              />
+            </div>
           </section>
-          <button
-            class="cursor-pointer flex items-start px-2 py-3"
-            @click="removeBlock(block.id)"
-          >
-            <Icons.IconX class="size-4" />
-            <span class="sr-only">Remove block</span>
-          </button>
         </div>
       </template>
     </DragDrop>

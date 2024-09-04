@@ -4,7 +4,7 @@
     :modelValue="modelValue"
     @update:modelValue="$emit('update:modelValue', $event)"
     :options="options"
-    class="bg-black/5 rounded-lg"
+    class="bg-black/5 rounded-sm"
   />
 </template>
 <script setup lang="ts">

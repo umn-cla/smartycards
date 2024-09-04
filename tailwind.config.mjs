@@ -146,10 +146,10 @@ const tailwindConfig = {
         },
       },
       borderRadius: {
-        xl: "calc(1rem + 4px)",
-        lg: "1rem",
-        md: "calc(1rem - 2px)",
-        sm: "calc(1rem - 4px)",
+        xl: "1rem",
+        lg: "0.75rem",
+        md: "0.5rem",
+        sm: "0.25rem",
       },
       keyframes: {
         "accordion-down": {
