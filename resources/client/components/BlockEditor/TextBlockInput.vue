@@ -23,6 +23,7 @@ defineEmits<{
 }>();
 
 const editor = ref<InstanceType<typeof QuillyEditor>>();
+let quill: Quill | null = null;
 
 const options = computed(() => ({
   theme: "bubble",
@@ -46,6 +47,16 @@ const options = computed(() => ({
           key: "Tab",
           handler: () => true,
         },
+        clearFormatting: {
+          key: "\\",
+          shortKey: true,
+          handler(range, context) {
+            if (!quill) {
+              return;
+            }
+            quill.removeFormat(range.index, range.length, Quill.sources.USER);
+          },
+        },
       },
     },
   },
@@ -58,7 +69,7 @@ onMounted(() => {
     throw new Error("Editor element not found");
   }
 
-  const quill = editor.value.initialize(Quill);
+  quill = editor.value.initialize(Quill);
 });
 </script>
 <style>
