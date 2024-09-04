@@ -7,5 +7,6 @@ export function useDeckByIdQuery(deckId: Ref<number>) {
   return useQuery({
     queryKey: [DECKS_QUERY_KEY, deckId],
     queryFn: () => api.getDeckById(deckId.value),
+    refetchOnWindowFocus: false,
   });
 }
