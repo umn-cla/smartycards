@@ -81,8 +81,16 @@ class DeckMembershipController extends Controller
 
     public function joinAsViewer(Request $request, Deck $deck)
     {
+        // if user is already a member of the deck, return 409
+        $currentUserId = $request->user()->id;
+        $isMemberOfDeck = $deck->memberships()->where('user_id', $currentUserId)->exists();
+        if ($isMemberOfDeck) {
+            return response()->json([
+                'message' => 'User is already a member of this deck.',
+            ], 409); // conflict
+        }
 
-        $request->user()->can('joinAsViewer', $deck);
+        Gate::authorize('joinAsViewer', $deck);
 
         $membership = $deck->memberships()->create([
             'user_id' => $request->user()->id,

@@ -32,10 +32,7 @@ class DeckResource extends JsonResource
 
             'memberships' => DeckMembershipResource::collection($this->whenLoaded('memberships')),
 
-            'current_user_role' => $this->when(
-                isset($this->currentUserMemberships),
-                $this->currentUserMemberships->first()?->role ?? null,
-            ),
+            'current_user_role' => $this->current_user_role,
 
             'capabilities' => [
                 'canUpdate' => $request->user()->can('update', $this->resource),
@@ -43,7 +40,8 @@ class DeckResource extends JsonResource
                 'canViewMemberships' => $request->user()->can('viewMemberships', $this->resource),
                 'canCreateMembership' => $request->user()->can('createMembership', $this->resource),
                 'canLeave' => $request->user()->can('leave', $this->resource),
-                'canJoinAsViewer' => $request->user()->can('joinAsViewer', $this->resource),
+                // only allow joining as viewer if the user is not a member of the deck
+                'canJoinAsViewer' => $this->current_user_role === null && $request->user()->can('joinAsViewer', $this->resource),
             ],
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,

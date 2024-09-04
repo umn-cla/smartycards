@@ -22,6 +22,7 @@ class DeckController extends Controller
 
         $usersDecks = $currentUser
             ->decks()
+            ->withCurrentUserRole($currentUser)
             ->withUserStats($currentUser)
             ->get();
 
@@ -63,6 +64,7 @@ class DeckController extends Controller
         $user = $request->user();
 
         $deck = Deck::query()
+            ->withCurrentUserRole($user)
             ->withUserStats($user)
             ->with([
                 'cards' => function ($query) use ($user) {
@@ -125,9 +127,12 @@ class DeckController extends Controller
         return response()->json(null, 204);
     }
 
-    public function publicDecks()
+    public function publicDecks(Request $request)
     {
-        $decks = Deck::where('is_public', true)->get();
+        $decks = Deck::query()
+            ->where('is_public', true)
+            ->withCurrentUserRole($request->user())
+            ->get();
 
         return DeckResource::collection($decks);
     }

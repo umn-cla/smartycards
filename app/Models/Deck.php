@@ -81,9 +81,19 @@ class Deck extends Model implements AuditableContract
         return $query->addSelect(['avg_score' => $avgOfAveragesSubQuery]);
     }
 
+    public function scopeWithCurrentUserRole(Builder $query, User $user): Builder
+    {
+        return $query->addSelect([
+            'current_user_role' => DeckMembership::select('role')
+                ->whereColumn('deck_id', 'decks.id')
+                ->where('user_id', $user->id)
+                ->limit(1),
+        ]);
+    }
+
     public function scopeWithUserStats(Builder $query, User $user): Builder
     {
-        return $query->with('currentUserMemberships')
+        return $query
             ->withCount('cards')
             ->withCount('memberships')
             ->withLastAttemptedAt($user)
@@ -100,10 +110,8 @@ class Deck extends Model implements AuditableContract
         return $this->memberships()->where('user_id', $user->id)->exists();
     }
 
-    public function currentUserMemberships()
+    public function currentUserMembership()
     {
-        $currentUserId = Auth::user()->id;
-
-        return $this->memberships()->where('user_id', $currentUserId);
+        return $this->memberships()->where('user_id', Auth::id())->first();
     }
 }

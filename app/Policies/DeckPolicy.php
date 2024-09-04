@@ -92,6 +92,6 @@ class DeckPolicy
 
     public function joinAsViewer(User $user, Deck $deck): bool
     {
-        return ! $user->isMemberOfDeck($deck) && $deck->is_public;
+        return $deck->is_public;
     }
 }
