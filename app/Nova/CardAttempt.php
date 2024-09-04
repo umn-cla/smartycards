@@ -4,6 +4,7 @@ namespace App\Nova;
 
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\BelongsTo;
+use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
@@ -51,6 +52,7 @@ class CardAttempt extends Resource
             BelongsTo::make('User'),
             BelongsTo::make('Card'),
             BelongsTo::make('Deck'),
+            DateTime::make('Created At')->sortable(),
         ];
     }
 
