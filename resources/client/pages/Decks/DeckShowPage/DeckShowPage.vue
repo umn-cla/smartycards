@@ -30,9 +30,11 @@
       </div>
 
       <section class="my-8">
-        <header class="my-4 flex justify-between items-baseline">
+        <header
+          class="flex justify-between items-baseline sticky top-16 lg:top-0 z-10 bg-brand-oatmeal-100 py-4"
+        >
           <h3 class="text-3xl font-bold">Cards</h3>
-          <Button @click="flipAllCards"> Flip All </Button>
+          <Button @click="flipAllCards" variant="secondary"> Flip All </Button>
         </header>
         <div class="card-grid">
           <RouterLink
