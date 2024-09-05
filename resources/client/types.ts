@@ -180,3 +180,18 @@ export interface CardStats {
   avg_score: number;
   last_attempted_at: ISODateTime;
 }
+
+export interface QuizQuestion {
+  prompt: string;
+  choices: string[];
+  correctChoiceIndex: number;
+}
+
+export interface Quiz {
+  questions: QuizQuestion[];
+}
+
+export interface QuizOptions {
+  cardSide: CardSideName;
+  numberOfQuestions: number;
+}

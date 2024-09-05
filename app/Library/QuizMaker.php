@@ -12,7 +12,8 @@ class QuizMaker
     private array $options;
 
     private array $defaultOptions = [
-        'num_questions' => 10,
+        'cardSide' => 'front',
+        'numberOfQuestions' => 10,
         'challenge_level' => 'undergrad',
     ];
 
@@ -29,7 +30,7 @@ class QuizMaker
     {
         $challengeLevel = $this->options['challenge_level'];
         $systemText =
-"You generate multiple choice quizzes from a set of json flash card data, using distractors at the {$challengeLevel} level. Include some distractors that are not part of the flash card data set. Your response should use the following formats and respond in JSON.".
+"You generate multiple choice quizzes from a set of json flash card data at the {$challengeLevel} level. You can include some distractors that are part of the data set, but also include good distractors that are not part of the flash card data set. Your response should use the following formats and respond in JSON.".
 
 "```ts
 interface Question {
@@ -77,7 +78,7 @@ interface Quiz {
         $cards = $this->deck
             ->cards()
             ->inRandomOrder()
-            ->limit($this->options['num_questions'])
+            ->limit($this->options['numberOfQuestions'])
             ->get()
             ->map(fn ($card) => $this->normalizeCard($card));
 
@@ -87,8 +88,10 @@ interface Quiz {
     private function getPrompt()
     {
         $stringifiedCards = $this->getStringifiedCards();
+        $numberOfQuestions = $this->options['numberOfQuestions'];
+        // $cardSide = $this->options['cardSide'];
 
-        return "Generate a quiz of {$this->options['num_questions']} from the following flash cards: {$stringifiedCards}";
+        return "Generate a quiz of {$numberOfQuestions} from the following flash cards: {$stringifiedCards}";
     }
 
     public function generateQuiz()
@@ -102,10 +105,9 @@ interface Quiz {
         try {
             $response = $this->openAI->request($this->getPrompt(), $this->getSystemText());
 
-            return $response;
-            // $quiz = json_decode($response, true);
+            $quiz = json_decode($response, true);
 
-            // return $quiz;
+            return $quiz;
         } catch (\Exception $e) {
             throw new \Exception("Failed to generate quiz: {$e->getMessage()}");
         }

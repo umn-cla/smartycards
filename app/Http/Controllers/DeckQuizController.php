@@ -17,7 +17,8 @@ class DeckQuizController extends Controller
         Gate::authorize('view', $deck);
 
         $validated = $request->validate([
-            'num_questions' => 'required|integer',
+            'cardSide' => 'required|in:front,back',
+            'numberOfQuestions' => 'required|integer',
         ]);
 
         $quizMaker = new QuizMaker($deck, $validated);
