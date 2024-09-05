@@ -10,7 +10,7 @@ class OpenAIService
 {
     private OpenAIClient $client;
 
-    private string $systemText;
+    private string $systemText = '';
 
     public function __construct(?OpenAIClient $client = null)
     {
@@ -39,7 +39,7 @@ class OpenAIService
      */
     public function request(string $prompt, ?string $systemText = null): string
     {
-        $systemText ??= $this->systemText;
+        $systemText = $systemText ?? $this->systemText;
         $payload = ChatRequest::createPayload($prompt, $systemText);
 
         try {
