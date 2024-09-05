@@ -96,12 +96,6 @@ interface Quiz {
 
     public function generateQuiz()
     {
-
-        var_dump([
-            'systemText' => $this->getSystemText(),
-            'prompt' => $this->getPrompt(),
-        ]);
-
         try {
             $response = $this->openAI->request($this->getPrompt(), $this->getSystemText());
 
