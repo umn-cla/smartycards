@@ -75,10 +75,12 @@ interface Quiz {
 
     public function getNormalizedCards()
     {
+        $numberOfQuestions = min($this->options['numberOfQuestions'], $this->deck->cards()->count());
+
         return $this->deck
             ->cards()
             ->inRandomOrder()
-            ->limit($this->options['numberOfQuestions'])
+            ->limit($numberOfQuestions)
             ->get()
             ->map(fn ($card) => $this->normalizeCard($card));
     }
