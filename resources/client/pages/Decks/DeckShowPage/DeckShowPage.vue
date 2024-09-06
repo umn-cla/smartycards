@@ -31,7 +31,7 @@
           :to="{ name: 'decks.quiz', params: { deckId } }"
           class="bg-brand-blue-500 px-8 py-4 rounded-lg text-4xl shadow-solid-blue-2 text-white"
         >
-          Quiz Me
+          ✨ Quiz Me
         </RouterLink>
       </div>
 
