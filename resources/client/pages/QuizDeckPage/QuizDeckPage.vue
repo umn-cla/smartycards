@@ -124,7 +124,7 @@ const props = defineProps<{
 const state = reactive({
   quizState: "setup" as "setup" | "loading" | "in-progress" | "complete",
   cardSide: "front" as T.CardSideName,
-  numberOfQuestions: 3,
+  numberOfQuestions: 10,
   quiz: null as null | T.Quiz,
   activeQuestionIndex: 0,
   correctCount: 0,
