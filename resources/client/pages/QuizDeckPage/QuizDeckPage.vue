@@ -67,6 +67,11 @@
 
       <section v-else-if="state.quizState === 'loading'">
         <h2 class="text-center font-bold text-xl">Loading</h2>
+
+        <div class="flex flex-col items-center justify-center gap-4 my-8">
+          <p>{{ waitMessage }}</p>
+          <IconSpinner class="size-12 text-brand-maroon-800/50" />
+        </div>
       </section>
 
       <section v-else-if="state.quizState === 'in-progress'">
@@ -109,13 +114,15 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
-import { computed, reactive } from "vue";
+import { computed, reactive, ref, watch } from "vue";
 import { useDeckByIdQuery } from "@/queries/decks";
 import Quiz from "./Quiz.vue";
 import * as api from "@/api";
 import * as T from "@/types";
 import Tuple from "@/components/Tuple.vue";
 import IconChevronLeft from "@/components/icons/IconChevronLeft.vue";
+import IconSpinner from "@/components/icons/IconSpinner.vue";
+import { set } from "ramda";
 
 const props = defineProps<{
   deckId: number;
@@ -154,5 +161,49 @@ function handleEndQuiz(payload: {
   state.correctCount = payload.correctCount;
   state.incorrectCount = payload.incorrectCount;
 }
+
+// shuffle through some messages while users are waiting
+const messages = [
+  "Just a few moments...",
+  "Shuffling cards...",
+  "Reticulating splines...",
+  "Contacting the mothership...",
+  "Any moment now...",
+  "On the count of three...",
+  "Ooh! Look! A shiny!",
+  "Sorry, I lost my train of thought...",
+  "What was I saying?",
+  "Oh yeah, loading...",
+];
+
+const currentWaitMessageIndex = ref(0);
+
+const waitMessage = computed(() => {
+  return messages[currentWaitMessageIndex.value];
+});
+
+watch(
+  () => state.quizState,
+  (newState) => {
+    let timeout = null as null | ReturnType<typeof setTimeout>;
+    if (newState !== "loading") {
+      if (timeout) {
+        clearTimeout(timeout);
+      }
+
+      currentWaitMessageIndex.value = 0;
+      return;
+    }
+
+    // start the wait message shuffle
+    function advanceWaitMessage() {
+      currentWaitMessageIndex.value =
+        (currentWaitMessageIndex.value + 1) % messages.length;
+      timeout = setTimeout(advanceWaitMessage, 2000);
+    }
+
+    advanceWaitMessage();
+  },
+);
 </script>
 <style scoped></style>
