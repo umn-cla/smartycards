@@ -249,6 +249,16 @@ export async function joinCommunityDeck(deckId: number) {
   console.log({ res });
 }
 
+export async function createQuizForDeck(
+  deckId: number,
+  options: T.QuizOptions,
+) {
+  await csrf();
+  const res = await axios.post<T.Quiz>(`/decks/${deckId}/quiz`, options);
+
+  return res.data;
+}
+
 export async function csrf() {
   await axios.get(`${config.api.origin}/sanctum/csrf-cookie`);
 }

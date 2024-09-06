@@ -131,6 +131,14 @@ const router = createRouter({
       }),
     },
     {
+      path: "/decks/:deckId/quiz",
+      name: "decks.quiz",
+      component: () => import("../pages/QuizDeckPage/QuizDeckPage.vue"),
+      props: (route) => ({
+        deckId: Number(route.params.deckId),
+      }),
+    },
+    {
       path: "/decks/:deckId/practice/summary",
       name: "decks.practice.summary",
       component: () => import("@/pages/Decks/PracticeSummaryPage.vue"),

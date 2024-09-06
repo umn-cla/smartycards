@@ -32,6 +32,7 @@ const brandColors = {
     800: "#451022",
     900: "#2F0A1F", // dark bg
     950: "#1F0012", // text dark
+    shadow: "#2F0A1F",
   },
   gold: {
     300: "#f7e6af",
@@ -46,6 +47,10 @@ const brandColors = {
     500: "#14917E",
     300: "#27BEA7",
     shadow: "#09594D",
+  },
+  blue: {
+    500: "#146d91",
+    shadow: "#1c404f",
   },
 };
 
@@ -77,6 +82,8 @@ const tailwindConfig = {
         "solid-gold-3": `0 0.75rem 0 0 ${brandColors.gold.shadow}`,
         "solid-gold-4": `0 1rem 0 0 ${brandColors.gold.shadow}`,
         "solid-teal-2": `0 0.5rem 0 0 ${brandColors.teal.shadow}`,
+        "solid-maroon-2": `0 0.5rem 0 0 ${brandColors.maroon.shadow}`,
+        "solid-blue-2": `0 0.5rem 0 0 ${brandColors.blue.shadow}`,
       },
       colors: {
         "black/1": "hsla(0,0%,0%,0.01)",
