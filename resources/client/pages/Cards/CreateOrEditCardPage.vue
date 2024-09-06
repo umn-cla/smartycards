@@ -21,7 +21,7 @@
               <PageSubtitle>{{ deck?.name }}</PageSubtitle>
             </div>
             <div class="flex gap-2">
-              <Button asChild variant="secondary">
+              <Button asChild variant="ghost">
                 <RouterLink
                   :to="{ name: 'decks.show', params: { deckId } }"
                   class="btn"
@@ -29,7 +29,8 @@
                   Cancel
                 </RouterLink>
               </Button>
-              <Button @click="handleSave"> Save </Button>
+              <Button v-if="isCreateMode" @click="handleSave({ saveAndAddAnother: true })" variant="outline" class="bg-transparent border-brand-maroon-800">Create and Add Another</Button>
+              <Button @click="handleSave"> {{ isCreateMode ? 'Create' : 'Save' }} </Button>
             </div>
           </header>
 
@@ -136,7 +137,7 @@ const hasErrors = computed(() => {
   return Object.values(errors.value).some((error) => !!error);
 });
 
-function handleSave() {
+function handleSave({ saveAndAddAnother = false } = {}) {
   hasAttemptedSave.value = true;
 
   if (hasErrors.value) {
@@ -144,6 +145,12 @@ function handleSave() {
   }
 
   const onSuccess = () => {
+    if (saveAndAddAnother) {
+      form.front = [createTextContentBlock()];
+      form.back = [createTextContentBlock()];
+      return;
+    }
+
     router.push({ name: "decks.show", params: { deckId: props.deckId } });
   };
 
