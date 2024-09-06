@@ -18,7 +18,7 @@ class DeckQuizController extends Controller
 
         $validated = $request->validate([
             'cardSide' => 'required|in:front,back',
-            'numberOfQuestions' => 'required|integer,min:1,max:10',
+            'numberOfQuestions' => 'required|integer|min:1|max:10',
         ]);
 
         $quizMaker = new QuizMaker($deck, $validated);
