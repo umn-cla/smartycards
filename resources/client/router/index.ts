@@ -133,7 +133,7 @@ const router = createRouter({
     {
       path: "/decks/:deckId/quiz",
       name: "decks.quiz",
-      component: () => import("../pages/Decks/QuizDeckPage.vue"),
+      component: () => import("../pages/QuizDeckPage/QuizDeckPage.vue"),
       props: (route) => ({
         deckId: Number(route.params.deckId),
       }),
