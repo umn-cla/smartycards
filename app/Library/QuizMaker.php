@@ -4,6 +4,7 @@ namespace App\Library;
 
 use App\Library\OpenAIService\OpenAIService;
 use App\Models\Deck;
+use Illuminate\Support\Collection;
 
 class QuizMaker
 {
@@ -53,8 +54,10 @@ interface Quiz {
     /**
      * converts a card side to a string by only
      * considering text content blocks, and then joining them
+     *
+     * @return string
      */
-    private function normalizeCardSide($cardSide)
+    private function normalizeCardSide(array $cardSide)
     {
         // a card side is just an array of content blocks
         $contentBlocks = $cardSide;
@@ -65,7 +68,12 @@ interface Quiz {
             ->join('');
     }
 
-    private function normalizeCard($card)
+    /**
+     * Normalizes a card by converting its sides to strings.
+     *
+     * @return array
+     */
+    private function normalizeCard(object $card)
     {
         return [
             'front' => $this->normalizeCardSide($card->front),
@@ -73,7 +81,10 @@ interface Quiz {
         ];
     }
 
-    public function getNormalizedCards()
+    /**
+     * Retrieves and normalizes a limited number of cards from the deck.
+     */
+    public function getNormalizedCards(): Collection
     {
         $numberOfQuestions = min($this->options['numberOfQuestions'], $this->deck->cards()->count());
 
@@ -85,7 +96,6 @@ interface Quiz {
             ->map(fn ($card) => $this->normalizeCard($card));
     }
 
-
     public function getPrompt($level = 'easy')
     {
         $stringifiedCards = $this->getNormalizedCards()->toJson();
@@ -95,12 +105,48 @@ interface Quiz {
         $prompts = [
             'easy' => "Generate a quiz of {$numberOfQuestions} questions from the following flash cards. Use the {$cardSide} side of the card as the basis for a question prompt (but you may need to give more context for the question to make sense) and the other side as the correct answer.",
 
-            'medium' =>  "Generate a quiz of {$numberOfQuestions} questions from the following flash cards, testing both front to back and back to front knowledge. The questions should be at a higher level of Bloom's Taxonomy, requiring application, analysis, or synthesis of multiple cards to answer.",
+            'medium' => "Generate a quiz of {$numberOfQuestions} questions from the following flash cards, testing both front to back and back to front knowledge. The questions should be at a higher level of Bloom's Taxonomy, requiring application, analysis, or synthesis of multiple cards to answer.",
         ];
 
         $prompt = $prompts[$level];
 
         return "{$prompt} {$stringifiedCards}";
+    }
+
+    public function shuffleQuestionChoices(array $question)
+    {
+        $choices = $question['choices'];
+        $correctChoiceIndex = $question['correctChoiceIndex'];
+        $correctChoice = $choices[$correctChoiceIndex];
+
+        // Remove the correct choice and shuffle the remaining choices
+        $shuffledChoices = collect($choices)
+            ->except($correctChoiceIndex)
+            ->shuffle()
+            ->values()
+            ->toArray();
+
+        // Insert the correct choice at a random position
+        $randomIndex = rand(0, count($shuffledChoices));
+        array_splice($shuffledChoices, $randomIndex, 0, $correctChoice);
+
+        // Return the new question with updated choices and correct index
+        return [
+            ...$question,
+            'choices' => $shuffledChoices,
+            'correctChoiceIndex' => $randomIndex,
+        ];
+    }
+
+    public function randomizeQuiz($quiz)
+    {
+        $questions = $quiz['questions'];
+        $randomizedQuestions = array_map([$this, 'shuffleQuestionChoices'], $questions);
+
+        return [
+            ...$quiz,
+            'questions' => $randomizedQuestions,
+        ];
     }
 
     public function generateQuiz()
@@ -110,7 +156,7 @@ interface Quiz {
 
             $quiz = json_decode($response, true);
 
-            return $quiz;
+            return $this->randomizeQuiz($quiz);
         } catch (\Exception $e) {
             throw new \Exception("Failed to generate quiz: {$e->getMessage()}");
         }
