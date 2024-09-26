@@ -11,6 +11,7 @@
 import { QuillyEditor } from "vue-quilly";
 import Quill from "quill/quill"; // Core build
 import { ref, onMounted, computed } from "vue";
+import "quill-paste-smart";
 import "quill/dist/quill.core.css";
 import "quill/dist/quill.bubble.css";
 
@@ -72,6 +73,7 @@ onMounted(() => {
   quill = editor.value.initialize(Quill);
 });
 </script>
+<style scoped></style>
 <style>
 .ql-editor {
   /* prevent clipping link tooltips in bubble theme */
