@@ -60,7 +60,7 @@
             >
               <template #prepend>
                 <div class="flex justify-between items-center">
-                  <ScoreDots
+                  <ScoreEmoji
                     :score="card.avg_score / 3"
                     title="Difficulty"
                     class="my-1"
@@ -98,7 +98,7 @@ import MoreDeckActions from "@/pages/Decks/DeckIndexPage/MoreDeckActions.vue";
 import PageHeader from "@/components/PageHeader.vue";
 import FlippableCard from "@/components/FlippableCard.vue";
 import IconPlusFilled from "@/components/icons/IconPlusFilled.vue";
-import ScoreDots from "@/components/ScoreDots.vue";
+import ScoreEmoji from "@/components/ScoreEmoji.vue";
 import MoreCardActions from "./MoreCardActions.vue";
 import { ref } from "vue";
 

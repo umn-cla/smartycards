@@ -9,7 +9,7 @@
 </template>
 <script setup lang="ts">
 import * as T from "@/types";
-import ScoreDots from "./ScoreDots.vue";
+import ScoreDots from "./ScoreEmoji.vue";
 import { computed } from "vue";
 
 const props = defineProps<{
