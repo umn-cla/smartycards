@@ -19,6 +19,14 @@ axios.interceptors.response.use(undefined, async (err: AxiosError) => {
   if (err.response) {
     // The request was made and the server responded with a status code
     // that falls out of the range of 2xx
+
+    if (err.response.status === 401) {
+      // Unauthorized
+      // Redirect to login page
+      await redirectToLogin(window.location.href);
+      return;
+    }
+
     const data = (err.response.data as { message?: string }) ?? {};
     const message = data?.message ?? err.message;
     const statusCode = err.response.status;
