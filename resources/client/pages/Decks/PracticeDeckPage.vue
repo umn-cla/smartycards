@@ -15,7 +15,7 @@
           {{ deck?.description }}
         </h2>
       </div>
-      <div class="flex items-baseline justify-between w-full">
+      <div class="flex items-center justify-between w-full flex-wrap">
         <div class="flex gap-1 items-baseline">
           <Label for="starting-side-select" class="sr-only">Start Side</Label>
           <Select v-model="state.initialSideName" id="starting-side-select">
@@ -27,6 +27,26 @@
               <SelectItem value="back">Back</SelectItem>
             </SelectContent>
           </Select>
+        </div>
+        <div class="hidden sm:flex items-center justify-center">
+          <Button
+            @click="state.orientation = 'portrait'"
+            :variant="
+              state.orientation === 'portrait' ? 'default' : 'secondary'
+            "
+            class="uppercase text-xs tracking-wider rounded-r-none"
+          >
+            Tall
+          </Button>
+          <Button
+            @click="state.orientation = 'landscape'"
+            :variant="
+              state.orientation === 'landscape' ? 'default' : 'secondary'
+            "
+            class="uppercase text-xs tracking-wider rounded-l-none"
+          >
+            Wide
+          </Button>
         </div>
         <Button asChild variant="secondary">
           <RouterLink
@@ -61,8 +81,10 @@
             :front="state.isTransitiongToNext ? [] : state.activeCard?.front"
             :back="state.isTransitiongToNext ? [] : state.activeCard?.back"
             :initialSideName="state.initialSideName"
-            class="!w-60 mx-auto transition-all duration-300"
+            class="max-w-full max-h-full mx-auto transition-all duration-300"
             :class="{
+              'w-[33dvh] h-[50dvh]': state.orientation === 'portrait',
+              'w-[50dvw] h-[33dvw]': state.orientation === 'landscape',
               'opacity-0 translate-y-[50vh]': state.isTransitiongToNext,
               'opacity-100': !state.isTransitiongToNext,
             }"
@@ -108,6 +130,7 @@ const state = reactive({
   cardsToPractice: [] as T.Card[],
   isShowingHint: false,
   isTransitiongToNext: false,
+  orientation: "portrait" as "portrait" | "landscape",
 });
 
 const deckIdRef = computed(() => props.deckId);
