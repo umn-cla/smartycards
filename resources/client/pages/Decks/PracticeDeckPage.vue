@@ -25,6 +25,7 @@
             <SelectContent>
               <SelectItem value="front">Front</SelectItem>
               <SelectItem value="back">Back</SelectItem>
+              <SelectItem value="random">Random</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -80,7 +81,12 @@
           <FlippableCard
             :front="state.isTransitiongToNext ? [] : state.activeCard?.front"
             :back="state.isTransitiongToNext ? [] : state.activeCard?.back"
-            :initialSideName="state.initialSideName"
+            :showLabels="true"
+            :initialSideName="
+              state.initialSideName === 'random'
+                ? getRandomSideForCard(state.activeCard?.id)
+                : state.initialSideName
+            "
             class="max-w-full max-h-full mx-auto transition-all duration-300"
             :class="{
               'w-[33dvh] h-[50dvh]': state.orientation === 'portrait',
@@ -109,7 +115,6 @@ import { useDeckByIdQuery } from "@/queries/decks";
 import * as T from "@/types";
 import CardAttemptChoices from "@/components/CardAttemptChoices.vue";
 import { Button } from "@/components/ui/button";
-import { useCardStatsByIdQuery } from "@/queries/cards/useCardStatsByIdQuery";
 import FlippableCard from "@/components/FlippableCard.vue";
 import {
   Select,
@@ -126,7 +131,11 @@ const props = defineProps<{
 
 const state = reactive({
   activeCard: null as T.Card | null,
-  initialSideName: "front" as SideName,
+  initialSideName: "random" as SideName | "random",
+
+  // we want "sticky" random sides for each card
+  // so that the user sees the same side when it comes up again
+  randomSideMap: {} as Record<T.Card["id"], SideName>,
   cardsToPractice: [] as T.Card[],
   isShowingHint: false,
   isTransitiongToNext: false,
@@ -134,18 +143,11 @@ const state = reactive({
 });
 
 const deckIdRef = computed(() => props.deckId);
-const activeCardId = computed(() => state.activeCard?.id ?? null);
 
 const { data: deck, isLoading: isDeckLoading } = useDeckByIdQuery(deckIdRef);
-const { data: activeCardWithStats } = useCardStatsByIdQuery(activeCardId);
 
 const cards = computed(() => deck.value?.cards ?? []);
 const totalCards = computed(() => cards.value.length);
-const currentCardDifficulty = computed(() =>
-  activeCardWithStats.value?.avg_score
-    ? 1 - activeCardWithStats.value.avg_score / 3
-    : 0,
-);
 
 type SideName = "front" | "back";
 
@@ -155,6 +157,16 @@ function shuffleCards(cards: T.Card[]): T.Card[] {
 
 function getRandomIntBetweenInclusive(min: number, max: number): number {
   return Math.floor(Math.random() * (max - min + 1) + min);
+}
+
+function getRandomSide(): SideName {
+  return Math.random() < 0.5 ? "front" : "back";
+}
+
+function getRandomSideForCard(cardId: T.Card["id"]): SideName {
+  const randomSide = state.randomSideMap[cardId] ?? getRandomSide();
+  state.randomSideMap[cardId] = randomSide;
+  return randomSide;
 }
 
 function getFuzzyReinsertIndex(score: number, length: number): number {
