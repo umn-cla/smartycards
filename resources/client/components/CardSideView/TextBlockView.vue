@@ -4,9 +4,9 @@
       v-html="block.content"
       @click.stop
       ref="blockElRef"
-      class="text-block-view"
+      class="text-block-view font-serif leading-5"
       :class="{
-        'text-center ': wordCount < 5,
+        'text-center text-xl': wordCount < 5,
       }"
     />
   </div>
@@ -20,4 +20,8 @@ const props = defineProps<{
 
 const wordCount = computed(() => props.block.content.split(/\s+/).length);
 </script>
-<style scoped></style>
+<style>
+.text-block-view p {
+  margin-bottom: 1rem;
+}
+</style>

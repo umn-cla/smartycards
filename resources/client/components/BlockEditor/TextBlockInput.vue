@@ -13,7 +13,8 @@ import Quill from "quill/quill"; // Core build
 import { ref, onMounted, computed } from "vue";
 import "quill-paste-smart";
 import "quill/dist/quill.core.css";
-import "quill/dist/quill.bubble.css";
+import "quill/dist/quill.snow.css";
+// import "quill/dist/quill.bubble.css";
 
 defineProps<{
   modelValue: string;
@@ -27,7 +28,7 @@ const editor = ref<InstanceType<typeof QuillyEditor>>();
 let quill: Quill | null = null;
 
 const options = computed(() => ({
-  theme: "bubble",
+  theme: "snow",
   // bounds: editor.value ? editor.value.$el : null,
   modules: {
     toolbar: [
@@ -74,9 +75,27 @@ onMounted(() => {
 });
 </script>
 <style scoped></style>
-<style>
+<style type="postcss">
 .ql-editor {
   /* prevent clipping link tooltips in bubble theme */
   overflow: visible;
+  @apply font-serif text-base leading-5;
+}
+
+.ql-toolbar.ql-snow {
+  border: 0;
+}
+
+.ql-container.ql-snow {
+  border: 0;
+}
+
+.ql-snow.ql-toolbar .ql-active {
+  background: hsla(0, 0%, 100%, 0.75);
+  border-radius: 4px;
+}
+
+.ql-editor p {
+  margin-bottom: 1rem;
 }
 </style>

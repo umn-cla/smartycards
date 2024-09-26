@@ -10,6 +10,7 @@
         v-for="{ side, label } in labelledCardSides"
         :key="label"
         :label="label === 'back' ? 'Back' : 'Front'"
+        :showLabel="showLabels"
         :side="side"
         class="absolute w-full h-full backface-hidden color-maroon-950"
         :class="{
@@ -48,9 +49,11 @@ const props = withDefaults(
     front: CardSide;
     back: CardSide;
     initialSideName?: CardSideName;
+    showLabels?: boolean;
   }>(),
   {
     initialSideName: "front",
+    showLabels: false,
   },
 );
 

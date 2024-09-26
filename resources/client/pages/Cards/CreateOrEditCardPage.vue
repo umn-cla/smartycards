@@ -13,14 +13,12 @@
 
       <Transition name="fade">
         <div v-if="deck">
-          <header
-            class="mb-8 flex gap-8 flex-wrap justify-between items-start sticky top-0 z-10"
-          >
+          <header class="mb-8 flex gap-8 flex-wrap justify-between items-start">
             <div>
               <PageTitle>{{ isCreateMode ? "Create" : "Edit" }} Card</PageTitle>
               <PageSubtitle>{{ deck?.name }}</PageSubtitle>
             </div>
-            <div class="flex gap-2">
+            <div class="flex gap-2 flex-wrap">
               <Button asChild variant="ghost">
                 <RouterLink
                   :to="{ name: 'decks.show', params: { deckId } }"
@@ -29,12 +27,19 @@
                   Cancel
                 </RouterLink>
               </Button>
-              <Button v-if="isCreateMode" @click="handleSave({ saveAndAddAnother: true })" variant="outline" class="bg-transparent border-brand-maroon-800">Create and Add Another</Button>
-              <Button @click="handleSave"> {{ isCreateMode ? 'Create' : 'Save' }} </Button>
+              <Button
+                v-if="isCreateMode"
+                @click="handleSave({ saveAndAddAnother: true })"
+                variant="outline"
+                class="bg-transparent border-brand-maroon-800"
+                >Create + Another</Button
+              >
+              <Button @click="handleSave">
+                {{ isCreateMode ? "Create" : "Save" }}
+              </Button>
             </div>
           </header>
-
-          <div class="my-4 grid sm:grid-cols-2 gap-4">
+          <div class="my-4 grid sm:grid-cols-2 gap-4 mb-12">
             <div v-for="side in ['front', 'back']">
               <CardSideInput
                 :id="`${deckId}-${side}`"

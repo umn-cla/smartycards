@@ -1,7 +1,8 @@
 <template>
-  <div
-    class="rounded-lg p-2 flex flex-col gap-4 font-serif text-xl border border-black/20"
-  >
+  <div class="rounded-lg p-2 flex flex-col gap-4 border border-black/20">
+    <h2 class="text-xs uppercase text-center" v-if="showLabel">
+      {{ props.label }}
+    </h2>
     <slot name="prepend" />
     <div
       class="flex flex-col gap-4 flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-black/10 scrollbar-track-transparent"
@@ -48,10 +49,14 @@ import AudioPlayer from "@/components/AudioPlayer.vue";
 import ImageBlockView from "@/components/CardSideView/ImageBlockView.vue";
 import TextBlockView from "./TextBlockView.vue";
 
-const props = defineProps<{
-  label?: string;
-  side: T.CardSide;
-}>();
+const props = withDefaults(
+  defineProps<{
+    label?: string;
+    side: T.CardSide;
+    showLabel?: boolean;
+  }>(),
+  {},
+);
 
 const contentBlocks = computed(() => props.side);
 
