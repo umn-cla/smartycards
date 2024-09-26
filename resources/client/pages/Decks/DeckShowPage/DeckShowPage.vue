@@ -62,15 +62,10 @@
                 <div class="flex justify-between items-center">
                   <ScoreEmoji
                     :score="card.avg_score / 3"
+                    :attempts="card.attempts_count"
                     title="Difficulty"
                     class="my-1"
-                    v-if="card.attempts_count"
                   />
-                  <span
-                    v-else
-                    class="text-xs font-sans bg-umn-gold-300 rounded-full px-2 leading-none flex items-center py-1"
-                    >New</span
-                  >
                   <MoreCardActions
                     :canDelete="canDelete"
                     :canEdit="canEdit"
