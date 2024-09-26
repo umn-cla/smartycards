@@ -26,7 +26,7 @@
 
 <script setup lang="ts">
 import { onMounted, onUnmounted, ref, watch } from "vue";
-import { IconX } from "./icons";
+import { IconX } from "../icons";
 
 defineProps<{
   src: string;

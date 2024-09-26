@@ -4,14 +4,16 @@
   >
     <slot name="prepend" />
     <div
-      class="flex items-center justify-center flex-col gap-4 flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-black/10 scrollbar-track-transparent"
+      class="flex flex-col gap-4 flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-black/10 scrollbar-track-transparent"
     >
       <template v-for="block in contentBlocks" :key="block.id">
-        <div
+        <TextBlockView
           v-if="isTextBlock(block)"
-          v-html="block.content"
-          @click.stop
-          class="text-center"
+          :block="block"
+          :class="{
+            'flex-1 flex items-center justify-center':
+              contentBlocks.length === 1,
+          }"
         />
         <ImageBlockView
           v-else-if="isImageBlock(block)"
@@ -19,7 +21,14 @@
           :alt="block.meta?.alt ?? ''"
         />
         <EmbedVideo v-else-if="isEmbedBlock(block)" :src="block.content" />
-        <AudioPlayer v-else-if="isAudioBlock(block)" :src="block.content" />
+        <AudioPlayer
+          v-else-if="isAudioBlock(block)"
+          :src="block.content"
+          :class="{
+            'flex-1 flex items-center justify-center':
+              contentBlocks.length === 1,
+          }"
+        />
         <RevealBlockView
           v-else-if="isRevealBlock(block)"
           :modelValue="block.content"
@@ -36,7 +45,8 @@ import { computed } from "vue";
 import EmbedVideo from "@/components/EmbedVideo.vue";
 import RevealBlockView from "./RevealBlockView.vue";
 import AudioPlayer from "@/components/AudioPlayer.vue";
-import ImageBlockView from "@/components/ImageBlockView.vue";
+import ImageBlockView from "@/components/CardSideView/ImageBlockView.vue";
+import TextBlockView from "./TextBlockView.vue";
 
 const props = defineProps<{
   label?: string;
