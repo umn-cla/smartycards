@@ -19,13 +19,13 @@ host('dev')
     ->set('hostname', 'cla-smartycards-dev.oit.umn.edu')
     ->set('remote_user', 'latis_deploy')
     ->set('labels', ['stage' => 'dev'])
-    ->set('deploy_path', '/var/www/html/');
+    ->set('deploy_path', '/var/www/smartycards/');
 
     host('prod')
     ->set('hostname', 'cla-smartcards-prd.oit.umn.edu')
     ->set('remote_user', 'latis_deploy')
     ->set('labels', ['stage' => 'prod'])
-    ->set('deploy_path', '/var/www/html/');
+    ->set('deploy_path', '/var/www/smartycards/');
 
 
     // install private composer packages, like Laravel Nova
