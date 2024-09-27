@@ -20,16 +20,16 @@
       </div>
     </PageHeader>
     <main v-if="deck">
-      <div class="flex items-center justify-center gap-4">
+      <div class="flex items-center justify-center gap-4 flex-wrap">
         <RouterLink
           :to="{ name: 'decks.practice', params: { deckId } }"
-          class="bg-brand-teal-500 text-white px-8 py-4 rounded-lg text-4xl shadow-solid-teal-2"
+          class="bg-brand-teal-500 text-white px-4 py-3 font-bold sm:px-8 sm:py-4 rounded-lg sm:text-4xl shadow-solid-teal-2"
         >
           Let's Practice
         </RouterLink>
         <RouterLink
           :to="{ name: 'decks.quiz', params: { deckId } }"
-          class="bg-brand-blue-500 px-8 py-4 rounded-lg text-4xl shadow-solid-blue-2 text-white"
+          class="bg-brand-blue-500 px-4 py-3 sm:px-8 sm:py-4 font-bold rounded-lg sm:text-4xl shadow-solid-blue-2 text-white"
         >
           ✨ Quiz Me
         </RouterLink>
