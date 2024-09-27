@@ -157,7 +157,7 @@ export interface EmbedContentBlock extends ContentBlock {
 }
 
 export interface HintContentBlock extends ContentBlock {
-  type: HintBlockType;
+  type: "hint";
   content: string;
   meta: {
     label: string;
