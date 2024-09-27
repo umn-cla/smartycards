@@ -20,8 +20,4 @@ const props = defineProps<{
 
 const wordCount = computed(() => props.block.content.split(/\s+/).length);
 </script>
-<style>
-.text-block-view p {
-  margin-bottom: 1rem;
-}
-</style>
+<style></style>
