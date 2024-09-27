@@ -164,23 +164,27 @@ function handleEndQuiz(payload: {
 
 // shuffle through some messages while users are waiting
 const messages = [
-  "Just a few moments...",
+  "Loading...",
   "Shuffling cards...",
   "Reticulating splines...",
   "Contacting the mothership...",
-  "Any moment now...",
-  "On the count of three...",
-  "Ooh! Look! A shiny!",
-  "Sorry, I lost my train of thought...",
-  "What was I saying?",
-  "Oh yeah, loading...",
+  "Fetching coffee...",
+  "Finding my glasses...",
+  "Making small talk...",
+  "Rocking vending machine...",
+  "Releasing the Kraken...",
+  "Phoning Dr. Cunningham...",
+  "Adding tots to hotdish...",
+  "Loading rabbits into hats...",
+  "Hailing Campus Connector...",
+  "Balancing beeps with boops...",
+  "Encouraging electrons...",
+  "Polishing gopher teeth...",
+  "Scraping the windshield...",
+  "Cutting the last piece in half...",
 ];
 
-const currentWaitMessageIndex = ref(0);
-
-const waitMessage = computed(() => {
-  return messages[currentWaitMessageIndex.value];
-});
+const waitMessage = ref("Loading...");
 
 watch(
   () => state.quizState,
@@ -190,15 +194,18 @@ watch(
       if (timeout) {
         clearTimeout(timeout);
       }
-
-      currentWaitMessageIndex.value = 0;
       return;
     }
 
+    const randomMessages = ["Loading..."] as string[];
+
     // start the wait message shuffle
     function advanceWaitMessage() {
-      currentWaitMessageIndex.value =
-        (currentWaitMessageIndex.value + 1) % messages.length;
+      if (!randomMessages.length) {
+        randomMessages.push(...messages.toSorted(() => Math.random() - 0.5));
+      }
+
+      waitMessage.value = randomMessages.pop() ?? "...";
       timeout = setTimeout(advanceWaitMessage, 2000);
     }
 
