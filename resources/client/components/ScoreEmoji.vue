@@ -1,41 +1,46 @@
 <template>
-  <TooltipProvider>
-    <Tooltip>
-      <TooltipTrigger>
-        <div class="text-sm">
-          <span v-if="score > 0.75">✅</span>
-          <span v-else-if="score > 0.5">🫤</span>
-          <span v-else-if="score > 0">❌</span>
-          <span
-            v-else
-            class="text-xs font-sans bg-umn-gold-300 rounded-full px-2 leading-none flex items-center py-1"
-            >New</span
+  <div>
+    <TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger>
+          <div class="text-sm">
+            <span v-if="score > 0.75">✅</span>
+            <span v-else-if="score > 0.5">🫤</span>
+            <span v-else-if="score > 0">❌</span>
+            <span
+              v-else
+              class="text-xs font-sans bg-umn-gold-300 rounded-full px-2 leading-none flex items-center py-1"
+              >New</span
+            >
+          </div>
+        </TooltipTrigger>
+        <TooltipContent>
+          <div class="flex gap-2 p-1 justify-between">
+            <Tuple
+              label="Correct"
+              labelClass="text-brand-oatmeal-500 text-right"
+            >
+              {{ percent }}%
+            </Tuple>
+            <Tuple
+              label="Attempts"
+              labelClass="text-brand-oatmeal-500 text-right"
+              v-if="attempts"
+            >
+              {{ attempts }}
+            </Tuple>
+          </div>
+          <div
+            class="flex flex-col gap-1 mt-2 pt-2 border-t border-t-brand-oatmeal-50/50"
           >
-        </div>
-      </TooltipTrigger>
-      <TooltipContent>
-        <div class="flex gap-2 p-1 justify-between">
-          <Tuple label="Correct" labelClass="text-brand-oatmeal-500 text-right">
-            {{ percent }}%
-          </Tuple>
-          <Tuple
-            label="Attempts"
-            labelClass="text-brand-oatmeal-500 text-right"
-            v-if="attempts"
-          >
-            {{ attempts }}
-          </Tuple>
-        </div>
-        <div
-          class="flex flex-col gap-1 mt-2 pt-2 border-t border-t-brand-oatmeal-50/50"
-        >
-          <p>✅ 75-100% correct</p>
-          <p>🫤 50-75% correct</p>
-          <p>❌ 0-50% correct</p>
-        </div>
-      </TooltipContent>
-    </Tooltip>
-  </TooltipProvider>
+            <p>✅ 75-100% correct</p>
+            <p>🫤 50-75% correct</p>
+            <p>❌ 0-50% correct</p>
+          </div>
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
+  </div>
 </template>
 
 <script setup lang="ts">
