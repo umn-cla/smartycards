@@ -124,7 +124,7 @@ export type ContentBlockType =
   | "audio"
   | "video"
   | "embed"
-  | "reveal";
+  | "hint";
 
 export interface ContentBlock {
   id: UUID;
@@ -156,8 +156,8 @@ export interface EmbedContentBlock extends ContentBlock {
   content: string; // url
 }
 
-export interface RevealContentBlock extends ContentBlock {
-  type: "reveal";
+export interface HintContentBlock extends ContentBlock {
+  type: HintBlockType;
   content: string;
   meta: {
     label: string;

@@ -67,7 +67,7 @@ import ImageBlockInput from "./ImageBlockInput.vue";
 import AudioBlockInput from "./AudioBlockInput.vue";
 import EmbedBlockInput from "./EmbedBlockInput.vue";
 import VideoBlock from "./VideoBlockInput.vue";
-import RevealBlock from "./RevealBlockInput.vue";
+import HintBlock from "./HintBlockInput.vue";
 import * as Icons from "../icons";
 import DragDrop from "../DragDrop/DragDrop.vue";
 import Button from "../ui/button/Button.vue";
@@ -85,7 +85,7 @@ const lookupComponentType: Record<ContentBlockType, Component> = {
   audio: AudioBlockInput,
   video: VideoBlock,
   embed: EmbedBlockInput,
-  reveal: RevealBlock,
+  hint: HintBlock,
 };
 
 const props = withDefaults(
@@ -117,7 +117,7 @@ function addEditorBlock(type: ContentBlock["type"]) {
     block.meta = { alt: "" };
   }
 
-  if (type === "reveal") {
+  if (type === "hint") {
     block.meta = { label: "Hint" };
   }
 
@@ -165,7 +165,7 @@ function getTypeIcon(type: ContentBlock["type"]): Component {
       return Icons.IconVideo;
     case "embed":
       return Icons.IconEmbed;
-    case "reveal":
+    case "hint":
       return Icons.IconEyeClosed;
     default:
       return Icons.IconQuestionMark;

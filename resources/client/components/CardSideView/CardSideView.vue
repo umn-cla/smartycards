@@ -30,8 +30,8 @@
               contentBlocks.length === 1,
           }"
         />
-        <RevealBlockView
-          v-else-if="isRevealBlock(block)"
+        <HintBlockView
+          v-else-if="isHintBlock(block)"
           :modelValue="block.content"
           :meta="block.meta"
         />
@@ -44,7 +44,7 @@
 import * as T from "@/types";
 import { computed } from "vue";
 import EmbedVideo from "@/components/EmbedVideo.vue";
-import RevealBlockView from "./RevealBlockView.vue";
+import HintBlockView from "./HintBlockView.vue";
 import AudioPlayer from "@/components/AudioPlayer.vue";
 import ImageBlockView from "@/components/CardSideView/ImageBlockView.vue";
 import TextBlockView from "./TextBlockView.vue";
@@ -77,8 +77,8 @@ function isAudioBlock(block: T.ContentBlock): block is T.AudioContentBlock {
   return block.type === "audio";
 }
 
-function isRevealBlock(block: T.ContentBlock): block is T.RevealContentBlock {
-  return block.type === "reveal";
+function isHintBlock(block: T.ContentBlock): block is T.HintContentBlock {
+  return block.type === "hint";
 }
 </script>
 <style></style>
