@@ -9,6 +9,16 @@ use Illuminate\Http\Request;
 
 class DeckInviteController extends Controller
 {
+    private function hasValidToken(string $token, Deck $deck, string $role): bool
+    {
+        $permission = $role === 'viewer' ? 'view' : 'edit';
+
+        return $deck->tokens()->where('token', $token)
+            ->where('permission', $permission)
+            ->where('deck_id', $deck->id)
+            ->exists();
+    }
+
     /**
      * Handle the incoming request.
      */
@@ -17,7 +27,13 @@ class DeckInviteController extends Controller
         $validated = $request->validate([
             'fromUserId' => 'required|exists:users,id',
             'role' => 'required|string|in:viewer,editor',
+            'token' => 'required|string|exists:deck_invite_tokens,token',
         ]);
+
+        // verify that the token is valid for deck and role
+        if (! $this->hasValidToken(token: $validated['token'], deck: $deck, role: $validated['role'])) {
+            abort(403, 'Invalid token.');
+        }
 
         // verify that the invitingUser has permission to invite
         // if the invitation is from a user who

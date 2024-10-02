@@ -46,6 +46,36 @@ class Deck extends Model implements AuditableContract
         return $this->hasManyThrough(CardAttempt::class, Card::class);
     }
 
+    public function tokens()
+    {
+        return $this->hasMany(DeckInviteToken::class);
+    }
+
+    public function getTokenForPermission($permission)
+    {
+        return $this->tokens()->where('permission', $permission)->first();
+    }
+
+    public function rotateTokenForPermission($permission)
+    {
+        $this->getTokenForPermission($permission)->rotate();
+    }
+
+    public function scopePublic(Builder $query): Builder
+    {
+        return $query->where('is_public', true);
+    }
+
+    public function scopeWithUserMembership(Builder $query, User $user): Builder
+    {
+        return $query->addSelect([
+            'user_role' => DeckMembership::select('role')
+                ->whereColumn('deck_id', 'decks.id')
+                ->where('user_id', $user->id)
+                ->limit(1),
+        ]);
+    }
+
     /**
      * Scope a query to include the last attempted at date for the deck.
      */

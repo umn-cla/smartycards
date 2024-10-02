@@ -102,37 +102,57 @@ class DeckMembershipController extends Controller
             ->setStatusCode(201);
     }
 
-    public function shareView(Deck $deck)
+    public function shareLink(Deck $deck, $permission)
     {
         Gate::authorize('update', $deck);
 
-        $signedURL = URL::signedRoute(
-            'decks.memberships.acceptInvite',
-            [
-                'deck' => $deck->id,
-                'fromUserId' => Auth::user()->id,
-                'role' => 'viewer',
-            ],
-            expiration: null,
-        );
+        // validate permission
+        if (! in_array($permission, ['view', 'edit'])) {
+            return response()->json(['error' => 'Invalid permission.'], 400);
+        }
 
-        return response()->json(['url' => $signedURL]);
+        return response()->json(['url' => $this->getShareUrlForPermission($deck, $permission)]);
     }
 
-    public function shareEdit(Deck $deck)
+    protected function getShareUrlForPermission(Deck $deck, $permission)
     {
-        Gate::authorize('update', $deck);
+        $token = $deck->getTokenForPermission($permission)->token;
+
+        $role = match ($permission) {
+            'view' => 'viewer',
+            'edit' => 'editor',
+        };
 
         $signedURL = URL::signedRoute(
             'decks.memberships.acceptInvite',
             [
                 'deck' => $deck->id,
                 'fromUserId' => Auth::user()->id,
-                'role' => 'editor',
+                'role' => $role,
+                'token' => $token,
             ],
             expiration: null,
         );
 
-        return response()->json(['url' => $signedURL]);
+        return $signedURL;
+    }
+
+    public function regenerateShareLink(Request $request, Deck $deck, $permission)
+    {
+        // check that permission is valid option
+        if (! in_array($permission, ['view', 'edit'])) {
+            response()->json(['error' => 'Invalid permission.'], 400);
+        }
+
+        // check that the user is authorized to rotate tokens
+        Gate::authorize('update', $deck);
+
+        // rotate the token
+        $deck->rotateTokenForPermission($permission);
+
+        $shareUrl = $this->getShareUrlForPermission($deck, $permission);
+
+        return response()->json(['url' => $shareUrl]);
+
     }
 }
