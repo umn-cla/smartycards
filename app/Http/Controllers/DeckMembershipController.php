@@ -102,32 +102,6 @@ class DeckMembershipController extends Controller
             ->setStatusCode(201);
     }
 
-    public function acceptInvite(Request $request, Deck $deck)
-    {
-        $validated = $request->validate([
-            'fromUserId' => 'required|exists:users,id',
-            'role' => 'required|string|in:viewer,editor',
-        ]);
-
-        // verify that the invitingUser has permission to invite
-        // if the invitation is from a user who
-        // no longer has privileges to update the deck, 403
-        $fromUser = User::find($validated['fromUserId']);
-        if ($fromUser?->cannot('update', $deck)) {
-            abort(403, 'User does not have permission to invite to this deck.');
-        }
-
-        DeckMembership::updateOrCreate([
-            'deck_id' => $deck->id,
-            'user_id' => $request->user()->id,
-        ], [
-            'role' => $validated['role'],
-        ]);
-
-        // redirect to the deck
-        return redirect("/decks/{$deck->id}");
-    }
-
     public function shareView(Deck $deck)
     {
         Gate::authorize('update', $deck);

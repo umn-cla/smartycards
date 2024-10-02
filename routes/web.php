@@ -4,6 +4,7 @@ use App\Http\Controllers\CardAttemptController;
 use App\Http\Controllers\CardStatsController;
 use App\Http\Controllers\DeckCardController;
 use App\Http\Controllers\DeckController;
+use App\Http\Controllers\DeckInviteController;
 use App\Http\Controllers\DeckMembershipController;
 use App\Http\Controllers\DeckQuizController;
 use App\Http\Controllers\ProfileController;
@@ -55,7 +56,7 @@ Route::middleware(['auth'])
 
 require __DIR__.'/shib.php';
 
-Route::get('decks/{deck}/memberships/accept', [DeckMembershipController::class, 'acceptInvite'])
+Route::get('decks/{deck}/invite', DeckInviteController::class)
     ->name('decks.memberships.acceptInvite')
     ->middleware(['auth', 'signed']);
 
