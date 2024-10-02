@@ -105,6 +105,7 @@ class DeckMembershipController extends Controller
     public function shareView(Deck $deck)
     {
         Gate::authorize('update', $deck);
+        $viewToken = $deck->tokens()->where('permission', 'view')->first()->token;
 
         $signedURL = URL::signedRoute(
             'decks.memberships.acceptInvite',
@@ -112,6 +113,7 @@ class DeckMembershipController extends Controller
                 'deck' => $deck->id,
                 'fromUserId' => Auth::user()->id,
                 'role' => 'viewer',
+                'token' => $viewToken,
             ],
             expiration: null,
         );
@@ -122,6 +124,7 @@ class DeckMembershipController extends Controller
     public function shareEdit(Deck $deck)
     {
         Gate::authorize('update', $deck);
+        $editToken = $deck->tokens()->where('permission', 'edit')->first()->token;
 
         $signedURL = URL::signedRoute(
             'decks.memberships.acceptInvite',
@@ -129,6 +132,7 @@ class DeckMembershipController extends Controller
                 'deck' => $deck->id,
                 'fromUserId' => Auth::user()->id,
                 'role' => 'editor',
+                'token' => $editToken,
             ],
             expiration: null,
         );
