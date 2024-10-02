@@ -131,7 +131,7 @@ const props = defineProps<{
 
 const state = reactive({
   activeCard: null as T.Card | null,
-  initialSideName: "random" as SideName | "random",
+  initialSideName: "front" as SideName | "random",
 
   // we want "sticky" random sides for each card
   // so that the user sees the same side when it comes up again
