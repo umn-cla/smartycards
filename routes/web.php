@@ -55,6 +55,10 @@ Route::middleware(['auth'])
 
 require __DIR__.'/shib.php';
 
+Route::get('decks/{deck}/memberships/accept', [DeckMembershipController::class, 'acceptInvite'])
+    ->name('decks.memberships.acceptInvite')
+    ->middleware(['auth', 'signed']);
+
 Route::fallback(function () {
     return view('app');
 });

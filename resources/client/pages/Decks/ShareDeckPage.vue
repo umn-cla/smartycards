@@ -29,7 +29,7 @@
                   Any user with this link will be added with view permissions.
                 </small>
               </Label>
-              <CopyableInput :value="shareViewLink" id="share-view-link" />
+              <CopyableInput :value="shareViewUrl ?? ''" id="share-view-link" />
             </div>
 
             <div>
@@ -42,7 +42,7 @@
                   Any user with this link will be added with edit permissions.
                 </small>
               </Label>
-              <CopyableInput :value="shareEditLink" id="share-edit-link" />
+              <CopyableInput :value="shareEditUrl ?? ''" id="share-edit-link" />
             </div>
           </Modal>
         </div>
@@ -83,21 +83,7 @@ const props = defineProps<{
 const deckIdRef = computed(() => props.deckId);
 const { data: deck } = useDeckByIdQuery(deckIdRef);
 const { data: deckMemberships } = useDeckMembershipsQuery(deckIdRef);
-const { data: apiShareViewUrl } = useDeckShareViewLinkQuery(deckIdRef);
-const { data: apiShareEditUrl } = useDeckShareEditLinkQuery(deckIdRef);
-
-const shareViewLink = computed(() => {
-  const url = new URL(`${config.client.baseUrl}/decks/${props.deckId}/invite`);
-  url.searchParams.append("url", apiShareViewUrl.value ?? "");
-
-  return url.toString();
-});
-
-const shareEditLink = computed(() => {
-  const url = new URL(`${config.client.baseUrl}/decks/${props.deckId}/invite`);
-  url.searchParams.append("url", apiShareEditUrl.value ?? "");
-
-  return url.toString();
-});
+const { data: shareViewUrl } = useDeckShareViewLinkQuery(deckIdRef);
+const { data: shareEditUrl } = useDeckShareEditLinkQuery(deckIdRef);
 </script>
 <style scoped></style>

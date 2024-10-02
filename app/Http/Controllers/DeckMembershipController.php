@@ -104,47 +104,28 @@ class DeckMembershipController extends Controller
 
     public function acceptInvite(Request $request, Deck $deck)
     {
-        if (! $request->hasValidSignature()) {
-            abort(401);
-        }
-
         $validated = $request->validate([
             'fromUserId' => 'required|exists:users,id',
             'role' => 'required|string|in:viewer,editor',
         ]);
 
         // verify that the invitingUser has permission to invite
-        $fromUser = User::find($validated['fromUserId']);
-
         // if the invitation is from a user who
         // no longer has privileges to update the deck, 403
+        $fromUser = User::find($validated['fromUserId']);
         if ($fromUser?->cannot('update', $deck)) {
-            return response()->json([
-                'message' => 'Invalid invitation.',
-            ], 403);
+            abort(403, 'User does not have permission to invite to this deck.');
         }
 
-        // if user is already a member of the deck, update the role
-        if ($deck->memberships()->where('user_id', $request->user()->id)->exists()) {
-
-            // Don't update the membership if the user is already a member.
-            // This is a workaround to allow owners to demote users from editor
-            // to viewer if needed, after the edit link has been shared.
-            return response()->json([
-                'message' => 'User is already a member of this deck.',
-            ], 409); // conflict
-        }
-
-        // add the user to the deck with the role of viewer
-        $membership = DeckMembership::create([
+        DeckMembership::updateOrCreate([
             'deck_id' => $deck->id,
             'user_id' => $request->user()->id,
+        ], [
             'role' => $validated['role'],
         ]);
 
-        return DeckMembershipResource::make($membership)
-            ->response()
-            ->setStatusCode(201);
+        // redirect to the deck
+        return redirect("/decks/{$deck->id}");
     }
 
     public function shareView(Deck $deck)
