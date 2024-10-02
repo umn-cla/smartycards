@@ -2,7 +2,6 @@ export { useDeckMembershipsQuery } from "./useDeckMembershipsQuery";
 export { useCreateDeckMembershipMutation } from "./useCreateDeckMembershipMutation";
 export { useUpdateDeckMembershipMutation } from "./useUpdateDeckMembershipMutation";
 export { useDeleteDeckMembershipMutation } from "./useDeleteDeckMembershipMutation";
-export { useDeckShareViewLinkQuery } from "./useDeckShareViewLinkQuery";
-export { useDeckShareEditLinkQuery } from "./useDeckShareEditLinkQuery";
+export { useDeckShareLinkQuery } from "./useDeckShareLinkQuery";
 export { useLeaveDeckMutation } from "./useLeaveDeckMutation";
 export { useRegenerateDeckShareLinkMutation } from "./useRegenerateDeckShareLinkMutation";

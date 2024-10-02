@@ -33,7 +33,7 @@
       </DropdownMenuItem> -->
       <DropdownMenuItem
         v-if="deck.capabilities.canLeave"
-        @click="() => leaveDeck(deck.id)"
+        @click="handleLeaveDeck(deck.id)"
       >
         <IconExit class="size-5 mr-4" />
         Leave
@@ -95,7 +95,7 @@ import Modal from "@/components/Modal.vue";
 import { reactive } from "vue";
 import { useRouter } from "vue-router";
 
-defineProps<{
+const props = defineProps<{
   deck: T.Deck;
 }>();
 
@@ -106,5 +106,10 @@ const state = reactive({
 const { mutate: deleteDeck } = useDeleteDeckMutation();
 const { mutate: leaveDeck } = useLeaveDeckMutation();
 const router = useRouter();
+
+function handleLeaveDeck(deckId: number) {
+  leaveDeck(deckId);
+  router.push({ name: "decks.index" });
+}
 </script>
 <style scoped></style>

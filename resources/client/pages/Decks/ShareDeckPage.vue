@@ -56,8 +56,7 @@ import { AuthenticatedLayout } from "@/layouts/AuthenticatedLayout";
 import { computed } from "vue";
 import {
   useDeckMembershipsQuery,
-  useDeckShareViewLinkQuery,
-  useDeckShareEditLinkQuery,
+  useDeckShareLinkQuery,
   useRegenerateDeckShareLinkMutation,
 } from "@/queries/deckMemberships";
 import { useDeckByIdQuery } from "@/queries/decks";
@@ -72,8 +71,8 @@ const props = defineProps<{
 const deckIdRef = computed(() => props.deckId);
 const { data: deck } = useDeckByIdQuery(deckIdRef);
 const { data: deckMemberships } = useDeckMembershipsQuery(deckIdRef);
-const { data: shareViewUrl } = useDeckShareViewLinkQuery(deckIdRef);
-const { data: shareEditUrl } = useDeckShareEditLinkQuery(deckIdRef);
+const { data: shareViewUrl } = useDeckShareLinkQuery(deckIdRef, "view");
+const { data: shareEditUrl } = useDeckShareLinkQuery(deckIdRef, "edit");
 const { mutate: regenerateViewLink } = useRegenerateDeckShareLinkMutation(
   deckIdRef,
   "view",

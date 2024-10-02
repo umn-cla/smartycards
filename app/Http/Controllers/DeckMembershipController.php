@@ -102,11 +102,16 @@ class DeckMembershipController extends Controller
             ->setStatusCode(201);
     }
 
-    public function shareView(Deck $deck)
+    public function shareLink(Deck $deck, $permission)
     {
         Gate::authorize('update', $deck);
 
-        return response()->json(['url' => $this->getShareUrlForPermission($deck, 'view')]);
+        // validate permission
+        if (! in_array($permission, ['view', 'edit'])) {
+            return response()->json(['error' => 'Invalid permission.'], 400);
+        }
+
+        return response()->json(['url' => $this->getShareUrlForPermission($deck, $permission)]);
     }
 
     protected function getShareUrlForPermission(Deck $deck, $permission)
@@ -130,14 +135,6 @@ class DeckMembershipController extends Controller
         );
 
         return $signedURL;
-    }
-
-    //TODO: combine with shareView
-    public function shareEdit(Deck $deck)
-    {
-        Gate::authorize('update', $deck);
-
-        return response()->json(['url' => $this->getShareUrlForPermission($deck, 'edit')]);
     }
 
     public function regenerateShareLink(Request $request, Deck $deck, $permission)
