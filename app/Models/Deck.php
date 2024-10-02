@@ -46,6 +46,11 @@ class Deck extends Model implements AuditableContract
         return $this->hasManyThrough(CardAttempt::class, Card::class);
     }
 
+    public function tokens()
+    {
+        return $this->hasMany(DeckInviteToken::class);
+    }
+
     /**
      * Scope a query to include the last attempted at date for the deck.
      */
