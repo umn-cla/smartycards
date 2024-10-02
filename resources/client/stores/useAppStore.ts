@@ -1,8 +1,7 @@
-import { defineStore } from 'pinia';
-import type { User, Deck, CustomAxiosRequestConfig } from '@/types';
-import * as api from '@/api';
-import config from '@/config';
-import { useRouter } from 'vue-router';
+import { defineStore } from "pinia";
+import type { User, Deck, CustomAxiosRequestConfig } from "@/types";
+import * as api from "@/api";
+import config from "@/config";
 
 interface AppStoreState {
   isInitialized: boolean;
@@ -11,7 +10,7 @@ interface AppStoreState {
 }
 
 export const useAppStore = defineStore({
-  id: 'app',
+  id: "app",
   state: (): AppStoreState => ({
     isInitialized: false,
     currentUser: null,
@@ -31,26 +30,27 @@ export const useAppStore = defineStore({
     },
     redirectToLogin() {
       const url = new URL(config.api.loginUrl);
-      url.searchParams.set('redirect', window.location.href);
+      url.searchParams.set("redirect", window.location.href);
       window.location.href = url.toString();
     },
-    logout() {
-      api.logout();
-      const router = useRouter();
-      router.push('/');
-    },
     async init() {
-      [this.currentUser, this.decks] = await Promise.all([api.getCurrentUser(), api.getAllDecks()]);
+      [this.currentUser, this.decks] = await Promise.all([
+        api.getCurrentUser(),
+        api.getAllDecks(),
+      ]);
       this.isInitialized = true;
     },
     async createDeck(
       form: { name: string; description: string },
-      customConfig: CustomAxiosRequestConfig = {}
+      customConfig: CustomAxiosRequestConfig = {},
     ) {
       const deck = await api.createDeck(form, customConfig);
       this.decks.push(deck);
     },
-    async deleteDeck(deckId: number, customConfig: CustomAxiosRequestConfig = {}) {
+    async deleteDeck(
+      deckId: number,
+      customConfig: CustomAxiosRequestConfig = {},
+    ) {
       await api.deleteDeck(deckId, customConfig);
       this.decks = this.decks.filter((deck) => deck.id !== deckId);
     },

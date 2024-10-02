@@ -22,11 +22,6 @@ const router = createRouter({
       component: () => import("../pages/Auth/LoginPage.vue"),
     },
     {
-      path: "/auth/logout",
-      name: "auth.logout",
-      component: () => import("../pages/Auth/LogoutPage.vue"),
-    },
-    {
       path: "/auth/callback",
       name: "auth.callback",
       redirect: "/decks",

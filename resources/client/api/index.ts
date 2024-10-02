@@ -212,10 +212,6 @@ export async function redirectToLogin(redirect: string) {
   window.location.href = url.toString();
 }
 
-export async function logout() {
-  await axios.get(config.api.logoutUrl);
-}
-
 export async function uploadImageToDeck(deckId: number, file: File) {
   const formData = new FormData();
   formData.append("image", file);

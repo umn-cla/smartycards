@@ -37,7 +37,7 @@
       </DropdownMenuGroup>
       <DropdownMenuSeparator />
       <DropdownMenuItem asChild>
-        <RouterLink :to="{ name: 'auth.logout' }"> Log out </RouterLink>
+        <a :href="config.api.logoutUrl">Log out</a>
       </DropdownMenuItem>
     </DropdownMenuContent>
   </DropdownMenu>
@@ -57,6 +57,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { computed } from "vue";
 import type { User } from "@/types";
+import config from "@/config";
 
 const props = withDefaults(
   defineProps<{
