@@ -15,8 +15,9 @@
     >
       <IconCopy v-if="!copied" />
       <IconCheck v-else />
-      <span>{{ copied ? "Copied" : "Copy" }}</span>
+      <span class="sr-only">{{ copied ? "Copied" : "Copy" }}</span>
     </Button>
+    <slot />
   </div>
 </template>
 <script setup lang="ts">

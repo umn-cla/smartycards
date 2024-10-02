@@ -1,11 +1,10 @@
 <template>
   <Dialog>
-    <DialogTrigger
-      asChild
-      v-if="triggerButtonVariant !== 'none'"
-    >
+    <DialogTrigger asChild v-if="triggerButtonVariant !== 'none'">
       <slot name="trigger">
-        <Button :variant="triggerButtonVariant">{{ triggerButtonLabel || title }}</Button>
+        <Button :variant="triggerButtonVariant">{{
+          triggerButtonLabel || title
+        }}</Button>
       </slot>
     </DialogTrigger>
     <DialogContent class="sm:max-w-[425px]">
@@ -26,7 +25,9 @@
           >
             <DialogTitle>{{ title }}</DialogTitle>
             <DialogDescription class="my-2">
-              <slot />
+              <slot>
+                <p v-if="description">{{ description }}</p>
+              </slot>
             </DialogDescription>
           </div>
         </div>
@@ -34,20 +35,12 @@
 
       <DialogFooter v-if="hasFooter && !noFooter">
         <slot name="footer">
-          <DialogClose
-            asChild
-            v-if="cancelButtonVariant !== 'none'"
-          >
-            <Button
-              :variant="cancelButtonVariant"
-              @click="$emit('cancel')"
+          <DialogClose asChild v-if="cancelButtonVariant !== 'none'">
+            <Button :variant="cancelButtonVariant" @click="$emit('cancel')"
               >{{ cancelButtonLabel }}
             </Button>
           </DialogClose>
-          <DialogClose
-            asChild
-            v-if="submitButtonVariant !== 'none'"
-          >
+          <DialogClose asChild v-if="submitButtonVariant !== 'none'">
             <Button
               type="submit"
               :variant="submitButtonVariant"
@@ -63,7 +56,7 @@
 </template>
 
 <script setup lang="ts">
-import { Button } from '@/components/ui/button';
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -73,11 +66,17 @@ import {
   DialogTitle,
   DialogTrigger,
   DialogClose,
-} from '@/components/ui/dialog';
-import { IconExclamationTriangle } from '@/components/icons';
-import { computed } from 'vue';
+} from "@/components/ui/dialog";
+import { IconExclamationTriangle } from "@/components/icons";
+import { computed } from "vue";
 
-type ModalButtonVariant = 'default' | 'outline' | 'secondary' | 'destructive' | 'ghost' | 'none';
+type ModalButtonVariant =
+  | "default"
+  | "outline"
+  | "secondary"
+  | "destructive"
+  | "ghost"
+  | "none";
 
 const props = withDefaults(
   defineProps<{
@@ -90,30 +89,32 @@ const props = withDefaults(
     submitButtonLabel?: string;
     submitButtonVariant?: ModalButtonVariant;
     submitButtonDisabled?: boolean;
-    variant?: 'default' | 'danger';
+    variant?: "default" | "danger";
     noFooter?: boolean;
   }>(),
   {
-    variant: 'default',
-    triggerButtonLabel: '', // fallback to title
-    triggerButtonVariant: 'default',
-    cancelButtonLabel: 'Cancel',
-    cancelButtonVariant: 'ghost',
-    submitButtonLabel: 'Submit',
+    variant: "default",
+    triggerButtonLabel: "", // fallback to title
+    triggerButtonVariant: "default",
+    cancelButtonLabel: "Cancel",
+    cancelButtonVariant: "ghost",
+    submitButtonLabel: "Submit",
     submitButtonDisabled: false,
-    submitButtonVariant: 'default',
+    submitButtonVariant: "default",
     noFooter: false,
-  }
+  },
 );
 
 defineEmits<{
-  (eventName: 'submit'): void;
-  (eventName: 'cancel'): void;
+  (eventName: "submit"): void;
+  (eventName: "cancel"): void;
 }>();
 
 const hasFooter = computed(() => {
   return (
-    !props.noFooter || props.cancelButtonVariant !== 'none' || props.submitButtonVariant !== 'none'
+    !props.noFooter ||
+    props.cancelButtonVariant !== "none" ||
+    props.submitButtonVariant !== "none"
   );
 });
 </script>
