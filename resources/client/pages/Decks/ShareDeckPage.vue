@@ -28,13 +28,13 @@
         <ShareLink
           :url="shareViewUrl ?? ''"
           type="view"
-          @regenerate="handleRegenerateLink('view')"
+          @regenerate="regenerateViewLink"
           class="mb-4"
         />
         <ShareLink
           :url="shareEditUrl ?? ''"
           type="edit"
-          @regenerate="handleRegenerateLink('edit')"
+          @regenerate="regenerateEditLink"
         />
       </section>
       <section>
@@ -53,11 +53,12 @@
 </template>
 <script setup lang="ts">
 import { AuthenticatedLayout } from "@/layouts/AuthenticatedLayout";
-import { computed, reactive, ref } from "vue";
+import { computed } from "vue";
 import {
   useDeckMembershipsQuery,
   useDeckShareViewLinkQuery,
   useDeckShareEditLinkQuery,
+  useRegenerateDeckShareLinkMutation,
 } from "@/queries/deckMemberships";
 import { useDeckByIdQuery } from "@/queries/decks";
 import DeckMembership from "@/components/DeckMembership.vue";
@@ -73,9 +74,13 @@ const { data: deck } = useDeckByIdQuery(deckIdRef);
 const { data: deckMemberships } = useDeckMembershipsQuery(deckIdRef);
 const { data: shareViewUrl } = useDeckShareViewLinkQuery(deckIdRef);
 const { data: shareEditUrl } = useDeckShareEditLinkQuery(deckIdRef);
-
-function handleRegenerateLink(type: "view" | "edit") {
-  console.log("Regenerate link", type);
-}
+const { mutate: regenerateViewLink } = useRegenerateDeckShareLinkMutation(
+  deckIdRef,
+  "view",
+);
+const { mutate: regenerateEditLink } = useRegenerateDeckShareLinkMutation(
+  deckIdRef,
+  "edit",
+);
 </script>
 <style scoped></style>

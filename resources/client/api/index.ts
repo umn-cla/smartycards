@@ -263,6 +263,18 @@ export async function createQuizForDeck(
   return res.data;
 }
 
+export async function regenerateShareLinkForDeck(
+  deckId: number,
+  permission: "view" | "edit",
+) {
+  await csrf();
+  const res = await axios.post<{ url: string }>(
+    `/decks/${deckId}/memberships/share/${permission}/regenerate`,
+  );
+
+  return res.data.url;
+}
+
 export async function csrf() {
   await axios.get(`${config.api.origin}/sanctum/csrf-cookie`);
 }

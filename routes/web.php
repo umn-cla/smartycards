@@ -27,6 +27,9 @@ Route::middleware(['auth'])
         Route::get('decks/{deck}/memberships/share/view', [DeckMembershipController::class, 'shareView'])
             ->name('decks.memberships.share.view');
 
+        Route::post('decks/{deck}/memberships/share/{permission}/regenerate', [DeckMembershipController::class, 'regenerateShareLink'])
+            ->name('decks.memberships.share.regenerate');
+
         Route::get('decks/{deck}/memberships/share/edit', [DeckMembershipController::class, 'shareEdit'])
             ->name('decks.memberships.share.edit');
 

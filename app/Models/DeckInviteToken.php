@@ -27,7 +27,7 @@ class DeckInviteToken extends Model
         return $this->belongsTo(Deck::class);
     }
 
-    public function rotateToken()
+    public function rotate()
     {
         $this->token = Str::random(32);
         $this->save();
