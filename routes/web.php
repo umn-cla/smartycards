@@ -30,10 +30,6 @@ Route::middleware(['auth'])
         Route::get('decks/{deck}/memberships/share/edit', [DeckMembershipController::class, 'shareEdit'])
             ->name('decks.memberships.share.edit');
 
-        Route::get('decks/{deck}/memberships/accept', [DeckMembershipController::class, 'acceptInvite'])
-            ->name('decks.memberships.acceptInvite')
-            ->middleware('signed');
-
         Route::get('community/decks', [DeckController::class, 'publicDecks']);
 
         Route::post('community/decks/{deck}/join', [DeckMembershipController::class, 'joinAsViewer']);
