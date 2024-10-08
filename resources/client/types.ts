@@ -187,6 +187,9 @@ export interface CardStats {
 }
 
 export interface QuizQuestion {
+  sourceCardId: number;
+  sourceCard: Card;
+  sourceCardSide: CardSideName; // side the prompt is based on
   prompt: string;
   choices: string[];
   correctChoiceIndex: number;
