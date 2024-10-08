@@ -15,7 +15,7 @@ class DeckCardController extends Controller
     {
         return $request->validate([
             // front content blocks
-            'front' => ['required', 'array'],
+            'front' => ['nullable', 'array'],
             'front.*.id' => ['required', 'uuid'],
             'front.*.type' => ['required', 'string', 'in:text,image,audio,embed,video,hint'],
             'front.*.content' => ['required', 'string'],
@@ -23,7 +23,7 @@ class DeckCardController extends Controller
             'front.*.meta.*' => ['nullable', 'string'],
 
             // back content blocks
-            'back' => ['required', 'array'],
+            'back' => ['nullable', 'array'],
             'back.*.id' => ['required', 'uuid'],
             'back.*.type' => ['required', 'string', 'in:text,image,audio,embed,video,hint'],
             'back.*.content' => ['required', 'string'],

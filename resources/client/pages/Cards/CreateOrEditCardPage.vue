@@ -46,12 +46,6 @@
                 v-model="form[side]"
                 :label="capitalize(side)"
               />
-              <p
-                class="text-sm text-red-500"
-                v-show="hasAttemptedSave && errors[side]"
-              >
-                {{ errors[side] }}
-              </p>
             </div>
           </div>
         </div>
@@ -131,23 +125,22 @@ const { mutate: createCard } = useCreateCardMutation();
 const router = useRouter();
 
 const hasAttemptedSave = ref(false);
-const errors = computed(() => {
-  return {
-    front: form.front.length < 1 && "Front side must have some content blocks",
-    back: form.back.length < 1 && "Back side must have some content blocks",
-  };
-});
 
-const hasErrors = computed(() => {
-  return Object.values(errors.value).some((error) => !!error);
-});
+function removeEmptyBlocks(blocks: T.ContentBlock[]) {
+  return blocks.filter((block) => {
+    if (typeof block.content === "string") {
+      return block.content.trim().length > 0;
+    }
+
+    return true;
+  });
+}
 
 function handleSave({ saveAndAddAnother = false } = {}) {
   hasAttemptedSave.value = true;
 
-  if (hasErrors.value) {
-    return;
-  }
+  form.back = removeEmptyBlocks(form.back);
+  form.front = removeEmptyBlocks(form.front);
 
   const onSuccess = () => {
     if (saveAndAddAnother) {
