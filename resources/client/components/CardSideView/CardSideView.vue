@@ -5,15 +5,14 @@
     </h2>
     <slot name="prepend" />
     <div
-      class="flex flex-col gap-4 flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-black/10 scrollbar-track-transparent"
+      class="flex flex-col gap-4 my-auto overflow-y-auto scrollbar-thin scrollbar-thumb-black/10 scrollbar-track-transparent py-1"
     >
       <template v-for="block in contentBlocks" :key="block.id">
         <TextBlockView
           v-if="isTextBlock(block)"
           :block="block"
           :class="{
-            'flex-1 flex items-center justify-center':
-              contentBlocks.length === 1,
+            'flex items-center justify-center': contentBlocks.length === 1,
           }"
         />
         <ImageBlockView
