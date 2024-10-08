@@ -21,6 +21,7 @@
           :src="block.content"
           :alt="block.meta?.alt ?? ''"
         />
+        <VideoBlockView v-else-if="isVideoBlock(block)" :block="block" />
         <EmbedVideo v-else-if="isEmbedBlock(block)" :src="block.content" />
         <AudioPlayer
           v-else-if="isAudioBlock(block)"
@@ -48,6 +49,7 @@ import HintBlockView from "./HintBlockView.vue";
 import AudioPlayer from "@/components/AudioPlayer.vue";
 import ImageBlockView from "@/components/CardSideView/ImageBlockView.vue";
 import TextBlockView from "./TextBlockView.vue";
+import VideoBlockView from "./VideoBlockView.vue";
 
 const props = withDefaults(
   defineProps<{
@@ -67,6 +69,10 @@ function isImageBlock(block: T.ContentBlock): block is T.ImageContentBlock {
 
 function isTextBlock(block: T.ContentBlock): block is T.TextContentBlock {
   return block.type === "text";
+}
+
+function isVideoBlock(block: T.ContentBlock): block is T.VideoContentBlock {
+  return block.type === "video";
 }
 
 function isEmbedBlock(block: T.ContentBlock): block is T.EmbedContentBlock {

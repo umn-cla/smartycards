@@ -164,6 +164,11 @@ export interface HintContentBlock extends ContentBlock {
   };
 }
 
+export interface VideoContentBlock extends ContentBlock {
+  type: "video";
+  content: string; // url
+}
+
 export interface UploadedFileInfo {
   name: string;
   path: string; // /storage/files/${name}
