@@ -17,7 +17,7 @@ class UploadFileController extends Controller
             'file' => [
                 'required',
                 'file',
-                'mimetypes:image/jpeg,image/png,image/bmp,image/gif,image/svg+xml,image/webp,audio/mpeg,audio/ogg,audio/vorbis,audio/mp4,audio/aac,audio/midi',
+                'mimetypes:image/jpeg,image/png,image/bmp,image/gif,image/svg+xml,image/webp,audio/mpeg,audio/ogg,audio/vorbis,audio/mp4,audio/aac,audio/midi,audio/m4a,audio/x-m4a',
             ],
         ]);
 

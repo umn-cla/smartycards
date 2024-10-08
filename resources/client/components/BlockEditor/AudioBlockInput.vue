@@ -6,7 +6,7 @@
         name="audio"
         ref="pond"
         labelIdle="Add audio file (.mp3, .ogg, .m4a, .aac, .midi)"
-        acceptedFileTypes="audio/mpeg,audio/ogg,audio/vorbis,audio/mp4,audio/aac,audio/midi"
+        acceptedFileTypes="audio/mpeg,audio/ogg,audio/vorbis,audio/mp4,audio/aac,audio/midi,audio/x-m4a,audio/m4a"
         :server="{
           process: handleProcessImage,
         }"
