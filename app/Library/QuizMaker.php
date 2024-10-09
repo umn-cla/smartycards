@@ -31,10 +31,12 @@ class QuizMaker
     {
         $challengeLevel = $this->options['challenge_level'];
         $systemText =
-"You generate multiple choice quizzes from a set of json flash card data at the {$challengeLevel} level. You can include some distractors that are part of the data set, but also include good distractors that are not part of the flash card data set. Your response should use the following formats and respond in JSON. Both the prompt and choices should be plain text only with no markup.".
+"You generate high quality multiple choice quizzes from a set of json flash card data at the {$challengeLevel} level. Include challenging distractors that are not part of the flash card data set. Your response should use the following formats and respond in JSON. Both the prompt and choices should be plain text only with no markup.".
 
 "```ts
 interface Question {
+  sourceCardId: number; // the id of the flash card the question is based on
+  sourceCardSide: 'front' | 'back'; // the side of the flash card the prompt is based on
   prompt: string; // the question the user will be asked
   choices: string[];
   correctChoiceIndex: number;
@@ -63,8 +65,20 @@ interface Quiz {
         $contentBlocks = $cardSide;
 
         return collect($contentBlocks)
-            ->filter(fn ($block) => $block['type'] === 'text')
-            ->map(fn ($block) => $block['content'])
+            ->map(function ($block) {
+                if ($block['type'] === 'text') {
+                    return $block['content'];
+                }
+
+                if ($block['type'] === 'image') {
+                    $alt = $block['meta']['alt'] ?? 'Unknown';
+
+                    return "[Image: {$alt}]";
+                }
+
+                return "[{$block['type']} goes here]";
+
+            })
             ->join('');
     }
 
@@ -76,6 +90,7 @@ interface Quiz {
     private function normalizeCard(object $card)
     {
         return [
+            'cardId' => $card->id,
             'front' => $this->normalizeCardSide($card->front),
             'back' => $this->normalizeCardSide($card->back),
         ];
@@ -103,7 +118,7 @@ interface Quiz {
         $cardSide = $this->options['cardSide'];
 
         $prompts = [
-            'easy' => "Generate a quiz of {$numberOfQuestions} questions from the following flash cards. Use the {$cardSide} side of the card as the basis for a question prompt (but you may need to give more context for the question to make sense) and the other side as the correct answer.",
+            'easy' => "Generate a quiz of {$numberOfQuestions} questions from the following flash cards. Use the {$cardSide} side of the card as the basis for a question prompt. Include only the required information in the prompt.",
 
             'medium' => "Generate a quiz of {$numberOfQuestions} questions from the following flash cards, testing both front to back and back to front knowledge. The questions should be at a higher level of Bloom's Taxonomy, requiring application, analysis, or synthesis of multiple cards to answer.",
         ];
@@ -155,6 +170,21 @@ interface Quiz {
             $response = $this->openAI->request($this->getPrompt(), $this->getSystemText());
 
             $quiz = json_decode($response, true);
+
+            $sourceCardIds = collect($quiz['questions'])->map(fn ($question) => $question['sourceCardId']);
+
+            // get cards the quiz questions are based on
+            $cards = $this->deck->cards()->whereIn('id', $sourceCardIds)->get();
+
+            // create a card lookup
+            $cardLookup = $cards->keyBy('id');
+
+            // add the card data to the quiz
+            foreach ($quiz['questions'] as &$question) {
+                $card = $cardLookup[$question['sourceCardId']];
+
+                $question['sourceCard'] = $card;
+            }
 
             return $this->randomizeQuiz($quiz);
         } catch (\Exception $e) {
