@@ -36,7 +36,6 @@ class QuizMaker
 "```ts
 interface Question {
   sourceCardId: number; // the id of the flash card the question is based on
-  sourceCardSide: 'front' | 'back'; // the side of the flash card the prompt is based on
   prompt: string; // the question the user will be asked
   choices: string[];
   correctChoiceIndex: number;
@@ -76,7 +75,7 @@ interface Quiz {
                     return "[Image: {$alt}]";
                 }
 
-                return "[{$block['type']} goes here]";
+                return "[{$block['type']}]";
 
             })
             ->join('');
@@ -184,6 +183,7 @@ interface Quiz {
                 $card = $cardLookup[$question['sourceCardId']];
 
                 $question['sourceCard'] = $card;
+                $question['sourceCardSide'] = $this->options['cardSide'];
             }
 
             return $this->randomizeQuiz($quiz);

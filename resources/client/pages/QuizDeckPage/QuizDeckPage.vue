@@ -80,6 +80,21 @@
         <Quiz v-if="state.quiz" :quiz="state.quiz" @end-quiz="handleEndQuiz" />
       </section>
 
+      <section v-else-if="state.quizState === 'error'">
+        <h2 class="text-center font-bold text-xl text-brand-maroon-500">
+          Error
+        </h2>
+
+        <div class="flex flex-col gap-4 items-center">
+          <p>
+            Something went wrong creating the quiz. You can try again or with
+            fewer questions. If the problem persists, email
+            <a href="latistecharch@umn.edu">latistecharch@umn.edu</a>
+          </p>
+          <Button @click="state.quizState = 'setup'">Try Again</Button>
+        </div>
+      </section>
+
       <section v-else>
         <h2 class="text-center font-bold text-xl">Complete</h2>
 
@@ -129,7 +144,12 @@ const props = defineProps<{
 }>();
 
 const state = reactive({
-  quizState: "setup" as "setup" | "loading" | "in-progress" | "complete",
+  quizState: "setup" as
+    | "setup"
+    | "loading"
+    | "in-progress"
+    | "complete"
+    | "error",
   cardSide: "front" as T.CardSideName,
   numberOfQuestions: 10,
   quiz: null as null | T.Quiz,
@@ -145,10 +165,21 @@ const { data: deck, isLoading: isDeckLoading } = useDeckByIdQuery(deckIdRef);
 async function startQuiz() {
   state.quizState = "loading";
 
-  state.quiz = await api.createQuizForDeck(deckIdRef.value, {
-    cardSide: state.cardSide,
-    numberOfQuestions: state.numberOfQuestions,
-  });
+  try {
+    state.quiz = await api.createQuizForDeck(
+      deckIdRef.value,
+      {
+        cardSide: state.cardSide,
+        numberOfQuestions: state.numberOfQuestions,
+      },
+      {
+        skipErrorNotifications: true,
+      },
+    );
+  } catch (error) {
+    state.quizState = "error";
+    return;
+  }
 
   state.quizState = "in-progress";
 }

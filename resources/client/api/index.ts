@@ -249,9 +249,14 @@ export async function joinCommunityDeck(deckId: number) {
 export async function createQuizForDeck(
   deckId: number,
   options: T.QuizOptions,
+  customConfig: T.CustomAxiosRequestConfig = {},
 ) {
   await csrf();
-  const res = await axios.post<T.Quiz>(`/decks/${deckId}/quiz`, options);
+  const res = await axios.post<T.Quiz>(
+    `/decks/${deckId}/quiz`,
+    options,
+    customConfig,
+  );
 
   return res.data;
 }
