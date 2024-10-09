@@ -51,7 +51,7 @@
               <input
                 v-model="state.numberOfQuestions"
                 type="range"
-                :min="3"
+                :min="1"
                 :max="10"
                 class="w-28 block h-8"
               />
@@ -137,7 +137,6 @@ import * as T from "@/types";
 import Tuple from "@/components/Tuple.vue";
 import IconChevronLeft from "@/components/icons/IconChevronLeft.vue";
 import IconSpinner from "@/components/icons/IconSpinner.vue";
-import { set } from "ramda";
 
 const props = defineProps<{
   deckId: number;
@@ -151,7 +150,7 @@ const state = reactive({
     | "complete"
     | "error",
   cardSide: "front" as T.CardSideName,
-  numberOfQuestions: 10,
+  numberOfQuestions: 5,
   quiz: null as null | T.Quiz,
   activeQuestionIndex: 0,
   correctCount: 0,
