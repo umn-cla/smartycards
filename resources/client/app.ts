@@ -2,6 +2,8 @@ import "@fontsource-variable/nunito";
 import "@fontsource-variable/rokkitt";
 
 import "./app.css";
+import "mathlive";
+
 import "katex/dist/katex.css";
 
 import { createApp } from "vue";

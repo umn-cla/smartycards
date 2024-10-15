@@ -47,7 +47,7 @@
           Add Block
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent>
+      <DropdownMenuContent class="grid grid-cols-2">
         <DropdownMenuItem
           v-for="type in blockTypes"
           :key="type"
@@ -78,6 +78,7 @@ import {
   DropdownMenuItem,
 } from "../ui/dropdown-menu";
 import { type ContentBlock, type ContentBlockType } from "@/types";
+import MathBlockInput from "./MathBlockInput.vue";
 
 const lookupComponentType: Record<ContentBlockType, Component> = {
   text: TextBlockInput,
@@ -86,6 +87,7 @@ const lookupComponentType: Record<ContentBlockType, Component> = {
   video: VideoBlock,
   embed: EmbedBlockInput,
   hint: HintBlock,
+  math: MathBlockInput,
 };
 
 const props = withDefaults(

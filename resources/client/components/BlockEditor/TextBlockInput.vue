@@ -38,6 +38,7 @@ const options = computed(() => ({
         { list: "bullet" },
         "link",
         "code-block",
+        "formula",
       ],
       ["clean"],
     ],

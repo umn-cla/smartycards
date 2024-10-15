@@ -15,6 +15,9 @@ export default defineConfig(({ mode }) => {
       }),
       vue({
         template: {
+          compilerOptions: {
+            isCustomElement: (tag) => ["math-field"].includes(tag),
+          },
           transformAssetUrls: {
             // The Vue plugin will re-write asset URLs, when referenced
             // in Single File Components, to point to the Laravel web
