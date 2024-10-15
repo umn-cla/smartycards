@@ -4,10 +4,11 @@
       :modelValue="modelValue"
       group="block-editor"
       @update:modelValue="emit('update:modelValue', $event)"
+      handle=".drag-handle"
     >
       <template #item="{ element: block }">
         <div class="flex border-b border-black/5">
-          <button class="cursor-move flex items-start px-1 py-3">
+          <button class="drag-handle cursor-move flex items-start px-1 py-3">
             <Icons.IconDragHandle class="size-4" />
             <span class="sr-only">Drag to reorder</span>
           </button>
