@@ -157,22 +157,17 @@ function handleUpdateBlockMeta(id: string, meta: Record<string, any>) {
 }
 
 function getTypeIcon(type: ContentBlock["type"]): Component {
-  switch (type) {
-    case "text":
-      return Icons.IconTextAa;
-    case "image":
-      return Icons.IconImage;
-    case "audio":
-      return Icons.IconWaveForm;
-    case "video":
-      return Icons.IconVideo;
-    case "embed":
-      return Icons.IconEmbed;
-    case "hint":
-      return Icons.IconEyeClosed;
-    default:
-      return Icons.IconQuestionMark;
-  }
+  const icons = {
+    text: Icons.IconTextAa,
+    image: Icons.IconImage,
+    audio: Icons.IconWaveForm,
+    video: Icons.IconVideo,
+    embed: Icons.IconEmbed,
+    hint: Icons.IconEyeClosed,
+    math: Icons.IconMath,
+  } as Record<ContentBlockType, Component>;
+
+  return icons[type] ?? Icons.IconQuestionMark;
 }
 </script>
 <style scoped></style>
