@@ -17,7 +17,7 @@ class DeckCardController extends Controller
             // front content blocks
             'front' => ['nullable', 'array'],
             'front.*.id' => ['required', 'uuid'],
-            'front.*.type' => ['required', 'string', 'in:text,image,audio,embed,video,hint'],
+            'front.*.type' => ['required', 'string', 'in:text,image,audio,embed,video,hint,math'],
             'front.*.content' => ['required', 'string'],
             'front.*.meta' => ['nullable', 'array'],
             'front.*.meta.*' => ['nullable', 'string'],
@@ -25,7 +25,7 @@ class DeckCardController extends Controller
             // back content blocks
             'back' => ['nullable', 'array'],
             'back.*.id' => ['required', 'uuid'],
-            'back.*.type' => ['required', 'string', 'in:text,image,audio,embed,video,hint'],
+            'back.*.type' => ['required', 'string', 'in:text,image,audio,embed,video,hint,math'],
             'back.*.content' => ['required', 'string'],
             'back.*.meta' => ['nullable', 'array'],
             'back.*.meta.*' => ['nullable', 'string'],
