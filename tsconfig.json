@@ -16,7 +16,7 @@
     "paths": {
       "@/*": ["./resources/client/*"]
     },
-    "types": ["vite/client", "./resources/client/types/mathlive-vue.d.ts"]
+    "types": ["vite/client"]
   },
   "include": ["resources"],
   "exclude": ["vendor", "node_modules", "./public/build"]
