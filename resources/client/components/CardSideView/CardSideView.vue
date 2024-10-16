@@ -35,6 +35,11 @@
           :modelValue="block.content"
           :meta="block.meta"
         />
+        <MathBlockView v-else-if="isMathBlock(block)" :block="block" />
+        <div v-else>
+          <p>Unknown block type: {{ block.type }}</p>
+          <pre>{{ block }}</pre>
+        </div>
       </template>
     </div>
     <slot name="append" />
@@ -49,6 +54,7 @@ import AudioPlayer from "@/components/AudioPlayer.vue";
 import ImageBlockView from "@/components/CardSideView/ImageBlockView.vue";
 import TextBlockView from "./TextBlockView.vue";
 import VideoBlockView from "./VideoBlockView.vue";
+import MathBlockView from "./MathBlockView.vue";
 
 const props = withDefaults(
   defineProps<{
@@ -84,6 +90,10 @@ function isAudioBlock(block: T.ContentBlock): block is T.AudioContentBlock {
 
 function isHintBlock(block: T.ContentBlock): block is T.HintContentBlock {
   return block.type === "hint";
+}
+
+function isMathBlock(block: T.ContentBlock): block is T.MathContentBlock {
+  return block.type === "math";
 }
 </script>
 <style></style>

@@ -1,7 +1,12 @@
 <template>
   <math-field
     ref="mathFieldRef"
-    class="math-field w-full bg-black/5"
+    class="math-field text-brand-maroon-900"
+    :class="{
+      'bg-black/5 w-full': !readOnly,
+      'bg-transparent w-auto': readOnly,
+    }"
+    :readOnly="readOnly"
     @input="handleInput"
   >
     {{ modelValue }}
@@ -12,9 +17,15 @@
 import { ref } from "vue";
 import { MathfieldElement } from "mathlive";
 
-defineProps<{
-  modelValue: string;
-}>();
+withDefaults(
+  defineProps<{
+    modelValue: string;
+    readOnly?: boolean;
+  }>(),
+  {
+    readOnly: false,
+  },
+);
 
 const emit = defineEmits<{
   (event: "update:modelValue", value: string): void;
@@ -23,11 +34,6 @@ const emit = defineEmits<{
 const mathFieldRef = ref<MathfieldElement | null>(null);
 
 function handleInput(event: Event) {
-  console.log("handleInput", {
-    value: mathFieldRef.value?.value,
-    event: event,
-    el: mathFieldRef.value,
-  });
   emit("update:modelValue", mathFieldRef.value?.value || "");
 }
 </script>

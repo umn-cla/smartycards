@@ -18,7 +18,7 @@
         class="mt-1 block bg-black/5 rounded-sm focus-within:ring-2 focus-within:ring-offset-1 focus-within:ring-blue-600"
         v-if="isShowingLatex"
       >
-        <span class="text-xs text-black/50 px-2">LaTeX Editor</span>
+        <span class="text-xs text-brand-maroon-900/50 px-2">LaTeX Editor</span>
         <code>
           <textarea
             class="block break-all w-full bg-transparent border-none focus:ring-0 px-2 py-0 text-sm"
