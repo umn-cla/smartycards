@@ -21,7 +21,7 @@
         <span class="text-xs text-black/50 px-2">LaTeX Editor</span>
         <code>
           <textarea
-            class="block break-all w-full bg-transparent border-none focus:ring-0 px-2 py-0"
+            class="block break-all w-full bg-transparent border-none focus:ring-0 px-2 py-0 text-sm"
             :value="modelValue"
             @input="
               $emit(

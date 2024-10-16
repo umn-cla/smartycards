@@ -34,6 +34,6 @@ function handleInput(event: Event) {
 <style>
 math-field::part(virtual-keyboard-toggle),
 math-field::part(menu-toggle) {
-  @apply text-neutral-500 hover:text-neutral-900;
+  @apply text-brand-maroon-900/50 hover:text-brand-maroon-900;
 }
 </style>
