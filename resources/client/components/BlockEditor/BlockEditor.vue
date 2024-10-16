@@ -104,9 +104,10 @@ const emit = defineEmits<{
   (event: "update:modelValue", value: ContentBlock[]): void;
 }>();
 
-const blockTypes = computed(
-  () => Object.keys(lookupComponentType) as ContentBlockType[],
-);
+const blockTypes = computed(() => {
+  const types = Object.keys(lookupComponentType) as ContentBlockType[];
+  return types.toSorted();
+});
 
 function addEditorBlock(type: ContentBlock["type"]) {
   const block: ContentBlock = {

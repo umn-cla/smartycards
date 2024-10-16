@@ -1,5 +1,5 @@
 <template>
-  <svg xmlns="http://www.w3.org/2000/svg" class="size-4" viewBox="0 0 24 24">
+  <svg xmlns="http://www.w3.org/2000/svg" :class="classes" viewBox="0 0 24 24">
     <path
       fill="none"
       stroke="currentColor"
@@ -11,8 +11,13 @@
   </svg>
 </template>
 
-<script lang="ts">
-export default {
-  name: "TablerMathIntegralX",
-};
+<script lang="ts" setup>
+import { cn } from "@/lib/utils";
+import { computed } from "vue";
+
+const props = defineProps<{
+  class?: string;
+}>();
+
+const classes = computed(() => cn(["size-3.5", props.class]));
 </script>
