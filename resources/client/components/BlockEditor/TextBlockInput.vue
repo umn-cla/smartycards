@@ -4,7 +4,7 @@
     :modelValue="modelValue"
     @update:modelValue="$emit('update:modelValue', $event)"
     :options="options"
-    class="bg-brand-maroon-800/5 rounded-sm"
+    class="bg-brand-maroon-800/5 rounded-sm focus-within:ring-2 focus-within:ring-offset-1 focus-within:ring-blue-600"
   />
 </template>
 <script setup lang="ts">
@@ -38,6 +38,7 @@ const options = computed(() => ({
         { list: "bullet" },
         "link",
         "code-block",
+        "formula",
       ],
       ["clean"],
     ],

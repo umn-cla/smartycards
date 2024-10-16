@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import type { User, Deck, CustomAxiosRequestConfig } from "@/types";
+import type { User, Deck, CustomAxiosRequestConfig } from "../types";
 import * as api from "@/api";
 import config from "@/config";
 

@@ -33,6 +33,7 @@
     "filepond-plugin-file-validate-type": "^1.2.9",
     "filepond-plugin-image-preview": "^4.6.12",
     "katex": "^0.16.10",
+    "mathlive": "^0.101.1",
     "p-debounce": "^4.0.0",
     "pinia": "^2.1.7",
     "quill": "^2.0.2",

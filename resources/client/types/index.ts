@@ -124,7 +124,8 @@ export type ContentBlockType =
   | "audio"
   | "video"
   | "embed"
-  | "hint";
+  | "hint"
+  | "math";
 
 export interface ContentBlock {
   id: UUID;
@@ -167,6 +168,11 @@ export interface HintContentBlock extends ContentBlock {
 export interface VideoContentBlock extends ContentBlock {
   type: "video";
   content: string; // url
+}
+
+export interface MathContentBlock extends ContentBlock {
+  type: "math";
+  content: string; // latex
 }
 
 export interface UploadedFileInfo {
