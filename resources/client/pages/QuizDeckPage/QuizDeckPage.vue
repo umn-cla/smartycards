@@ -33,7 +33,15 @@
         <h2 class="text-center font-bold text-xl">Set Up</h2>
         <div class="flex flex-wrap gap-8 items-start mx-auto">
           <div>
-            <Label for="starting-side-select">Start Side</Label>
+            <Label for="starting-side-select">
+              Prompt Side
+              <HintTooltip>
+                <p>
+                  Side for generating the question. The opposite side is used
+                  for the answer.
+                </p>
+              </HintTooltip>
+            </Label>
             <Select v-model="state.cardSide" id="starting-side-select">
               <SelectTrigger class="w-28 bg-brand-maroon-800/5">
                 <SelectValue placeholder="Starting side" />
@@ -137,6 +145,13 @@ import * as T from "@/types";
 import Tuple from "@/components/Tuple.vue";
 import IconChevronLeft from "@/components/icons/IconChevronLeft.vue";
 import IconSpinner from "@/components/icons/IconSpinner.vue";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { IconQuestionMark } from "@/components/icons";
+import HintTooltip from "@/components/HintTooltip.vue";
 
 const props = defineProps<{
   deckId: number;
