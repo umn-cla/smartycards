@@ -7,14 +7,12 @@
       class="absolute top-1 right-1 z-20 bg-neutral-50"
       >Zoom</Button
     > -->
-    <div
-      class="flex flex-col h-full w-full items-center justify-center pointer-events-none"
-    >
+    <div class="flex flex-col h-full w-full items-center justify-center">
       <template v-for="block in blocks" :key="block.id">
         <TextBlockView
           v-if="isTextBlock(block)"
           :block="block"
-          class="text-xs sm:text-base !leading-[1]"
+          class="text-xs sm:text-base !leading-[1] pointer-events-none"
         />
         <ImageBlockView
           v-else-if="isImageBlock(block)"
@@ -24,7 +22,11 @@
         />
         <VideoBlockView v-else-if="isVideoBlock(block)" :block="block" />
         <EmbedBlockView v-else-if="isEmbedBlock(block)" :block="block" />
-        <AudioBlockView v-else-if="isAudioBlock(block)" :block="block" />
+        <!-- <AudioBlockView v-else-if="isAudioBlock(block)" :block="block" /> -->
+        <SimpleAudioPlayer
+          v-else-if="isAudioBlock(block)"
+          :src="block.content"
+        />
         <HintBlockView
           v-else-if="isHintBlock(block)"
           :modelValue="block.content"
@@ -57,6 +59,7 @@ import VideoBlockView from "@/components/CardSideView/VideoBlockView.vue";
 import EmbedBlockView from "@/components/CardSideView/EmbedBlockView.vue";
 import AudioBlockView from "@/components/CardSideView/AudioBlockView.vue";
 import UnknownBlockView from "@/components/CardSideView/UnknownBlockView.vue";
+import SimpleAudioPlayer from "@/components/SimpleAudioPlayer.vue";
 
 const props = defineProps<{
   blocks: T.ContentBlock[];
