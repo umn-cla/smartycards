@@ -8,13 +8,7 @@
       class="flex flex-col gap-4 my-auto overflow-y-auto scrollbar-thin scrollbar-thumb-black/10 scrollbar-track-transparent py-1"
     >
       <template v-for="block in contentBlocks" :key="block.id">
-        <TextBlockView
-          v-if="isTextBlock(block)"
-          :block="block"
-          :class="{
-            'flex items-center justify-center': contentBlocks.length === 1,
-          }"
-        />
+        <TextBlockView v-if="isTextBlock(block)" :block="block" />
         <ImageBlockView
           v-else-if="isImageBlock(block)"
           :src="block.content"
@@ -38,9 +32,7 @@
 <script setup lang="ts">
 import * as T from "@/types";
 import { computed } from "vue";
-import EmbedVideo from "@/components/EmbedVideo.vue";
 import HintBlockView from "./HintBlockView.vue";
-import AudioPlayer from "@/components/AudioPlayer.vue";
 import ImageBlockView from "@/components/CardSideView/ImageBlockView.vue";
 import TextBlockView from "./TextBlockView.vue";
 import VideoBlockView from "./VideoBlockView.vue";
