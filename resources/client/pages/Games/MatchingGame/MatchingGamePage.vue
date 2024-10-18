@@ -39,7 +39,7 @@
         </Button>
       </div>
 
-      <section
+      <!-- <section
         class="flex flex-col gap-4"
         v-else-if="state.gameState === 'setup'"
       >
@@ -63,7 +63,7 @@
         <div class="flex justify-center">
           <Button @click="state.gameState = 'in-progress'">Let's Play</Button>
         </div>
-      </section>
+      </section> -->
 
       <section v-else-if="['in-progress', 'setup'].includes(state.gameState)">
         <h2 class="text-center font-bold text-xl mb-4">Matching</h2>
