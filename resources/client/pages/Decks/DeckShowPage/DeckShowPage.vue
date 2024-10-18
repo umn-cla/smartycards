@@ -33,6 +33,12 @@
         >
           ✨ Quiz Me
         </RouterLink>
+        <RouterLink
+          :to="{ name: 'decks.games.matching', params: { deckId } }"
+          class="bg-purple-700 px-4 py-3 sm:px-8 sm:py-4 font-bold rounded-lg sm:text-4xl shadow-solid-maroon-2 text-white"
+        >
+          Matching
+        </RouterLink>
       </div>
 
       <section class="my-8">
