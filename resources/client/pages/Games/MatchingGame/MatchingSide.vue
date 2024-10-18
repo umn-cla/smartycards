@@ -7,7 +7,9 @@
       class="absolute top-1 right-1 z-20 bg-neutral-50"
       >Zoom</Button
     > -->
-    <div class="flex flex-col h-full w-full items-center justify-center">
+    <div
+      class="flex flex-col h-full w-full items-center justify-center pointer-events-none"
+    >
       <template v-for="block in blocks" :key="block.id">
         <TextBlockView
           v-if="isTextBlock(block)"

@@ -1,30 +1,121 @@
 <template>
-  <div class="matching-game grid grid-cols-4 gap-1">
-    <MatchingSide
-      v-for="side in shuffledSides"
-      :blocks="side.blocks"
-      :key="side.id"
-      :label="side.label"
-    />
+  <div class="relative">
+    <Transition name="fade">
+      <aside
+        v-if="gameState !== 'start'"
+        class="absolute inset-4 z-20 rounded-md text-black font-bold text-4xl backdrop-blur-sm px-4 py-3 flex items-center justify-center"
+        :class="{
+          'bg-brand-gold-500/75': gameState === 'match',
+          'bg-brand-orange-500/50': gameState === 'mismatch',
+          'bg-brand-teal-300/75': gameState === 'win',
+        }"
+      >
+        <span v-if="gameState === 'match'">Match!</span>
+        <span v-else-if="gameState === 'mismatch'">Not a match. Try again</span>
+        <span v-else-if="gameState === 'win'">You win!</span>
+      </aside>
+    </Transition>
+    <div class="matching-game grid grid-cols-4 gap-1">
+      <TransitionGroup name="list">
+        <MatchingSide
+          v-for="side in shuffledSides"
+          :blocks="side.blocks"
+          :key="side.id"
+          :label="side.label"
+          class="cursor-pointer"
+          :class="{
+            'ring-2 ring-brand-teal-300 ring-offset-2 shadow-md':
+              isSelectedSide(side),
+          }"
+          @click="handleClickSide(side)"
+        />
+      </TransitionGroup>
+    </div>
   </div>
 </template>
 <script setup lang="ts">
-import CardThumbnail from "@/CardThumbnail.vue";
 import { toShuffled } from "@/lib/utils";
 import * as T from "@/types";
 import { computed, ref, watch } from "vue";
 import MatchingSide from "./MatchingSide.vue";
 
+interface CardSideWithId {
+  id: string;
+  cardId: T.Card["id"];
+  label: T.CardSideName;
+  blocks: T.CardSide;
+}
+
 const props = defineProps<{
   cards: T.Card[];
 }>();
 
-const shuffledSides = ref<CardSideWithId[]>([]);
+const emit = defineEmits<{
+  (eventName: "gameover"): void;
+}>();
 
-interface CardSideWithId {
-  id: string;
-  label: T.CardSideName;
-  blocks: T.CardSide;
+const shuffledSides = ref<CardSideWithId[]>([]);
+const selectedSides = ref<Set<CardSideWithId>>(new Set());
+const gameState = ref<"start" | "match" | "mismatch" | "win">("start");
+
+const sideLookupById = computed(
+  (): Map<CardSideWithId["id"], CardSideWithId> => {
+    return new Map(shuffledSides.value.map((side) => [side.id, side]));
+  },
+);
+
+function getSideById(id: string) {
+  return sideLookupById.value[id];
+}
+
+function isSelectedSide(side: CardSideWithId) {
+  return selectedSides.value.has(side);
+}
+
+function doSidesMatch(side1: CardSideWithId, side2: CardSideWithId) {
+  return side1.cardId === side2.cardId;
+}
+
+function handleMatch(side1: CardSideWithId, side2: CardSideWithId) {
+  const weWon = shuffledSides.value.length === 2;
+  gameState.value = weWon ? "win" : "match";
+
+  // handle end turn after a bit
+  setTimeout(() => {
+    // remove matched sides from shuffled sides
+    shuffledSides.value = shuffledSides.value.filter(
+      (side) => side.id !== side1.id && side.id !== side2.id,
+    );
+
+    // reset selected sides
+    selectedSides.value.clear();
+
+    // reset state
+    weWon ? emit("gameover") : (gameState.value = "start");
+  }, 1000);
+}
+
+function handleMismatch() {
+  gameState.value = "mismatch";
+
+  setTimeout(() => {
+    selectedSides.value.clear();
+    gameState.value = "start";
+  }, 1000);
+}
+
+function handleClickSide(side: CardSideWithId) {
+  // add selected side to set
+  selectedSides.value.add(side);
+
+  // if we're not at 2 sides, then we're done
+  if (selectedSides.value.size < 2) {
+    return;
+  }
+
+  // otherwise, handle the pair
+  const [side1, side2] = Array.from(selectedSides.value);
+  doSidesMatch(side1, side2) ? handleMatch(side1, side2) : handleMismatch();
 }
 
 watch(
@@ -32,16 +123,16 @@ watch(
   () => {
     const sidesWithId = props.cards.reduce((acc, card): CardSideWithId[] => {
       const front = {
-        id: card.id + "-front",
-        // use `as const` so that the type is not a generic string type,
-        // but specifically "front"
+        id: `${card.id}-front`,
+        cardId: card.id,
         label: "front" as const,
         blocks: card.front,
       };
 
       const back = {
-        id: card.id + "-back",
-        label: "back" as const, // see above comment for front
+        id: `${card.id}-back`,
+        cardId: card.id,
+        label: "back" as const,
         blocks: card.back,
       };
 
@@ -52,9 +143,5 @@ watch(
   },
   { immediate: true },
 );
-
-defineEmits<{
-  (eventName: "gameover"): void;
-}>();
 </script>
 <style scoped></style>
