@@ -6,7 +6,7 @@
     >
       <Button asChild variant="secondary" class="!px-2">
         <RouterLink
-          :to="{ name: 'decks.show', params: { deckId: props.deckId } }"
+          :to="{ name: 'decks.show', params: { deckId: deckId } }"
           class="flex items-center"
         >
           <IconChevronLeft class="size-6" />
@@ -27,21 +27,17 @@
     </header>
 
     <div v-if="deck">
-      <div v-if="deck.cards.length < CARDS_FOR_GAME">
-        <p>You need at least {{ CARDS_FOR_GAME }} cards to play</p>
+      <div
+        v-if="deck.cards.length < CARDS_FOR_GAME"
+        class="bg-brand-oatmeal-50 p-4 rounded-xl text-center max-w-screen-sm mx-auto"
+      >
+        <p class="mb-4">You need at least {{ CARDS_FOR_GAME }} cards to play</p>
         <Button asChild>
-          <router-link :to="{ name: 'deck', params: { id: deck.id } }">
+          <RouterLink :to="{ name: 'decks.show', params: { deckId: deckId } }">
             Add Cards
-          </router-link>
+          </RouterLink>
         </Button>
       </div>
-      <!-- <section class="flex flex-col gap-4" v-if="state.gameState === 'setup'">
-        <h2 class="text-center font-bold text-xl">Set Up</h2>
-
-        <div class="flex justify-center">
-          <Button @click="startGame">Let's Play</Button>
-        </div>
-      </section> -->
 
       <section v-else-if="['in-progress', 'setup'].includes(state.gameState)">
         <h2 class="text-center font-bold text-xl mb-4">Matching</h2>
