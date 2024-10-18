@@ -1,9 +1,9 @@
 <template>
-  <div class="matching-game flex gap-1 flex-wrap">
+  <div class="matching-game grid grid-cols-4 gap-1">
     <CardThumbnail
       v-for="side in shuffledSides"
       :side="side"
-      :aspectRactio="'square'"
+      :aspectRatio="'square'"
     />
   </div>
 </template>

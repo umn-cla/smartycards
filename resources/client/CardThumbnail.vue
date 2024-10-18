@@ -1,5 +1,5 @@
 <template>
-  <div :style="containerStyles">
+  <div ref="containerRef" :style="containerStyles">
     <CardSideView
       :label="label"
       :showLabel="false"
@@ -19,59 +19,60 @@
 
 <script setup lang="ts">
 import { CardSideView } from "@/components/CardSideView";
-import { ref, watch, computed } from "vue";
+import { ref, computed } from "vue";
 import { CardSide, CardSideName } from "@/types";
-import { Button } from "@/components/ui/button";
 import { convertToPx } from "./lib/utils";
-import { transformOrigin } from "radix-vue/dist/Popper";
 
 // width and height on normal cards.
 // See FlippableCard.vue for the default values
 // maybe this should be a constant somewhere
-const ORIGINAL_SIDE_WIDTH = "16rem";
+const ORIGINAL_SIDE_WIDTH = "8rem";
 const ORIGINAL_SIDE_HEIGHT = "24rem";
-const DEFAULT_THUMB_SIDE_WIDTH = "8rem";
 
 const props = withDefaults(
   defineProps<{
     side: CardSide;
     label?: string;
-    width?: string;
-    aspectRactio?: "default" | "square";
+    aspectRatio?: "default" | "square";
   }>(),
   {
-    width: DEFAULT_THUMB_SIDE_WIDTH,
     aspectRatio: "default",
   },
 );
 
+const containerRef = ref<HTMLElement | null>(null);
+
+const containerWidth = computed(() => {
+  console.log({
+    containerRef: containerRef.value,
+    clientWidth: containerRef.value?.clientWidth,
+  });
+  return containerRef.value?.clientWidth ?? 0;
+});
+
 const scaleFactor = computed(() => {
-  const widthPx = convertToPx(props.width);
   const defaultWidthPx = convertToPx(ORIGINAL_SIDE_WIDTH);
-  return widthPx / defaultWidthPx;
+  return containerWidth.value / defaultWidthPx || 1;
 });
 
 // the side view should have the original width
 // and thumb height, and use transform scale to
 // scale it down
 const sideViewStyles = computed(() => ({
-  width: ORIGINAL_SIDE_WIDTH,
-  height:
-    props.aspectRactio === "square"
-      ? ORIGINAL_SIDE_WIDTH
-      : ORIGINAL_SIDE_HEIGHT,
   transform: `scale(${scaleFactor.value})`,
   transformOrigin: "top left",
+  width: ORIGINAL_SIDE_WIDTH,
+  height:
+    props.aspectRatio === "square" ? ORIGINAL_SIDE_WIDTH : ORIGINAL_SIDE_HEIGHT,
 }));
 
 // to "shrink-wrap" the side view, we set the
 // the container styles to the scaled down size
 // Is there a better way to do this?
 const containerStyles = computed(() => ({
-  width: props.width,
   height:
-    props.aspectRactio === "square"
-      ? props.width
+    props.aspectRatio === "square"
+      ? `calc(${ORIGINAL_SIDE_WIDTH} * ${scaleFactor.value})`
       : `calc(${ORIGINAL_SIDE_HEIGHT} * ${scaleFactor.value})`,
 }));
 </script>

@@ -91,7 +91,8 @@ const props = defineProps<{
   deckId: number;
 }>();
 
-const CARDS_FOR_GAME = 5;
+// 8 cards gives 4 pairs so we get a 4x4 grid
+const CARDS_FOR_GAME = 8;
 
 const state = reactive({
   gameState: "in-progress" as "in-progress" | "complete" | "error", // | "loading" // | "setup"
