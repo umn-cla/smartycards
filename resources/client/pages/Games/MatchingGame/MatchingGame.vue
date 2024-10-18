@@ -58,16 +58,6 @@ const shuffledSides = ref<CardSideWithId[]>([]);
 const selectedSides = ref<Set<CardSideWithId>>(new Set());
 const gameState = ref<"start" | "match" | "mismatch" | "win">("start");
 
-const sideLookupById = computed(
-  (): Map<CardSideWithId["id"], CardSideWithId> => {
-    return new Map(shuffledSides.value.map((side) => [side.id, side]));
-  },
-);
-
-function getSideById(id: string) {
-  return sideLookupById.value[id];
-}
-
 function isSelectedSide(side: CardSideWithId) {
   return selectedSides.value.has(side);
 }
@@ -105,7 +95,12 @@ function handleMismatch() {
 }
 
 function handleClickSide(side: CardSideWithId) {
-  // add selected side to set
+  // if we've already selected this side, deselect it
+  if (selectedSides.value.has(side)) {
+    selectedSides.value.delete(side);
+    return;
+  }
+
   selectedSides.value.add(side);
 
   // if we're not at 2 sides, then we're done

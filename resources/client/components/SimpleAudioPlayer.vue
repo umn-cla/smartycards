@@ -7,7 +7,7 @@
     </p>
     <p v-else>Audio not loaded</p>
     <button
-      @click.prevent.stop="playing = !playing"
+      @click.prevent="playing = !playing"
       class="px-4 py-1 rounded-sm"
       :class="{
         'bg-brand-teal-300': playing,
