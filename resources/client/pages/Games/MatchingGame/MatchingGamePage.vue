@@ -44,12 +44,13 @@
       </section> -->
 
       <section v-else-if="['in-progress', 'setup'].includes(state.gameState)">
-        <h2 class="text-center font-bold text-xl">Matching</h2>
+        <h2 class="text-center font-bold text-xl mb-4">Matching</h2>
 
         <MatchingGame
           v-if="deck"
           :cards="gameCards"
           @gameover="state.gameState = 'complete'"
+          class="mx-auto max-h-[66vh] aspect-square"
         />
       </section>
 

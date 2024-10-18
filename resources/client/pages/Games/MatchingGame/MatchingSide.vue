@@ -12,7 +12,7 @@
         <TextBlockView
           v-if="isTextBlock(block)"
           :block="block"
-          class="!text-[0.5rem] !leading-[1]"
+          class="text-xs sm:text-base !leading-[1]"
         />
         <ImageBlockView
           v-else-if="isImageBlock(block)"
