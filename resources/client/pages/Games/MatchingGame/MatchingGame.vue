@@ -1,6 +1,6 @@
 <template>
   <div class="relative">
-    <Transition name="fade">
+    <!-- <Transition name="fade">
       <aside
         v-if="gameState !== 'start'"
         class="absolute inset-4 z-20 rounded-md text-black font-bold text-4xl backdrop-blur-sm px-4 py-3 flex items-center justify-center"
@@ -14,7 +14,7 @@
         <span v-else-if="gameState === 'mismatch'">Not a match. Try again</span>
         <span v-else-if="gameState === 'win'">You win!</span>
       </aside>
-    </Transition>
+    </Transition> -->
     <div class="matching-game grid grid-cols-4 gap-1">
       <TransitionGroup name="list">
         <MatchingSide
@@ -22,11 +22,8 @@
           :blocks="side.blocks"
           :key="side.id"
           :label="side.label"
+          :status="getSideStatus(side)"
           class="cursor-pointer"
-          :class="{
-            'ring-2 ring-brand-teal-300 ring-offset-2 shadow-md':
-              isSelectedSide(side),
-          }"
           @click="handleClickSide(side)"
         />
       </TransitionGroup>
@@ -64,6 +61,22 @@ function isSelectedSide(side: CardSideWithId) {
 
 function doSidesMatch(side1: CardSideWithId, side2: CardSideWithId) {
   return side1.cardId === side2.cardId;
+}
+
+function getSideStatus(side: CardSideWithId) {
+  if (gameState.value === "match" && selectedSides.value.has(side)) {
+    return "correct";
+  }
+
+  if (gameState.value === "mismatch" && selectedSides.value.has(side)) {
+    return "incorrect";
+  }
+
+  if (selectedSides.value.has(side)) {
+    return "selected";
+  }
+
+  return "idle";
 }
 
 function handleMatch(side1: CardSideWithId, side2: CardSideWithId) {
