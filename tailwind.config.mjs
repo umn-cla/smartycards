@@ -46,6 +46,7 @@ const brandColors = {
     700: "#09594D",
     500: "#14917E",
     300: "#27BEA7",
+    100: "#daf3ea",
     shadow: "#09594D",
   },
   blue: {

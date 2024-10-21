@@ -2,7 +2,8 @@
   <div
     class="bg-brand-oatmeal-50 shadow-sm border border-brand-oatmeal-300 rounded-sm aspect-square relative flex flex-col p-1 overflow-auto scrollbar-thin scrollbar-thumb-black/10 scrollbar-track-transparent"
     :class="{
-      'ring-2 ring-brand-teal-300 ring-offset-2': status === 'selected',
+      'ring-2 ring-brand-teal-300 ring-offset-2 bg-brand-teal-100 shadow-sm':
+        status === 'selected',
       'opacity-25 cursor-not-allowed': status === 'disabled',
       'cursor-pointer': status !== 'disabled',
     }"
@@ -12,8 +13,6 @@
         v-if="status !== 'idle'"
         class="absolute inset-0 z-20 rounded-sm font-bold text-4xl px-4 py-3 flex items-center justify-center text-brand-oatmeal-50"
         :class="{
-          'bg-brand-teal-500/25 ring-2 ring-brand-teal-300 ring-offset-2 shadow-md':
-            status === 'selected',
           'bg-brand-orange-500/75 backdrop-blur-sm': status === 'mismatch',
           'bg-brand-teal-300/75 backdrop-blur-sm': status === 'match',
         }"
