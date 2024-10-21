@@ -3,6 +3,8 @@
     class="bg-brand-oatmeal-50 shadow-sm border border-brand-oatmeal-300 rounded-sm aspect-square overflow-y-auto scrollbar-thin scrollbar-thumb-black/10 scrollbar-track-transparent relative flex flex-col h-full w-full items-center justify-center p-1"
     :class="{
       'ring-2 ring-brand-teal-300 ring-offset-2': status === 'selected',
+      'opacity-25 cursor-not-allowed': status === 'disabled',
+      'cursor-pointer': status !== 'disabled',
     }"
   >
     <Transition name="fade">
@@ -12,15 +14,15 @@
         :class="{
           'bg-brand-teal-500/25 ring-2 ring-brand-teal-300 ring-offset-2 shadow-md':
             status === 'selected',
-          'bg-brand-orange-500/75 backdrop-blur-sm': status === 'incorrect',
-          'bg-brand-teal-300/75 backdrop-blur-sm': status === 'correct',
+          'bg-brand-orange-500/75 backdrop-blur-sm': status === 'mismatch',
+          'bg-brand-teal-300/75 backdrop-blur-sm': status === 'match',
         }"
       >
-        <span v-if="status === 'correct'">
+        <span v-if="status === 'match'">
           <IconCheck />
           <span class="sr-only">Match</span>
         </span>
-        <span v-else-if="status === 'incorrect'">
+        <span v-else-if="status === 'mismatch'">
           <IconX />
           <span class="sr-only">Not a match. Try again</span>
         </span>
@@ -71,11 +73,12 @@ import EmbedBlockView from "@/components/CardSideView/EmbedBlockView.vue";
 import UnknownBlockView from "@/components/CardSideView/UnknownBlockView.vue";
 import SimpleAudioPlayer from "@/components/SimpleAudioPlayer.vue";
 import { IconX, IconCheck } from "@/components/icons";
+import { MatchingCardSide } from "./matchingGameStore";
 
 const props = defineProps<{
   blocks: T.ContentBlock[];
   label: T.CardSideName;
-  status: "selected" | "correct" | "incorrect" | "idle";
+  status: MatchingCardSide["status"];
 }>();
 </script>
 <style scoped></style>
