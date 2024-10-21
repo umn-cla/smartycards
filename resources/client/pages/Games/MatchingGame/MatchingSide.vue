@@ -45,6 +45,7 @@
         <SimpleAudioPlayer
           v-else-if="isAudioBlock(block)"
           :src="block.content"
+          :isPlaying="status === 'selected'"
         />
         <HintBlockView
           v-else-if="isHintBlock(block)"

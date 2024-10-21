@@ -7,7 +7,7 @@
     </p>
     <p v-else>Audio not loaded</p>
     <button
-      @click.prevent="playing = !playing"
+      @click.prevent.stop="playing = !playing"
       class="px-4 py-1 rounded-sm"
       :class="{
         'bg-brand-teal-300': playing,
@@ -20,12 +20,13 @@
   </div>
 </template>
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { computed, ref, watch } from "vue";
 import { IconCirclePlay, IconCirclePause } from "./icons";
 import { useMediaControls } from "@vueuse/core";
 
-defineProps<{
+const props = defineProps<{
   src: string;
+  isPlaying: boolean;
 }>();
 
 const audioRef = ref<HTMLAudioElement | null>(null);
@@ -35,5 +36,14 @@ const { playing, currentTime, duration } = useMediaControls(audioRef);
 function formatDuration(seconds: number) {
   return new Date(1000 * seconds).toISOString().slice(15, 19);
 }
+
+watch(
+  () => props.isPlaying,
+  (newVal) => {
+    console.log("isPlaying changed", newVal);
+    // update playing state if we receive new value from parent
+    playing.value = newVal;
+  },
+);
 </script>
 <style scoped></style>
