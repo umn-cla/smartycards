@@ -22,7 +22,9 @@ export const useMatchingGameStore = defineStore("matchingGame", {
   },
   actions: {
     init(cards: T.Card[]) {
-      this.sides = cards.reduce((acc, card) => {
+      const gameCards = toShuffled(cards).slice(0, Math.min(cards.length, 8));
+
+      this.sides = gameCards.reduce((acc, card) => {
         const front: MatchingCardSide = {
           id: uuid(),
           cardId: card.id,
