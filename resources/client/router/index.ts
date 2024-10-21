@@ -134,6 +134,15 @@ const router = createRouter({
       }),
     },
     {
+      path: "/decks/:deckId/games/matching",
+      name: "decks.games.matching",
+      component: () =>
+        import("../pages/Games/MatchingGame/MatchingGamePage.vue"),
+      props: (route) => ({
+        deckId: Number(route.params.deckId),
+      }),
+    },
+    {
       path: "/decks/:deckId/practice/summary",
       name: "decks.practice.summary",
       component: () => import("@/pages/Decks/PracticeSummaryPage.vue"),

@@ -3,7 +3,7 @@
     :src="src"
     :alt="alt"
     class="rounded-sm w-full h-full object-contain"
-    @click="isLightboxVisible = true"
+    @click="onImageClick"
   />
   <Teleport to="body">
     <div
@@ -28,10 +28,24 @@
 import { onMounted, onUnmounted, ref, watch } from "vue";
 import { IconX } from "../icons";
 
-defineProps<{
-  src: string;
-  alt: string;
-}>();
+const props = withDefaults(
+  defineProps<{
+    src: string;
+    alt: string;
+    withLightbox?: boolean;
+  }>(),
+  {
+    withLightbox: true,
+  },
+);
+
+function onImageClick() {
+  if (!props.withLightbox) {
+    return;
+  }
+
+  isLightboxVisible.value = true;
+}
 
 const isLightboxVisible = ref(false);
 
@@ -59,11 +73,6 @@ onUnmounted(() => {
   window.removeEventListener("keydown", closeOnEscape);
   window.removeEventListener("click", closeOnClickOutside);
 });
-
-// watch(isLightboxVisible, () => {
-//  // Disable scrolling when lightbox is visible?
-//   document.body.style.overflow = isLightboxVisible.value ? "hidden" : "";
-// });
 </script>
 
 <style scoped></style>
