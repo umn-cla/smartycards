@@ -38,38 +38,9 @@
           </RouterLink>
         </Button>
       </div>
-
-      <!-- <section
-        class="flex flex-col gap-4"
-        v-else-if="state.gameState === 'setup'"
-      >
-        <h2 class="text-center font-bold text-xl">Set Up</h2>
-        <div class="flex flex-wrap gap-8 items-start mx-auto">
-          <div v-if="deck.cards.length > 2">
-            <Label>Number of Cards</Label>
-            <div class="flex items-center gap-2">
-              <input
-                v-model="state.numberOfCards"
-                type="range"
-                :min="2"
-                :max="maxCards"
-                class="w-28 block h-8"
-              />
-              <span>{{ state.numberOfCards }}</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="flex justify-center">
-          <Button @click="state.gameState = 'in-progress'">Let's Play</Button>
-        </div>
-      </section> -->
-
       <section v-else-if="['in-progress', 'setup'].includes(state.gameState)">
         <h2 class="text-center font-bold text-xl mb-4">Matching</h2>
-
         <MatchingGame
-          v-if="deck"
           :cards="gameCards"
           @gameover="state.gameState = 'complete'"
           class="mx-auto max-h-[66vh] aspect-square"
@@ -124,32 +95,18 @@ const state = reactive({
   numberOfCards: 8,
 });
 
-const maxCards = computed(() =>
-  Math.min(deck.value?.cards.length ?? 0, MAX_CARDS_FOR_GAME),
-);
-
 const deckIdRef = computed(() => props.deckId);
 
 const { data: deck, isLoading: isDeckLoading } = useDeckByIdQuery(deckIdRef);
-
-watch(
-  [deck],
-  () => {
-    // max sure the number of cards is within the range of the deck
-    if (!deck || state.numberOfCards <= maxCards.value) {
-      return;
-    }
-    state.numberOfCards = maxCards.value;
-  },
-  { immediate: true },
-);
 
 const gameCards = computed((): T.Card[] => {
   if (!deck.value) {
     return [];
   }
 
-  return toShuffled(deck.value.cards).slice(0, state.numberOfCards);
+  const numberOfCards = Math.min(deck.value.cards.length, MAX_CARDS_FOR_GAME);
+
+  return toShuffled(deck.value.cards).slice(0, numberOfCards);
 });
 
 async function startGame() {
