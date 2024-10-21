@@ -28,7 +28,7 @@
         </span>
       </aside>
     </Transition>
-    <div class="flex flex-col gap-4 my-auto py-1">
+    <div class="flex flex-col gap-4 my-auto py-1 items-start mx-auto">
       <template v-for="block in blocks" :key="block.id">
         <TextBlockView
           v-if="isTextBlock(block)"
