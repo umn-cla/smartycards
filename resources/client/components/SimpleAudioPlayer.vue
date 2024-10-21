@@ -39,10 +39,14 @@ function formatDuration(seconds: number) {
 
 watch(
   () => props.isPlaying,
-  (newVal) => {
-    console.log("isPlaying changed", newVal);
+  (isPlaying) => {
     // update playing state if we receive new value from parent
-    playing.value = newVal;
+    playing.value = isPlaying;
+
+    // reset time to 0 if we've stopped playing
+    if (!isPlaying) {
+      currentTime.value = 0;
+    }
   },
 );
 </script>
