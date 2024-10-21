@@ -1,6 +1,6 @@
 <template>
   <div
-    class="bg-brand-oatmeal-50 shadow-sm border border-brand-oatmeal-300 rounded-sm aspect-square overflow-y-auto scrollbar-thin scrollbar-thumb-black/10 scrollbar-track-transparent relative flex flex-col h-full w-full items-center justify-center p-1"
+    class="bg-brand-oatmeal-50 shadow-sm border border-brand-oatmeal-300 rounded-sm aspect-square relative flex flex-col p-1 overflow-auto scrollbar-thin scrollbar-thumb-black/10 scrollbar-track-transparent"
     :class="{
       'ring-2 ring-brand-teal-300 ring-offset-2': status === 'selected',
       'opacity-25 cursor-not-allowed': status === 'disabled',
@@ -28,29 +28,34 @@
         </span>
       </aside>
     </Transition>
-    <template v-for="block in blocks" :key="block.id">
-      <TextBlockView
-        v-if="isTextBlock(block)"
-        :block="block"
-        class="text-xs sm:text-base !leading-[1] pointer-events-none"
-      />
-      <ImageBlockView
-        v-else-if="isImageBlock(block)"
-        :src="block.content"
-        :alt="block.meta?.alt ?? ''"
-        :withLightbox="false"
-      />
-      <VideoBlockView v-else-if="isVideoBlock(block)" :block="block" />
-      <EmbedBlockView v-else-if="isEmbedBlock(block)" :block="block" />
-      <SimpleAudioPlayer v-else-if="isAudioBlock(block)" :src="block.content" />
-      <HintBlockView
-        v-else-if="isHintBlock(block)"
-        :modelValue="block.content"
-        :meta="block.meta"
-      />
-      <MathBlockView v-else-if="isMathBlock(block)" :block="block" />
-      <UnknownBlockView v-else :block="block" />
-    </template>
+    <div class="flex flex-col gap-4 my-auto py-1">
+      <template v-for="block in blocks" :key="block.id">
+        <TextBlockView
+          v-if="isTextBlock(block)"
+          :block="block"
+          class="text-xs sm:text-base !leading-[1] pointer-events-none"
+        />
+        <ImageBlockView
+          v-else-if="isImageBlock(block)"
+          :src="block.content"
+          :alt="block.meta?.alt ?? ''"
+          :withLightbox="false"
+        />
+        <VideoBlockView v-else-if="isVideoBlock(block)" :block="block" />
+        <EmbedBlockView v-else-if="isEmbedBlock(block)" :block="block" />
+        <SimpleAudioPlayer
+          v-else-if="isAudioBlock(block)"
+          :src="block.content"
+        />
+        <HintBlockView
+          v-else-if="isHintBlock(block)"
+          :modelValue="block.content"
+          :meta="block.meta"
+        />
+        <MathBlockView v-else-if="isMathBlock(block)" :block="block" />
+        <UnknownBlockView v-else :block="block" />
+      </template>
+    </div>
   </div>
 </template>
 <script setup lang="ts">
