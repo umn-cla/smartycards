@@ -51,12 +51,16 @@ export const useMatchingGameStore = defineStore("matchingGame", {
 
     selectSide(sideId: string) {
       this.sides = this.sides.map((side) => {
-        if (side.id === sideId) {
-          return { ...side, status: "selected" };
+        if (side.id === sideId && ["idle", "selected"].includes(side.status)) {
+          return {
+            ...side,
+            status: side.status === "selected" ? "idle" : "selected",
+          };
         }
 
         return side;
       });
+
       this.checkSelectedSidesForMatches();
     },
 
