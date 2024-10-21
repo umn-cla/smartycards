@@ -26,7 +26,7 @@
       </div>
     </header>
 
-    <div v-if="deck">
+    <div v-if="deck" class="max-w-screen-sm mx-auto">
       <div
         v-if="deck.cards.length < 2"
         class="bg-brand-oatmeal-50 p-4 rounded-xl text-center max-w-screen-sm mx-auto"
@@ -42,7 +42,12 @@
         <h2 class="text-center font-bold text-xl mb-4">Matching</h2>
         <MatchingGame
           :cards="gameCards"
-          @gameover="state.gameState = 'complete'"
+          @gameover="
+            () => {
+              state.wins++;
+              state.gameState = 'complete';
+            }
+          "
           class="mx-auto max-h-[66vh] aspect-square"
         />
       </section>
@@ -61,8 +66,20 @@
         </div>
       </section>
 
+      <section v-else-if="state.gameState === 'complete'">
+        <h2 class="text-center font-bold text-xl mb-4">Matching</h2>
+
+        <div
+          class="flex flex-col gap-4 items-center bg-brand-teal-300/25 rounded-md text-brand-maroon-950 p-4 roud"
+        >
+          <h3 class="text-4xl">You Win!</h3>
+          <p>You have {{ state.wins }} {{ pluralize(state.wins, "win") }}.</p>
+          <Button @click="startGame">Play Again</Button>
+        </div>
+      </section>
+
       <section v-else>
-        <h2 class="text-center font-bold text-xl">Complete</h2>
+        <h2 class="text-center font-bold text-xl mb-4">Matching</h2>
 
         <div class="flex flex-col gap-4 items-center">
           <Button @click="startGame">Try Again</Button>
@@ -81,6 +98,7 @@ import IconChevronLeft from "@/components/icons/IconChevronLeft.vue";
 import MatchingGame from "./MatchingGame.vue";
 import { toShuffled } from "@/lib/utils";
 import { Label } from "@/components/ui/label";
+import { pluralize } from "@/utils/pluralize";
 
 const props = defineProps<{
   deckId: number;
@@ -93,6 +111,7 @@ const state = reactive({
   gameState: "setup" as "setup" | "in-progress" | "complete" | "error", // | "loading" // | "setup"
   cardSide: "front" as T.CardSideName,
   numberOfCards: 8,
+  wins: 0,
 });
 
 const deckIdRef = computed(() => props.deckId);

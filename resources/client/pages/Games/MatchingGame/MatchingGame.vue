@@ -1,20 +1,5 @@
 <template>
   <div class="relative">
-    <!-- <Transition name="fade">
-      <aside
-        v-if="gameState !== 'start'"
-        class="absolute inset-4 z-20 rounded-md text-black font-bold text-4xl backdrop-blur-sm px-4 py-3 flex items-center justify-center"
-        :class="{
-          'bg-brand-gold-500/75': gameState === 'match',
-          'bg-brand-orange-500/50': gameState === 'mismatch',
-          'bg-brand-teal-300/75': gameState === 'win',
-        }"
-      >
-        <span v-if="gameState === 'match'">Match!</span>
-        <span v-else-if="gameState === 'mismatch'">Not a match. Try again</span>
-        <span v-else-if="gameState === 'win'">You win!</span>
-      </aside>
-    </Transition> -->
     <div class="matching-game grid grid-cols-4 gap-1">
       <TransitionGroup name="list">
         <MatchingSide
@@ -33,7 +18,7 @@
 <script setup lang="ts">
 import { toShuffled } from "@/lib/utils";
 import * as T from "@/types";
-import { computed, ref, watch } from "vue";
+import { ref, watch } from "vue";
 import MatchingSide from "./MatchingSide.vue";
 
 interface CardSideWithId {
@@ -51,13 +36,10 @@ const emit = defineEmits<{
   (eventName: "gameover"): void;
 }>();
 
+const STATE_TIMEOUT = 500;
 const shuffledSides = ref<CardSideWithId[]>([]);
 const selectedSides = ref<Set<CardSideWithId>>(new Set());
 const gameState = ref<"start" | "match" | "mismatch" | "win">("start");
-
-function isSelectedSide(side: CardSideWithId) {
-  return selectedSides.value.has(side);
-}
 
 function doSidesMatch(side1: CardSideWithId, side2: CardSideWithId) {
   return side1.cardId === side2.cardId;
@@ -95,7 +77,7 @@ function handleMatch(side1: CardSideWithId, side2: CardSideWithId) {
 
     // reset state
     weWon ? emit("gameover") : (gameState.value = "start");
-  }, 1000);
+  }, STATE_TIMEOUT);
 }
 
 function handleMismatch() {
@@ -104,7 +86,7 @@ function handleMismatch() {
   setTimeout(() => {
     selectedSides.value.clear();
     gameState.value = "start";
-  }, 1000);
+  }, STATE_TIMEOUT);
 }
 
 function handleClickSide(side: CardSideWithId) {

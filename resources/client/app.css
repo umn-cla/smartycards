@@ -9,7 +9,7 @@
 
 .fade-enter-active,
 .fade-leave-active {
-  transition: opacity 0.5s ease;
+  transition: opacity 0.33s ease;
 }
 
 .fade-enter-from,
@@ -20,7 +20,7 @@
 .list-move, /* apply transition to moving elements */
 .list-enter-active,
 .list-leave-active {
-  transition: all 0.5s ease;
+  transition: all 0.33s ease;
 }
 
 .list-enter-from,
