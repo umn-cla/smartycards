@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('activity_types', function (Blueprint $table) {
             $table->id();
+            $table->string('slug')->unique();
             $table->string('name');
             $table->text('description');
             $table->integer('default_xp');

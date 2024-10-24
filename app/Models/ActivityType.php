@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\ActivityTypeEnum;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -10,10 +11,23 @@ class ActivityType extends Model
     use HasFactory;
 
     protected $fillable = [
+        'slug',
         'name',
         'description',
         'default_xp',
     ];
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        // validate that the slug is a valid ActivityTypeEnum
+        static::saving(function ($model) {
+            if (! ActivityTypeEnum::tryFrom($model->slug)) {
+                throw new \InvalidArgumentException('Invalid slug value for ActivityTypeEnum');
+            }
+        });
+    }
 
     public function activityEvents()
     {

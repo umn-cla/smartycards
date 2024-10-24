@@ -34,6 +34,7 @@ class ActivityType extends Resource
     public static $search = [
         'id',
         'name',
+        'slug',
     ];
 
     /**
@@ -45,6 +46,7 @@ class ActivityType extends Resource
     {
         return [
             ID::make()->sortable(),
+            Text::make('Slug')->sortable(),
             Text::make('Name')->sortable(),
             Text::make('Description')->sortable(),
             Number::make('Default XP')->sortable(),

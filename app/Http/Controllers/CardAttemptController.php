@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\ActivityTypeEnum;
+use App\Models\ActivityEvent;
 use App\Models\Card;
 use App\Models\CardAttempt;
 use Gate;
@@ -38,8 +40,10 @@ class CardAttemptController extends Controller
             'card_id' => $card->id,
             'score' => $validated['score'],
         ]);
-
         $attempt->deck_id = $attempt->card->deck_id;
+
+        // award experience points
+        ActivityEvent::awardXP($request->user(), $attempt->card->deck, ActivityTypeEnum::PRACTICE_CARD);
 
         return response()->json($attempt, 201);
     }

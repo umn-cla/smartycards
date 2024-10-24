@@ -154,4 +154,9 @@ class Deck extends Model implements AuditableContract
     {
         return $this->memberships()->where('user_id', Auth::id())->first();
     }
+
+    public function userXP(User $user)
+    {
+        return $this->activities()->where('user_id', $user->id)->sum('xp');
+    }
 }
