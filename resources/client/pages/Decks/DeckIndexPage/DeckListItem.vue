@@ -14,7 +14,7 @@
       <MoreDeckActions :deck="deck" />
     </aside>
     <div
-      class="items-center justify-center flex flex-col flex-1 font-serif text-center"
+      class="items-center justify-center flex flex-1 flex-col font-serif text-center"
     >
       <h3 class="font-bold text-xl text-brand-maroon-800">
         {{ deck.name }}
@@ -22,6 +22,12 @@
       <h4 class="font-bold text-brand-maroon-800/50" v-if="deck.description">
         {{ deck.description }}
       </h4>
+      <div
+        class="font-sans text-[0.6rem] text-brand-maroon-800/50 text-center uppercase flex flex-col items-center justify-center mt-4 gap-1"
+      >
+        <Progress :modelValue="randomPercent" class="w-16 h-1" />
+        <span>Level {{ randomLevel }}</span>
+      </div>
     </div>
 
     <footer
@@ -49,6 +55,7 @@ import MoreDeckActions from "./MoreDeckActions.vue";
 import { computed } from "vue";
 import { IconArrowRight } from "@/components/icons";
 import { Button } from "@/components/ui/button";
+import { Progress } from "@/components/ui/progress";
 
 const props = defineProps<{
   deck: T.Deck;
@@ -56,4 +63,10 @@ const props = defineProps<{
 
 const lastAttemptedAtTimeAgo = useTimeAgo(() => props.deck.last_attempted_at);
 const cardCount = computed(() => props.deck.cards_count ?? 0);
+
+const randInt = (min: number, max: number) =>
+  Math.floor(Math.random() * (max - min + 1) + min);
+
+const randomPercent = randInt(1, 100);
+const randomLevel = randInt(1, 10);
 </script>
