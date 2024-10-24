@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Activity extends Model
+class ActivityType extends Model
 {
     use HasFactory;
 
@@ -14,4 +14,9 @@ class Activity extends Model
         'description',
         'default_xp',
     ];
+
+    public function activityEvents()
+    {
+        return $this->hasMany(ActivityEvents::class);
+    }
 }

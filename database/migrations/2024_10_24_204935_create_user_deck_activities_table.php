@@ -11,11 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('user_deck_activities', function (Blueprint $table) {
+        Schema::create('activity_events', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('activity_type_id')->constrained()->cascadeOnDelete();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->foreignId('deck_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('activity_id')->constrained()->cascadeOnDelete();
             $table->integer('xp_earned');
             $table->timestamps();
         });

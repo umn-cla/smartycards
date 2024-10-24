@@ -51,6 +51,16 @@ class Deck extends Model implements AuditableContract
         return $this->hasMany(DeckInviteToken::class);
     }
 
+    public function activities()
+    {
+        return $this->hasMany(ActivityEvents::class);
+    }
+
+    public function userActvities($userId)
+    {
+        return $this->hasMany(ActivityEvents::class)->where('user_id', $userId);
+    }
+
     public function getTokenForPermission($permission)
     {
         return $this->tokens()->where('permission', $permission)->first();

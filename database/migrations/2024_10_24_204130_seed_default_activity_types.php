@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\Activity;
+use App\Models\ActivityType;
 use Illuminate\Database\Migrations\Migration;
 
 return new class extends Migration
@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        $activities = [
+        $activity_types = [
             [
                 'name' => 'Create Card',
                 'description' => 'Make a new card in a deck',
@@ -33,8 +33,8 @@ return new class extends Migration
             ],
         ];
 
-        foreach ($activities as $activity) {
-            Activity::create($activity);
+        foreach ($activity_types as $activity) {
+            ActivityType::create($activity);
         }
     }
 
@@ -43,6 +43,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Activity::truncate();
+        ActivityType::truncate();
     }
 };
