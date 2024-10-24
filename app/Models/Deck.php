@@ -53,12 +53,12 @@ class Deck extends Model implements AuditableContract
 
     public function activities()
     {
-        return $this->hasMany(ActivityEvents::class);
+        return $this->hasMany(ActivityEvent::class);
     }
 
     public function userActvities($userId)
     {
-        return $this->hasMany(ActivityEvents::class)->where('user_id', $userId);
+        return $this->hasMany(ActivityEvent::class)->where('user_id', $userId);
     }
 
     public function getTokenForPermission($permission)

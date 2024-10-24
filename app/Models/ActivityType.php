@@ -17,6 +17,6 @@ class ActivityType extends Model
 
     public function activityEvents()
     {
-        return $this->hasMany(ActivityEvents::class);
+        return $this->hasMany(ActivityEvent::class);
     }
 }

@@ -74,12 +74,12 @@ class User extends Authenticatable implements AuditableContract
 
     public function activities()
     {
-        return $this->hasMany(ActivityEvents::class);
+        return $this->hasMany(ActivityEvent::class);
     }
 
     public function deckActivities($deckId)
     {
-        return $this->hasMany(ActivityEvents::class)->where('deck_id', $deckId);
+        return $this->hasMany(ActivityEvent::class)->where('deck_id', $deckId);
     }
 
     public function isOwnerOfDeck(Deck $deck): bool
