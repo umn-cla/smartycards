@@ -11,8 +11,8 @@ class ActivityType extends Model
     use HasFactory;
 
     protected $fillable = [
-        'slug',
         'name',
+        'label',
         'description',
         'default_xp',
     ];
@@ -23,8 +23,8 @@ class ActivityType extends Model
 
         // validate that the slug is a valid ActivityTypeEnum
         static::saving(function ($model) {
-            if (! ActivityTypeEnum::tryFrom($model->slug)) {
-                throw new \InvalidArgumentException('Invalid slug value for ActivityTypeEnum');
+            if (! ActivityTypeEnum::tryFrom($model->name)) {
+                throw new \InvalidArgumentException('Invalid activity name for ActivityTypeEnum');
             }
         });
     }

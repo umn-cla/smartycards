@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\ActivityTypeEnum;
 use App\Models\ActivityType;
 use Illuminate\Database\Migrations\Migration;
 
@@ -12,32 +13,26 @@ return new class extends Migration
     {
         $activity_types = [
             [
-                'slug' => 'create-card',
-                'name' => 'Create Card',
+                'name' => ActivityTypeEnum::CREATE_CARD->value,
+                'label' => 'Create Card',
                 'description' => 'Make a new card in a deck',
                 'default_xp' => 25,
             ],
             [
-                'slug' => 'practice-card',
-                'name' => 'Practice Card',
-                'description' => 'Practice a single card in a deck',
-                'default_xp' => 1,
-            ],
-            [
-                'slug' => 'practice-all-cards',
-                'name' => 'Practice Deck',
+                'name' => ActivityTypeEnum::PRACTICE_CARD->value,
+                'label' => 'Practice Deck',
                 'description' => 'Practice all cards in a deck',
                 'default_xp' => 100,
             ],
             [
-                'slug' => 'quiz',
-                'name' => 'Quiz',
+                'name' => ActivityTypeEnum::PRACTICE_ALL_CARDS->value,
+                'label' => 'Quiz',
                 'description' => 'Take a quiz on a deck',
                 'default_xp' => 100,
             ],
             [
-                'slug' => 'matching',
-                'name' => 'Matching',
+                'name' => ActivityTypeEnum::QUIZ->value,
+                'label' => 'Matching',
                 'description' => 'Play a matching game',
                 'default_xp' => 100,
             ],

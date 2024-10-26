@@ -34,7 +34,7 @@ class ActivityEvent extends Model
 
     public static function awardXP(User $user, Deck $deck, ActivityTypeEnum $activityType, $xp = null): ActivityEvent
     {
-        $activityType = ActivityType::where('slug', $activityType->value)->first();
+        $activityType = ActivityType::where('name', $activityType->value)->first();
         $xp = $xp ?? $activityType->default_xp;
 
         $event = ActivityEvent::create([

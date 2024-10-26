@@ -4,9 +4,9 @@ namespace App\Enums;
 
 enum ActivityTypeEnum: string
 {
-    case CREATE_CARD = 'create-card';
-    case PRACTICE_CARD = 'practice-card';
-    case PRACTICE_ALL_CARDS = 'practice-all-cards';
-    case QUIZ = 'quiz';
-    case MATCHING = 'matching';
+    case CREATE_CARD = 'CREATE_CARD';
+    case PRACTICE_CARD = 'PRACTICE_CARD';
+    case PRACTICE_ALL_CARDS = 'PRACTICE_ALL_CARDS';
+    case QUIZ = 'QUIZ';
+    case MATCHING = 'MATCHING';
 }
