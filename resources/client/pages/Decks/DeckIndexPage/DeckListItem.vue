@@ -25,8 +25,9 @@
       <div
         class="font-sans text-[0.6rem] text-brand-maroon-800/50 text-center uppercase flex flex-col items-center justify-center mt-4 gap-1"
       >
-        <Progress :modelValue="randomPercent" class="w-16 h-1" />
-        <span>Level {{ randomLevel }}</span>
+        <span>Level {{ currentLevel }}</span>
+        <Progress :modelValue="percentToNextLevel" class="w-16 h-1" />
+        <p>{{ xpEarnedForCurrentLevel }} / {{ xpNeeded }} XP</p>
       </div>
     </div>
 
@@ -55,6 +56,11 @@ import { computed } from "vue";
 import { IconArrowRight } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
+import {
+  getLevelFromTotalXP,
+  getXPEarnedAtThisLevel,
+  getXPNeededAtThisLevel,
+} from "@/lib/getXPLevel";
 
 const props = defineProps<{
   deck: T.Deck;
@@ -62,9 +68,23 @@ const props = defineProps<{
 
 const cardCount = computed(() => props.deck.cards_count ?? 0);
 
-const randInt = (min: number, max: number) =>
-  Math.floor(Math.random() * (max - min + 1) + min);
+// const randInt = (min: number, max: number) =>
+//   Math.floor(Math.random() * (max - min + 1) + min);
 
-const randomPercent = randInt(1, 100);
-const randomLevel = randInt(1, 10);
+// const randomPercent = randInt(1, 100);
+// const randomLevel = randInt(1, 10);
+
+const totalXP = computed(() => props.deck.current_user_details.xp);
+
+const currentLevel = computed(() => getLevelFromTotalXP(totalXP.value));
+
+const xpNeeded = computed(() => getXPNeededAtThisLevel(currentLevel.value));
+
+const xpEarnedForCurrentLevel = computed(() =>
+  getXPEarnedAtThisLevel(totalXP.value),
+);
+
+const percentToNextLevel = computed(() => {
+  return (xpEarnedForCurrentLevel.value / xpNeeded.value) * 100;
+});
 </script>
