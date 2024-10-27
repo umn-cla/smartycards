@@ -19,6 +19,10 @@
         </Button>
       </div>
     </PageHeader>
+    <LevelProgress
+      :xp="deck?.current_user_details.xp ?? 0"
+      class="mt-8 mb-12"
+    />
     <main v-if="deck">
       <div class="grid grid-cols-3 gap-4">
         <RouterLink
@@ -102,6 +106,9 @@ import IconPlusFilled from "@/components/icons/IconPlusFilled.vue";
 import ScoreEmoji from "@/components/ScoreEmoji.vue";
 import MoreCardActions from "./MoreCardActions.vue";
 import { ref } from "vue";
+import { Progress } from "@/components/ui/progress";
+import { Badge } from "@/components/ui/badge";
+import LevelProgress from "@/components/LevelProgress.vue";
 
 const props = defineProps<{
   deckId: number;
