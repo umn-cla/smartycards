@@ -26,7 +26,7 @@
         class="font-sans text-[0.6rem] text-brand-maroon-800/50 text-center uppercase flex flex-col items-center justify-center mt-4 gap-1"
       >
         <span>Level {{ currentLevel }}</span>
-        <Progress :modelValue="percentToNextLevel" class="w-16 h-1" />
+        <Progress :modelValue="percentToNextLevel" class="w-16 !h-1" />
         <p>{{ xpEarnedForCurrentLevel }} / {{ xpNeeded }} XP</p>
       </div>
     </div>

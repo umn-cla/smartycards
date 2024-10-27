@@ -2,6 +2,7 @@
   <AuthenticatedLayout>
     <PageHeader
       v-if="deck"
+      class="mb-8"
       :title="`Preview ${deck.name}`"
       :subtitle="deck.description"
       :backLabel="`Community Decks`"

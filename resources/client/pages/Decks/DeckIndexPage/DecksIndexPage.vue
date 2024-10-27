@@ -1,7 +1,7 @@
 <template>
   <AuthenticatedLayout>
     <main>
-      <PageHeader title="Decks" size="lg" />
+      <PageHeader title="Decks" size="lg" class="mb-8" />
 
       <section>
         <h3 class="text-3xl font-bold text-brand-maroon-800 mb-4">My Decks</h3>
