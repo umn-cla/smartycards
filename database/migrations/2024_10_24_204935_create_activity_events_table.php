@@ -16,9 +16,6 @@ return new class extends Migration
             $table->foreignId('activity_type_id')->constrained()->cascadeOnDelete();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->foreignId('deck_id')->constrained()->cascadeOnDelete();
-            $table->enum('status', ['in_progress', 'completed']);
-            $table->integer('score');
-            $table->integer('possible_score');
             $table->integer('xp');
             $table->timestamps();
         });

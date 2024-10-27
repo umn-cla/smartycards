@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\ActivityTypeEnum;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -13,7 +14,7 @@ class ActivityEvent extends Model
         'activity_type_id',
         'user_id',
         'deck_id',
-        'xp_earned',
+        'xp',
     ];
 
     public function user()
@@ -29,5 +30,20 @@ class ActivityEvent extends Model
     public function activityType()
     {
         return $this->belongsTo(ActivityType::class);
+    }
+
+    public static function awardXP(User $user, Deck $deck, ActivityTypeEnum $activityType, $xp = null): ActivityEvent
+    {
+        $activityType = ActivityType::where('name', $activityType->value)->first();
+        $xp = $xp ?? $activityType->default_xp;
+
+        $event = ActivityEvent::create([
+            'activity_type_id' => $activityType->id,
+            'user_id' => $user->id,
+            'deck_id' => $deck->id,
+            'xp' => $xp,
+        ]);
+
+        return $event;
     }
 }
