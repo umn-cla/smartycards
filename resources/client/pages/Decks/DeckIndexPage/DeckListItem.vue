@@ -50,7 +50,6 @@
 
 <script setup lang="ts">
 import * as T from "@/types";
-import { useTimeAgo } from "@vueuse/core";
 import MoreDeckActions from "./MoreDeckActions.vue";
 import { computed } from "vue";
 import { IconArrowRight } from "@/components/icons";
@@ -61,7 +60,6 @@ const props = defineProps<{
   deck: T.Deck;
 }>();
 
-const lastAttemptedAtTimeAgo = useTimeAgo(() => props.deck.last_attempted_at);
 const cardCount = computed(() => props.deck.cards_count ?? 0);
 
 const randInt = (min: number, max: number) =>
