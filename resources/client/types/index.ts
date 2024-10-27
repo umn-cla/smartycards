@@ -53,9 +53,20 @@ export interface Deck {
   cards?: Card[];
   cards_count?: number;
   memberships_count?: number;
+  is_public: boolean;
   current_user_role: MembershipRole | null; // could be null if public deck
-  avg_score: number; // average card score for current user
-  last_attempted_at: ISODateTime; // latest card attempt for current user
+
+  current_user_details: {
+    user_id: User["id"];
+    role: MembershipRole | null; // could be null if viewing public deck
+    xp: number;
+    last_activity_at: ISODateTime | null;
+  };
+
+  current_user_last_activity_at: ISODateTime; //current user's last activity
+
+  current_user_xp: number; // current user's xp
+
   // current user capabilities
   capabilities: {
     canUpdate: boolean;

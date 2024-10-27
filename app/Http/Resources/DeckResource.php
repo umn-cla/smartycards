@@ -24,14 +24,17 @@ class DeckResource extends JsonResource
 
             'memberships_count' => $this->when(isset($this->memberships_count), $this->memberships_count),
 
-            'last_attempted_at' => $this->when(isset($this->last_attempted_at), $this->last_attempted_at),
-
-            'avg_score' => $this->when(isset($this->avg_score), $this->avg_score),
+            'current_user_details' => [
+                'role' => $this->current_user_role ?? null,
+                'xp' => $this->current_user_xp ?? 0,
+                'last_activity_at' => $this->last_activity_at ?? null,
+            ],
 
             'cards' => CardResource::collection($this->whenLoaded('cards')),
 
             'memberships' => DeckMembershipResource::collection($this->whenLoaded('memberships')),
 
+            // TODO: use current_user_details.role instead
             'current_user_role' => $this->current_user_role,
 
             'capabilities' => [

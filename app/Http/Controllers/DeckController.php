@@ -20,15 +20,9 @@ class DeckController extends Controller
     {
         Gate::authorize('viewOwn', Deck::class);
 
-        $currentUser = $request->user();
+        $decks = $request->user()->decks()->withUserDetails()->get();
 
-        $usersDecks = $currentUser
-            ->decks()
-            ->withCurrentUserRole($currentUser)
-            ->withUserStats($currentUser)
-            ->get();
-
-        return DeckResource::collection($usersDecks);
+        return DeckResource::collection($decks);
     }
 
     /**

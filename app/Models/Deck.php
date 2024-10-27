@@ -140,6 +140,33 @@ class Deck extends Model implements AuditableContract
             ->withUserAvgScore($user);
     }
 
+    public function scopeWithUserDetails(Builder $query, ?User $user = null): Builder
+    {
+        $user = $user ?? Auth::user();
+
+        if (! $user) {
+            return $query->withCount(['cards', 'memberships']);
+        }
+
+        return $query
+            ->withCount('cards')
+            ->withCount('memberships')
+            ->addSelect([
+                'current_user_xp' => ActivityEvent::selectRaw('SUM(xp)')
+                    ->whereColumn('deck_id', 'decks.id')
+                    ->where('user_id', $user->id),
+
+                'last_activity_at' => ActivityEvent::selectRaw('MAX(updated_at)')
+                    ->whereColumn('deck_id', 'decks.id')
+                    ->where('user_id', $user->id),
+
+                'current_user_role' => $user->memberships()
+                    ->select('role')
+                    ->whereColumn('deck_id', 'decks.id')
+                    ->limit(1),
+            ]);
+    }
+
     public function isOwnedBy(User $user): bool
     {
         return $this->memberships()->where('user_id', $user->id)->where('role', 'owner')->exists();
