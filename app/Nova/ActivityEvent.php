@@ -46,7 +46,7 @@ class ActivityEvent extends Resource
             FieldsBelongsTo::make('User', 'user', User::class)->sortable(),
             FieldsBelongsTo::make('Deck', 'deck', Deck::class)->sortable(),
             FieldsBelongsTo::make('Activity Type', 'activityType', ActivityType::class)->sortable(),
-            Number::make('XP Earned', 'xp_earned')->sortable(),
+            Number::make('XP', 'xp')->sortable(),
             FieldsDateTime::make('Created At', 'created_at')->sortable(),
             FieldsDateTime::make('Updated At', 'updated_at')->sortable(),
         ];
