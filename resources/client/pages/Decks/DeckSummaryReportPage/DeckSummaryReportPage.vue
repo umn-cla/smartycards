@@ -18,6 +18,46 @@
         </div>
       </PageHeader>
 
+      <div class="mb-8">
+        <h2 class="text-2xl font-bold mb-4">Cards</h2>
+        <div class="bg-brand-oatmeal-50 px-4 py-2 rounded-md">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Front</TableHead>
+                <TableHead class="text-center">Back</TableHead>
+                <TableHead class="text-center">Avg Score</TableHead>
+                <TableHead class="text-center">Attempts</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              <TableRow v-for="card in cardStats" :key="card.id">
+                <TableCell>
+                  <MatchingSide
+                    :blocks="card.front"
+                    label="front"
+                    status="idle"
+                  />
+                </TableCell>
+                <TableCell>
+                  <MatchingSide
+                    :blocks="card.front"
+                    label="front"
+                    status="idle"
+                  />
+                </TableCell>
+                <TableCell class="text-center">
+                  {{ card.avgScore.toFixed(2) }}
+                </TableCell>
+                <TableCell class="text-center">
+                  {{ card.attempts }}
+                </TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
+        </div>
+      </div>
+
       <div>
         <h2 class="text-2xl font-bold mb-4">Participation</h2>
         <div class="bg-brand-oatmeal-50 px-4 py-2 rounded-md">
@@ -68,6 +108,7 @@ import {
 } from "@/components/ui/table";
 import Tuple from "@/components/Tuple.vue";
 import Boolean from "@/components/Boolean.vue";
+import MatchingSide from "@/pages/Games/MatchingGame/MatchingSide.vue";
 
 const props = defineProps<{
   deckId: number;
@@ -96,6 +137,24 @@ const memberStats = ref([
     hasUsedMatching: false,
   },
 ]);
+
+function randomInt(min: number, max: number) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function randomFloat(min: number, max: number) {
+  return Math.random() * (max - min) + min;
+}
+
+const cardStats = computed(() => {
+  return deck.value?.cards.map((card) => {
+    return {
+      ...card,
+      avgScore: randomFloat(1, 3),
+      attempts: randomInt(1, 10),
+    };
+  });
+});
 
 const deckIdRef = computed(() => props.deckId);
 const { data: deck } = useDeckByIdQuery(deckIdRef);
