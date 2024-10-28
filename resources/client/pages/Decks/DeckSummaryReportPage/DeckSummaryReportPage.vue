@@ -6,7 +6,7 @@
         :subtitle="deck?.name"
         :backLabel="deck?.name"
         :backTo="{ name: 'decks.show', params: { deckId } }"
-        class="mb-12"
+        class="mb-8"
       >
         <div class="flex justify-end gap-4">
           <Tuple label="Total Cards">
@@ -20,7 +20,7 @@
 
       <div class="mb-8">
         <h2 class="text-2xl font-bold mb-4">Cards</h2>
-        <div class="bg-brand-oatmeal-50 px-4 py-2 rounded-md">
+        <div>
           <Table>
             <TableHeader>
               <TableRow>
@@ -47,7 +47,22 @@
                   />
                 </TableCell>
                 <TableCell class="text-center">
-                  {{ card.avgScore.toFixed(2) }}
+                  <Badge
+                    variant="outline"
+                    class="text-sm"
+                    :class="{
+                      'border-teal-300 bg-teal-100 text-teal-700':
+                        card.avgScore >= 2.5,
+                      'border-amber-400 bg-amber-100 text-amber-700':
+                        card.avgScore >= 2.0 && card.avgScore < 2.5,
+                      'border-orange-400 bg-orange-100 text-orange-700':
+                        card.avgScore >= 1.5 && card.avgScore < 2.0,
+                      'border-red-400 bg-red-100 text-red-700':
+                        card.avgScore < 1.5,
+                    }"
+                  >
+                    {{ card.avgScore.toFixed(2) }}
+                  </Badge>
                 </TableCell>
                 <TableCell class="text-center">
                   {{ card.attempts }}
@@ -58,7 +73,7 @@
         </div>
       </div>
 
-      <div>
+      <div class="mb-8">
         <h2 class="text-2xl font-bold mb-4">Participation</h2>
         <div class="bg-brand-oatmeal-50 px-4 py-2 rounded-md">
           <Table>
@@ -109,6 +124,7 @@ import {
 import Tuple from "@/components/Tuple.vue";
 import Boolean from "@/components/Boolean.vue";
 import MatchingSide from "@/pages/Games/MatchingGame/MatchingSide.vue";
+import { Badge } from "@/components/ui/badge";
 
 const props = defineProps<{
   deckId: number;
