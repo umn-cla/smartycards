@@ -221,3 +221,22 @@ export interface QuizOptions {
   cardSide: CardSideName;
   numberOfQuestions: number;
 }
+
+interface MemberParticipationStats {
+  user: User;
+  has_practiced_all_cards: boolean;
+  has_quiz_activity: boolean;
+  has_matching_activity: boolean;
+}
+
+interface CardStatsWithCard extends CardStats {
+  card: Card;
+}
+
+export interface DeckSummaryReport {
+  cards_count: number;
+  members_count: number;
+  total_attempts: number;
+  cardStats: CardStatsWithCard[];
+  memberStats: MemberParticipationStats[];
+}

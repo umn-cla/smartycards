@@ -273,6 +273,13 @@ export async function regenerateShareLinkForDeck(
   return res.data.url;
 }
 
+export async function getDeckSummaryReport(deckId: number) {
+  const res = await axios.get<T.DeckSummaryReport>(
+    `/decks/${deckId}/reports/summary`,
+  );
+  return res.data;
+}
+
 export async function csrf() {
   await axios.get(`${config.api.origin}/sanctum/csrf-cookie`);
 }

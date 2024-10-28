@@ -125,6 +125,7 @@ import Tuple from "@/components/Tuple.vue";
 import Boolean from "@/components/Boolean.vue";
 import MatchingSide from "@/pages/Games/MatchingGame/MatchingSide.vue";
 import { Badge } from "@/components/ui/badge";
+import { useDeckSummaryReportQuery } from "@/queries/decks/useDeckSummaryReportQuery";
 
 const props = defineProps<{
   deckId: number;
@@ -174,5 +175,6 @@ const cardStats = computed(() => {
 
 const deckIdRef = computed(() => props.deckId);
 const { data: deck } = useDeckByIdQuery(deckIdRef);
+const { data: report } = useDeckSummaryReportQuery(deckIdRef);
 </script>
 <style scoped></style>
