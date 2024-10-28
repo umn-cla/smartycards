@@ -79,6 +79,11 @@ class DeckPolicy
         return $user->can('create', [DeckMembership::class, $deck]);
     }
 
+    public function viewReports(User $user, Deck $deck): bool
+    {
+        return $user->isOwnerOfDeck($deck);
+    }
+
     public function leave(User $user, Deck $deck): bool
     {
         $deckMembership = $user->memberships()->where('deck_id', $deck->id)->first();

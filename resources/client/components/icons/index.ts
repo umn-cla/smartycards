@@ -2,6 +2,7 @@ export { default as IconArrowRight } from "./IconArrowRight.vue";
 export { default as IconAvatar } from "./IconAvatar.vue";
 export { default as IconBlockM } from "./IconBlockM.vue";
 export { default as IconCheck } from "./IconCheck.vue";
+export { default as IconCheckCircle } from "./IconCheckCircle.vue";
 export { default as IconChevronLeft } from "./IconChevronLeft.vue";
 export { default as IconCircleFilled } from "./IconCircleFilled.vue";
 export { default as IconCircleOutline } from "./IconCircleOutline.vue";

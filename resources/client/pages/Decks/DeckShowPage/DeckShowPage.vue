@@ -9,6 +9,13 @@
     >
       <div class="flex gap-2">
         <MoreDeckActions :deck="deck" />
+        <Button asChild variant="outline">
+          <RouterLink
+            :to="{ name: 'decks.reports.summary', params: { deckId } }"
+          >
+            Report
+          </RouterLink>
+        </Button>
         <Button asChild>
           <RouterLink
             :to="{ name: 'decks.share', params: { deckId } }"
@@ -106,8 +113,6 @@ import IconPlusFilled from "@/components/icons/IconPlusFilled.vue";
 import ScoreEmoji from "@/components/ScoreEmoji.vue";
 import MoreCardActions from "./MoreCardActions.vue";
 import { ref } from "vue";
-import { Progress } from "@/components/ui/progress";
-import { Badge } from "@/components/ui/badge";
 import LevelProgress from "@/components/LevelProgress.vue";
 
 const props = defineProps<{
