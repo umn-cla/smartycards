@@ -5,10 +5,10 @@
   </AuthenticatedLayout>
 </template>
 <script setup lang="ts">
-import axios from '@/api/axios';
-import { AuthenticatedLayout } from '@/layouts/AuthenticatedLayout';
-import { onMounted, ref } from 'vue';
-import { useRouter } from 'vue-router';
+import axios from "@/api/axios";
+import { AuthenticatedLayout } from "@/layouts/AuthenticatedLayout";
+import { onMounted, ref } from "vue";
+import { useRouter } from "vue-router";
 
 const props = defineProps<{
   deckId: number;
@@ -22,9 +22,7 @@ onMounted(async () => {
   try {
     // request to the backend to invite a user to a deck
     const res = await axios.get(props.url);
-    console.log({ res });
     if (res.status < 200 || res.status > 300) {
-      console.log({});
       error.value = `Could not add to deck: ${JSON.stringify(res.data)}`;
       return;
     }

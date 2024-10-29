@@ -43,10 +43,6 @@ const props = withDefaults(
 const containerRef = ref<HTMLElement | null>(null);
 
 const containerWidth = computed(() => {
-  console.log({
-    containerRef: containerRef.value,
-    clientWidth: containerRef.value?.clientWidth,
-  });
   return containerRef.value?.clientWidth ?? 0;
 });
 

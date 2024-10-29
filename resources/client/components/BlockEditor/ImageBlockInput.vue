@@ -11,7 +11,6 @@
           process: handleProcessImage,
         }"
         :files="myFiles"
-        @init="handleFilePondInit"
       />
     </div>
     <div v-else class="relative pt-2 pr-2">
@@ -85,10 +84,6 @@ const emit = defineEmits<{
 
 const FilePond = vueFilePond(FilePondPluginFileValidateType);
 const isValidUrlComputed = computed(() => isValidUrl(props.modelValue));
-
-function handleFilePondInit() {
-  console.log("FilePond has initialized");
-}
 
 const myFiles = ref<string[]>([]);
 

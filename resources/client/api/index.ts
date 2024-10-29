@@ -247,7 +247,7 @@ export async function getAllCommunityDecks() {
 export async function joinCommunityDeck(deckId: number) {
   await csrf();
   const res = await axios.post(`/community/decks/${deckId}/join`);
-  console.log({ res });
+  return res.data;
 }
 
 export async function createQuizForDeck(
@@ -295,7 +295,7 @@ export async function createDeckActivityEvent({
   correctCount: number;
   totalCount: number;
 }) {
-  const res = await axios.post<{ data: T.ActivityEvent }>(
+  const res = await axios.post<T.ActivityEvent>(
     `/decks/${deckId}/activity-events`,
     {
       activity_type_name: activityType,
@@ -303,7 +303,7 @@ export async function createDeckActivityEvent({
       total_count: totalCount,
     },
   );
-  return res.data.data;
+  return res.data;
 }
 
 export async function getActivityTypes() {

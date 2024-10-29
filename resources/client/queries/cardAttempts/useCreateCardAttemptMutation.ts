@@ -13,7 +13,6 @@ export function useCreateCardAttemptMutation() {
   return useMutation({
     mutationFn: api.createCardAttempt,
     onSuccess: (attempt) => {
-      console.log("attempt", attempt);
       queryClient.invalidateQueries({
         queryKey: [CARDS_QUERY_KEY, attempt.card_id, ATTEMPTS_QUERY_KEY],
       });

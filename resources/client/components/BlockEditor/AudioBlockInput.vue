@@ -11,7 +11,6 @@
           process: handleProcessImage,
         }"
         :files="myFiles"
-        @init="handleFilePondInit"
       />
       <p class="text-neutral-400 text-xs text-center">— or —</p>
       <div>
@@ -62,10 +61,6 @@ const emit = defineEmits<{
 }>();
 
 const FilePond = vueFilePond(FilePondPluginFileValidateType);
-
-function handleFilePondInit() {
-  console.log("FilePond has initialized");
-}
 
 const myFiles = ref<string[]>([]);
 

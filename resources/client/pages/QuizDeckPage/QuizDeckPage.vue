@@ -1,29 +1,27 @@
 <template>
   <AuthenticatedLayout>
     <header
-      class="flex mb-6 border border-black/10 p-2 sm:p-4 rounded-xl mx-auto max-w-screen-sm gap-2 items-center"
+      class="flex flex-col mb-8 rounded-xl mx-auto max-w-screen-sm gap-6"
       v-if="deck"
     >
-      <Button asChild variant="secondary" class="!px-2">
-        <RouterLink
-          :to="{ name: 'decks.show', params: { deckId: props.deckId } }"
-          class="flex items-center"
-        >
-          <IconChevronLeft class="size-6" />
-          <span class="sr-only">Back</span>
-        </RouterLink>
-      </Button>
-      <div class="flex gap-2 sm:gap-4 items-baseline">
+      <div class="flex gap-4 items-center">
+        <Button asChild variant="secondary" class="!px-2">
+          <RouterLink
+            :to="{ name: 'decks.show', params: { deckId: props.deckId } }"
+            class="flex items-center"
+          >
+            <IconChevronLeft class="size-6" />
+            <span class="sr-only">Back</span>
+          </RouterLink>
+        </Button>
         <h1 class="font-bold text-brand-maroon-800 text-lg sm:text-xl">
           {{ deck?.name }}
         </h1>
-        <h2
-          class="hidden sm:block text-brand-maroon-800/50 text-sm sm:text-base"
-          v-if="deck.description"
-        >
-          {{ deck?.description }}
-        </h2>
       </div>
+      <LevelProgress
+        :xp="deckStats?.current_user_xp ?? 0"
+        class="w-full px-2"
+      />
     </header>
 
     <div
@@ -145,15 +143,10 @@ import * as T from "@/types";
 import Tuple from "@/components/Tuple.vue";
 import IconChevronLeft from "@/components/icons/IconChevronLeft.vue";
 import IconSpinner from "@/components/icons/IconSpinner.vue";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
-import { IconQuestionMark } from "@/components/icons";
 import HintTooltip from "@/components/HintTooltip.vue";
 import { useCreateDeckActivityEventMutation } from "@/queries/deckActivityEvents/useCreateDeckActivityEventMutation";
-import { a } from "@tanstack/vue-query/build/legacy/useQuery-ClcdoQsm";
+import { useDeckStatsQuery } from "@/queries/decks/useDeckStatsQuery";
+import LevelProgress from "@/components/LevelProgress.vue";
 
 const props = defineProps<{
   deckId: number;
@@ -200,6 +193,7 @@ async function startQuiz() {
   state.quizState = "in-progress";
 }
 
+const { data: deckStats } = useDeckStatsQuery(deckIdRef);
 const { mutate: createActivityEvent } = useCreateDeckActivityEventMutation();
 
 async function handleEndQuiz(payload: {
