@@ -1,7 +1,5 @@
 <template>
   <AuthenticatedLayout>
-    {{ report }}
-
     <div v-if="deck && report" class="max-w-screen-lg mx-auto">
       <PageHeader
         title="Summary Report"
@@ -33,14 +31,11 @@
               </TableRow>
             </TableHeader>
             <TableBody>
-              <TableRow
-                v-for="cardStat in report?.card_stats"
-                :key="cardStat.card.id"
-              >
+              <TableRow v-for="card in cards" :key="card.id">
                 <TableCell class="w-36">
                   <MatchingSide
                     class="size-32"
-                    :blocks="cardStat.card.front"
+                    :blocks="card.front"
                     label="front"
                     status="idle"
                   />
@@ -48,8 +43,8 @@
                 <TableCell class="w-36">
                   <MatchingSide
                     class="size-32"
-                    :blocks="cardStat.card.front"
-                    label="front"
+                    :blocks="card.back"
+                    label="back"
                     status="idle"
                   />
                 </TableCell>
@@ -59,20 +54,20 @@
                     class="text-sm"
                     :class="{
                       'border-teal-300 bg-teal-100 text-teal-700':
-                        cardStat.avg_score >= 2.5,
+                        card.avg_score >= 2.5,
                       'border-amber-400 bg-amber-100 text-amber-700':
-                        cardStat.avg_score >= 2.0 && cardStat.avg_score < 2.5,
+                        card.avg_score >= 2.0 && card.avg_score < 2.5,
                       'border-orange-400 bg-orange-100 text-orange-700':
-                        cardStat.avg_score >= 1.5 && cardStat.avg_score < 2.0,
+                        card.avg_score >= 1.5 && card.avg_score < 2.0,
                       'border-red-400 bg-red-100 text-red-700':
-                        cardStat.avg_score < 1.5,
+                        card.avg_score < 1.5,
                     }"
                   >
-                    {{ cardStat.avg_score.toFixed(2) }}
+                    {{ card.avg_score.toFixed(2) }}
                   </Badge>
                 </TableCell>
                 <TableCell class="text-center">
-                  {{ cardStat.attempts_count }}
+                  {{ card.attempts_count }}
                 </TableCell>
               </TableRow>
             </TableBody>
@@ -93,22 +88,21 @@
               </TableRow>
             </TableHeader>
             <TableBody>
-              <TableRow
-                v-for="stats in report.member_stats"
-                :key="stats.user.id"
-              >
+              <TableRow v-for="member in memberships" :key="member.user.id">
                 <TableCell>
-                  <p class="font-medium">{{ stats.user.name }}</p>
-                  <p class="text-brand-maroon-900/50">{{ stats.user.email }}</p>
+                  <p class="font-medium">{{ member.user.name }}</p>
+                  <p class="text-brand-maroon-900/50">
+                    {{ member.user.email }}
+                  </p>
                 </TableCell>
                 <TableCell class="text-center">
-                  <Boolean :modelValue="stats.has_attempted_all_cards" />
+                  <Boolean :modelValue="member.has_attempted_all_cards" />
                 </TableCell>
                 <TableCell class="text-center">
-                  <Boolean :modelValue="stats.has_quiz_activity" />
+                  <Boolean :modelValue="member.has_quiz_activity" />
                 </TableCell>
                 <TableCell class="text-center">
-                  <Boolean :modelValue="stats.has_matching_activity" />
+                  <Boolean :modelValue="member.has_matching_activity" />
                 </TableCell>
               </TableRow>
             </TableBody>
@@ -141,50 +135,10 @@ const props = defineProps<{
   deckId: number;
 }>();
 
-const memberStats = ref([
-  {
-    name: "James Johnson",
-    email: "johnsojr@umn.edu",
-    hasPracticedAllCards: true,
-    hasUsedQuiz: false,
-    hasUsedMatching: true,
-  },
-  {
-    name: "James Johnson",
-    email: "johnsojr@umn.edu",
-    hasPracticedAllCards: false,
-    hasUsedQuiz: false,
-    hasUsedMatching: true,
-  },
-  {
-    name: "James Johnson",
-    email: "johnsojr@umn.edu",
-    hasPracticedAllCards: false,
-    hasUsedQuiz: false,
-    hasUsedMatching: false,
-  },
-]);
-
-function randomInt(min: number, max: number) {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
-}
-
-function randomFloat(min: number, max: number) {
-  return Math.random() * (max - min) + min;
-}
-
-// const cardStats = computed(() => {
-//   return deck.value?.cards.map((card) => {
-//     return {
-//       ...card,
-//       avgScore: randomFloat(1, 3),
-//       attempts: randomInt(1, 10),
-//     };
-//   });
-// });
-
 const deckIdRef = computed(() => props.deckId);
 const { data: deck } = useDeckByIdQuery(deckIdRef);
 const { data: report } = useDeckSummaryReportQuery(deckIdRef);
+const memberships = computed(() => report.value?.memberships_with_stats ?? []);
+const cards = computed(() => report.value?.cards_with_stats ?? []);
 </script>
 <style scoped></style>

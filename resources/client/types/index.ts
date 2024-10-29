@@ -229,14 +229,14 @@ interface MemberParticipationStats {
   has_matching_activity: boolean;
 }
 
-interface CardStatsWithCard extends CardStats {
-  card: Card;
+interface CardWithGlobalStats extends Card {
+  attempts_count: number;
+  attempts_avg_score: number;
 }
 
 export interface DeckSummaryReport {
   cards_count: number;
   memberships_count: number;
-  total_attempts: number;
-  card_stats: CardStatsWithCard[];
-  member_stats: MemberParticipationStats[];
+  cards_with_stats: CardWithGlobalStats[];
+  memberships_with_stats: MemberParticipationStats[];
 }

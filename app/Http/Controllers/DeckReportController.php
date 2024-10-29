@@ -14,8 +14,8 @@ class DeckReportController extends Controller
         return response()->json([
             'cards_count' => $deck->cards()->count(),
             'memberships_count' => $deck->memberships()->count(),
-            // 'card_stats' => $deck->cards()->withGlobalStats()->get(),
-            'member_stats' => $deck
+            'cards_with_stats' => $deck->cards()->withGlobalStats()->get(),
+            'memberships_with_stats' => $deck
                 ->memberships()
                 ->with('user')
                 ->withStats()

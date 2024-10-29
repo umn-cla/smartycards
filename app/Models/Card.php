@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 use OwenIt\Auditing\Auditable as AuditableTrait;
 use OwenIt\Auditing\Contracts\Auditable as AuditableContract;
 
@@ -17,7 +18,6 @@ class Card extends Model implements AuditableContract
         'back' => 'array',
         'avg_score' => 'float',
         'last_attempted_at' => 'datetime',
-
     ];
 
     protected $fillable = [
@@ -40,7 +40,11 @@ class Card extends Model implements AuditableContract
     {
         return $query
             ->withCount('attempts')
-            ->withAvg('attempts', 'score');
+            ->addSelect([
+                // using addSelect to rename the column from to 'avg_score'
+                'avg_score' => CardAttempt::select(DB::raw('AVG(score)'))
+                    ->whereColumn('card_id', 'cards.id'),
+            ]);
     }
 
     public function scopeWithLastAttemptedAt(Builder $query, User $user)
