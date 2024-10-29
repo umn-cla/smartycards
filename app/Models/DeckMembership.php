@@ -40,16 +40,6 @@ class DeckMembership extends Model implements AuditableContract
         return $this->hasManyThrough(Card::class, Deck::class, 'id', 'deck_id', 'deck_id', 'id');
     }
 
-    public function scopeWithUniqueCardAttemptCount($query)
-    {
-        return $query->addSelect([
-            'unique_card_attempts_count' => DB::table('card_attempts')
-                ->selectRaw('count(distinct card_id)')
-                ->whereColumn('user_id', 'deck_memberships.user_id')
-                ->whereColumn('deck_id', 'deck_memberships.deck_id'),
-        ]);
-    }
-
     /**
      * Scope to check if all cards in a deck have been attempted
      *

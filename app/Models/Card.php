@@ -5,10 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use InvalidArgumentException;
 use OwenIt\Auditing\Auditable as AuditableTrait;
 use OwenIt\Auditing\Contracts\Auditable as AuditableContract;
-use RuntimeException;
 
 class Card extends Model implements AuditableContract
 {
@@ -38,14 +36,6 @@ class Card extends Model implements AuditableContract
         return $this->hasMany(CardAttempt::class);
     }
 
-    /**
-     * get stats for the card, aggregated across all users
-     *
-     * @return Builder
-     *
-     * @throws RuntimeException
-     * @throws InvalidArgumentException
-     */
     public function scopeWithGlobalStats(Builder $query)
     {
         return $query
