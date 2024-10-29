@@ -152,6 +152,8 @@ import {
 } from "@/components/ui/tooltip";
 import { IconQuestionMark } from "@/components/icons";
 import HintTooltip from "@/components/HintTooltip.vue";
+import { useCreateDeckActivityEventMutation } from "@/queries/deckActivityEvents/useCreateDeckActivityEventMutation";
+import { a } from "@tanstack/vue-query/build/legacy/useQuery-ClcdoQsm";
 
 const props = defineProps<{
   deckId: number;
@@ -198,10 +200,17 @@ async function startQuiz() {
   state.quizState = "in-progress";
 }
 
-function handleEndQuiz(payload: {
+const { mutate: createActivityEvent } = useCreateDeckActivityEventMutation();
+
+async function handleEndQuiz(payload: {
   correctCount: number;
   incorrectCount: number;
 }) {
+  await createActivityEvent({
+    deckId: deckIdRef.value,
+    activityType: T.ActivityType.QUIZ,
+  });
+
   state.quizState = "complete";
   state.correctCount = payload.correctCount;
   state.incorrectCount = payload.incorrectCount;

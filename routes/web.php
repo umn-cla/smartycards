@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ActivityEventController;
 use App\Http\Controllers\CardAttemptController;
 use App\Http\Controllers\CardStatsController;
 use App\Http\Controllers\DeckCardController;
@@ -42,6 +43,8 @@ Route::middleware(['auth'])
 
         Route::get('decks/{deck}/reports/summary', [DeckReportController::class, 'summary']);
 
+        Route::resource('decks.activity-events', ActivityEventController::class);
+
         Route::resource('cards.attempts', CardAttemptController::class)
             ->shallow();
 
@@ -50,7 +53,6 @@ Route::middleware(['auth'])
         Route::post('decks/{deck}/import', [DeckController::class, 'import']);
 
         Route::post('files', UploadFileController::class);
-
     });
 
 require __DIR__.'/shib.php';

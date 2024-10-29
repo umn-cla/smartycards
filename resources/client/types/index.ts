@@ -240,3 +240,11 @@ export interface DeckSummaryReport {
   cards_with_stats: CardWithGlobalStats[];
   memberships_with_stats: MemberParticipationStats[];
 }
+
+export enum ActivityType {
+  CREATE_CARD = "CREATE_CARD",
+  PRACTICE_CARD = "PRACTICE_CARD",
+  PRACTICE_ALL_CARDS = "PRACTICE_ALL_CARDS",
+  QUIZ = "QUIZ",
+  MATCHING = "MATCHING",
+}

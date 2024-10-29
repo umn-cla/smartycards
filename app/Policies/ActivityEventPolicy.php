@@ -35,9 +35,9 @@ class ActivityEventPolicy
     /**
      * Determine whether the user can create models.
      */
-    public function create(User $user): bool
+    public function create(User $user, Deck $deck): bool
     {
-        return false;
+        return $user->isMemberOfDeck($deck);
     }
 
     /**

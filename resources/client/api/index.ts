@@ -46,6 +46,10 @@ axios.interceptors.response.use(undefined, async (err: AxiosError) => {
   return Promise.reject(apiError);
 });
 
+export async function csrf() {
+  await axios.get(`${config.api.origin}/sanctum/csrf-cookie`);
+}
+
 export async function getCurrentUser(
   opts: T.CustomAxiosRequestConfig = {},
 ): Promise<T.User | null> {
@@ -280,8 +284,20 @@ export async function getDeckSummaryReport(deckId: number) {
   return res.data;
 }
 
-export async function csrf() {
-  await axios.get(`${config.api.origin}/sanctum/csrf-cookie`);
+export async function createDeckActivityEvent({
+  deckId,
+  activityType,
+}: {
+  deckId: T.Deck["id"];
+  activityType: T.ActivityType;
+}) {
+  const res = await axios.post<{ data: T.DeckMembership }>(
+    `/decks/${deckId}/activity-events`,
+    {
+      activity_type_name: activityType,
+    },
+  );
+  return res.data.data;
 }
 
 export { ApiError };
