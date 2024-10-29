@@ -42,6 +42,7 @@
       <MatchingGame
         :cards="deck.cards"
         class="mx-auto max-h-[66vh] aspect-square"
+        @gameover="handleWin"
       />
     </div>
   </AuthenticatedLayout>
@@ -53,6 +54,8 @@ import { computed, ref } from "vue";
 import { useDeckByIdQuery } from "@/queries/decks";
 import IconChevronLeft from "@/components/icons/IconChevronLeft.vue";
 import MatchingGame from "./MatchingGame.vue";
+import { useCreateDeckActivityEventMutation } from "@/queries/deckActivityEvents/useCreateDeckActivityEventMutation";
+import * as T from "@/types";
 
 const props = defineProps<{
   deckId: number;
@@ -61,5 +64,19 @@ const props = defineProps<{
 const deckIdRef = computed(() => props.deckId);
 
 const { data: deck, isLoading: isDeckLoading } = useDeckByIdQuery(deckIdRef);
+const { mutate: createActivityEvent } = useCreateDeckActivityEventMutation();
+
+async function handleWin(matchedPairs: number) {
+  if (!deck.value) {
+    throw new Error("Cannot handle win condition without a deck");
+  }
+
+  await createActivityEvent({
+    deckId: deck.value.id,
+    activityType: T.ActivityType.MATCHING,
+    correctCount: matchedPairs,
+    totalCount: matchedPairs,
+  });
+}
 </script>
 <style scoped></style>

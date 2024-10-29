@@ -95,7 +95,7 @@ export interface Card {
   id: number;
   front: CardSide;
   back: CardSide;
-  deck_id: string;
+  deck_id: Deck["id"];
   created_at: ISODateTime;
   updated_at: ISODateTime;
   attempts_count: number;
@@ -105,9 +105,9 @@ export interface Card {
 
 export interface UserCardScore {
   id: number;
-  userId: number;
-  deckId: string;
-  cardId: string;
+  userId: User["id"];
+  deckId: Deck["id"];
+  cardId: Card["id"];
   score: number;
   attempts: number;
   createdAt: ISODateTime;
@@ -116,9 +116,9 @@ export interface UserCardScore {
 
 export interface CardAttempt {
   id: number;
-  card_id: number;
-  user_id: number;
-  deck_id: number;
+  card_id: Card["id"];
+  user_id: User["id"];
+  deck_id: Deck["id"];
   score: number;
   created_at: ISODateTime;
   updated_at: ISODateTime;
@@ -197,8 +197,8 @@ export interface UploadedFileInfo {
 
 export interface CardStats {
   id: number; // card id
-  deck_id: number;
-  user_id: number;
+  deck_id: Deck["id"];
+  user_id: User["id"];
   attempts_count: number;
   avg_score: number;
   last_attempted_at: ISODateTime;
@@ -251,8 +251,8 @@ export enum ActivityType {
 
 export interface ActivityEvent {
   id: number;
-  user_id: number;
-  deck_id: number;
+  user_id: User["id"];
+  deck_id: Deck["id"];
   type: ActivityType;
   xp: number;
   created_at: ISODateTime;
