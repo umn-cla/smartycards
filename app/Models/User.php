@@ -6,13 +6,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Nova\Auth\Impersonatable;
 use OwenIt\Auditing\Auditable as AuditableTrait;
 use OwenIt\Auditing\Contracts\Auditable as AuditableContract;
 use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable implements AuditableContract
 {
-    use AuditableTrait, HasFactory, HasRoles, Notifiable;
+    use AuditableTrait, HasFactory, HasRoles, Impersonatable, Notifiable;
 
     /**
      * The attributes that are mass assignable.
