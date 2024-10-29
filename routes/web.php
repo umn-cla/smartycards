@@ -7,6 +7,7 @@ use App\Http\Controllers\DeckController;
 use App\Http\Controllers\DeckInviteController;
 use App\Http\Controllers\DeckMembershipController;
 use App\Http\Controllers\DeckQuizController;
+use App\Http\Controllers\DeckReportController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UploadFileController;
 use Illuminate\Support\Facades\Route;
@@ -38,6 +39,8 @@ Route::middleware(['auth'])
             ->shallow();
 
         Route::post('decks/{deck}/quiz', [DeckQuizController::class, 'quiz']);
+
+        Route::get('decks/{deck}/reports/summary', [DeckReportController::class, 'summary']);
 
         Route::resource('cards.attempts', CardAttemptController::class)
             ->shallow();

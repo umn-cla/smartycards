@@ -1,6 +1,8 @@
 <template>
   <AuthenticatedLayout>
-    <div v-if="deck" class="max-w-screen-lg mx-auto">
+    {{ report }}
+
+    <div v-if="deck && report" class="max-w-screen-lg mx-auto">
       <PageHeader
         title="Summary Report"
         :subtitle="deck?.name"
@@ -10,10 +12,10 @@
       >
         <div class="flex justify-end gap-4">
           <Tuple label="Total Cards">
-            {{ deck?.cards_count }}
+            {{ report.cards_count }}
           </Tuple>
           <Tuple label="Members">
-            {{ deck?.memberships_count }}
+            {{ report.memberships_count }}
           </Tuple>
         </div>
       </PageHeader>
@@ -31,17 +33,22 @@
               </TableRow>
             </TableHeader>
             <TableBody>
-              <TableRow v-for="card in cardStats" :key="card.id">
-                <TableCell>
+              <TableRow
+                v-for="cardStat in report?.card_stats"
+                :key="cardStat.card.id"
+              >
+                <TableCell class="w-36">
                   <MatchingSide
-                    :blocks="card.front"
+                    class="size-32"
+                    :blocks="cardStat.card.front"
                     label="front"
                     status="idle"
                   />
                 </TableCell>
-                <TableCell>
+                <TableCell class="w-36">
                   <MatchingSide
-                    :blocks="card.front"
+                    class="size-32"
+                    :blocks="cardStat.card.front"
                     label="front"
                     status="idle"
                   />
@@ -52,20 +59,20 @@
                     class="text-sm"
                     :class="{
                       'border-teal-300 bg-teal-100 text-teal-700':
-                        card.avgScore >= 2.5,
+                        cardStat.avg_score >= 2.5,
                       'border-amber-400 bg-amber-100 text-amber-700':
-                        card.avgScore >= 2.0 && card.avgScore < 2.5,
+                        cardStat.avg_score >= 2.0 && cardStat.avg_score < 2.5,
                       'border-orange-400 bg-orange-100 text-orange-700':
-                        card.avgScore >= 1.5 && card.avgScore < 2.0,
+                        cardStat.avg_score >= 1.5 && cardStat.avg_score < 2.0,
                       'border-red-400 bg-red-100 text-red-700':
-                        card.avgScore < 1.5,
+                        cardStat.avg_score < 1.5,
                     }"
                   >
-                    {{ card.avgScore.toFixed(2) }}
+                    {{ cardStat.avg_score.toFixed(2) }}
                   </Badge>
                 </TableCell>
                 <TableCell class="text-center">
-                  {{ card.attempts }}
+                  {{ cardStat.attempts_count }}
                 </TableCell>
               </TableRow>
             </TableBody>
@@ -86,19 +93,22 @@
               </TableRow>
             </TableHeader>
             <TableBody>
-              <TableRow v-for="stats in memberStats" :key="stats.email">
+              <TableRow
+                v-for="stats in report.member_stats"
+                :key="stats.user.id"
+              >
                 <TableCell>
-                  <p class="font-medium">{{ stats.name }}</p>
-                  <p class="text-brand-maroon-900/50">{{ stats.email }}</p>
+                  <p class="font-medium">{{ stats.user.name }}</p>
+                  <p class="text-brand-maroon-900/50">{{ stats.user.email }}</p>
                 </TableCell>
                 <TableCell class="text-center">
-                  <Boolean :modelValue="stats.hasPracticedAllCards" />
+                  <Boolean :modelValue="stats.has_attempted_all_cards" />
                 </TableCell>
                 <TableCell class="text-center">
-                  <Boolean :modelValue="stats.hasUsedQuiz" />
+                  <Boolean :modelValue="stats.has_quiz_activity" />
                 </TableCell>
                 <TableCell class="text-center">
-                  <Boolean :modelValue="stats.hasUsedMatching" />
+                  <Boolean :modelValue="stats.has_matching_activity" />
                 </TableCell>
               </TableRow>
             </TableBody>
@@ -163,15 +173,15 @@ function randomFloat(min: number, max: number) {
   return Math.random() * (max - min) + min;
 }
 
-const cardStats = computed(() => {
-  return deck.value?.cards.map((card) => {
-    return {
-      ...card,
-      avgScore: randomFloat(1, 3),
-      attempts: randomInt(1, 10),
-    };
-  });
-});
+// const cardStats = computed(() => {
+//   return deck.value?.cards.map((card) => {
+//     return {
+//       ...card,
+//       avgScore: randomFloat(1, 3),
+//       attempts: randomInt(1, 10),
+//     };
+//   });
+// });
 
 const deckIdRef = computed(() => props.deckId);
 const { data: deck } = useDeckByIdQuery(deckIdRef);

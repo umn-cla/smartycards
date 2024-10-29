@@ -224,7 +224,7 @@ export interface QuizOptions {
 
 interface MemberParticipationStats {
   user: User;
-  has_practiced_all_cards: boolean;
+  has_attempted_all_cards: boolean;
   has_quiz_activity: boolean;
   has_matching_activity: boolean;
 }
@@ -235,8 +235,8 @@ interface CardStatsWithCard extends CardStats {
 
 export interface DeckSummaryReport {
   cards_count: number;
-  members_count: number;
+  memberships_count: number;
   total_attempts: number;
-  cardStats: CardStatsWithCard[];
-  memberStats: MemberParticipationStats[];
+  card_stats: CardStatsWithCard[];
+  member_stats: MemberParticipationStats[];
 }
