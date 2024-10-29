@@ -73,7 +73,7 @@ async function handleWin(matchedPairs: number) {
 
   await createActivityEvent({
     deckId: deck.value.id,
-    activityType: T.ActivityType.MATCHING,
+    activityType: T.ActivityTypeName.MATCHING,
     correctCount: matchedPairs,
     totalCount: matchedPairs,
   });

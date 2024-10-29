@@ -37,18 +37,21 @@
           class="bg-brand-teal-500 text-white px-4 py-2 text-center font-bold sm:px-8 sm:py-4 rounded-lg sm:text-4xl shadow-solid-teal-2"
         >
           Practice
+          <p class="text-base">+{{ practiceXP }} XP</p>
         </RouterLink>
         <RouterLink
           :to="{ name: 'decks.quiz', params: { deckId } }"
           class="bg-brand-blue-500 px-4 py-2 sm:px-8 sm:py-4 text-center font-bold rounded-lg sm:text-4xl shadow-solid-blue-2 text-white"
         >
           Quiz
+          <p class="text-base">+{{ quizXP }} XP</p>
         </RouterLink>
         <RouterLink
           :to="{ name: 'decks.games.matching', params: { deckId } }"
           class="bg-purple-700 px-4 py-2 sm:px-8 sm:py-4 text-center font-bold rounded-lg sm:text-4xl shadow-solid-purple-900 text-white"
         >
           Matching
+          <p class="text-base">+{{ matchingXP }} XP</p>
         </RouterLink>
       </div>
 
@@ -114,6 +117,8 @@ import ScoreEmoji from "@/components/ScoreEmoji.vue";
 import MoreCardActions from "./MoreCardActions.vue";
 import { ref } from "vue";
 import LevelProgress from "@/components/LevelProgress.vue";
+import { useActivityTypesQuery } from "@/queries/activityTypes/useActivityTypesQuery";
+import { match } from "ramda";
 
 const props = defineProps<{
   deckId: number;
@@ -131,6 +136,28 @@ const canDelete = computed(() => {
 
 const { data: deck } = useDeckByIdQuery(deckIdRef);
 const { mutate: deleteCard } = useDeleteCardMutation();
+const { data: activityTypes } = useActivityTypesQuery();
+
+const xpByActivityTypeName = computed(() => {
+  return activityTypes.value?.reduce(
+    (acc, activityType) => ({
+      ...acc,
+      [activityType.name]: activityType.default_xp,
+    }),
+    {} as Record<T.ActivityTypeName, number>,
+  );
+});
+
+const quizXP = computed(
+  () => xpByActivityTypeName.value?.[T.ActivityTypeName.QUIZ] ?? 0,
+);
+const matchingXP = computed(
+  () => xpByActivityTypeName.value?.[T.ActivityTypeName.MATCHING] ?? 0,
+);
+const practiceXP = computed(
+  () =>
+    xpByActivityTypeName.value?.[T.ActivityTypeName.PRACTICE_ALL_CARDS] ?? 0,
+);
 
 function handleDeleteCard(card: T.Card) {
   deleteCard(card);

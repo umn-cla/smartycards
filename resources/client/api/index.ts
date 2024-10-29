@@ -291,7 +291,7 @@ export async function createDeckActivityEvent({
   totalCount,
 }: {
   deckId: T.Deck["id"];
-  activityType: T.ActivityType;
+  activityType: T.ActivityTypeName;
   correctCount: number;
   totalCount: number;
 }) {
@@ -306,4 +306,8 @@ export async function createDeckActivityEvent({
   return res.data.data;
 }
 
+export async function getActivityTypes() {
+  const res = await axios.get<T.ActivityType[]>(`/activity-types`);
+  return res.data;
+}
 export { ApiError };

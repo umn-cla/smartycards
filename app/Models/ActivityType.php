@@ -41,15 +41,18 @@ class ActivityType extends Model
         // ignoring correctCount for now
         // instead award XP based on total count
         // or proportional if less than a certain threshold
-        $minForFullXP = match ($typeNameEnum) {
-            ActivityTypeEnum::PRACTICE_ALL_CARDS => 20,
-            ActivityTypeEnum::QUIZ => 10,
-            ActivityTypeEnum::MATCHING => 8,
-            default => 1,
-        };
+        // $minForFullXP = match ($typeNameEnum) {
+        //     ActivityTypeEnum::PRACTICE_ALL_CARDS => 20,
+        //     ActivityTypeEnum::QUIZ => 10,
+        //     ActivityTypeEnum::MATCHING => 8,
+        //     default => 1,
+        // };
 
-        $proportionOfXP = min(1.0, $totalCount / $minForFullXP);
+        // $proportionOfXP = min(1.0, $totalCount / $minForFullXP);
 
-        return (int) round($this->default_xp * $proportionOfXP);
+        // return (int) round($this->default_xp * $proportionOfXP);
+
+        // for now just return the default XP regardless of deck size
+        return $this->default_xp;
     }
 }

@@ -241,7 +241,7 @@ export interface DeckSummaryReport {
   memberships_with_stats: MemberParticipationStats[];
 }
 
-export enum ActivityType {
+export enum ActivityTypeName {
   CREATE_CARD = "CREATE_CARD",
   PRACTICE_CARD = "PRACTICE_CARD",
   PRACTICE_ALL_CARDS = "PRACTICE_ALL_CARDS",
@@ -253,8 +253,16 @@ export interface ActivityEvent {
   id: number;
   user_id: User["id"];
   deck_id: Deck["id"];
-  type: ActivityType;
+  type: ActivityTypeName;
   xp: number;
   created_at: ISODateTime;
   updated_at: ISODateTime;
+}
+
+export interface ActivityType {
+  id: number;
+  name: ActivityTypeName;
+  label: string;
+  description: string;
+  default_xp: number;
 }

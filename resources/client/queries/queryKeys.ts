@@ -5,3 +5,4 @@ export const ATTEMPTS_QUERY_KEY = "attempts";
 export const PROFILE_QUERY_KEY = "profile";
 export const SHARE_QUERY_KEY = "share";
 export const REPORTS_QUERY_KEY = "reports";
+export const ACTIVITY_TYPES_QUERY_KEY = "activityTypes";
