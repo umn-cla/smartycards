@@ -310,4 +310,10 @@ export async function getActivityTypes() {
   const res = await axios.get<T.ActivityType[]>(`/activity-types`);
   return res.data;
 }
+
+export async function getDeckStats(deckId: number) {
+  const res = await axios.get<T.DeckStats>(`/decks/${deckId}/stats`);
+  return res.data;
+}
+
 export { ApiError };

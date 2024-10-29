@@ -1,20 +1,14 @@
 <template>
   <AuthenticatedLayout>
     <header
-      class="flex mb-6 flex-col border border-black/10 p-2 sm:p-4 rounded-xl mx-auto max-w-screen-sm gap-2"
+      class="flex mb-6 flex-col mx-auto max-w-screen-sm gap-4 pb-4"
       v-if="deck"
     >
-      <div class="flex gap-2 sm:gap-4 items-baseline">
-        <h1 class="font-bold text-brand-maroon-800 text-lg sm:text-xl">
-          {{ deck?.name }}
-        </h1>
-        <h2
-          class="text-brand-maroon-800/50 text-sm sm:text-base"
-          v-if="deck.description"
-        >
-          {{ deck?.description }}
-        </h2>
-      </div>
+      <h1
+        class="font-bold text-brand-maroon-800 text-lg sm:text-xl text-center leading-none"
+      >
+        {{ deck?.name }}
+      </h1>
       <div class="flex items-center justify-between w-full flex-wrap">
         <div class="flex gap-1 items-baseline">
           <Label for="starting-side-select" class="sr-only">Start Side</Label>
@@ -58,6 +52,10 @@
           </RouterLink>
         </Button>
       </div>
+      <LevelProgress
+        :xp="deckStats?.current_user_xp ?? 0"
+        class="w-full px-2"
+      />
     </header>
     <main>
       <Transition name="fade" mode="out-in">
@@ -128,6 +126,8 @@ import {
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { useCreateDeckActivityEventMutation } from "@/queries/deckActivityEvents/useCreateDeckActivityEventMutation";
+import LevelProgress from "@/components/LevelProgress.vue";
+import { useDeckStatsQuery } from "@/queries/decks/useDeckStatsQuery";
 
 const props = defineProps<{
   deckId: number;
@@ -149,6 +149,7 @@ const state = reactive({
 const deckIdRef = computed(() => props.deckId);
 
 const { data: deck, isLoading: isDeckLoading } = useDeckByIdQuery(deckIdRef);
+const { data: deckStats } = useDeckStatsQuery(deckIdRef);
 
 const cards = computed(() => deck.value?.cards ?? []);
 const totalCards = computed(() => cards.value.length);

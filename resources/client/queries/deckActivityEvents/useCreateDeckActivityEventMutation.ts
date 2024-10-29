@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/vue-query";
 import * as api from "@/api";
-import { DECKS_QUERY_KEY, REPORTS_QUERY_KEY } from "../queryKeys";
+import { DECKS_QUERY_KEY, STATS_QUERY_KEY } from "../queryKeys";
 
 export function useCreateDeckActivityEventMutation() {
   const queryClient = useQueryClient();
@@ -10,6 +10,10 @@ export function useCreateDeckActivityEventMutation() {
     onSuccess: (activityEvent) => {
       queryClient.invalidateQueries({
         queryKey: [DECKS_QUERY_KEY, activityEvent.deck_id],
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: [DECKS_QUERY_KEY, activityEvent.deck_id, STATS_QUERY_KEY],
       });
     },
   });

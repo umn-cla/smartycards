@@ -266,3 +266,9 @@ export interface ActivityType {
   description: string;
   default_xp: number;
 }
+
+export interface DeckStats {
+  cards_count: number;
+  memberships_count: number;
+  current_user_xp: number;
+}

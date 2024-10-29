@@ -42,6 +42,11 @@ Route::middleware(['auth'])
 
         Route::post('decks/{deck}/quiz', [DeckQuizController::class, 'quiz']);
 
+        Route::get('decks/{deck}/stats', [
+            DeckController::class,
+            'stats',
+        ]);
+
         Route::get('decks/{deck}/reports/summary', [DeckReportController::class, 'summary']);
 
         Route::resource('decks.activity-events', ActivityEventController::class);

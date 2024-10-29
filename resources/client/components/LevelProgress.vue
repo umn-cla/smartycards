@@ -1,11 +1,12 @@
 <template>
   <div class="flex gap-4 items-center">
-    <Badge
-      class="flex-shrink-0 bg-brand-maroon-800 text-brand-oatmeal-100 uppercase"
-      >Level {{ currentLevel }}</Badge
+    <span
+      class="flex-shrink-0 text-brand-maroon-900/50 uppercase text-xs font-bold"
     >
+      Level {{ currentLevel }}
+    </span>
     <Progress :modelValue="percentToNextLevel" variant="default" />
-    <span class="flex-shrink-0 text-xs">
+    <span class="flex-shrink-0 text-xs text-brand-maroon-900/50">
       {{ xpEarnedForCurrentLevel }} / {{ xpNeeded }} XP
     </span>
   </div>

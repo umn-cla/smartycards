@@ -186,4 +186,21 @@ class Deck extends Model implements AuditableContract
     {
         return $this->activities()->where('user_id', $user->id)->sum('xp');
     }
+
+    public function getLastActivityForUser(User $user)
+    {
+        return $this->activities()->where('user_id', $user->id)->latest()->first();
+    }
+
+    public function getStats()
+    {
+        $lastActivityForUser = $this->getLastActivityForUser(Auth::user());
+
+        return [
+            'cards' => $this->cards()->count(),
+            'members' => $this->memberships()->count(),
+            'last_activity_at' => $lastActivityForUser?->updated_at ?? null,
+            'current_user_xp' => $this->userXP(Auth::user()),
+        ];
+    }
 }

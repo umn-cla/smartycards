@@ -140,4 +140,13 @@ class DeckController extends Controller
 
         return DeckResource::collection($decks);
     }
+
+    public function stats(Deck $deck)
+    {
+        Gate::authorize('view', $deck);
+
+        $stats = $deck->getStats();
+
+        return response()->json($stats);
+    }
 }
