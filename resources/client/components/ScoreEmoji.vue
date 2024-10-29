@@ -4,13 +4,14 @@
       <Tooltip>
         <TooltipTrigger>
           <div class="text-sm">
-            <span v-if="score > 0.75">✅</span>
-            <span v-else-if="score > 0.5">🫤</span>
-            <span v-else-if="score > 0">❌</span>
             <span
-              v-else
+              v-if="!score"
               class="text-xs font-sans bg-umn-gold-300 rounded-full px-2 leading-none flex items-center py-1"
               >New</span
+            >
+            <span v-else-if="score > 0.75">✅</span>
+            <span v-else-if="score > 0.5">🫤</span>
+            <span v-else-if="score > 0">❌</span>
             >
           </div>
         </TooltipTrigger>
@@ -55,7 +56,7 @@ import Tuple from "./Tuple.vue";
 
 const props = withDefaults(
   defineProps<{
-    score: number; // 0-1
+    score: number | null; // 0-1
     attempts?: number;
   }>(),
   {

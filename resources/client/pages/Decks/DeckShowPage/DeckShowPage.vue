@@ -78,7 +78,7 @@
               <template #prepend>
                 <div class="flex justify-between items-center">
                   <ScoreEmoji
-                    :score="card.avg_score / 3"
+                    :score="card.avg_score ? card.avg_score / 3 : null"
                     :attempts="card.attempts_count"
                     title="Difficulty"
                     class="my-1"
