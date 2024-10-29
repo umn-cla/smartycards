@@ -61,8 +61,8 @@
     </header>
     <main>
       <Transition name="fade" mode="out-in">
-        <div v-if="isDeckLoading" class="text-center">...</div>
-        <div v-else-if="totalCards < 2" class="text-center">
+        <div v-if="gameState === 'loading'" class="text-center">...</div>
+        <div v-else-if="gameState === 'not-enough-cards'" class="text-center">
           <p>You need at least 2 cards to practice.</p>
           <Button class="mt-4" asChild>
             <RouterLink :to="`/decks/${deckId}/cards/create`">
@@ -70,14 +70,17 @@
             </RouterLink>
           </Button>
         </div>
-        <div v-else-if="!state.activeCard" class="text-center">
+        <div v-else-if="gameState === 'completed'" class="text-center">
           <p>You have completed this practice session.</p>
           <Button @click="initPracticeSession" class="my-4">
             Practice Again
           </Button>
         </div>
 
-        <div v-else class="overflow-hidden">
+        <div
+          v-else-if="gameState === 'playing' && state.activeCard"
+          class="overflow-hidden"
+        >
           <FlippableCard
             :front="state.isTransitiongToNext ? [] : state.activeCard?.front"
             :back="state.isTransitiongToNext ? [] : state.activeCard?.back"
@@ -124,6 +127,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
+import { useCreateDeckActivityEventMutation } from "@/queries/deckActivityEvents/useCreateDeckActivityEventMutation";
 
 const props = defineProps<{
   deckId: number;
@@ -219,6 +223,13 @@ function initPracticeSession() {
 
 watch(deck, () => initPracticeSession(), { immediate: true });
 
+const gameState = computed(() => {
+  if (isDeckLoading.value) return "loading";
+  if (totalCards.value < 2) return "not-enough-cards";
+  if (!state.activeCard) return "completed";
+  return "playing";
+});
+
 watch(
   () => state.initialSideName,
   () => {
@@ -230,6 +241,22 @@ watch(
     }, 500);
   },
 );
+
+// award XP if we've completed the practice session
+const { mutate: createActivityEvent } = useCreateDeckActivityEventMutation();
+
+watch(gameState, async () => {
+  if (gameState.value !== "completed") {
+    return;
+  }
+
+  const event = await createActivityEvent({
+    deckId: deck.value?.id ?? 0,
+    activityType: T.ActivityTypeName.PRACTICE_ALL_CARDS,
+    correctCount: totalCards.value,
+    totalCount: totalCards.value,
+  });
+});
 </script>
 <style scoped>
 button {

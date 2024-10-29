@@ -36,7 +36,7 @@ class ActivityType extends Model
 
     public function getXPToAward(int $correctCount, int $totalCount): int
     {
-        $typeNameEnum = ActivityTypeEnum::tryFrom($this->name);
+        // $typeNameEnum = ActivityTypeEnum::tryFrom($this->name);
 
         // ignoring correctCount for now
         // instead award XP based on total count
