@@ -69,8 +69,7 @@ class DeckController extends Controller
         $user = $request->user();
 
         $deck = Deck::query()
-            ->withCurrentUserRole($user)
-            ->withUserStats($user)
+            ->withUserDetails($user)
             ->with([
                 'cards' => function ($query) use ($user) {
                     $query->withUserStats($user);
