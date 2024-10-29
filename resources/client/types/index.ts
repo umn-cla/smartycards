@@ -100,7 +100,7 @@ export interface Card {
   updated_at: ISODateTime;
   attempts_count: number;
   last_attempted_at: ISODateTime;
-  avg_score: number;
+  avg_score: number | null;
 }
 
 export interface UserCardScore {

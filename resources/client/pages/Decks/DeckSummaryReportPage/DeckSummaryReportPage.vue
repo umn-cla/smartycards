@@ -50,21 +50,32 @@
                 </TableCell>
                 <TableCell class="text-center">
                   <Badge
+                    v-if="card.avg_score"
                     variant="outline"
                     class="text-sm"
                     :class="{
-                      'border-teal-300 bg-teal-100 text-teal-700':
+                      'border-green-200 bg-green-100 text-green-700':
                         card.avg_score >= 2.5,
-                      'border-amber-400 bg-amber-100 text-amber-700':
+                      'border-amber-300 bg-amber-100 text-amber-700':
                         card.avg_score >= 2.0 && card.avg_score < 2.5,
-                      'border-orange-400 bg-orange-100 text-orange-700':
+                      'border-orange-200 bg-orange-100 text-orange-700':
                         card.avg_score >= 1.5 && card.avg_score < 2.0,
-                      'border-red-400 bg-red-100 text-red-700':
+                      'border-red-200 bg-red-100 text-red-700':
                         card.avg_score < 1.5,
                     }"
                   >
                     {{ card.avg_score.toFixed(2) }}
                   </Badge>
+                  <span v-else class="text-sm text-brand-maroon-900/50">
+                    -
+                  </span>
+                  <!-- <Badge
+                    v-else
+                    variant="outline"
+                    class="text-sm bg-brand-maroon-900/5 text-brand-maroon-900/50"
+                  >
+                    N/A
+                  </Badge> -->
                 </TableCell>
                 <TableCell class="text-center">
                   {{ card.attempts_count }}
@@ -84,7 +95,7 @@
                 <TableHead>Name</TableHead>
                 <TableHead class="text-center">Practiced All</TableHead>
                 <TableHead class="text-center">Quiz</TableHead>
-                <TableHead class="text-center">Matching Game</TableHead>
+                <TableHead class="text-center">Matching</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>

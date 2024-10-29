@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use App\Enums\ActivityTypeEnum;
-use DB;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use OwenIt\Auditing\Auditable as AuditableTrait;
@@ -23,6 +22,12 @@ class DeckMembership extends Model implements AuditableContract
         'deck_id',
         'user_id',
         'role',
+    ];
+
+    protected $casts = [
+        'has_attempted_all_cards' => 'boolean',
+        'has_quiz_activity' => 'boolean',
+        'has_matching_activity' => 'boolean',
     ];
 
     public function deck()
@@ -48,21 +53,20 @@ class DeckMembership extends Model implements AuditableContract
      */
     public function scopeWithHasAttemptedAllCards($query)
     {
-        return $query->select([
-            // 'deck_memberships.*',
-            'deck_memberships.deck_id',
-            'deck_memberships.user_id',
-            DB::raw('(COUNT(cards.id) = COUNT(DISTINCT card_attempts.card_id)) as has_attempted_all_cards'),
-        ])
-            ->leftJoin('cards', 'cards.deck_id', '=', 'deck_memberships.deck_id')
-            ->leftJoin('card_attempts', function ($join) {
-                $join->on('card_attempts.card_id', '=', 'cards.id')
-                    ->where('card_attempts.user_id', '=', DB::raw('deck_memberships.user_id'));
-            })
-            ->groupBy('deck_memberships.deck_id', 'deck_memberships.user_id')
-            ->withCasts([
-                'has_attempted_all_cards' => 'boolean',
-            ]);
+        return $query
+            // keep exising columns
+            ->addSelect(['*'])
+            // and add new column
+            ->selectRaw('
+                (SELECT
+                    COUNT(DISTINCT cards.id) = COUNT(DISTINCT card_attempts.card_id)
+                FROM cards
+                LEFT JOIN card_attempts ON
+                    card_attempts.card_id = cards.id
+                    AND card_attempts.user_id = deck_memberships.user_id
+                WHERE cards.deck_id = deck_memberships.deck_id
+                ) as has_attempted_all_cards
+            ');
     }
 
     public function scopeWithHasActivity($query, ActivityTypeEnum $activityType)
@@ -93,33 +97,4 @@ class DeckMembership extends Model implements AuditableContract
             ->withHasActivity(ActivityTypeEnum::QUIZ)
             ->withHasActivity(ActivityTypeEnum::MATCHING);
     }
-
-    /**
-     * adds user participation details to the query,
-     * including whether the user has:
-     * - attempted all cards in the deck,
-     */
-    // public function scopeWithParticipation($query)
-    // {
-    //     $hasAttemptedAllCardsSubquery = CardAttempt::selectRaw(
-    //         'count(distinct card_id) = deck.cards_count'
-    //     )->whereColumn('deck_id', 'deck_memberships.deck_id');
-
-    //     $hasQuizActivity = ActivityEvent::selectRaw('count(*) > 0')
-    //         ->where('user_id', $this->user_id)
-    //         ->where('event_type', 'quiz')
-    //         ->whereColumn('eventable_id', 'deck_memberships.deck_id');
-
-    //     $hasMatchingGameActivity = ActivityEvent::selectRaw('count(*) > 0')
-    //         ->where('user_id', $this->user_id)
-    //         ->where('event_type', 'matching_game')
-    //         ->whereColumn('eventable_id', 'deck_memberships.deck_id');
-
-    //     return $query
-    //         ->addSelect([
-    //             'has_attempted_all_cards' => $hasAttemptedAllCardsSubquery,
-    //             'has_quiz_activity' => $hasQuizActivity,
-    //             'has_matching_game_activity' => $hasMatchingGameActivity,
-    //         ]);
-    // }
 }
