@@ -16,6 +16,6 @@ const props = defineProps<{
   card: T.Card;
 }>();
 
-const score = computed(() => props.card.avg_score / 3);
+const score = computed(() => (props.card.avg_score ?? 0) / 3);
 </script>
 <style scoped></style>
