@@ -27,8 +27,8 @@ class ActivityEventController extends Controller
                 'required',
                 new Enum(ActivityTypeEnum::class),
             ],
-            'correct_count' => ['integer', 'min:0', 'max:10', 'nullable'],
-            'total_count' => ['integer', 'min:1', 'max:10', 'nullable'],
+            'correct_count' => ['integer', 'nullable'],
+            'total_count' => ['integer', 'nullable'],
         ]);
 
         $activityType = ActivityType::where('name', $validated['activity_type_name'])->first();
