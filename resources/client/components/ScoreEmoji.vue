@@ -12,7 +12,6 @@
             <span v-else-if="score > 0.75">✅</span>
             <span v-else-if="score > 0.5">🫤</span>
             <span v-else-if="score > 0">❌</span>
-            >
           </div>
         </TooltipTrigger>
         <TooltipContent>
@@ -64,7 +63,9 @@ const props = withDefaults(
   },
 );
 
-const percent = computed(() => (props.score * 100).toFixed(2));
+const percent = computed(() =>
+  props.score ? (props.score * 100).toFixed(2) : 0,
+);
 </script>
 
 <style scoped></style>
