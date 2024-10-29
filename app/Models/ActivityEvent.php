@@ -32,15 +32,15 @@ class ActivityEvent extends Model
         return $this->belongsTo(ActivityType::class);
     }
 
-    public static function awardXP(User $user, Deck $deck, ActivityTypeEnum $activityType, $xp = null): ActivityEvent
+    public static function awardXP(int $userId, int $deckId, ActivityTypeEnum $activityType, ?int $xp = null): ActivityEvent
     {
         $activityType = ActivityType::where('name', $activityType->value)->first();
         $xp = $xp ?? $activityType->default_xp;
 
         $event = ActivityEvent::create([
             'activity_type_id' => $activityType->id,
-            'user_id' => $user->id,
-            'deck_id' => $deck->id,
+            'user_id' => $userId,
+            'deck_id' => $deckId,
             'xp' => $xp,
         ]);
 

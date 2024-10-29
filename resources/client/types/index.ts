@@ -248,3 +248,13 @@ export enum ActivityType {
   QUIZ = "QUIZ",
   MATCHING = "MATCHING",
 }
+
+export interface ActivityEvent {
+  id: number;
+  user_id: number;
+  deck_id: number;
+  type: ActivityType;
+  xp: number;
+  created_at: ISODateTime;
+  updated_at: ISODateTime;
+}

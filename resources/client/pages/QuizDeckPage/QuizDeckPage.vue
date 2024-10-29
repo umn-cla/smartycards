@@ -209,6 +209,8 @@ async function handleEndQuiz(payload: {
   await createActivityEvent({
     deckId: deckIdRef.value,
     activityType: T.ActivityType.QUIZ,
+    correctCount: payload.correctCount,
+    totalCount: payload.correctCount + payload.incorrectCount,
   });
 
   state.quizState = "complete";

@@ -43,7 +43,12 @@ class CardAttemptController extends Controller
         $attempt->deck_id = $attempt->card->deck_id;
 
         // award experience points
-        ActivityEvent::awardXP($request->user(), $attempt->card->deck, ActivityTypeEnum::PRACTICE_CARD);
+        ActivityEvent::awardXP(
+            userId: $request->user()->id,
+            deckId: $attempt->card->deck->id,
+            activityType: ActivityTypeEnum::PRACTICE_CARD,
+            xp: 1
+        );
 
         return response()->json($attempt, 201);
     }

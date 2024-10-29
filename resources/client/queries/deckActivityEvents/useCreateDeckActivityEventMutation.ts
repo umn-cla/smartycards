@@ -9,7 +9,7 @@ export function useCreateDeckActivityEventMutation() {
     mutationFn: api.createDeckActivityEvent,
     onSuccess: (activityEvent) => {
       queryClient.invalidateQueries({
-        queryKey: [DECKS_QUERY_KEY, activityEvent.deck_id, REPORTS_QUERY_KEY],
+        queryKey: [DECKS_QUERY_KEY, activityEvent.deck_id],
       });
     },
   });

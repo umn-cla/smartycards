@@ -33,4 +33,23 @@ class ActivityType extends Model
     {
         return $this->hasMany(ActivityEvent::class);
     }
+
+    public function getXPToAward(int $correctCount, int $totalCount): int
+    {
+        $typeNameEnum = ActivityTypeEnum::tryFrom($this->name);
+
+        // ignoring correctCount for now
+        // instead award XP based on total count
+        // or proportional if less than a certain threshold
+        $minForFullXP = match ($typeNameEnum) {
+            ActivityTypeEnum::PRACTICE_ALL_CARDS => 20,
+            ActivityTypeEnum::QUIZ => 10,
+            ActivityTypeEnum::MATCHING => 8,
+            default => 1,
+        };
+
+        $proportionOfXP = min(1.0, $totalCount / $minForFullXP);
+
+        return (int) round($this->default_xp * $proportionOfXP);
+    }
 }

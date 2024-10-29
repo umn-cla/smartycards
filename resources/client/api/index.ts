@@ -287,14 +287,20 @@ export async function getDeckSummaryReport(deckId: number) {
 export async function createDeckActivityEvent({
   deckId,
   activityType,
+  correctCount,
+  totalCount,
 }: {
   deckId: T.Deck["id"];
   activityType: T.ActivityType;
+  correctCount: number;
+  totalCount: number;
 }) {
-  const res = await axios.post<{ data: T.DeckMembership }>(
+  const res = await axios.post<{ data: T.ActivityEvent }>(
     `/decks/${deckId}/activity-events`,
     {
       activity_type_name: activityType,
+      correct_count: correctCount,
+      total_count: totalCount,
     },
   );
   return res.data.data;
