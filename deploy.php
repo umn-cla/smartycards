@@ -21,14 +21,19 @@ host('dev')
     ->set('labels', ['stage' => 'dev'])
     ->set('deploy_path', '/var/www/smartycards/');
 
-    host('prod')
+host('stage')
+    ->set('hostname', 'cla-smartycards-tst.oit.umn.edu')
+    ->set('remote_user', 'latis_deploy')
+    ->set('labels', ['stage' => 'dev'])
+    ->set('deploy_path', '/var/www/smartycards/');
+
+host('prod')
     ->set('hostname', 'cla-smartcards-prd.oit.umn.edu')
     ->set('remote_user', 'latis_deploy')
     ->set('labels', ['stage' => 'prod'])
     ->set('deploy_path', '/var/www/smartycards/');
 
-
-    // install private composer packages, like Laravel Nova
+// install private composer packages, like Laravel Nova
 task('composer:private', function () {
     cd('{{release_path}}');
     run('source .env && {{bin/composer}} config "http-basic.nova.laravel.com" "$NOVA_USERNAME" "$NOVA_LICENSE_KEY"');
