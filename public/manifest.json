@@ -1,0 +1,11 @@
+{
+    "name": "SmartyCards",
+    "short_name": "SmartyCards",
+    "icons": [{
+        "src": "google-touch-icon.png",
+        "sizes": "512x512"
+    }],
+    "background_color": "#2E091E",
+    "theme_color": "#2E091E",
+    "display": "fullscreen"
+}
