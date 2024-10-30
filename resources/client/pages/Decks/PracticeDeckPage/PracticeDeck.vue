@@ -42,6 +42,7 @@ import FlippableCard from "@/components/FlippableCard.vue";
 import { Button } from "@/components/ui/button";
 import { reactive, watch, onMounted } from "vue";
 import { toShuffled, getRandomIntInclusive } from "@/lib/utils";
+import { partition } from "ramda";
 
 const props = defineProps<{
   deck: T.DeckWithCards;
@@ -64,14 +65,39 @@ const state = reactive({
 });
 
 function getFuzzyReinsertIndex(score: number, length: number): number {
-  // if the score is 1, insert it somewhere in the front 1/2
-  // if the score is 2, insert it somewhere in the back 1/2
-  const startIndex = Math.floor(((score - 1) / 2) * length);
-  const endIndex = startIndex + Math.floor(length / 2) - 1;
-  const reinsertIndex = getRandomIntInclusive(startIndex, endIndex);
+  if (score < 1 || score > 3) {
+    throw new Error("Invalid score");
+  }
 
-  // if the reinsert index is 0, then return 1 so that it's not the next card
-  return reinsertIndex === 0 ? 1 : reinsertIndex;
+  if (length <= 2) {
+    return 1;
+  }
+
+  const SMALL_DECK_THRESHOLD = 10;
+  const frontHalfEndIndex = Math.floor(length / 2);
+
+  // for small decks, let's just reinsert them in the front/back
+  // halves
+  if (length <= SMALL_DECK_THRESHOLD) {
+    return score === 1
+      ? getRandomIntInclusive(1, frontHalfEndIndex)
+      : getRandomIntInclusive(frontHalfEndIndex + 1, length - 1);
+  }
+
+  // otherwise, 1's should go in the next few cards
+  if (score === 1) {
+    return getRandomIntInclusive(1, 5);
+  }
+
+  if (score === 2) {
+    return getRandomIntInclusive(6, 10);
+  }
+
+  console.error(
+    "getFuzzyReinserIndex: we shouldnt be here. randomly reinserting",
+  );
+
+  return getRandomIntInclusive(1, length - 1);
 }
 
 function handleAnswer(score: number) {
@@ -120,10 +146,36 @@ function getRandomSideForCard(cardId: T.Card["id"]): T.CardSideName {
   return randomSide;
 }
 
+// first sorts the cards by score
+// then break the deck into 4 parts and shuffle each
+function toPartitionedShuffle(cards: T.Card[]): T.Card[] {
+  // partition into groups by score
+  const [group1, leftovers1] = partition(
+    (card) => (card.avg_score ?? 0) <= 1.5,
+    cards,
+  );
+  const [group2, leftovers2] = partition(
+    (card) => (card.avg_score ?? 0) > 1.5 && (card.avg_score ?? 0) <= 2.0,
+    leftovers1,
+  );
+  const [group3, group4] = partition(
+    (card) => (card.avg_score ?? 0) > 2.0 && (card.avg_score ?? 0) <= 2.5,
+    leftovers2,
+  );
+
+  // return shuffled groups
+  return [
+    ...toShuffled(group1),
+    ...toShuffled(group2),
+    ...toShuffled(group3),
+    ...toShuffled(group4),
+  ];
+}
+
 function initPracticeSession() {
   state.isTransitiongToNext = true;
 
-  state.cardsToPractice = toShuffled(props.deck.cards);
+  state.cardsToPractice = toPartitionedShuffle(props.deck.cards);
   state.activeCard = state.cardsToPractice.shift() ?? null;
   state.randomSideMap = {};
   setTimeout(() => {
