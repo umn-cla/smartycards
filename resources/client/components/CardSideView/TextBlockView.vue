@@ -1,5 +1,5 @@
 <template>
-  <div class="text-block-view flex items-center justify-center">
+  <div class="text-block-view flex items-center justify-center text-lg">
     <div
       v-html="block.content"
       @click.stop

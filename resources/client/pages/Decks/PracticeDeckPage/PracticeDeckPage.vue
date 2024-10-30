@@ -115,8 +115,6 @@ const { data: deckStats } = useDeckStatsQuery(deckIdRef);
 const { mutate: createActivityEvent } = useCreateDeckActivityEventMutation();
 
 async function handlePracticeComplete(cardCount: number) {
-  console.log("practiceComplete");
-
   const event = await createActivityEvent({
     deckId: deck.value?.id ?? 0,
     activityType: T.ActivityTypeName.PRACTICE_ALL_CARDS,

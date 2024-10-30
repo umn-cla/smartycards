@@ -37,9 +37,9 @@ const delegatedProps = computed(() => {
     <ProgressIndicator
       :class="
         cn('h-full w-full flex-1 transition-all', {
-          'bg-gradient-to-r from-brand-oatmeal-500 to-brand-maroon-900':
+          'bg-gradient-to-r from-brand-oatmeal-500 to-brand-maroon-800':
             props.variant === 'default',
-          'bg-gradient-to-r from-brand-maroon-900 to-brand-orange-500':
+          'bg-gradient-to-r from-brand-gold-shadow to-brand-teal-300':
             props.variant === 'secondary',
         })
       "

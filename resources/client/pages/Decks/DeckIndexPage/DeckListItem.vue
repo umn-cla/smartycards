@@ -23,9 +23,9 @@
         {{ deck.description }}
       </h4>
       <div
-        class="font-sans text-[0.6rem] text-brand-maroon-800/50 text-center uppercase flex flex-col items-center justify-center mt-4 gap-1"
+        class="font-sans text-[0.66rem] text-brand-maroon-900/60 text-center uppercase flex flex-col items-center justify-center mt-4 gap-1"
       >
-        <span>Level {{ currentLevel }}</span>
+        <b>Level {{ currentLevel }}</b>
         <Progress :modelValue="percentToNextLevel" class="w-16 !h-1" />
         <p>{{ xpEarnedForCurrentLevel }} / {{ xpNeeded }} XP</p>
       </div>
@@ -34,7 +34,7 @@
     <footer
       class="flex gap-4 justify-center items-center flex-wrap text-xs text-brand-maroon-800/50 pt-2"
     >
-      <p class="text-">
+      <p>
         {{ deck.cards_count }} cards
         <span v-if="deck.memberships_count && deck.memberships_count > 1">
           • {{ deck.memberships_count }} members

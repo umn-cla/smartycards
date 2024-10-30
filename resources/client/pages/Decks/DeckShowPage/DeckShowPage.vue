@@ -37,21 +37,27 @@
           class="bg-brand-teal-500 text-white px-4 py-2 text-center font-bold sm:px-8 sm:py-4 rounded-lg sm:text-4xl shadow-solid-teal-2"
         >
           Practice
-          <p class="text-base">+{{ practiceXP }} XP</p>
+          <p class="text-xs sm:text-base font-normal text-white/75">
+            +{{ practiceXP }} XP
+          </p>
         </RouterLink>
         <RouterLink
           :to="{ name: 'decks.quiz', params: { deckId } }"
           class="bg-brand-blue-500 px-4 py-2 sm:px-8 sm:py-4 text-center font-bold rounded-lg sm:text-4xl shadow-solid-blue-2 text-white"
         >
           Quiz
-          <p class="text-base">+{{ quizXP }} XP</p>
+          <p class="text-xs sm:text-base font-normal text-white/75">
+            +{{ quizXP }} XP
+          </p>
         </RouterLink>
         <RouterLink
           :to="{ name: 'decks.games.matching', params: { deckId } }"
           class="bg-purple-700 px-4 py-2 sm:px-8 sm:py-4 text-center font-bold rounded-lg sm:text-4xl shadow-solid-purple-900 text-white"
         >
           Matching
-          <p class="text-base">+{{ matchingXP }} XP</p>
+          <p class="text-xs sm:text-base font-normal text-white/75">
+            +{{ matchingXP }} XP
+          </p>
         </RouterLink>
       </div>
 
