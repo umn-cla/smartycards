@@ -1,11 +1,11 @@
 <template>
   <AuthenticatedLayout>
     <header
-      class="flex mb-6 flex-col mx-auto max-w-screen-sm gap-4 pb-4"
+      class="flex mb-4 sm:mb-6 -mt-2 sm:mt-0 flex-col mx-auto max-w-screen-sm gap-4"
       v-if="deck"
     >
       <h1
-        class="font-bold text-brand-maroon-800 text-lg sm:text-xl text-center leading-none"
+        class="font-bold text-brand-maroon-800 text-lg sm:text-xl text-center leading-none hidden sm:block"
       >
         {{ deck.name }}
       </h1>

@@ -25,7 +25,7 @@
         }"
       />
 
-      <div class="my-8">
+      <div class="my-4 sm:my-8">
         <CardAttemptChoices
           @answer="handleAnswer"
           :card="state.activeCard"
