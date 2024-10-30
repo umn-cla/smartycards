@@ -14,7 +14,7 @@
       <MoreDeckActions :deck="deck" />
     </aside>
     <div
-      class="items-center justify-center flex flex-col flex-1 font-serif text-center"
+      class="items-center justify-center flex flex-1 flex-col font-serif text-center"
     >
       <h3 class="font-bold text-xl text-brand-maroon-800">
         {{ deck.name }}
@@ -22,12 +22,19 @@
       <h4 class="font-bold text-brand-maroon-800/50" v-if="deck.description">
         {{ deck.description }}
       </h4>
+      <div
+        class="font-sans text-[0.66rem] text-brand-maroon-900/60 text-center uppercase flex flex-col items-center justify-center mt-4 gap-1"
+      >
+        <b>Level {{ currentLevel }}</b>
+        <Progress :modelValue="percentToNextLevel" class="w-16 !h-1" />
+        <p>{{ xpEarnedForCurrentLevel }} / {{ xpNeeded }} XP</p>
+      </div>
     </div>
 
     <footer
       class="flex gap-4 justify-center items-center flex-wrap text-xs text-brand-maroon-800/50 pt-2"
     >
-      <p class="text-">
+      <p>
         {{ deck.cards_count }} cards
         <span v-if="deck.memberships_count && deck.memberships_count > 1">
           • {{ deck.memberships_count }} members
@@ -44,16 +51,40 @@
 
 <script setup lang="ts">
 import * as T from "@/types";
-import { useTimeAgo } from "@vueuse/core";
 import MoreDeckActions from "./MoreDeckActions.vue";
 import { computed } from "vue";
 import { IconArrowRight } from "@/components/icons";
 import { Button } from "@/components/ui/button";
+import { Progress } from "@/components/ui/progress";
+import {
+  getLevelFromTotalXP,
+  getXPEarnedAtThisLevel,
+  getXPNeededAtThisLevel,
+} from "@/lib/getXPLevel";
 
 const props = defineProps<{
   deck: T.Deck;
 }>();
 
-const lastAttemptedAtTimeAgo = useTimeAgo(() => props.deck.last_attempted_at);
 const cardCount = computed(() => props.deck.cards_count ?? 0);
+
+// const randInt = (min: number, max: number) =>
+//   Math.floor(Math.random() * (max - min + 1) + min);
+
+// const randomPercent = randInt(1, 100);
+// const randomLevel = randInt(1, 10);
+
+const totalXP = computed(() => props.deck.current_user_details.xp);
+
+const currentLevel = computed(() => getLevelFromTotalXP(totalXP.value));
+
+const xpNeeded = computed(() => getXPNeededAtThisLevel(currentLevel.value));
+
+const xpEarnedForCurrentLevel = computed(() =>
+  getXPEarnedAtThisLevel(totalXP.value),
+);
+
+const percentToNextLevel = computed(() => {
+  return (xpEarnedForCurrentLevel.value / xpNeeded.value) * 100;
+});
 </script>

@@ -1,17 +1,20 @@
 <template>
   <AuthenticatedLayout>
     <div v-if="currentUser" class="max-w-screen-md mx-auto">
-      <PageHeader title="Profile" :subtitle="currentUser.name">
+      <PageHeader title="Profile" :subtitle="currentUser.name" />
+      <div
+        class="bg-brand-oatmeal-50 flex flex-col items-center justify-center gap-4 p-8 rounded-lg my-8"
+      >
+        <Tuple label="Name">
+          {{ currentUser.name }}
+        </Tuple>
+        <Tuple label="Email">
+          {{ currentUser.email }}
+        </Tuple>
         <Button asChild>
           <a :href="config.api.logoutUrl">Logout</a>
         </Button>
-      </PageHeader>
-      <Tuple label="Name">
-        {{ currentUser.name }}
-      </Tuple>
-      <Tuple label="Email">
-        {{ currentUser.email }}
-      </Tuple>
+      </div>
     </div>
   </AuthenticatedLayout>
 </template>

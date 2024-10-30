@@ -7,18 +7,18 @@
       </Button>
     </DropdownMenuTrigger>
     <DropdownMenuContent align="end">
+      <DropdownMenuItem asChild v-if="deck.capabilities.canUpdate">
+        <RouterLink :to="{ name: 'decks.edit', params: { deckId: deck.id } }">
+          <IconPencil class="size-5 mr-4" />
+          Edit Name
+        </RouterLink>
+      </DropdownMenuItem>
       <DropdownMenuItem asChild>
         <RouterLink
           :to="{ name: 'decks.practice', params: { deckId: deck.id } }"
         >
           <IconCirclePlay class="size-5 mr-4" />
           Practice
-        </RouterLink>
-      </DropdownMenuItem>
-      <DropdownMenuItem asChild v-if="deck.capabilities.canUpdate">
-        <RouterLink :to="{ name: 'decks.edit', params: { deckId: deck.id } }">
-          <IconPencil class="size-5 mr-4" />
-          Edit Name
         </RouterLink>
       </DropdownMenuItem>
       <!-- <DropdownMenuItem asChild v-if="deck.capabilities.canUpdate">

@@ -9,6 +9,13 @@
     >
       <div class="flex gap-2">
         <MoreDeckActions :deck="deck" />
+        <Button asChild variant="outline">
+          <RouterLink
+            :to="{ name: 'decks.reports.summary', params: { deckId } }"
+          >
+            Report
+          </RouterLink>
+        </Button>
         <Button asChild>
           <RouterLink
             :to="{ name: 'decks.share', params: { deckId } }"
@@ -19,25 +26,38 @@
         </Button>
       </div>
     </PageHeader>
+    <LevelProgress
+      :xp="deck?.current_user_details.xp ?? 0"
+      class="mt-8 mb-12"
+    />
     <main v-if="deck">
-      <div class="flex items-center justify-center gap-4 flex-wrap">
+      <div class="grid grid-cols-3 gap-4">
         <RouterLink
           :to="{ name: 'decks.practice', params: { deckId } }"
-          class="bg-brand-teal-500 text-white px-4 py-3 font-bold sm:px-8 sm:py-4 rounded-lg sm:text-4xl shadow-solid-teal-2"
+          class="bg-brand-teal-500 text-white px-4 py-2 text-center font-bold sm:px-8 sm:py-4 rounded-lg sm:text-4xl shadow-solid-teal-2"
         >
-          Let's Practice
+          Practice
+          <p class="text-xs sm:text-base font-normal text-white/75">
+            +{{ practiceXP }} XP
+          </p>
         </RouterLink>
         <RouterLink
           :to="{ name: 'decks.quiz', params: { deckId } }"
-          class="bg-brand-blue-500 px-4 py-3 sm:px-8 sm:py-4 font-bold rounded-lg sm:text-4xl shadow-solid-blue-2 text-white"
+          class="bg-brand-blue-500 px-4 py-2 sm:px-8 sm:py-4 text-center font-bold rounded-lg sm:text-4xl shadow-solid-blue-2 text-white"
         >
-          ✨ Quiz Me
+          Quiz
+          <p class="text-xs sm:text-base font-normal text-white/75">
+            +{{ quizXP }} XP
+          </p>
         </RouterLink>
         <RouterLink
           :to="{ name: 'decks.games.matching', params: { deckId } }"
-          class="bg-purple-700 px-4 py-3 sm:px-8 sm:py-4 font-bold rounded-lg sm:text-4xl shadow-solid-maroon-2 text-white"
+          class="bg-purple-700 px-4 py-2 sm:px-8 sm:py-4 text-center font-bold rounded-lg sm:text-4xl shadow-solid-purple-900 text-white"
         >
           Matching
+          <p class="text-xs sm:text-base font-normal text-white/75">
+            +{{ matchingXP }} XP
+          </p>
         </RouterLink>
       </div>
 
@@ -67,7 +87,7 @@
               <template #prepend>
                 <div class="flex justify-between items-center">
                   <ScoreEmoji
-                    :score="card.avg_score / 3"
+                    :score="card.avg_score ? card.avg_score / 3 : null"
                     :attempts="card.attempts_count"
                     title="Difficulty"
                     class="my-1"
@@ -102,6 +122,9 @@ import IconPlusFilled from "@/components/icons/IconPlusFilled.vue";
 import ScoreEmoji from "@/components/ScoreEmoji.vue";
 import MoreCardActions from "./MoreCardActions.vue";
 import { ref } from "vue";
+import LevelProgress from "@/components/LevelProgress.vue";
+import { useActivityTypesQuery } from "@/queries/activityTypes/useActivityTypesQuery";
+import { match } from "ramda";
 
 const props = defineProps<{
   deckId: number;
@@ -119,6 +142,28 @@ const canDelete = computed(() => {
 
 const { data: deck } = useDeckByIdQuery(deckIdRef);
 const { mutate: deleteCard } = useDeleteCardMutation();
+const { data: activityTypes } = useActivityTypesQuery();
+
+const xpByActivityTypeName = computed(() => {
+  return activityTypes.value?.reduce(
+    (acc, activityType) => ({
+      ...acc,
+      [activityType.name]: activityType.default_xp,
+    }),
+    {} as Record<T.ActivityTypeName, number>,
+  );
+});
+
+const quizXP = computed(
+  () => xpByActivityTypeName.value?.[T.ActivityTypeName.QUIZ] ?? 0,
+);
+const matchingXP = computed(
+  () => xpByActivityTypeName.value?.[T.ActivityTypeName.MATCHING] ?? 0,
+);
+const practiceXP = computed(
+  () =>
+    xpByActivityTypeName.value?.[T.ActivityTypeName.PRACTICE_ALL_CARDS] ?? 0,
+);
 
 function handleDeleteCard(card: T.Card) {
   deleteCard(card);

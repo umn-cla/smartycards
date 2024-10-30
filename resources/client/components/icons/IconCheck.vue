@@ -14,6 +14,6 @@
 
 <script lang="ts">
 export default {
-  name: 'PhCheckLight',
+  name: "PhCheckLight",
 };
 </script>

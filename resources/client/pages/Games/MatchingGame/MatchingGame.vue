@@ -43,7 +43,7 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-  (eventName: "gameover"): void;
+  (eventName: "gameover", cardCount: number): void;
 }>();
 
 const matchingGameStore = useMatchingGameStore();
@@ -60,5 +60,12 @@ watch(
   },
   { immediate: true },
 );
+
+watch(gameState, (state) => {
+  if (state === "win") {
+    const matchedPairs = matchingGameStore.sides.length / 2;
+    emit("gameover", matchedPairs);
+  }
+});
 </script>
 <style scoped></style>

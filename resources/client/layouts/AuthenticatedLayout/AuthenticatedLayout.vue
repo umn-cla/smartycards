@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen bg-brand-oatmeal-100">
+  <div class="min-h-dvh bg-brand-oatmeal-100">
     <MobileSidebarNav
       v-model:isSidebarOpen="isSidebarOpen"
       :navigation="navigation"
@@ -22,8 +22,8 @@
       :currentUser="currentUser"
     />
 
-    <main class="pt-6 sm:py-10 lg:pl-72">
-      <div class="px-4 sm:px-6 lg:px-8">
+    <main :class="cn('pt-6 sm:py-10 lg:pl-72', containerClass)">
+      <div :class="cn('px-4 sm:px-6 lg:px-8')">
         <slot />
       </div>
     </main>
@@ -39,8 +39,11 @@ import AppBar from "./AppBar.vue";
 import { useAuthQuery } from "@/queries/auth";
 import { useAllDecksQuery } from "@/queries/decks";
 import * as T from "@/types";
+import { cn } from "@/lib/utils";
 
-console.log("AuthenticatedLayout");
+defineProps<{
+  containerClass?: T.CSSClass;
+}>();
 
 const navigation: T.NavMenuItem[] = [
   {

@@ -20,15 +20,9 @@ class DeckController extends Controller
     {
         Gate::authorize('viewOwn', Deck::class);
 
-        $currentUser = $request->user();
+        $decks = $request->user()->decks()->withUserDetails()->get();
 
-        $usersDecks = $currentUser
-            ->decks()
-            ->withCurrentUserRole($currentUser)
-            ->withUserStats($currentUser)
-            ->get();
-
-        return DeckResource::collection($usersDecks);
+        return DeckResource::collection($decks);
     }
 
     /**
@@ -75,8 +69,7 @@ class DeckController extends Controller
         $user = $request->user();
 
         $deck = Deck::query()
-            ->withCurrentUserRole($user)
-            ->withUserStats($user)
+            ->withUserDetails($user)
             ->with([
                 'cards' => function ($query) use ($user) {
                     $query->withUserStats($user);
@@ -146,5 +139,14 @@ class DeckController extends Controller
             ->get();
 
         return DeckResource::collection($decks);
+    }
+
+    public function stats(Deck $deck)
+    {
+        Gate::authorize('view', $deck);
+
+        $stats = $deck->getStats();
+
+        return response()->json($stats);
     }
 }

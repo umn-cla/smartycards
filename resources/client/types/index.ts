@@ -53,9 +53,20 @@ export interface Deck {
   cards?: Card[];
   cards_count?: number;
   memberships_count?: number;
+  is_public: boolean;
   current_user_role: MembershipRole | null; // could be null if public deck
-  avg_score: number; // average card score for current user
-  last_attempted_at: ISODateTime; // latest card attempt for current user
+
+  current_user_details: {
+    user_id: User["id"];
+    role: MembershipRole | null; // could be null if viewing public deck
+    xp: number;
+    last_activity_at: ISODateTime | null;
+  };
+
+  current_user_last_activity_at: ISODateTime; //current user's last activity
+
+  current_user_xp: number; // current user's xp
+
   // current user capabilities
   capabilities: {
     canUpdate: boolean;
@@ -64,6 +75,7 @@ export interface Deck {
     canCreateMembership: boolean;
     canLeave: boolean;
     canJoinAsViewer: boolean; // can join if not already a member, and deck is public
+    canViewReports: boolean;
   };
   created_at: ISODateTime;
   updated_at: ISODateTime;
@@ -83,19 +95,19 @@ export interface Card {
   id: number;
   front: CardSide;
   back: CardSide;
-  deck_id: string;
+  deck_id: Deck["id"];
   created_at: ISODateTime;
   updated_at: ISODateTime;
   attempts_count: number;
   last_attempted_at: ISODateTime;
-  avg_score: number;
+  avg_score: number | null;
 }
 
 export interface UserCardScore {
   id: number;
-  userId: number;
-  deckId: string;
-  cardId: string;
+  userId: User["id"];
+  deckId: Deck["id"];
+  cardId: Card["id"];
   score: number;
   attempts: number;
   createdAt: ISODateTime;
@@ -104,9 +116,9 @@ export interface UserCardScore {
 
 export interface CardAttempt {
   id: number;
-  card_id: number;
-  user_id: number;
-  deck_id: number;
+  card_id: Card["id"];
+  user_id: User["id"];
+  deck_id: Deck["id"];
   score: number;
   created_at: ISODateTime;
   updated_at: ISODateTime;
@@ -185,8 +197,8 @@ export interface UploadedFileInfo {
 
 export interface CardStats {
   id: number; // card id
-  deck_id: number;
-  user_id: number;
+  deck_id: Deck["id"];
+  user_id: User["id"];
   attempts_count: number;
   avg_score: number;
   last_attempted_at: ISODateTime;
@@ -208,4 +220,55 @@ export interface Quiz {
 export interface QuizOptions {
   cardSide: CardSideName;
   numberOfQuestions: number;
+}
+
+interface MemberParticipationStats {
+  user: User;
+  has_attempted_all_cards: boolean;
+  has_quiz_activity: boolean;
+  has_matching_activity: boolean;
+}
+
+interface CardWithGlobalStats extends Card {
+  attempts_count: number;
+  attempts_avg_score: number;
+}
+
+export interface DeckSummaryReport {
+  cards_count: number;
+  memberships_count: number;
+  cards_with_stats: CardWithGlobalStats[];
+  memberships_with_stats: MemberParticipationStats[];
+}
+
+export enum ActivityTypeName {
+  CREATE_CARD = "CREATE_CARD",
+  PRACTICE_CARD = "PRACTICE_CARD",
+  PRACTICE_ALL_CARDS = "PRACTICE_ALL_CARDS",
+  QUIZ = "QUIZ",
+  MATCHING = "MATCHING",
+}
+
+export interface ActivityEvent {
+  id: number;
+  user_id: User["id"];
+  deck_id: Deck["id"];
+  type: ActivityTypeName;
+  xp: number;
+  created_at: ISODateTime;
+  updated_at: ISODateTime;
+}
+
+export interface ActivityType {
+  id: number;
+  name: ActivityTypeName;
+  label: string;
+  description: string;
+  default_xp: number;
+}
+
+export interface DeckStats {
+  cards_count: number;
+  memberships_count: number;
+  current_user_xp: number;
 }

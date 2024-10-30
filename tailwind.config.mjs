@@ -85,6 +85,7 @@ const tailwindConfig = {
         "solid-teal-2": `0 0.5rem 0 0 ${brandColors.teal.shadow}`,
         "solid-maroon-2": `0 0.5rem 0 0 ${brandColors.maroon.shadow}`,
         "solid-blue-2": `0 0.5rem 0 0 ${brandColors.blue.shadow}`,
+        "solid-purple-900": `0 0.5rem 0 0 ${colors.purple[900]}`,
       },
       colors: {
         "black/1": "hsla(0,0%,0%,0.01)",

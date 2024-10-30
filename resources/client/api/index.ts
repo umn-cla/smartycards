@@ -46,6 +46,10 @@ axios.interceptors.response.use(undefined, async (err: AxiosError) => {
   return Promise.reject(apiError);
 });
 
+export async function csrf() {
+  await axios.get(`${config.api.origin}/sanctum/csrf-cookie`);
+}
+
 export async function getCurrentUser(
   opts: T.CustomAxiosRequestConfig = {},
 ): Promise<T.User | null> {
@@ -243,7 +247,7 @@ export async function getAllCommunityDecks() {
 export async function joinCommunityDeck(deckId: number) {
   await csrf();
   const res = await axios.post(`/community/decks/${deckId}/join`);
-  console.log({ res });
+  return res.data;
 }
 
 export async function createQuizForDeck(
@@ -273,8 +277,43 @@ export async function regenerateShareLinkForDeck(
   return res.data.url;
 }
 
-export async function csrf() {
-  await axios.get(`${config.api.origin}/sanctum/csrf-cookie`);
+export async function getDeckSummaryReport(deckId: number) {
+  const res = await axios.get<T.DeckSummaryReport>(
+    `/decks/${deckId}/reports/summary`,
+  );
+  return res.data;
+}
+
+export async function createDeckActivityEvent({
+  deckId,
+  activityType,
+  correctCount,
+  totalCount,
+}: {
+  deckId: T.Deck["id"];
+  activityType: T.ActivityTypeName;
+  correctCount: number;
+  totalCount: number;
+}) {
+  const res = await axios.post<T.ActivityEvent>(
+    `/decks/${deckId}/activity-events`,
+    {
+      activity_type_name: activityType,
+      correct_count: correctCount,
+      total_count: totalCount,
+    },
+  );
+  return res.data;
+}
+
+export async function getActivityTypes() {
+  const res = await axios.get<T.ActivityType[]>(`/activity-types`);
+  return res.data;
+}
+
+export async function getDeckStats(deckId: number) {
+  const res = await axios.get<T.DeckStats>(`/decks/${deckId}/stats`);
+  return res.data;
 }
 
 export { ApiError };

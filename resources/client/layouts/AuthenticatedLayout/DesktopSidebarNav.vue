@@ -3,7 +3,10 @@
     <div
       class="flex grow flex-col gap-y-5 overflow-y-auto bg-gradient-to-b from-brand-maroon-800 to-brand-maroon-950 px-6"
     >
-      <RouterLink to="/" class="flex shrink-0 items-center gap-5 py-4 mt-2">
+      <RouterLink
+        :to="{ name: 'decks.index' }"
+        class="flex shrink-0 items-center gap-5 py-4 mt-2"
+      >
         <BlockMIcon class="h-5 text-brand-gold-500" />
         <SmartycardsWordmark class="text-brand-oatmeal-100 h-5 mt-1" />
       </RouterLink>
