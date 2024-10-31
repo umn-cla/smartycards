@@ -1,17 +1,12 @@
-<script setup>
-import SmartycardsWordmark from "@/components/SmartycardsWordmark.vue"
-import FlippableCard from "@/components/FlippableCard.vue"
-</script>
+<!-- <h1><img src="/img/smartycards-wordmark.svg" alt="SmartCards" style="current" /></h1> -->
 
-<h1><img src="/img/smartycards-wordmark.svg" alt="SmartCards" style="current" /></h1>
+![SmartyCards homepage](/img/home-page.png)
 
 ## Introduction
 
-[SmartyCards](https://smartycards.cla.umn.edu) is a free, collaborative platform for studying with digital flashcards, quizzes, and games.
+[SmartyCards](https://smartycards.cla.umn.edu) is a free, collaborative platform for studying with digital flashcards, quizzes, and games. Any student, faculty, or staff at any University of Minesota campus can use SmartyCards.
 
-Any student, faculty, or staff at any University of Minesota campus can use SmartyCards.
-
-Go to: <https://smartycards.cla.umn.edu> to sign in.
+To sign in, go to: <https://smartycards.cla.umn.edu>.
 
 ## Features
 
@@ -24,3 +19,7 @@ Go to: <https://smartycards.cla.umn.edu> to sign in.
 - Web based – no app to download
 - Free!
 - Made by [UMN College of Liberal Arts](https://cla.umn.edu), by the people who brought you [ChimeIn](https://chimein.cla.umn.edu), [Z](https://z.umn.edu), and [Elevator](https://dcl.elevator.umn.edu/).
+
+---
+
+Next: [Quick Start](/quick-start)

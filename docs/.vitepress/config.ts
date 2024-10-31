@@ -34,6 +34,27 @@ export default defineConfig({
           },
         ],
       },
+      {
+        text: "Activities",
+        items: [
+          {
+            text: "Overview",
+            link: "/activities",
+          },
+          {
+            text: "Practice Flashcards",
+            link: "/activities/practice-flashcards",
+          },
+          {
+            text: "Quiz",
+            link: "/activities/quiz",
+          },
+          {
+            text: "Matching Game",
+            link: "/activities/matching-game",
+          },
+        ],
+      },
     ],
     socialLinks: [
       { icon: "github", link: "https://github.com/UMN-LATIS/ChimeIn2.0" },
