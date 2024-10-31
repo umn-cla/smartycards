@@ -19,7 +19,3 @@ To sign in, go to: <https://smartycards.cla.umn.edu>.
 - Web based – no app to download
 - Free!
 - Made by [UMN College of Liberal Arts](https://cla.umn.edu), by the people who brought you [ChimeIn](https://chimein.cla.umn.edu), [Z](https://z.umn.edu), and [Elevator](https://dcl.elevator.umn.edu/).
-
----
-
-Next: [Quick Start](/quick-start)
