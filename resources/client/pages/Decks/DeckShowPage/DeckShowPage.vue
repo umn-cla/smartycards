@@ -11,6 +11,7 @@
         <MoreDeckActions :deck="deck" />
         <Button asChild variant="outline">
           <RouterLink
+            v-if="deck.capabilities.canViewReports"
             :to="{ name: 'decks.reports.summary', params: { deckId } }"
           >
             Report
