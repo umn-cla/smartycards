@@ -4,7 +4,7 @@
   >
     <div
       :class="{ 'rotate-y-180': currentCardSide === 'back' }"
-      class="relative w-full h-full transition-transform duration-500 transform-style-preserve-3d"
+      class="relative w-full min-h-[24rem] h-full transition-transform duration-500 transform-style-preserve-3d"
     >
       <CardSideView
         v-for="{ side, label } in labelledCardSides"

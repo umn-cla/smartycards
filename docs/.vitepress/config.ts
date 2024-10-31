@@ -1,4 +1,5 @@
 import { defineConfig } from "vitepress";
+import { fileURLToPath } from "url";
 
 export default defineConfig({
   lang: "en-US",
@@ -11,6 +12,11 @@ export default defineConfig({
     // cla-vue-template to be ssr compatible, but it isn't.
     ssr: {
       noExternal: ["@umn-latis/cla-vue-template"],
+    },
+    resolve: {
+      alias: {
+        "@": fileURLToPath(new URL("../../resources/client", import.meta.url)),
+      },
     },
   },
   themeConfig: {

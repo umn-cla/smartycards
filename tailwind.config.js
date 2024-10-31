@@ -61,7 +61,11 @@ const tailwindConfig = {
   safelist: ["dark"],
   prefix: "",
 
-  content: ["./resources/**/*.{ts,tsx,vue}"],
+  content: [
+    "./resources/**/*.{ts,tsx,vue}",
+    "./docs/.vitepress/**/*.{js,ts,vue}",
+    "./docs/**/*.md",
+  ],
 
   theme: {
     container: {
