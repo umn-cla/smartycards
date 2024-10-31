@@ -32,6 +32,10 @@ export default defineConfig({
             text: "Quick Start",
             link: "/quick-start",
           },
+          {
+            text: "Sharing Decks",
+            link: "/sharing-decks",
+          },
         ],
       },
       {
@@ -52,6 +56,15 @@ export default defineConfig({
           {
             text: "Matching Game",
             link: "/activities/matching-game",
+          },
+        ],
+      },
+      {
+        text: "Teaching",
+        items: [
+          {
+            text: "Deck Summary Report",
+            link: "/teaching/deck-summary-report",
           },
         ],
       },
