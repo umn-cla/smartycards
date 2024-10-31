@@ -4,3 +4,7 @@ body {
   line-height: 1.6;
   color: #333;
 }
+
+.vp-doc strong {
+  font-weight: 800;
+}

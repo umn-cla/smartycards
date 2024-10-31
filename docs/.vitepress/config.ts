@@ -28,6 +28,10 @@ export default defineConfig({
             text: "Introduction",
             link: "/",
           },
+          {
+            text: "Quick Start",
+            link: "/quick-start",
+          },
         ],
       },
     ],
