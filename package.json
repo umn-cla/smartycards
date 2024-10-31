@@ -16,7 +16,10 @@
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore",
     "format": "prettier --write src/",
     "vue-tsc": "vue-tsc --noEmit --skipLibCheck",
-    "cert": "rm -rf .cert && mkdir -p .cert && mkcert -key-file ./.cert/key.pem -cert-file ./.cert/cert.pem 'localhost' 127.0.0.1 ::1 `ipconfig getifaddr en0`"
+    "cert": "rm -rf .cert && mkdir -p .cert && mkcert -key-file ./.cert/key.pem -cert-file ./.cert/cert.pem 'localhost' 127.0.0.1 ::1 `ipconfig getifaddr en0`",
+    "docs:dev": "vitepress dev docs",
+    "docs:build": "vitepress build docs",
+    "docs:preview": "vitepress preview docs"
   },
   "dependencies": {
     "@fontsource-variable/nunito": "^5.0.20",
@@ -56,6 +59,7 @@
     "@types/node": "^20.12.5",
     "@types/ramda": "^0.30.0",
     "@types/uuid": "^10.0.0",
+    "@umn-latis/vitepress-theme-umn": "^0.2.0",
     "@vitejs/plugin-vue": "^5.0.4",
     "@vue/eslint-config-prettier": "^9.0.0",
     "@vue/eslint-config-typescript": "^13.0.0",
@@ -74,6 +78,7 @@
     "tailwindcss-animate": "^1.0.7",
     "typescript": "~5.4.5",
     "vite": "^5.2.8",
+    "vitepress": "^1.4.3",
     "vue-tsc": "^2.0.29"
   },
   "packageManager": "pnpm@9.3.0+sha512.ee7b93e0c2bd11409c6424f92b866f31d3ea1bef5fbe47d3c7500cdc3c9668833d2e55681ad66df5b640c61fa9dc25d546efa54d76d7f8bf54b13614ac293631"
