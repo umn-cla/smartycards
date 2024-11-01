@@ -1,0 +1,8 @@
+/vendor
+/node_modules
+/public
+/storage
+dist
+.cache
+.temp
+.git-blame-ignore-revs
