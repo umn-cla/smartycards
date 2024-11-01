@@ -40,7 +40,7 @@
           <div class="flex flex-col gap-2">
             <h2 class="font-bold">Quiz mode uses AI</h2>
             <p>
-              Like many AI systems, quiz mode may not always get things right.
+              Like any AI system, quiz mode may not always get things right.
               Currently, only text from your cards is used for generating
               questions and choices. It will not use or generate images, audio,
               or video.
