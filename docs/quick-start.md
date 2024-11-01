@@ -1,5 +1,7 @@
 <script setup>
 import { IconDragHandle } from '@/components/icons'
+import GIFPlayer from '@/components/GIFPlayer.vue'
+
 </script>
 
 # Quick Start
@@ -10,7 +12,11 @@ Go to: <https://smartycards.cla.umn.edu> to sign in.
 
 ## 2. Create a deck
 
-![This animated GIF shows the process of creating a new deck.](/img/create-deck.gif)
+<GIFPlayer
+  thumbSrc="./img/create-deck_thumb.png"
+  src="./img/create-deck.gif"
+  alt="Creating a new deck."
+/>
 
 Creating a deck of cards is easy.
 
@@ -21,7 +27,11 @@ Creating a deck of cards is easy.
 
 ## 3. Create a card in your deck
 
-![This animated GIF shows the process of creating a new digital flashcard. The user enters text, formats it, adds an audio file, and uploads an image to complete the card. They then save the card and view it in the deck.](/img/create-card.gif)
+<GIFPlayer
+  thumbSrc="./img/create-card_thumb.png"
+  src="./img/create-card.gif"
+  alt="This animated GIF shows the process of creating a new digital flashcard. The user enters text, formats it, adds an audio file, and uploads an image to complete the card. They then save the card and view it in the deck."
+/>
 
 Create a card by clicking "create card". On the card edit screen, you can add one or more blocks of media to each side of the card:
 
