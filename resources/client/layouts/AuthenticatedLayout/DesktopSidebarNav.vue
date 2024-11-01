@@ -15,11 +15,13 @@
           <li>
             <ul role="list" class="-mx-2 space-y-1">
               <li v-for="item in navigation" :key="item.name">
-                <RouterLink
+                <component
+                  :is="item.to ? RouterLink : 'a'"
                   :to="item.to"
-                  activeClass="bg-brand-maroon-950 !text-white"
+                  :href="!item.to ? item.href : undefined"
+                  activeClass="!bg-brand-maroon-950 !text-brand-oatmeal-50"
                   :class="[
-                    'text-white/50 hover:bg-brand-maroon-800/25 hover:text-white',
+                    'text-brand-oatmeal-50/50 hover:bg-brand-maroon-950/25 hover:text-brand-oatmeal-50 cursor-pointer',
                     'group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6',
                   ]"
                 >
@@ -29,7 +31,7 @@
                     aria-hidden="true"
                   />
                   {{ item.name }}
-                </RouterLink>
+                </component>
               </li>
             </ul>
           </li>
@@ -53,8 +55,8 @@ import * as T from "@/types";
 import ProfileMenu from "@/components/ProfileMenu.vue";
 import BlockMIcon from "@/components/icons/IconBlockM.vue";
 import NavDeckList from "./NavDeckList.vue";
-import SmartyFoxHead from "@/assets/smartyfox-head.svg";
 import SmartycardsWordmark from "@/components/SmartycardsWordmark.vue";
+import { RouterLink } from "vue-router";
 
 defineProps<{
   currentUser: T.User;

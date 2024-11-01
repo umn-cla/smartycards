@@ -32,7 +32,7 @@
 
 <script setup lang="ts">
 import { computed, ref } from "vue";
-import { IconDeck, IconGlobe } from "@/components/icons";
+import { IconDeck, IconGlobe, IconHelp } from "@/components/icons";
 import DesktopSidebarNav from "./DesktopSidebarNav.vue";
 import MobileSidebarNav from "./MobileSidebarNav.vue";
 import AppBar from "./AppBar.vue";
@@ -55,6 +55,11 @@ const navigation: T.NavMenuItem[] = [
     name: "Community",
     to: { name: "community.decks.index" },
     icon: IconGlobe,
+  },
+  {
+    name: "Help",
+    href: "https://umn-cla.github.io/smartycards/",
+    icon: IconHelp,
   },
 ];
 

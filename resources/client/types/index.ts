@@ -126,7 +126,8 @@ export interface CardAttempt {
 
 export interface NavMenuItem {
   name: string;
-  to: RouteLocationRaw;
+  to?: RouteLocationRaw;
+  href?: string;
   icon?: any;
 }
 
