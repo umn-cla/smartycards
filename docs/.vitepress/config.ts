@@ -68,6 +68,19 @@ export default defineConfig({
           },
         ],
       },
+      {
+        text: "More Info",
+        items: [
+          {
+            text: "Getting Help",
+            link: "/more-info/getting-help",
+          },
+          {
+            text: "About",
+            link: "/more-info/about",
+          },
+        ],
+      },
     ],
     socialLinks: [
       { icon: "github", link: "https://github.com/UMN-LATIS/ChimeIn2.0" },
