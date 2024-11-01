@@ -29,6 +29,25 @@
     >
       <section class="flex flex-col gap-4" v-if="state.quizState === 'setup'">
         <h2 class="text-center font-bold text-xl">Set Up</h2>
+
+        <aside
+          class="flex gap-4 bg-amber-100 p-4 rounded-sm border-l-4 border-amber-500 text-amber-800 shadow-sm mb-4"
+        >
+          <div class="flex items-start justify-center">
+            <IconExclamationTriangle class="size-6" />
+          </div>
+
+          <div class="flex flex-col gap-2">
+            <h2 class="font-bold">Quiz mode uses AI</h2>
+            <p>
+              Like many AI systems, quiz mode may not always get things right.
+              Currently, only text from your cards is used for generating
+              questions and choices. It will not use or generate images, audio,
+              or video.
+            </p>
+          </div>
+        </aside>
+
         <div class="flex flex-wrap gap-8 items-start mx-auto">
           <div>
             <Label for="starting-side-select">
@@ -147,6 +166,7 @@ import HintTooltip from "@/components/HintTooltip.vue";
 import { useCreateDeckActivityEventMutation } from "@/queries/deckActivityEvents/useCreateDeckActivityEventMutation";
 import { useDeckStatsQuery } from "@/queries/decks/useDeckStatsQuery";
 import LevelProgress from "@/components/LevelProgress.vue";
+import { IconExclamationTriangle } from "@/components/icons";
 
 const props = defineProps<{
   deckId: number;
