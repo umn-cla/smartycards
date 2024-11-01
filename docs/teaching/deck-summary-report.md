@@ -2,7 +2,7 @@
 
 ![Access the deck summary report](/img/deck-summary-report.png)
 
-When faculty [create](/quick-start#create-a-deck) and [share](/sharing) a deck with their class, they'll be able to see a Deck Summary report.
+When faculty [create](/quick-start#create-a-deck) and [share](/sharing-decks) a deck with their class, they'll be able to see a Deck Summary report.
 
 To access the report, go to `Your Deck > Report`.
 

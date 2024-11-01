@@ -49,7 +49,3 @@ It's probably easiest to explore SmartyCards with a pre-created deck. You can fi
 After joining, you should see the deck listed under your `Shared Decks`.
 
 ![Deck appears in the sidebar and on the Decks page under "Shared Decks"](/img/shared-decks.png)
-
----
-
-Next: [Activities](/activities)
