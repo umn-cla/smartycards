@@ -5,12 +5,14 @@
         variant="secondary"
         :class="{
           'h-8 w-8 rounded-full': variant === 'avatar-only',
-          'flex w-full justify-start p-4': variant === 'full',
+          'flex w-full justify-start p-4 rounded-none': variant === 'full',
         }"
-        class="relative text-white flex items-center gap-4"
+        class="relative text-brand-oatmeal-50 flex items-center gap-4"
       >
-        <Avatar class="h-8 w-8">
-          <AvatarFallback> {{ initials }} </AvatarFallback>
+        <Avatar class="h-8 w-8 bg-brand-oatmeal-50 text-brand-maroon-800">
+          <AvatarFallback>
+            {{ initials }}
+          </AvatarFallback>
         </Avatar>
         <template v-if="variant === 'full'">
           <span>{{ currentUser.name }}</span>
@@ -29,13 +31,9 @@
         </div>
       </DropdownMenuLabel>
       <DropdownMenuSeparator />
-      <DropdownMenuGroup>
-        <DropdownMenuItem asChild>
-          <RouterLink :to="{ name: 'profile' }"> Profile </RouterLink>
-        </DropdownMenuItem>
-        <DropdownMenuItem disabled> Settings </DropdownMenuItem>
-      </DropdownMenuGroup>
-      <DropdownMenuSeparator />
+      <DropdownMenuItem asChild>
+        <RouterLink :to="{ name: 'profile' }"> Profile </RouterLink>
+      </DropdownMenuItem>
       <DropdownMenuItem asChild>
         <a :href="config.api.logoutUrl">Log out</a>
       </DropdownMenuItem>

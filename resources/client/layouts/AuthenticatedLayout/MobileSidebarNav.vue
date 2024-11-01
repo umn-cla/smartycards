@@ -66,11 +66,13 @@
                   <li>
                     <ul role="list" class="-mx-2 space-y-1">
                       <li v-for="item in navigation" :key="item.name">
-                        <RouterLink
+                        <component
+                          :is="item.to ? RouterLink : 'a'"
                           :to="item.to"
-                          activeClass="!bg-brand-maroon-950 !text-white"
+                          :href="!item.to ? item.href : undefined"
+                          activeClass="!bg-brand-maroon-950 !text-brand-oatmeal-50"
                           :class="[
-                            'text-white/50 hover:bg-brand-maroon-800/25 hover:text-white',
+                            'text-brand-oatmeal-50/50 hover:bg-brand-maroon-950/25 hover:text-brand-oatmeal-50 cursor-pointer',
                             'group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6',
                           ]"
                         >
@@ -80,7 +82,7 @@
                             aria-hidden="true"
                           />
                           {{ item.name }}
-                        </RouterLink>
+                        </component>
                       </li>
                     </ul>
                   </li>
@@ -109,6 +111,7 @@ import {
 import { IconBlockM, IconX } from "@/components/icons";
 import type { Deck, NavMenuItem } from "@/types";
 import NavDeckList from "./NavDeckList.vue";
+import { RouterLink } from "vue-router";
 
 const isSidebarOpen = defineModel<boolean>("isSidebarOpen", { required: true });
 
