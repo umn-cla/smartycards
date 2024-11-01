@@ -19,7 +19,8 @@
     "cert": "rm -rf .cert && mkdir -p .cert && mkcert -key-file ./.cert/key.pem -cert-file ./.cert/cert.pem 'localhost' 127.0.0.1 ::1 `ipconfig getifaddr en0`",
     "docs:dev": "vitepress dev docs",
     "docs:build": "vitepress build docs",
-    "docs:preview": "vitepress preview docs"
+    "docs:preview": "vitepress preview docs",
+    "docs:deploy": "npm run docs:build && gh-pages -d docs/.vitepress/dist"
   },
   "dependencies": {
     "@fontsource-variable/nunito": "^5.0.20",
@@ -67,6 +68,7 @@
     "autoprefixer": "^10.4.19",
     "eslint": "^8.57.0",
     "eslint-plugin-vue": "^9.23.0",
+    "gh-pages": "^6.2.0",
     "laravel-vite-plugin": "^1.0.5",
     "npm-run-all2": "^6.1.2",
     "postcss": "^8.4.38",
