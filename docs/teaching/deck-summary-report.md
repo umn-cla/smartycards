@@ -18,6 +18,17 @@ The report will show the **average score** and **number of attempts** for each c
 
 This is a great way to see which concepts might need reviewing in class.
 
+::: info
+**How are the scores calculated?**
+Each time a student practices a card, a score is recorded based on the icon they click
+
+- ✅ = 3 points
+- 😕 = 2 points
+- ❌ = 1 point
+
+The score in the summary report is the average of all attempts among all deck members.
+:::
+
 ## Deck Participation
 
 ![summary report of deck member participation](/img/deck-summary-report-participation.png)
