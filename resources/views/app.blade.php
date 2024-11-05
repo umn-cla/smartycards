@@ -12,7 +12,22 @@
 
   <meta name="csrf-token" content="{{ csrf_token() }}">
 
-  <title>{{ config('app.name', 'Laravel') }}</title>
+  <title>{{ config('app.name', 'SmartyCards') }}</title>
+  <meta name="description" content="Create and share digital flashcards and study games">
+  <meta name="keywords" content="digital flashcards, college, studying">
+  <meta name="google-site-verification" content="nSRuzVbBSDeCpknMIUeBWlOg4h9jqUXNj2J6vpRrNW4" />
+  <meta property="og:title" content="SmartyCards">
+  <meta name="twitter:title" content="SmartyCards">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:site_name" content="SmartyCards">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta property="og:image" content="https://smartycards.cla.umn.edu/img/og-image.png">
+  <meta name="twitter:image" content="https://smartycards.cla.umn.edu/img/og-image.png">
+  <meta property="og:image:alt" content="SmartyCards - Digital Flashcards Platform">
+  <meta name="twitter:image:alt" content="SmartyCards - Digital Flashcards Platform">
+  <meta property="og:description" content="Create and share digital flashcards and study games.">
+  <meta name="twitter:description" content="Create and share digital flashcards and study games.">
 
   <!-- Scripts -->
   @vite(['resources/client/app.ts'])
