@@ -1,6 +1,4 @@
-<!-- <h1><img src="/img/smartycards-wordmark.svg" alt="SmartCards" style="current" /></h1> -->
-
-![SmartyCards homepage](/img/home-page.png)
+<iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/Ev001uogzMo?si=D_RrycINh1daWz4S" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 ## Introduction
 
