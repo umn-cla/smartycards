@@ -17,14 +17,13 @@ class OpenAIService
         if ($client) {
             $this->client = $client;
         } else {
-            $baseUri = config('openai.resource_name')
-                .'.openai.azure.com/openai/deployments/'
-                .config('openai.deployment_id');
+            $resourceName = config('services.azure.openai.resource_name');
+            $deploymentId = config('services.azure.openai.deployment_id');
 
             $this->client = OpenAI::factory()
-                ->withBaseUri($baseUri)
-                ->withHttpHeader('api-key', config('openai.api_key'))
-                ->withQueryParam('api-version', config('openai.api_version'))
+                ->withBaseUri("https://{$resourceName}.openai.azure.com/openai/deployments/{$deploymentId}")
+                ->withHttpHeader('api-key', config('services.azure.openai.api_key'))
+                ->withQueryParam('api-version', config('services.azure.openai.api_version'))
                 ->make();
         }
     }
