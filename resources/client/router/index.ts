@@ -173,6 +173,13 @@ const router = createRouter({
       component: () => import("@/pages/Test/EditorPage.vue"),
       props: true,
     },
+    {
+      path: "/test/tts",
+      name: "test.tts",
+      component: () => import("@/pages/Test/TTSPage.vue"),
+      props: true,
+    },
+
     // catch all 404
     {
       path: "/:pathMatch(.*)*",

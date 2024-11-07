@@ -45,6 +45,7 @@ return [
         'tts' => [
             'key' => env('AZURE_TTS_KEY'),
             'endpoint' => env('AZURE_TTS_ENDPOINT'),
+            'voice' => env('AZURE_TTS_VOICE', 'en-US-AvaMultilingualNeural'),
         ],
     ],
 ];
