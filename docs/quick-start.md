@@ -63,3 +63,17 @@ It's probably easiest to explore SmartyCards with a pre-created deck. You can fi
 After joining, you should see the deck listed under your `Shared Decks`.
 
 ![Deck appears in the sidebar and on the Decks page under "Shared Decks"](/img/shared-decks.png)
+
+## 5. Practice and play
+
+![On the smartycards deck page, there are three buttons for the types of activities: Practice, Quiz, and Matching](/img/deck-activities.png)
+
+SmartyCards has 3 activities to help you study:
+
+- [Practice](/activities/practice-flashcards)
+- [Quiz](/activities/quiz)
+- [Matching Game](/activities/matching-game)
+
+::: info
+Have an idea for a new activity? Share it: [latistecharch@umn.edu](mailto:latistecharch@umn.edu)
+:::
