@@ -1,15 +1,10 @@
 <template>
   <div class="relative">
-    <div class="top-1 right-1 absolute z-10">
-      <button @click="tts.pause" v-if="tts.isPlaying">
-        <IconCirclePause class="size-6" />
-        <span class="sr-only">Pause audio</span>
-      </button>
-      <button @click="tts.play" v-else>
-        <IconCirclePlay class="size-6" />
-        <span class="sr-only">Play audio</span>
-      </button>
-    </div>
+    <SimpleTTSPlayer
+      :text="text"
+      :selectedLanguage="selectedLanguage"
+      class="top-1 right-1 absolute z-10"
+    />
 
     <QuillyEditor
       ref="editor"
@@ -77,6 +72,7 @@ import { stripHtml } from "@/lib/stripHtml";
 import { IconGlobe } from "../icons";
 import Toggle from "@/components/Toggle.vue";
 import IconCirclePause from "../icons/IconCirclePause.vue";
+import SimpleTTSPlayer from "../SimpleTTSPlayer.vue";
 
 const props = defineProps<{
   modelValue: TextContentBlock["content"];
@@ -97,7 +93,10 @@ const selectedLanguage = computed((): string => props.meta?.lang ?? "");
 const isSettingCustomLanguage = ref(!!selectedLanguage.value);
 const languages = getTTSLanguageOptions();
 const text = computed(() => stripHtml(props.modelValue));
-const tts = useTextToSpeech(text, selectedLanguage);
+const { isPlaying, play, pause, blobUrl } = useTextToSpeech(
+  text,
+  selectedLanguage,
+);
 
 const options = computed(() => ({
   theme: "bubble",

@@ -12,7 +12,7 @@ import * as api from "@/api";
 
 export function useTextToSpeech(
   text: MaybeRefOrGetter<string>,
-  lang?: MaybeRefOrGetter<string>,
+  lang?: MaybeRefOrGetter<string | null>,
 ) {
   const blobUrl = ref<string | null>(null);
   const audio = new Audio();
@@ -76,5 +76,6 @@ export function useTextToSpeech(
     isPlaying,
     isPaused,
     isIdle,
+    audioState,
   };
 }

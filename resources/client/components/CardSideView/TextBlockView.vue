@@ -1,5 +1,7 @@
 <template>
-  <div class="text-block-view flex items-center justify-center text-lg">
+  <div
+    class="text-block-view flex flex-col items-center justify-center text-lg gap-2"
+  >
     <div
       v-html="block.content"
       @click.stop
@@ -14,19 +16,19 @@
         )
       "
     />
-    <button @click="tts.play">
-      <IconCirclePlay class="w-6 h-6" />
-      <span class="sr-only">Play audio</span>
-    </button>
+    <SimpleTTSPlayer
+      class="block"
+      :text="block.content"
+      :selectedLanguage="block.meta?.lang ?? null"
+    />
   </div>
 </template>
 <script setup lang="ts">
 import * as T from "@/types";
 import { computed, ref } from "vue";
 import { cn } from "@/lib/utils";
-import IconCirclePlay from "../icons/IconCirclePlay.vue";
-import { useTextToSpeech } from "@/composables/useTextToSpeech";
 import { stripHtml } from "@/lib/stripHtml";
+import SimpleTTSPlayer from "@/components/SimpleTTSPlayer.vue";
 
 const props = defineProps<{
   block: T.TextContentBlock;
@@ -34,11 +36,6 @@ const props = defineProps<{
 }>();
 
 const wordCount = computed(() => props.block.content.split(/\s+/).length);
-
-const text = computed(() => stripHtml(props.block.content));
-const lang = computed(() => props.block.meta?.lang as string);
-
-const tts = useTextToSpeech(text, lang);
 </script>
 <style type="post-css">
 /**
