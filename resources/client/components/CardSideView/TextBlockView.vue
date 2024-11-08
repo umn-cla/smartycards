@@ -1,6 +1,6 @@
 <template>
   <div
-    class="text-block-view flex flex-col items-center justify-center text-lg gap-2"
+    class="text-block-view flex flex-col items-center justify-center text-lg gap-1"
   >
     <div
       v-html="block.content"
@@ -27,7 +27,6 @@
 import * as T from "@/types";
 import { computed, ref } from "vue";
 import { cn } from "@/lib/utils";
-import { stripHtml } from "@/lib/stripHtml";
 import SimpleTTSPlayer from "@/components/SimpleTTSPlayer.vue";
 
 const props = defineProps<{

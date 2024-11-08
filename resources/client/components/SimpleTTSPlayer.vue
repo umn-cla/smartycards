@@ -1,7 +1,7 @@
 <template>
   <div>
     <Toggle v-model="isPlaying" label="Listen">
-      <IconSound class="size-6" />
+      <IconSound class="size-5" />
     </Toggle>
   </div>
 </template>

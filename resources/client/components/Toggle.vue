@@ -5,7 +5,7 @@
       class="text-sm flex items-center gap-1 p-2 rounded-md"
       :class="{
         'bg-brand-maroon-800 text-brand-oatmeal-50': modelValue,
-        'text-brand-maroon-800/50': !modelValue,
+        'text-brand-maroon-800/30': !modelValue,
       }"
       :aria-label="label"
       v-bind="$attrs"
