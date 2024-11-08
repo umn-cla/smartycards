@@ -316,4 +316,22 @@ export async function getDeckStats(deckId: number) {
   return res.data;
 }
 
+export async function getAudioForText(
+  text: string,
+  lang: string,
+): Promise<Blob> {
+  const res = await axios.post<Blob>(
+    `/tts`,
+    {
+      text,
+      lang,
+    },
+    {
+      responseType: "blob",
+    },
+  );
+
+  return res.data;
+}
+
 export { ApiError };
