@@ -16,12 +16,13 @@
         )
       "
     />
-    <SimpleTTSPlayer
-      class="block"
-      :text="block.content"
-      :selectedLanguage="block.meta?.lang ?? null"
-      v-if="charCount < MAX_TTS_CHARS"
-    />
+    <div class="flex items-center justify-center">
+      <SimpleTTSPlayer
+        :text="block.content"
+        :selectedLanguage="block.meta?.lang ?? null"
+        v-if="charCount < MAX_TTS_CHARS"
+      />
+    </div>
   </div>
 </template>
 <script setup lang="ts">
