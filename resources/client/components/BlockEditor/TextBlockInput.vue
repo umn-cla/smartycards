@@ -29,15 +29,26 @@
         "
       >
         <SelectTrigger class="bg-brand-maroon-800/5">
-          <SelectValue placeholder="Language" />
+          <SelectValue placeholder="Language (Auto)"> </SelectValue>
         </SelectTrigger>
         <SelectContent>
-          <SelectItem v-for="lang in languages" :value="lang.value">
-            {{ lang.label }}
+          <SelectItem v-for="lang in languages" :value="lang.locale">
+            {{ lang.name }}
           </SelectItem>
         </SelectContent>
       </Select>
-      <Toggle v-model="isSettingCustomLanguage" label="Set Language">
+      <Toggle
+        :modelValue="isSettingCustomLanguage"
+        label="Set Language"
+        @update:modelValue="
+          () => {
+            isSettingCustomLanguage = !isSettingCustomLanguage;
+            if (!isSettingCustomLanguage) {
+              $emit('update:meta', { ...meta, lang: null });
+            }
+          }
+        "
+      >
         <IconGlobe class="size-5" />
       </Toggle>
     </div>
@@ -51,11 +62,9 @@ import {
   Select,
   SelectTrigger,
   SelectContent,
-  SelectGroup,
   SelectItem,
   SelectValue,
 } from "@/components/ui/select";
-import { Label } from "../ui/label";
 import "quill-paste-smart";
 import "quill/dist/quill.core.css";
 import "quill/dist/quill.bubble.css";
@@ -68,7 +77,6 @@ import { stripHtml } from "@/lib/stripHtml";
 import { IconGlobe } from "../icons";
 import Toggle from "@/components/Toggle.vue";
 import IconCirclePause from "../icons/IconCirclePause.vue";
-import Combobox, { ComboboxOption } from "../Combobox.vue";
 
 const props = defineProps<{
   modelValue: TextContentBlock["content"];
@@ -85,16 +93,9 @@ defineEmits<{
 const editor = ref<InstanceType<typeof QuillyEditor>>();
 let quill: Quill | null = null;
 
-const isSettingCustomLanguage = ref(false);
 const selectedLanguage = computed((): string => props.meta?.lang ?? "");
-
-const languages = computed((): ComboboxOption[] =>
-  getTTSLanguageOptions().map((lang) => ({
-    value: lang.locale,
-    label: lang.name,
-  })),
-);
-
+const isSettingCustomLanguage = ref(!!selectedLanguage.value);
+const languages = getTTSLanguageOptions();
 const text = computed(() => stripHtml(props.modelValue));
 const tts = useTextToSpeech(text, selectedLanguage);
 
