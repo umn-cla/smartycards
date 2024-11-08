@@ -17,7 +17,15 @@ export function useTextToSpeech(
   const blobUrl = ref<string | null>(null);
   const audio = new Audio();
   const audioState = ref<"playing" | "paused" | "idle">("idle");
-  const isPlaying = computed(() => audioState.value === "playing");
+  const isPlaying = computed({
+    get() {
+      return audioState.value === "playing";
+    },
+    set(val: boolean) {
+      val ? play() : pause();
+    },
+  });
+
   const isPaused = computed(() => audioState.value === "paused");
   const isIdle = computed(() => audioState.value === "idle");
 
@@ -27,10 +35,12 @@ export function useTextToSpeech(
   }
 
   function pause() {
+    audioState.value = "paused";
     audio.pause();
   }
 
   async function play() {
+    audioState.value = "playing";
     blobUrl.value ??= await getAudioUrl();
     audio.src = blobUrl.value;
     audio.play();

@@ -1,20 +1,15 @@
 <template>
   <div>
-    <button @click="pause" v-if="isPlaying">
-      <IconCirclePause class="size-6" />
-      <span class="sr-only">Pause audio</span>
-    </button>
-    <button @click="play" v-else>
-      <IconCirclePlay class="size-6" />
-      <span class="sr-only">Play audio</span>
-    </button>
+    <Toggle v-model="isPlaying" label="Listen">
+      <IconSound class="size-6" />
+    </Toggle>
   </div>
 </template>
 <script setup lang="ts">
 import { useTextToSpeech } from "@/composables/useTextToSpeech";
 import { computed } from "vue";
-import { IconCirclePlay, IconCirclePause } from "./icons";
-import { stripHtml } from "@/lib/stripHtml";
+import { IconSound } from "./icons";
+import Toggle from "./Toggle.vue";
 
 const props = defineProps<{
   text: string;

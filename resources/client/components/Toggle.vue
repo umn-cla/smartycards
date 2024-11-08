@@ -4,10 +4,11 @@
       @click="$emit('update:modelValue', !modelValue)"
       class="text-sm flex items-center gap-1 p-2 rounded-md"
       :class="{
-        'text-brand-maroon-800 bg-brand-oatmeal-50 rounded-md': modelValue,
-        'text-brand-maroon-600': !modelValue,
+        'bg-brand-maroon-800 text-brand-oatmeal-50': modelValue,
+        'text-brand-maroon-800/50': !modelValue,
       }"
       :aria-label="label"
+      v-bind="$attrs"
     >
       <slot />
     </button>
