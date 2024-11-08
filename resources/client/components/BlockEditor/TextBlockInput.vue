@@ -1,5 +1,16 @@
 <template>
-  <div>
+  <div class="relative">
+    <div class="top-1 right-1 absolute z-10">
+      <button @click="tts.pause" v-if="tts.isPlaying">
+        <IconCirclePause class="size-6" />
+        <span class="sr-only">Pause audio</span>
+      </button>
+      <button @click="tts.play" v-else>
+        <IconCirclePlay class="size-6" />
+        <span class="sr-only">Play audio</span>
+      </button>
+    </div>
+
     <QuillyEditor
       ref="editor"
       :modelValue="modelValue"
@@ -8,28 +19,27 @@
       class="bg-brand-maroon-800/5 rounded-sm focus-within:ring-2 focus-within:ring-offset-1 focus-within:ring-blue-600"
     />
 
-    <div class="mt-4 flex gap-4 items-center flex-wrap">
-      <div class="flex gap-2 items-center">
-        <Label :for="`block-${nonce}__language-select`">Language</Label>
-        <Select
-          :id="`block-${nonce}__language-select`"
-          v-model="selectedLanguage"
-        >
-          <SelectTrigger class="bg-brand-maroon-800/5">
-            <SelectValue placeholder="Language" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem v-for="lang in languages" :value="lang.locale">
-              {{ lang.name }}
-            </SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
-
-      <button @click="tts.play">
-        <IconCirclePlay class="size-6" />
-        <span class="sr-only">Play audio</span>
-      </button>
+    <div class="flex gap-2 items-center justify-end mt-2">
+      <Select
+        v-if="isSettingCustomLanguage"
+        :id="`block-${nonce}__language-select`"
+        :modelValue="selectedLanguage"
+        @update:modelValue="
+          $emit('update:meta', { ...meta, lang: $event ?? null })
+        "
+      >
+        <SelectTrigger class="bg-brand-maroon-800/5">
+          <SelectValue placeholder="Language" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem v-for="lang in languages" :value="lang.value">
+            {{ lang.label }}
+          </SelectItem>
+        </SelectContent>
+      </Select>
+      <Toggle v-model="isSettingCustomLanguage" label="Set Language">
+        <IconGlobe class="size-5" />
+      </Toggle>
     </div>
   </div>
 </template>
@@ -52,10 +62,13 @@ import "quill/dist/quill.bubble.css";
 import { getTTSLanguageOptions } from "@/lib/getTtsLanguageOptions";
 import { TextContentBlock } from "@/types";
 import { uuid } from "@/lib/utils";
-import SimpleAudioPlayer from "../SimpleAudioPlayer.vue";
 import { useTextToSpeech } from "@/composables/useTextToSpeech";
 import IconCirclePlay from "../icons/IconCirclePlay.vue";
 import { stripHtml } from "@/lib/stripHtml";
+import { IconGlobe } from "../icons";
+import Toggle from "@/components/Toggle.vue";
+import IconCirclePause from "../icons/IconCirclePause.vue";
+import Combobox, { ComboboxOption } from "../Combobox.vue";
 
 const props = defineProps<{
   modelValue: TextContentBlock["content"];
@@ -64,7 +77,7 @@ const props = defineProps<{
 
 const nonce = uuid();
 
-const emit = defineEmits<{
+defineEmits<{
   (event: "update:modelValue", value: string): void;
   (event: "update:meta", value: TextContentBlock["meta"]): void;
 }>();
@@ -72,14 +85,15 @@ const emit = defineEmits<{
 const editor = ref<InstanceType<typeof QuillyEditor>>();
 let quill: Quill | null = null;
 
-const selectedLanguage = computed({
-  get: () => props.meta?.lang ?? "en-US",
-  set: (value) => {
-    emit("update:meta", { lang: value });
-  },
-});
+const isSettingCustomLanguage = ref(false);
+const selectedLanguage = computed((): string => props.meta?.lang ?? "");
 
-const languages = getTTSLanguageOptions();
+const languages = computed((): ComboboxOption[] =>
+  getTTSLanguageOptions().map((lang) => ({
+    value: lang.locale,
+    label: lang.name,
+  })),
+);
 
 const text = computed(() => stripHtml(props.modelValue));
 const tts = useTextToSpeech(text, selectedLanguage);

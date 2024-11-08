@@ -26,6 +26,7 @@ import { computed, ref } from "vue";
 import { cn } from "@/lib/utils";
 import IconCirclePlay from "../icons/IconCirclePlay.vue";
 import { useTextToSpeech } from "@/composables/useTextToSpeech";
+import { stripHtml } from "@/lib/stripHtml";
 
 const props = defineProps<{
   block: T.TextContentBlock;
@@ -34,8 +35,8 @@ const props = defineProps<{
 
 const wordCount = computed(() => props.block.content.split(/\s+/).length);
 
-const text = computed(() => props.block.content);
-const lang = computed(() => (props.block.meta?.lang as string) ?? "en-US");
+const text = computed(() => stripHtml(props.block.content));
+const lang = computed(() => props.block.meta?.lang as string);
 
 const tts = useTextToSpeech(text, lang);
 </script>

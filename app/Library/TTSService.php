@@ -21,18 +21,22 @@ class TTSService
         $this->voice = config('services.azure.tts.voice');
     }
 
-    protected function toSSML($text, $lang = 'en-US')
+    protected function toSSML(string $text, ?string $lang = null)
     {
+
+        // if a language is specified, wrap text in a lang tag
+        if ($lang) {
+            $text = "<lang xml:lang='{$lang}'>{$text}</lang>";
+        }
+
         return "<speak version='1.0' xml:lang='en-US'>"
             ."<voice name='{$this->voice}' xml:lang='{$lang}'>"
-            ."<lang xml:lang='{$lang}'>"
             .$text
-            .'</lang>'
             .'</voice>'
             .'</speak>';
     }
 
-    public function getSpeech($text, $lang = 'en-US')
+    public function getSpeech(string $text, ?string $lang = null)
     {
 
         if (strlen($text) > self::MAX_TEXT_LENGTH) {

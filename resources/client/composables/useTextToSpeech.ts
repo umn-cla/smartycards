@@ -6,7 +6,7 @@ import {
   type MaybeRefOrGetter,
   toValue,
   toRef,
-  ComputedRef,
+  computed,
 } from "vue";
 import * as api from "@/api";
 
@@ -14,16 +14,20 @@ export function useTextToSpeech(
   text: MaybeRefOrGetter<string>,
   lang?: MaybeRefOrGetter<string>,
 ) {
-  const DEFAULT_LANG = "en-US";
   const blobUrl = ref<string | null>(null);
   const audio = new Audio();
+  const audioState = ref<"playing" | "paused" | "idle">("idle");
+  const isPlaying = computed(() => audioState.value === "playing");
+  const isPaused = computed(() => audioState.value === "paused");
+  const isIdle = computed(() => audioState.value === "idle");
 
   async function getAudioUrl(): Promise<string> {
-    const blob = await api.getAudioForText(
-      toValue(text),
-      toValue(lang) ?? DEFAULT_LANG,
-    );
+    const blob = await api.getAudioForText(toValue(text).trim(), toValue(lang));
     return URL.createObjectURL(blob);
+  }
+
+  function pause() {
+    audio.pause();
   }
 
   async function play() {
@@ -50,10 +54,27 @@ export function useTextToSpeech(
   // Clean up on component unmount
   onUnmounted(cleanup);
 
+  // audio handlers
+  const onPlay = () => (audioState.value = "playing");
+  const onPause = () => (audioState.value = "paused");
+  const onEnded = () => (audioState.value = "idle");
+  audio.addEventListener("play", onPlay);
+  audio.addEventListener("pause", onPause);
+  audio.addEventListener("ended", onEnded);
+
+  // clean up audio handlers on component unmount
+  onUnmounted(() => {
+    audio.removeEventListener("play", onPlay);
+    audio.removeEventListener("pause", onPause);
+    audio.removeEventListener("ended", onEnded);
+  });
+
   return {
     blobUrl,
     play,
-    cleanup,
-    audio,
+    pause,
+    isPlaying,
+    isPaused,
+    isIdle,
   };
 }

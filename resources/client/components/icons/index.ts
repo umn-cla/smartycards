@@ -4,6 +4,7 @@ export { default as IconBlockM } from "./IconBlockM.vue";
 export { default as IconCheck } from "./IconCheck.vue";
 export { default as IconCheckCircle } from "./IconCheckCircle.vue";
 export { default as IconChevronLeft } from "./IconChevronLeft.vue";
+export { default as IconChevronUpDown } from "./IconChevronUpDown.vue";
 export { default as IconCircleFilled } from "./IconCircleFilled.vue";
 export { default as IconCircleOutline } from "./IconCircleOutline.vue";
 export { default as IconCirclePause } from "./IconCirclePause.vue";
