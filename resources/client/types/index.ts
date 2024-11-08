@@ -151,7 +151,7 @@ export interface TextContentBlock extends ContentBlock {
   type: "text";
   content: HTMLString;
   meta: {
-    lang: string;
+    lang: string | null;
   } | null;
 }
 
