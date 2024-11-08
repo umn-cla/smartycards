@@ -22,4 +22,8 @@ import {
 defineProps<{
   label: string;
 }>();
+
+defineOptions({
+  inheritAttrs: false,
+});
 </script>

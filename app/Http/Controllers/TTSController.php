@@ -14,7 +14,7 @@ class TTSController extends Controller
     {
 
         $validated = $request->validate([
-            'text' => 'required|string|max:1000',
+            'text' => 'required|string|max:200',
             'lang' => 'string|nullable',
         ]);
 

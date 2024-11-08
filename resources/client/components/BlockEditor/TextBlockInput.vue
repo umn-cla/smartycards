@@ -4,6 +4,8 @@
       :text="text"
       :selectedLanguage="selectedLanguage"
       class="top-1 right-1 absolute z-10"
+      isIdleClass="bg-brand-oatmeal-50"
+      v-if="charCount < MAX_TTS_CHARS"
     />
 
     <QuillyEditor
@@ -66,12 +68,10 @@ import "quill/dist/quill.bubble.css";
 import { getTTSLanguageOptions } from "@/lib/getTtsLanguageOptions";
 import { TextContentBlock } from "@/types";
 import { uuid } from "@/lib/utils";
-import { useTextToSpeech } from "@/composables/useTextToSpeech";
-import IconCirclePlay from "../icons/IconCirclePlay.vue";
-import { stripHtml } from "@/lib/stripHtml";
 import { IconGlobe } from "../icons";
 import Toggle from "@/components/Toggle.vue";
-import IconCirclePause from "../icons/IconCirclePause.vue";
+import { MAX_TTS_CHARS } from "@/constants";
+
 import SimpleTTSPlayer from "../SimpleTTSPlayer.vue";
 
 const props = defineProps<{
@@ -92,11 +92,8 @@ let quill: Quill | null = null;
 const selectedLanguage = computed((): string => props.meta?.lang ?? "");
 const isSettingCustomLanguage = ref(!!selectedLanguage.value);
 const languages = getTTSLanguageOptions();
-const text = computed(() => stripHtml(props.modelValue));
-const { isPlaying, play, pause, blobUrl } = useTextToSpeech(
-  text,
-  selectedLanguage,
-);
+const text = computed(() => props.modelValue);
+const charCount = computed(() => text.value.length);
 
 const options = computed(() => ({
   theme: "bubble",

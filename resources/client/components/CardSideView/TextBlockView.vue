@@ -20,14 +20,16 @@
       class="block"
       :text="block.content"
       :selectedLanguage="block.meta?.lang ?? null"
+      v-if="charCount < MAX_TTS_CHARS"
     />
   </div>
 </template>
 <script setup lang="ts">
 import * as T from "@/types";
-import { computed, ref } from "vue";
+import { computed } from "vue";
 import { cn } from "@/lib/utils";
 import SimpleTTSPlayer from "@/components/SimpleTTSPlayer.vue";
+import { MAX_TTS_CHARS } from "@/constants";
 
 const props = defineProps<{
   block: T.TextContentBlock;
@@ -35,6 +37,7 @@ const props = defineProps<{
 }>();
 
 const wordCount = computed(() => props.block.content.split(/\s+/).length);
+const charCount = computed(() => props.block.content.length);
 </script>
 <style type="post-css">
 /**
