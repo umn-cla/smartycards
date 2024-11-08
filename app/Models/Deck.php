@@ -18,6 +18,7 @@ class Deck extends Model implements AuditableContract
         'last_attempted_at' => 'datetime',
         'avg_score' => 'float',
         'is_public' => 'boolean',
+        'current_user_xp' => 'integer',
     ];
 
     protected $fillable = [
