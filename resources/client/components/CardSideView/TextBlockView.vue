@@ -14,12 +14,18 @@
         )
       "
     />
+    <button @click="tts.play">
+      <IconCirclePlay class="w-6 h-6" />
+      <span class="sr-only">Play audio</span>
+    </button>
   </div>
 </template>
 <script setup lang="ts">
 import * as T from "@/types";
 import { computed, ref } from "vue";
 import { cn } from "@/lib/utils";
+import IconCirclePlay from "../icons/IconCirclePlay.vue";
+import { useTextToSpeech } from "@/composables/useTextToSpeech";
 
 const props = defineProps<{
   block: T.TextContentBlock;
@@ -27,6 +33,11 @@ const props = defineProps<{
 }>();
 
 const wordCount = computed(() => props.block.content.split(/\s+/).length);
+
+const text = computed(() => props.block.content);
+const lang = computed(() => (props.block.meta?.lang as string) ?? "en-US");
+
+const tts = useTextToSpeech(text, lang);
 </script>
 <style type="post-css">
 /**

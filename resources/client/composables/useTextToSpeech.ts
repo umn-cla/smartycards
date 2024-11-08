@@ -1,16 +1,27 @@
 // composables/useTextToSpeech.ts
-import { ref, onUnmounted, watch, type Ref } from "vue";
+import {
+  ref,
+  onUnmounted,
+  watch,
+  type MaybeRefOrGetter,
+  toValue,
+  toRef,
+  ComputedRef,
+} from "vue";
 import * as api from "@/api";
 
-export function useTextToSpeech(text: Ref<string>, lang?: Ref<string>) {
+export function useTextToSpeech(
+  text: MaybeRefOrGetter<string>,
+  lang?: MaybeRefOrGetter<string>,
+) {
   const DEFAULT_LANG = "en-US";
   const blobUrl = ref<string | null>(null);
   const audio = new Audio();
 
   async function getAudioUrl(): Promise<string> {
     const blob = await api.getAudioForText(
-      text.value,
-      lang?.value ?? DEFAULT_LANG,
+      toValue(text),
+      toValue(lang) ?? DEFAULT_LANG,
     );
     return URL.createObjectURL(blob);
   }
@@ -32,7 +43,9 @@ export function useTextToSpeech(text: Ref<string>, lang?: Ref<string>) {
   }
 
   // Clean up blob URL when text changes
-  watch(text, cleanup);
+  const textRef = toRef(text);
+  const langRef = toRef(lang);
+  watch([textRef, langRef], cleanup);
 
   // Clean up on component unmount
   onUnmounted(cleanup);

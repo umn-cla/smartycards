@@ -150,6 +150,9 @@ export interface ContentBlock {
 export interface TextContentBlock extends ContentBlock {
   type: "text";
   content: HTMLString;
+  meta: {
+    lang: string;
+  } | null;
 }
 
 export interface ImageContentBlock extends ContentBlock {

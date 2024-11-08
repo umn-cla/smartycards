@@ -25,7 +25,9 @@ class TTSService
     {
         return "<speak version='1.0' xml:lang='en-US'>"
             ."<voice name='{$this->voice}' xml:lang='{$lang}'>"
+            ."<lang xml:lang='{$lang}'>"
             .$text
+            .'</lang>'
             .'</voice>'
             .'</speak>';
     }
