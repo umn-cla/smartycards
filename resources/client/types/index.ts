@@ -18,15 +18,21 @@ export interface CustomAxiosRequestConfig extends AxiosRequestConfig {
   skipErrorNotifications?: boolean;
 }
 
+export type GlobalPermission = "VIEW_ADMIN_PAGES";
+export type GlobalRole = "SUPER_ADMIN";
+
 export interface User {
   id: number;
-  name: string;
   email: string;
   umndid: string;
   emplid: string;
+  name: string;
   first_name: string;
   last_name: string;
-  isAdmin?: boolean;
+  is_admin?: boolean;
+  capabilities?: {
+    canViewAdminPages: boolean;
+  };
 }
 
 type MembershipRole = "viewer" | "editor" | "owner";

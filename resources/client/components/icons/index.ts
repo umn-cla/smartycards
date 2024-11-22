@@ -1,3 +1,4 @@
+export { default as IconAdminPanel } from "./IconAdminPanel.vue";
 export { default as IconArrowRight } from "./IconArrowRight.vue";
 export { default as IconAvatar } from "./IconAvatar.vue";
 export { default as IconBlockM } from "./IconBlockM.vue";
@@ -24,6 +25,7 @@ export { default as IconMath } from "./IconMath.vue";
 export { default as IconMenu } from "./IconMenu.vue";
 export { default as IconPencil } from "./IconPencil.vue";
 export { default as IconPlusFilled } from "./IconPlusFilled.vue";
+export { default as IconUser } from "./IconUser.vue";
 export { default as IconRefresh } from "./IconRefresh.vue";
 export { default as IconSpinner } from "./IconSpinner.vue";
 export { default as IconSound } from "./IconSound.vue";
