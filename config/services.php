@@ -35,4 +35,17 @@ return [
         ],
     ],
 
+    'azure' => [
+        'openai' => [
+            'resource_name' => env('OPENAI_RESOURCE_NAME'),
+            'deployment_id' => env('OPENAI_DEPLOYMENT_ID'),
+            'api_key' => env('OPENAI_API_KEY'),
+            'api_version' => env('OPENAI_API_VERSION'),
+        ],
+        'tts' => [
+            'key' => env('AZURE_TTS_KEY'),
+            'endpoint' => env('AZURE_TTS_ENDPOINT'),
+            'voice' => env('AZURE_TTS_VOICE', 'en-US-AvaMultilingualNeural'),
+        ],
+    ],
 ];

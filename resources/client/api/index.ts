@@ -316,4 +316,28 @@ export async function getDeckStats(deckId: number) {
   return res.data;
 }
 
+export async function getAudioForText(
+  text: string,
+  lang?: string | null, // undefined means "best guess"?
+): Promise<Blob> {
+  const res = await axios.post<Blob>(
+    `/tts`,
+    {
+      text,
+      lang,
+    },
+    {
+      responseType: "blob",
+    },
+  );
+
+  return res.data;
+}
+
+export async function getFeatureFlags() {
+  const res = await axios.get<{ text_to_speech: boolean }>(`/features`);
+
+  return res.data;
+}
+
 export { ApiError };

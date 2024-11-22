@@ -32,10 +32,22 @@
       </DropdownMenuLabel>
       <DropdownMenuSeparator />
       <DropdownMenuItem asChild>
-        <RouterLink :to="{ name: 'profile' }"> Profile </RouterLink>
+        <RouterLink :to="{ name: 'profile' }">
+          <IconUser class="size-5 mr-2" />
+          Profile
+        </RouterLink>
+      </DropdownMenuItem>
+      <DropdownMenuItem
+        asChild
+        v-if="currentUser.capabilities?.canViewAdminPages"
+      >
+        <a href="/admin"><IconAdminPanel class="size-5 mr-2" /> Admin </a>
       </DropdownMenuItem>
       <DropdownMenuItem asChild>
-        <a :href="config.api.logoutUrl">Log out</a>
+        <a :href="config.api.logoutUrl">
+          <IconLogOut class="size-5 mr-2" />
+          Log out</a
+        >
       </DropdownMenuItem>
     </DropdownMenuContent>
   </DropdownMenu>
@@ -56,6 +68,8 @@ import {
 import { computed } from "vue";
 import type { User } from "@/types";
 import config from "@/config";
+import { IconAdminPanel, IconExit, IconUser } from "./icons";
+import IconLogOut from "./icons/IconLogOut.vue";
 
 const props = withDefaults(
   defineProps<{

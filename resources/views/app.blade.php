@@ -8,7 +8,7 @@
   <link rel="icon" href="favicon.svg">
   <link rel="mask-icon" href="mask-icon.svg" color="#2E091E">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
-  <link rel="manifest" href="manifest.json">
+  <link rel="manifest" href="/manifest.json">
 
   <meta name="csrf-token" content="{{ csrf_token() }}">
 

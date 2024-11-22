@@ -10,7 +10,9 @@ use App\Http\Controllers\DeckInviteController;
 use App\Http\Controllers\DeckMembershipController;
 use App\Http\Controllers\DeckQuizController;
 use App\Http\Controllers\DeckReportController;
+use App\Http\Controllers\FeatureFlagController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\TTSController;
 use App\Http\Controllers\UploadFileController;
 use Illuminate\Support\Facades\Route;
 
@@ -19,6 +21,7 @@ Route::middleware(['auth'])
     ->prefix('api')
     ->group(function () {
         Route::singleton('profile', ProfileController::class);
+        Route::get('features', [FeatureFlagController::class, 'index']);
 
         Route::resource('decks', DeckController::class);
 
@@ -61,6 +64,8 @@ Route::middleware(['auth'])
         Route::post('decks/{deck}/import', [DeckController::class, 'import']);
 
         Route::post('files', UploadFileController::class);
+
+        Route::post('tts', TTSController::class);
     });
 
 require __DIR__.'/shib.php';
