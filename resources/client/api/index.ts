@@ -334,4 +334,10 @@ export async function getAudioForText(
   return res.data;
 }
 
+export async function getFeatureFlags() {
+  const res = await axios.get<{ text_to_speech: boolean }>(`/features`);
+
+  return res.data;
+}
+
 export { ApiError };

@@ -5,7 +5,7 @@
       :selectedLanguage="selectedLanguage"
       class="top-1 right-1 absolute z-10"
       isIdleClass="bg-brand-oatmeal-50"
-      v-if="charCount < MAX_TTS_CHARS"
+      v-if="featureFlags?.text_to_speech && charCount < MAX_TTS_CHARS"
     />
 
     <QuillyEditor
@@ -71,6 +71,7 @@ import { uuid } from "@/lib/utils";
 import { IconGlobe } from "../icons";
 import Toggle from "@/components/Toggle.vue";
 import { MAX_TTS_CHARS } from "@/constants";
+import { useAllFeatureFlagsQuery } from "@/queries/featureFlags";
 
 import SimpleTTSPlayer from "../SimpleTTSPlayer.vue";
 
@@ -134,6 +135,8 @@ const options = computed(() => ({
   placeholder: "Write something...",
   readOnly: false,
 }));
+
+const { data: featureFlags } = useAllFeatureFlagsQuery();
 
 onMounted(() => {
   if (!editor.value) {
