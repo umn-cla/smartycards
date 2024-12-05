@@ -3,6 +3,7 @@
 namespace App\Library;
 
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Storage;
 
 class TTSService
 {
@@ -36,11 +37,23 @@ class TTSService
             .'</speak>';
     }
 
+    protected function getCacheKey(string $text, ?string $lang = null): string
+    {
+        return md5($text.$lang.$this->voice);
+    }
+
     public function getSpeech(string $text, ?string $lang = null)
     {
 
         if (strlen($text) > self::MAX_TEXT_LENGTH) {
             throw new \Exception('SSML is too long');
+        }
+
+        $cacheKey = $this->getCacheKey($text, $lang);
+        $cachePath = "tts/{$cacheKey}.mp3";
+
+        if (Storage::exists($cachePath)) {
+            return Storage::get($cachePath);
         }
 
         $ssml = $this->toSSML($text, $lang);
@@ -54,7 +67,11 @@ class TTSService
             ->withBody($ssml, 'application/ssml+xml')
             ->post('/cognitiveservices/v1', $ssml);
 
-        return $response->body();
+        $audioContent = $response->body();
+
+        Storage::put($cachePath, $audioContent);
+
+        return $audioContent;
     }
 
     public function getVoices()
