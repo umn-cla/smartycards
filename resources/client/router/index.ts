@@ -71,12 +71,15 @@ const router = createRouter({
     {
       path: "/decks/create",
       name: "decks.create",
-      component: () => import("../pages/Decks/CreateDeckPage.vue"),
+      component: () => import("../pages/Decks/CreateOrEditDeckPage.vue"),
+      props: () => ({
+        deckId: null,
+      }),
     },
     {
       path: "/decks/:deckId/edit",
       name: "decks.edit",
-      component: () => import("../pages/Decks/EditDeckPage.vue"),
+      component: () => import("../pages/Decks/CreateOrEditDeckPage.vue"),
       props: (route) => ({
         deckId: Number(route.params.deckId),
       }),

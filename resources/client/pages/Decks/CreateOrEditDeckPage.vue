@@ -3,7 +3,7 @@
     <div class="max-w-screen-md mx-auto">
       <PageHeader
         class="mb-8"
-        title="Create Deck"
+        :title="isCreateMode ? 'Create Deck' : 'Edit Deck'"
         backLabel="Decks"
         :backTo="{ name: 'decks.index' }"
       />
@@ -18,35 +18,76 @@
           <Button asChild variant="secondary">
             <RouterLink :to="{ name: 'decks.index' }"> Cancel </RouterLink>
           </Button>
-          <Button type="submit"> Create Deck </Button>
+          <Button type="submit">{{
+            isCreateMode ? "Create Deck" : "Save"
+          }}</Button>
         </div>
       </form>
     </div>
   </AuthenticatedLayout>
 </template>
 <script setup lang="ts">
-import { reactive } from "vue";
+import { reactive, computed, watch } from "vue";
 import { AuthenticatedLayout } from "@/layouts/AuthenticatedLayout";
-import { useCreateDeckMutation } from "@/queries/decks";
+import {
+  useCreateDeckMutation,
+  useUpdateDeckMutation,
+  useDeckByIdQuery,
+} from "@/queries/decks";
 import { useRouter } from "vue-router";
 import InputGroup from "@/components/InputGroup.vue";
 import PageHeader from "@/components/PageHeader.vue";
 import { Button } from "@/components/ui/button";
+
+const props = defineProps<{
+  deckId: number | null;
+}>();
 
 const form = reactive({
   name: "",
   description: "",
 });
 
+const isCreateMode = computed(() => props.deckId === null);
 const router = useRouter();
-const createDeckMutation = useCreateDeckMutation();
+const deckIdRef = computed(() => props.deckId);
+const { data: deck } = useDeckByIdQuery(deckIdRef);
+const { mutate: createDeck } = useCreateDeckMutation();
+const { mutate: updateDeck } = useUpdateDeckMutation();
+
+watch(
+  deck,
+  () => {
+    if (deck.value) {
+      form.name = deck.value.name;
+      form.description = deck.value.description;
+    }
+  },
+  { immediate: true },
+);
 
 async function handleSubmit() {
-  createDeckMutation.mutate(form, {
-    onSuccess: () => {
-      router.push({ name: "decks.index" });
+  if (isCreateMode.value) {
+    createDeck(form, {
+      onSuccess: () => {
+        router.push({ name: "decks.index" });
+      },
+    });
+    return;
+  }
+
+  if (!props.deckId) {
+    throw new Error("Deck ID is required for editing");
+  }
+
+  updateDeck(
+    { id: props.deckId, ...form },
+    {
+      onSuccess: () => {
+        router.push({ name: "decks.index" });
+      },
     },
-  });
+  );
 }
 </script>
 <style scoped></style>

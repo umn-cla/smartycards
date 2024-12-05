@@ -84,8 +84,19 @@ export async function deleteDeck(
   await axios.delete(`/decks/${deckId}`, customConfig);
 }
 
-export async function updateDeck(deck: T.Deck) {
-  const res = await axios.put<{ data: T.Deck }>(`/decks/${deck.id}`, deck);
+export async function updateDeck({
+  id,
+  name,
+  description,
+}: {
+  id: number;
+  name: string;
+  description: string;
+}) {
+  const res = await axios.put<{ data: T.Deck }>(`/decks/${id}`, {
+    name,
+    description,
+  });
   return res.data.data;
 }
 
