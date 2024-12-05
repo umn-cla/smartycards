@@ -19,12 +19,20 @@
           </p>
         </div>
 
-        <RouterLink
-          :to="{ name: 'auth.login' }"
-          class="bg-brand-oatmeal-100 text-brand-maroon-950 md:text-2xl rounded-xl px-6 py-2 block mt-4"
-        >
-          Sign In
-        </RouterLink>
+        <div class="flex gap-4 items-baseline mt-8">
+          <RouterLink
+            :to="{ name: 'auth.login' }"
+            class="bg-brand-oatmeal-100 text-brand-maroon-950 md:text-2xl rounded-xl px-6 py-2 block border-2 border-brand-oatmeal-100"
+          >
+            Sign In
+          </RouterLink>
+          <a
+            href="https://umn-cla.github.io/smartycards/"
+            class="text-brand-oatmeal-100 px-6 py-2 md:text-2xl rounded-xl border-2 border-brand-oatmeal-100"
+          >
+            Learn more
+          </a>
+        </div>
       </section>
       <section class="p-8 my-8">
         <h2 class="sr-only">Multimedia Cards</h2>
