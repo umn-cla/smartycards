@@ -2,8 +2,10 @@
   <Toggle
     v-model="isPlaying"
     label="Listen"
+    :disabled="isEmpty"
     :class="{
       [isIdleClass]: !isPlaying && props.isIdleClass,
+      '!opacity-25 cursor-not-allowed': isEmpty,
     }"
   >
     <IconSound class="size-5" />
@@ -34,7 +36,7 @@ const props = defineProps<{
 const textRef = computed(() => props.text);
 const selectedLanguageRef = computed(() => props.selectedLanguage);
 
-const { isPlaying } = useTextToSpeech(textRef, selectedLanguageRef);
+const { isPlaying, isEmpty } = useTextToSpeech(textRef, selectedLanguageRef);
 
 const languages = getTTSLanguageOptions();
 const languageName = computed(() => {

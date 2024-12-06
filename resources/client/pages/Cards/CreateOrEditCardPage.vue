@@ -55,7 +55,15 @@
 </template>
 <script setup lang="ts">
 import { AuthenticatedLayout } from "@/layouts/AuthenticatedLayout";
-import { computed, reactive, watch, ref, onMounted, capitalize } from "vue";
+import {
+  computed,
+  reactive,
+  watch,
+  ref,
+  onMounted,
+  capitalize,
+  provide,
+} from "vue";
 import {
   useUpdateCardMutation,
   useCreateCardMutation,
@@ -69,6 +77,8 @@ import { IconChevronLeft } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import PageTitle from "@/components/PageTitle.vue";
 import PageSubtitle from "@/components/PageSubtitle.vue";
+import { useIsDeckTTSEnabled } from "@/composables/useIsDeckTTSEnabled";
+import { IS_DECK_TTS_ENABLED_INJECTION_KEY } from "@/constants";
 
 const props = defineProps<{
   deckId: number;
@@ -179,5 +189,9 @@ function handleSave({ saveAndAddAnother = false } = {}) {
     { onSuccess },
   );
 }
+
+// provide info about TTS to any card blocks that need it
+const { isDeckTTSEnabled } = useIsDeckTTSEnabled(deck);
+provide(IS_DECK_TTS_ENABLED_INJECTION_KEY, isDeckTTSEnabled);
 </script>
 <style scoped></style>

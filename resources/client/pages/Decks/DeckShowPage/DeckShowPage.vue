@@ -125,7 +125,7 @@ import MoreCardActions from "./MoreCardActions.vue";
 import { ref } from "vue";
 import LevelProgress from "@/components/LevelProgress.vue";
 import { useActivityTypesQuery } from "@/queries/activityTypes/useActivityTypesQuery";
-import { useAllFeatureFlagsQuery } from "@/queries/featureFlags";
+import { useIsDeckTTSEnabled } from "@/composables/useIsDeckTTSEnabled";
 import { IS_DECK_TTS_ENABLED_INJECTION_KEY } from "@/constants";
 
 const props = defineProps<{
@@ -145,7 +145,6 @@ const canDelete = computed(() => {
 const { data: deck } = useDeckByIdQuery(deckIdRef);
 const { mutate: deleteCard } = useDeleteCardMutation();
 const { data: activityTypes } = useActivityTypesQuery();
-const { data: featureFlags } = useAllFeatureFlagsQuery();
 
 const xpByActivityTypeName = computed(() => {
   return activityTypes.value?.reduce(
@@ -177,11 +176,9 @@ const initialCardSide = ref<T.CardSideName>("front");
 function flipAllCards() {
   initialCardSide.value = initialCardSide.value === "front" ? "back" : "front";
 }
-const isTTSEnabledRef = computed(() => {
-  if (!featureFlags.value || !deck.value) return false;
-  return featureFlags.value.text_to_speech && deck.value.is_tts_enabled;
-});
 
-provide(IS_DECK_TTS_ENABLED_INJECTION_KEY, isTTSEnabledRef);
+// provide info about TTS to any card blocks that need it
+const { isDeckTTSEnabled } = useIsDeckTTSEnabled(deck);
+provide(IS_DECK_TTS_ENABLED_INJECTION_KEY, isDeckTTSEnabled);
 </script>
 <style scoped></style>

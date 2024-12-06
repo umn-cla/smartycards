@@ -79,7 +79,7 @@
   </AuthenticatedLayout>
 </template>
 <script setup lang="ts">
-import { computed, watch, reactive } from "vue";
+import { computed, reactive, provide } from "vue";
 import { AuthenticatedLayout } from "@/layouts/AuthenticatedLayout";
 import { useDeckByIdQuery } from "@/queries/decks";
 import * as T from "@/types";
@@ -96,6 +96,8 @@ import { useCreateDeckActivityEventMutation } from "@/queries/deckActivityEvents
 import LevelProgress from "@/components/LevelProgress.vue";
 import { useDeckStatsQuery } from "@/queries/decks/useDeckStatsQuery";
 import PracticeDeck from "./PracticeDeck.vue";
+import { IS_DECK_TTS_ENABLED_INJECTION_KEY } from "@/constants";
+import { useIsDeckTTSEnabled } from "@/composables/useIsDeckTTSEnabled";
 
 const props = defineProps<{
   deckId: number;
@@ -115,15 +117,17 @@ const { data: deckStats } = useDeckStatsQuery(deckIdRef);
 const { mutate: createActivityEvent } = useCreateDeckActivityEventMutation();
 
 async function handlePracticeComplete(cardCount: number) {
-  const event = await createActivityEvent({
+  await createActivityEvent({
     deckId: deck.value?.id ?? 0,
     activityType: T.ActivityTypeName.PRACTICE_ALL_CARDS,
     correctCount: cardCount,
     totalCount: cardCount,
   });
-
-  console.log("event", event);
 }
+
+// provide info about TTS to any card blocks that need it
+const { isDeckTTSEnabled } = useIsDeckTTSEnabled(deck);
+provide(IS_DECK_TTS_ENABLED_INJECTION_KEY, isDeckTTSEnabled);
 </script>
 <style scoped>
 button {
