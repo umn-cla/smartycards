@@ -114,7 +114,7 @@ import { useDeleteCardMutation } from "@/queries/cards";
 import { useDeckByIdQuery } from "@/queries/decks";
 import * as T from "@/types";
 import { RouterLink } from "vue-router";
-import { computed } from "vue";
+import { computed, provide } from "vue";
 import { Button } from "@/components/ui/button";
 import MoreDeckActions from "@/pages/Decks/DeckIndexPage/MoreDeckActions.vue";
 import PageHeader from "@/components/PageHeader.vue";
@@ -125,7 +125,8 @@ import MoreCardActions from "./MoreCardActions.vue";
 import { ref } from "vue";
 import LevelProgress from "@/components/LevelProgress.vue";
 import { useActivityTypesQuery } from "@/queries/activityTypes/useActivityTypesQuery";
-import { match } from "ramda";
+import { useAllFeatureFlagsQuery } from "@/queries/featureFlags";
+import { IS_DECK_TTS_ENABLED_INJECTION_KEY } from "@/constants";
 
 const props = defineProps<{
   deckId: number;
@@ -144,6 +145,7 @@ const canDelete = computed(() => {
 const { data: deck } = useDeckByIdQuery(deckIdRef);
 const { mutate: deleteCard } = useDeleteCardMutation();
 const { data: activityTypes } = useActivityTypesQuery();
+const { data: featureFlags } = useAllFeatureFlagsQuery();
 
 const xpByActivityTypeName = computed(() => {
   return activityTypes.value?.reduce(
@@ -175,5 +177,11 @@ const initialCardSide = ref<T.CardSideName>("front");
 function flipAllCards() {
   initialCardSide.value = initialCardSide.value === "front" ? "back" : "front";
 }
+const isTTSEnabledRef = computed(() => {
+  if (!featureFlags.value || !deck.value) return false;
+  return featureFlags.value.text_to_speech && deck.value.is_tts_enabled;
+});
+
+provide(IS_DECK_TTS_ENABLED_INJECTION_KEY, isTTSEnabledRef);
 </script>
 <style scoped></style>
