@@ -18,7 +18,7 @@
           <Button asChild variant="secondary">
             <RouterLink :to="{ name: 'decks.index' }"> Cancel </RouterLink>
           </Button>
-          <Button type="submit">{{
+          <Button type="submit" :disabled="!form.name">{{
             isCreateMode ? "Create Deck" : "Save"
           }}</Button>
         </div>
