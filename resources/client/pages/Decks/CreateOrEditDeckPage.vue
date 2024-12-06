@@ -80,7 +80,7 @@ watch(
   () => {
     if (deck.value) {
       form.name = deck.value.name;
-      form.description = deck.value.description;
+      form.description = deck.value.description ?? "";
       form.isTTSEnabled = deck.value.is_tts_enabled;
     }
   },
@@ -90,8 +90,8 @@ watch(
 async function handleSubmit() {
   if (isCreateMode.value) {
     createDeck(form, {
-      onSuccess: (deck) => {
-        router.push({ name: "decks.show", params: { deckId: deck.id } });
+      onSuccess: (newDeck) => {
+        router.push({ name: "decks.show", params: { deckId: newDeck.id } });
       },
     });
     return;
@@ -104,8 +104,8 @@ async function handleSubmit() {
   updateDeck(
     { id: props.deckId, ...form },
     {
-      onSuccess: (deck: Deck) => {
-        router.push({ name: "decks.show", params: { deckId: deck.id } });
+      onSuccess: (updatedDeck: Deck) => {
+        router.push({ name: "decks.show", params: { deckId: updatedDeck.id } });
       },
     },
   );
