@@ -56,6 +56,7 @@ import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import HintTooltip from "@/components/HintTooltip.vue";
 import { Label } from "@/components/ui/label";
+import { Deck } from "@/types";
 
 const props = defineProps<{
   deckId: number | null;
@@ -89,8 +90,8 @@ watch(
 async function handleSubmit() {
   if (isCreateMode.value) {
     createDeck(form, {
-      onSuccess: () => {
-        router.push({ name: "decks.index" });
+      onSuccess: (deck) => {
+        router.push({ name: "decks.show", params: { deckId: deck.id } });
       },
     });
     return;
@@ -103,8 +104,8 @@ async function handleSubmit() {
   updateDeck(
     { id: props.deckId, ...form },
     {
-      onSuccess: () => {
-        router.push({ name: "decks.index" });
+      onSuccess: (deck: Deck) => {
+        router.push({ name: "decks.show", params: { deckId: deck.id } });
       },
     },
   );
