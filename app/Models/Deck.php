@@ -19,12 +19,14 @@ class Deck extends Model implements AuditableContract
         'avg_score' => 'float',
         'is_public' => 'boolean',
         'current_user_xp' => 'integer',
+        'is_tts_enabled' => 'boolean',
     ];
 
     protected $fillable = [
         'name',
         'description',
         'is_public',
+        'is_tts_enabled',
     ];
 
     public function users()
