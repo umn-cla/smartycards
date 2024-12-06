@@ -102,7 +102,6 @@ export async function updateDeck({
   description: string;
   isTTSEnabled: boolean;
 }) {
-  console.log({ id, name, description, isTTSEnabled });
   const res = await axios.put<{ data: T.Deck }>(`/decks/${id}`, {
     name,
     description,
