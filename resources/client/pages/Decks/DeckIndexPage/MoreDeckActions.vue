@@ -9,8 +9,8 @@
     <DropdownMenuContent align="end">
       <DropdownMenuItem asChild v-if="deck.capabilities.canUpdate">
         <RouterLink :to="{ name: 'decks.edit', params: { deckId: deck.id } }">
-          <IconPencil class="size-5 mr-4" />
-          Edit Name
+          <IconSettings class="size-5 mr-4" />
+          Settings
         </RouterLink>
       </DropdownMenuItem>
       <DropdownMenuItem asChild>
@@ -80,6 +80,7 @@ import {
   IconTrash,
   IconUpload,
   IconCirclePlay,
+  IconSettings,
 } from "@/components/icons";
 import {
   DropdownMenu,

@@ -29,6 +29,10 @@ export function useTextToSpeech(
   const isPaused = computed(() => audioState.value === "paused");
   const isIdle = computed(() => audioState.value === "idle");
 
+  function isHTMLEmpty(html: string): boolean {
+    return !html || html === "<p><br></p>";
+  }
+
   async function getAudioUrl(): Promise<string> {
     const blob = await api.getAudioForText(toValue(text).trim(), toValue(lang));
     return URL.createObjectURL(blob);
@@ -40,6 +44,8 @@ export function useTextToSpeech(
   }
 
   async function play() {
+    if (isHTMLEmpty(toValue(text))) return;
+
     audioState.value = "playing";
     blobUrl.value ??= await getAudioUrl();
     audio.src = blobUrl.value;
@@ -86,6 +92,7 @@ export function useTextToSpeech(
     isPlaying,
     isPaused,
     isIdle,
+    isEmpty: computed(() => isHTMLEmpty(toValue(text))),
     audioState,
   };
 }

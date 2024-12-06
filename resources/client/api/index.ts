@@ -68,11 +68,18 @@ export async function getDeckById(deckId: number) {
 }
 
 export async function createDeck(
-  deck: { name: string; description: string },
+  deck: { name: string; description: string; isTTSEnabled: boolean },
   customConfig: T.CustomAxiosRequestConfig = {},
 ) {
   await csrf();
-  const res = await axios.post<{ data: T.Deck }>(`/decks`, deck, customConfig);
+  const res = await axios.post<{ data: T.Deck }>(
+    `/decks`,
+    {
+      ...deck,
+      is_tts_enabled: deck.isTTSEnabled,
+    },
+    customConfig,
+  );
   return res.data.data;
 }
 
@@ -88,14 +95,17 @@ export async function updateDeck({
   id,
   name,
   description,
+  isTTSEnabled,
 }: {
   id: number;
   name: string;
   description: string;
+  isTTSEnabled: boolean;
 }) {
   const res = await axios.put<{ data: T.Deck }>(`/decks/${id}`, {
     name,
     description,
+    is_tts_enabled: isTTSEnabled,
   });
   return res.data.data;
 }

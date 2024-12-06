@@ -35,11 +35,13 @@ class DeckController extends Controller
         $validated = $request->validate([
             'name' => 'required|string',
             'description' => 'string|nullable',
+            'is_tts_enabled' => 'boolean|nullable',
         ]);
 
         $deck = Deck::create([
             'name' => $validated['name'],
             'description' => $validated['description'] ?? null,
+            'is_tts_enabled' => $validated['is_tts_enabled'] ?? false,
         ]);
 
         $deck->memberships()->create([
@@ -96,11 +98,13 @@ class DeckController extends Controller
         $validated = $request->validate([
             'name' => 'string',
             'description' => 'string|nullable',
+            'is_tts_enabled' => 'boolean|nullable',
         ]);
 
         $deck->update([
             'name' => $validated['name'] ?? $deck->name,
             'description' => $validated['description'] ?? $deck->description,
+            'is_tts_enabled' => $validated['is_tts_enabled'] ?? $deck->is_tts_enabled,
         ]);
 
         return DeckResource::make($deck->fresh());

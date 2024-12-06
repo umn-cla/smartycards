@@ -5,7 +5,7 @@
       :selectedLanguage="selectedLanguage"
       class="top-1 right-1 absolute z-10"
       isIdleClass="bg-brand-oatmeal-50"
-      v-if="featureFlags?.text_to_speech && charCount < MAX_TTS_CHARS"
+      v-if="isDeckTTSEnabled && charCount < MAX_TTS_CHARS"
     />
 
     <QuillyEditor
@@ -16,7 +16,10 @@
       class="bg-brand-maroon-800/5 rounded-sm focus-within:ring-2 focus-within:ring-offset-1 focus-within:ring-blue-600"
     />
 
-    <div class="flex gap-2 items-center justify-end mt-2">
+    <div
+      class="flex gap-2 items-center justify-end mt-2"
+      v-if="isDeckTTSEnabled"
+    >
       <Select
         v-if="isSettingCustomLanguage"
         :id="`block-${nonce}__language-select`"
@@ -54,7 +57,7 @@
 <script setup lang="ts">
 import { QuillyEditor } from "vue-quilly";
 import Quill from "quill/quill"; // Core build
-import { ref, onMounted, computed, watch } from "vue";
+import { ref, onMounted, computed, watch, inject, toRef } from "vue";
 import {
   Select,
   SelectTrigger,
@@ -70,8 +73,7 @@ import { TextContentBlock } from "@/types";
 import { uuid } from "@/lib/utils";
 import { IconGlobe } from "../icons";
 import Toggle from "@/components/Toggle.vue";
-import { MAX_TTS_CHARS } from "@/constants";
-import { useAllFeatureFlagsQuery } from "@/queries/featureFlags";
+import { IS_DECK_TTS_ENABLED_INJECTION_KEY, MAX_TTS_CHARS } from "@/constants";
 
 import SimpleTTSPlayer from "../SimpleTTSPlayer.vue";
 
@@ -136,7 +138,10 @@ const options = computed(() => ({
   readOnly: false,
 }));
 
-const { data: featureFlags } = useAllFeatureFlagsQuery();
+const isDeckTTSEnabled = inject(
+  IS_DECK_TTS_ENABLED_INJECTION_KEY,
+  toRef(false),
+);
 
 onMounted(() => {
   if (!editor.value) {
