@@ -40,6 +40,8 @@ export function useTextToSpeech(
   }
 
   async function play() {
+    if (!toValue(text).trim()) return;
+
     audioState.value = "playing";
     blobUrl.value ??= await getAudioUrl();
     audio.src = blobUrl.value;
