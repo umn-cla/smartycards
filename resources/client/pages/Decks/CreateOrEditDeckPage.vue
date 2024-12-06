@@ -14,6 +14,21 @@
           v-model="form.description"
           id="description"
         />
+        <div class="flex gap-2 items-center">
+          <Switch
+            id="tts-enabled"
+            :checked="form.isTTSEnabled"
+            @update:checked="form.isTTSEnabled = $event"
+            label="Enable TTS"
+          />
+          <Label for="tts-enabled">
+            Enable Text-to-Speech
+            <HintTooltip>
+              When enabled, a button to read text aloud will be available. This
+              is useful for learning pronunciation.
+            </HintTooltip>
+          </Label>
+        </div>
         <div class="flex items-center justify-end py-4 gap-2">
           <Button asChild variant="secondary">
             <RouterLink :to="{ name: 'decks.index' }"> Cancel </RouterLink>
@@ -38,6 +53,9 @@ import { useRouter } from "vue-router";
 import InputGroup from "@/components/InputGroup.vue";
 import PageHeader from "@/components/PageHeader.vue";
 import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
+import HintTooltip from "@/components/HintTooltip.vue";
+import { Label } from "@/components/ui/label";
 
 const props = defineProps<{
   deckId: number | null;
@@ -46,6 +64,7 @@ const props = defineProps<{
 const form = reactive({
   name: "",
   description: "",
+  isTTSEnabled: false,
 });
 
 const isCreateMode = computed(() => props.deckId === null);
@@ -61,6 +80,7 @@ watch(
     if (deck.value) {
       form.name = deck.value.name;
       form.description = deck.value.description;
+      form.isTTSEnabled = deck.value.is_tts_enabled;
     }
   },
   { immediate: true },

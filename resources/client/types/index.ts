@@ -60,6 +60,7 @@ export interface Deck {
   cards_count?: number;
   memberships_count?: number;
   is_public: boolean;
+  is_tts_enabled: boolean;
   current_user_role: MembershipRole | null; // could be null if public deck
 
   current_user_details: {

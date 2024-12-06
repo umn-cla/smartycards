@@ -2,7 +2,7 @@
   <TooltipProvider>
     <Tooltip :delayDuration="0">
       <TooltipTrigger
-        class="bg-brand-maroon-800/70 hover:bg-brand-maroon-800 rounded-full size-4 text-brand-oatmeal-100 text-xs inline-flex items-center justify-center"
+        class="bg-brand-maroon-800/70 hover:bg-brand-maroon-800 rounded-full size-4 text-brand-oatmeal-100 text-xs inline-flex items-center justify-center font-black"
       >
         ?
       </TooltipTrigger>
@@ -13,7 +13,6 @@
   </TooltipProvider>
 </template>
 <script setup lang="ts">
-import IconQuestionMark from "./icons/IconQuestionMark.vue";
 import {
   TooltipProvider,
   Tooltip,

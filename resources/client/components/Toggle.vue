@@ -19,7 +19,6 @@
 </template>
 <script setup lang="ts">
 import type { HTMLAttributes } from "vue";
-import SimpleTooltip from "@/components/SimpleTooltip.vue";
 import { cn } from "@/lib/utils";
 
 const props = defineProps<{
