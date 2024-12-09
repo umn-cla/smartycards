@@ -11,3 +11,13 @@ With each card you'll score cards based on the difficulty, which determines when
 - ✅ – Know it. Done for this session.
 
 Over time, SmartyCards learns which cards you find most difficult, and prioritizes those cards the next practice session.
+
+## Text-to-Speech
+
+If you're learning a language or studying vocabulary, it can be helpful to hear words and phrases, instead of just reading them. SmartyCards can use AI-powered text-to-speech technology (TTS) to generate audio files to get with your cards.
+
+To enable TTS, click the "three dots" icon in your deck and select "Settings," then enable Text-to-speech and click save. The next time you practice your cards, a speaker icon will allow you to hear the content of your card. 
+
+![Access Settings](/img/settings.png)
+
+![Enable text-to-speech](/img/enabletts.png)
