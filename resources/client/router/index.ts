@@ -85,6 +85,14 @@ const router = createRouter({
       }),
     },
     {
+      path: "/decks/:deckId/export",
+      name: "decks.export",
+      component: () => import("../pages/Decks/ExportDeckCardsPage.vue"),
+      props: (route) => ({
+        deckId: Number(route.params.deckId),
+      }),
+    },
+    {
       path: "/decks/:deckId/import",
       name: "decks.import",
       component: () => import("../pages/Decks/ImportDeckCardsPage.vue"),
