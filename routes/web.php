@@ -61,6 +61,8 @@ Route::middleware(['auth'])
 
         Route::get('cards/{card}/stats', [CardStatsController::class, 'show']);
 
+        Route::get('decks/{deck}/export', [DeckController::class, 'export']);
+
         Route::post('decks/{deck}/import', [DeckController::class, 'import']);
 
         Route::post('files', UploadFileController::class);

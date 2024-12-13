@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\CardsExport;
 use App\Http\Resources\DeckResource;
 use App\Imports\CardsImport;
 use App\Models\Deck;
@@ -120,6 +121,22 @@ class DeckController extends Controller
         $deck->delete();
 
         return response()->json(null, 204);
+    }
+
+    public function export(Deck $deck)
+    {
+        Gate::authorize('view', $deck);
+
+        $filename = "export-deck-{$deck->id}_"
+            .Str::kebab($deck->name)
+            .'_'.now()->format('Y-m-d_H-i-s')
+            .'.xlsx';
+
+        return Excel::download(
+            new CardsExport($deck->id),
+            $filename,
+            \Maatwebsite\Excel\Excel::XLSX
+        );
     }
 
     public function import(Deck $deck)
