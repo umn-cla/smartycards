@@ -80,6 +80,10 @@ export default defineConfig({
             link: "/more-info/getting-help",
           },
           {
+            text: "Accessibility",
+            link: "/more-info/accessibility",
+          },
+          {
             text: "About",
             link: "/more-info/about",
           },
