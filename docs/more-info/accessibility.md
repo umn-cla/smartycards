@@ -18,7 +18,7 @@ For SmartyCards help documentation, tap [Help](https://umn-cla.github.io/smartyc
 
 If you encounter accessibility barriers, technical issues, or need assistance using SmartyCards, please contact us at [help@umn.edu](mailto:help@umn.edu).
 
-SmartyCards is an open source project that welcomes your feedback to help us identify and address accesibility concerns. Interested users can track development work, submit issues, and share feature requests at [https://github.com/umn-cla/smartycards](https://github.com/umn-cla/smartycards).
+SmartyCards is an open source project that welcomes your feedback to help us identify and address accessibility concerns. Interested users can track development work, submit issues, and share feature requests at [https://github.com/umn-cla/smartycards](https://github.com/umn-cla/smartycards).
 
 ## Best Practices for Card Content Creators
 
