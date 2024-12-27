@@ -81,6 +81,7 @@
 
           <template v-for="card in deck.cards" :key="card.id">
             <FlippableCard
+              data-cy="flippable-card"
               :front="card.front"
               :back="card.back"
               :initialSideName="initialCardSide"

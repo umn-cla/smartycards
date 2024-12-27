@@ -1,5 +1,5 @@
 <template>
-  <div class="relative">
+  <div class="relative" data-cy="text-block-input-container">
     <SimpleTTSPlayer
       :text="text"
       :selectedLanguage="selectedLanguage"
@@ -14,6 +14,7 @@
       @update:modelValue="$emit('update:modelValue', $event)"
       :options="options"
       class="bg-brand-maroon-800/5 rounded-sm focus-within:ring-2 focus-within:ring-offset-1 focus-within:ring-blue-600"
+      data-cy="text-block-input"
     />
 
     <div
