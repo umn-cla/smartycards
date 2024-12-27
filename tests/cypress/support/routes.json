@@ -1,0 +1,821 @@
+{
+  "debugbar.openhandler": {
+    "name": "debugbar.openhandler",
+    "domain": null,
+    "action": "Barryvdh\\Debugbar\\Controllers\\OpenHandlerController@handle",
+    "uri": "_debugbar/open",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "debugbar.clockwork": {
+    "name": "debugbar.clockwork",
+    "domain": null,
+    "action": "Barryvdh\\Debugbar\\Controllers\\OpenHandlerController@clockwork",
+    "uri": "_debugbar/clockwork/{id}",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "debugbar.telescope": {
+    "name": "debugbar.telescope",
+    "domain": null,
+    "action": "Barryvdh\\Debugbar\\Controllers\\TelescopeController@show",
+    "uri": "_debugbar/telescope/{id}",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "debugbar.assets.css": {
+    "name": "debugbar.assets.css",
+    "domain": null,
+    "action": "Barryvdh\\Debugbar\\Controllers\\AssetController@css",
+    "uri": "_debugbar/assets/stylesheets",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "debugbar.assets.js": {
+    "name": "debugbar.assets.js",
+    "domain": null,
+    "action": "Barryvdh\\Debugbar\\Controllers\\AssetController@js",
+    "uri": "_debugbar/assets/javascript",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "debugbar.cache.delete": {
+    "name": "debugbar.cache.delete",
+    "domain": null,
+    "action": "Barryvdh\\Debugbar\\Controllers\\CacheController@delete",
+    "uri": "_debugbar/cache/{key}/{tags?}",
+    "method": [
+      "DELETE"
+    ]
+  },
+  "debugbar.queries.explain": {
+    "name": "debugbar.queries.explain",
+    "domain": null,
+    "action": "Barryvdh\\Debugbar\\Controllers\\QueriesController@explain",
+    "uri": "_debugbar/queries/explain",
+    "method": [
+      "POST"
+    ]
+  },
+  "cypress.factory": {
+    "name": "cypress.factory",
+    "domain": null,
+    "action": "Laracasts\\Cypress\\Controllers\\CypressController@factory",
+    "uri": "__cypress__/factory",
+    "method": [
+      "POST"
+    ]
+  },
+  "cypress.login": {
+    "name": "cypress.login",
+    "domain": null,
+    "action": "Laracasts\\Cypress\\Controllers\\CypressController@login",
+    "uri": "__cypress__/login",
+    "method": [
+      "POST"
+    ]
+  },
+  "cypress.logout": {
+    "name": "cypress.logout",
+    "domain": null,
+    "action": "Laracasts\\Cypress\\Controllers\\CypressController@logout",
+    "uri": "__cypress__/logout",
+    "method": [
+      "POST"
+    ]
+  },
+  "cypress.artisan": {
+    "name": "cypress.artisan",
+    "domain": null,
+    "action": "Laracasts\\Cypress\\Controllers\\CypressController@artisan",
+    "uri": "__cypress__/artisan",
+    "method": [
+      "POST"
+    ]
+  },
+  "cypress.run-php": {
+    "name": "cypress.run-php",
+    "domain": null,
+    "action": "Laracasts\\Cypress\\Controllers\\CypressController@runPhp",
+    "uri": "__cypress__/run-php",
+    "method": [
+      "POST"
+    ]
+  },
+  "cypress.csrf-token": {
+    "name": "cypress.csrf-token",
+    "domain": null,
+    "action": "Laracasts\\Cypress\\Controllers\\CypressController@csrfToken",
+    "uri": "__cypress__/csrf_token",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "cypress.routes": {
+    "name": "cypress.routes",
+    "domain": null,
+    "action": "Laracasts\\Cypress\\Controllers\\CypressController@routes",
+    "uri": "__cypress__/routes",
+    "method": [
+      "POST"
+    ]
+  },
+  "cypress.current-user": {
+    "name": "cypress.current-user",
+    "domain": null,
+    "action": "Laracasts\\Cypress\\Controllers\\CypressController@currentUser",
+    "uri": "__cypress__/current-user",
+    "method": [
+      "POST"
+    ]
+  },
+  "nova.api.": {
+    "name": "nova.api.",
+    "domain": null,
+    "action": "Laravel\\Nova\\Http\\Controllers\\MorphedResourceAttachController",
+    "uri": "nova-api/{resource}/{resourceId}/attach-morphed/{relatedResource}",
+    "method": [
+      "POST"
+    ]
+  },
+  "nova.api.start-nova-impersonation": {
+    "name": "nova.api.start-nova-impersonation",
+    "domain": null,
+    "action": "Laravel\\Nova\\Http\\Controllers\\ImpersonateController@startImpersonating",
+    "uri": "nova-api/impersonate",
+    "method": [
+      "POST"
+    ]
+  },
+  "nova.api.stop-nova-impersonation": {
+    "name": "nova.api.stop-nova-impersonation",
+    "domain": null,
+    "action": "Laravel\\Nova\\Http\\Controllers\\ImpersonateController@stopImpersonating",
+    "uri": "nova-api/impersonate",
+    "method": [
+      "DELETE"
+    ]
+  },
+  "sanctum.csrf-cookie": {
+    "name": "sanctum.csrf-cookie",
+    "domain": null,
+    "action": "Laravel\\Sanctum\\Http\\Controllers\\CsrfCookieController@show",
+    "uri": "sanctum/csrf-cookie",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "shibboleth-login": {
+    "name": "shibboleth-login",
+    "domain": null,
+    "action": "\\StudentAffairsUwm\\Shibboleth\\Controllers\\ShibbolethController@login",
+    "uri": "shibboleth-login",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "shibboleth-authenticate": {
+    "name": "shibboleth-authenticate",
+    "domain": null,
+    "action": "\\StudentAffairsUwm\\Shibboleth\\Controllers\\ShibbolethController@idpAuthenticate",
+    "uri": "shibboleth-authenticate",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "shibboleth-logout": {
+    "name": "shibboleth-logout",
+    "domain": null,
+    "action": "\\StudentAffairsUwm\\Shibboleth\\Controllers\\ShibbolethController@destroy",
+    "uri": "shibboleth-logout",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "": {
+    "name": null,
+    "domain": null,
+    "action": "Closure",
+    "uri": "{fallbackPlaceholder}",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "telescope": {
+    "name": "telescope",
+    "domain": null,
+    "action": "Laravel\\Telescope\\Http\\Controllers\\HomeController@index",
+    "uri": "telescope/{view?}",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "nova.pages.login": {
+    "name": "nova.pages.login",
+    "domain": null,
+    "action": "Laravel\\Nova\\Http\\Controllers\\LoginController@showLoginForm",
+    "uri": "admin/login",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "nova.login": {
+    "name": "nova.login",
+    "domain": null,
+    "action": "Laravel\\Nova\\Http\\Controllers\\LoginController@login",
+    "uri": "admin/login",
+    "method": [
+      "POST"
+    ]
+  },
+  "nova.logout": {
+    "name": "nova.logout",
+    "domain": null,
+    "action": "Laravel\\Nova\\Http\\Controllers\\LoginController@logout",
+    "uri": "admin/logout",
+    "method": [
+      "POST"
+    ]
+  },
+  "nova.pages.403": {
+    "name": "nova.pages.403",
+    "domain": null,
+    "action": "Laravel\\Nova\\Http\\Controllers\\Pages\\Error403Controller",
+    "uri": "admin/403",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "nova.pages.404": {
+    "name": "nova.pages.404",
+    "domain": null,
+    "action": "Laravel\\Nova\\Http\\Controllers\\Pages\\Error404Controller",
+    "uri": "admin/404",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "nova.pages.home": {
+    "name": "nova.pages.home",
+    "domain": null,
+    "action": "Laravel\\Nova\\Http\\Controllers\\Pages\\HomeController",
+    "uri": "admin",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "nova.pages.dashboard": {
+    "name": "nova.pages.dashboard",
+    "domain": null,
+    "action": "\\Illuminate\\Routing\\RedirectController",
+    "uri": "admin/dashboard",
+    "method": [
+      "GET",
+      "HEAD",
+      "POST",
+      "PUT",
+      "PATCH",
+      "DELETE",
+      "OPTIONS"
+    ]
+  },
+  "nova.pages.dashboard.custom": {
+    "name": "nova.pages.dashboard.custom",
+    "domain": null,
+    "action": "Laravel\\Nova\\Http\\Controllers\\Pages\\DashboardController",
+    "uri": "admin/dashboards/{name}",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "nova.pages.index": {
+    "name": "nova.pages.index",
+    "domain": null,
+    "action": "Laravel\\Nova\\Http\\Controllers\\Pages\\ResourceIndexController",
+    "uri": "admin/resources/{resource}",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "nova.pages.create": {
+    "name": "nova.pages.create",
+    "domain": null,
+    "action": "Laravel\\Nova\\Http\\Controllers\\Pages\\ResourceCreateController",
+    "uri": "admin/resources/{resource}/new",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "nova.pages.detail": {
+    "name": "nova.pages.detail",
+    "domain": null,
+    "action": "Laravel\\Nova\\Http\\Controllers\\Pages\\ResourceDetailController",
+    "uri": "admin/resources/{resource}/{resourceId}",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "nova.pages.edit": {
+    "name": "nova.pages.edit",
+    "domain": null,
+    "action": "Laravel\\Nova\\Http\\Controllers\\Pages\\ResourceUpdateController",
+    "uri": "admin/resources/{resource}/{resourceId}/edit",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "nova.pages.replicate": {
+    "name": "nova.pages.replicate",
+    "domain": null,
+    "action": "Laravel\\Nova\\Http\\Controllers\\Pages\\ResourceReplicateController",
+    "uri": "admin/resources/{resource}/{resourceId}/replicate",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "nova.pages.lens": {
+    "name": "nova.pages.lens",
+    "domain": null,
+    "action": "Laravel\\Nova\\Http\\Controllers\\Pages\\LensController",
+    "uri": "admin/resources/{resource}/lens/{lens}",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "nova.pages.attach": {
+    "name": "nova.pages.attach",
+    "domain": null,
+    "action": "Laravel\\Nova\\Http\\Controllers\\Pages\\AttachableController",
+    "uri": "admin/resources/{resource}/{resourceId}/attach/{relatedResource}",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "nova.pages.edit-attached": {
+    "name": "nova.pages.edit-attached",
+    "domain": null,
+    "action": "Laravel\\Nova\\Http\\Controllers\\Pages\\AttachedResourceUpdateController",
+    "uri": "admin/resources/{resource}/{resourceId}/edit-attached/{relatedResource}/{relatedResourceId}",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "profile.show": {
+    "name": "profile.show",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\ProfileController@show",
+    "uri": "api/profile",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "profile.edit": {
+    "name": "profile.edit",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\ProfileController@edit",
+    "uri": "api/profile/edit",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "profile.update": {
+    "name": "profile.update",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\ProfileController@update",
+    "uri": "api/profile",
+    "method": [
+      "PUT",
+      "PATCH"
+    ]
+  },
+  "decks.index": {
+    "name": "decks.index",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\DeckController@index",
+    "uri": "api/decks",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "decks.create": {
+    "name": "decks.create",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\DeckController@create",
+    "uri": "api/decks/create",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "decks.store": {
+    "name": "decks.store",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\DeckController@store",
+    "uri": "api/decks",
+    "method": [
+      "POST"
+    ]
+  },
+  "decks.show": {
+    "name": "decks.show",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\DeckController@show",
+    "uri": "api/decks/{deck}",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "decks.edit": {
+    "name": "decks.edit",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\DeckController@edit",
+    "uri": "api/decks/{deck}/edit",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "decks.update": {
+    "name": "decks.update",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\DeckController@update",
+    "uri": "api/decks/{deck}",
+    "method": [
+      "PUT",
+      "PATCH"
+    ]
+  },
+  "decks.destroy": {
+    "name": "decks.destroy",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\DeckController@destroy",
+    "uri": "api/decks/{deck}",
+    "method": [
+      "DELETE"
+    ]
+  },
+  "decks.memberships.index": {
+    "name": "decks.memberships.index",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\DeckMembershipController@index",
+    "uri": "api/decks/{deck}/memberships",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "decks.memberships.create": {
+    "name": "decks.memberships.create",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\DeckMembershipController@create",
+    "uri": "api/decks/{deck}/memberships/create",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "decks.memberships.store": {
+    "name": "decks.memberships.store",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\DeckMembershipController@store",
+    "uri": "api/decks/{deck}/memberships",
+    "method": [
+      "POST"
+    ]
+  },
+  "memberships.show": {
+    "name": "memberships.show",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\DeckMembershipController@show",
+    "uri": "api/memberships/{membership}",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "memberships.edit": {
+    "name": "memberships.edit",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\DeckMembershipController@edit",
+    "uri": "api/memberships/{membership}/edit",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "memberships.update": {
+    "name": "memberships.update",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\DeckMembershipController@update",
+    "uri": "api/memberships/{membership}",
+    "method": [
+      "PUT",
+      "PATCH"
+    ]
+  },
+  "memberships.destroy": {
+    "name": "memberships.destroy",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\DeckMembershipController@destroy",
+    "uri": "api/memberships/{membership}",
+    "method": [
+      "DELETE"
+    ]
+  },
+  "decks.memberships.leave": {
+    "name": "decks.memberships.leave",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\DeckMembershipController@leave",
+    "uri": "api/decks/{deck}/memberships/self",
+    "method": [
+      "DELETE"
+    ]
+  },
+  "decks.memberships.share": {
+    "name": "decks.memberships.share",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\DeckMembershipController@shareLink",
+    "uri": "api/decks/{deck}/memberships/share/{permission}",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "decks.memberships.share.regenerate": {
+    "name": "decks.memberships.share.regenerate",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\DeckMembershipController@regenerateShareLink",
+    "uri": "api/decks/{deck}/memberships/share/{permission}/regenerate",
+    "method": [
+      "POST"
+    ]
+  },
+  "decks.cards.index": {
+    "name": "decks.cards.index",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\DeckCardController@index",
+    "uri": "api/decks/{deck}/cards",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "decks.cards.create": {
+    "name": "decks.cards.create",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\DeckCardController@create",
+    "uri": "api/decks/{deck}/cards/create",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "decks.cards.store": {
+    "name": "decks.cards.store",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\DeckCardController@store",
+    "uri": "api/decks/{deck}/cards",
+    "method": [
+      "POST"
+    ]
+  },
+  "cards.show": {
+    "name": "cards.show",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\DeckCardController@show",
+    "uri": "api/cards/{card}",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "cards.edit": {
+    "name": "cards.edit",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\DeckCardController@edit",
+    "uri": "api/cards/{card}/edit",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "cards.update": {
+    "name": "cards.update",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\DeckCardController@update",
+    "uri": "api/cards/{card}",
+    "method": [
+      "PUT",
+      "PATCH"
+    ]
+  },
+  "cards.destroy": {
+    "name": "cards.destroy",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\DeckCardController@destroy",
+    "uri": "api/cards/{card}",
+    "method": [
+      "DELETE"
+    ]
+  },
+  "decks.activity-events.index": {
+    "name": "decks.activity-events.index",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\ActivityEventController@index",
+    "uri": "api/decks/{deck}/activity-events",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "decks.activity-events.create": {
+    "name": "decks.activity-events.create",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\ActivityEventController@create",
+    "uri": "api/decks/{deck}/activity-events/create",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "decks.activity-events.store": {
+    "name": "decks.activity-events.store",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\ActivityEventController@store",
+    "uri": "api/decks/{deck}/activity-events",
+    "method": [
+      "POST"
+    ]
+  },
+  "decks.activity-events.show": {
+    "name": "decks.activity-events.show",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\ActivityEventController@show",
+    "uri": "api/decks/{deck}/activity-events/{activity_event}",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "decks.activity-events.edit": {
+    "name": "decks.activity-events.edit",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\ActivityEventController@edit",
+    "uri": "api/decks/{deck}/activity-events/{activity_event}/edit",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "decks.activity-events.update": {
+    "name": "decks.activity-events.update",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\ActivityEventController@update",
+    "uri": "api/decks/{deck}/activity-events/{activity_event}",
+    "method": [
+      "PUT",
+      "PATCH"
+    ]
+  },
+  "decks.activity-events.destroy": {
+    "name": "decks.activity-events.destroy",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\ActivityEventController@destroy",
+    "uri": "api/decks/{deck}/activity-events/{activity_event}",
+    "method": [
+      "DELETE"
+    ]
+  },
+  "cards.attempts.index": {
+    "name": "cards.attempts.index",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\CardAttemptController@index",
+    "uri": "api/cards/{card}/attempts",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "cards.attempts.create": {
+    "name": "cards.attempts.create",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\CardAttemptController@create",
+    "uri": "api/cards/{card}/attempts/create",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "cards.attempts.store": {
+    "name": "cards.attempts.store",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\CardAttemptController@store",
+    "uri": "api/cards/{card}/attempts",
+    "method": [
+      "POST"
+    ]
+  },
+  "attempts.show": {
+    "name": "attempts.show",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\CardAttemptController@show",
+    "uri": "api/attempts/{attempt}",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "attempts.edit": {
+    "name": "attempts.edit",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\CardAttemptController@edit",
+    "uri": "api/attempts/{attempt}/edit",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "attempts.update": {
+    "name": "attempts.update",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\CardAttemptController@update",
+    "uri": "api/attempts/{attempt}",
+    "method": [
+      "PUT",
+      "PATCH"
+    ]
+  },
+  "attempts.destroy": {
+    "name": "attempts.destroy",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\CardAttemptController@destroy",
+    "uri": "api/attempts/{attempt}",
+    "method": [
+      "DELETE"
+    ]
+  },
+  "login": {
+    "name": "login",
+    "domain": null,
+    "action": "StudentAffairsUwm\\Shibboleth\\Controllers\\ShibbolethController@emulateLogin",
+    "uri": "login",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "logout": {
+    "name": "logout",
+    "domain": null,
+    "action": "StudentAffairsUwm\\Shibboleth\\Controllers\\ShibbolethController@emulateLogout",
+    "uri": "logout",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "decks.memberships.acceptInvite": {
+    "name": "decks.memberships.acceptInvite",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\DeckInviteController",
+    "uri": "decks/{deck}/invite",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  }
+}

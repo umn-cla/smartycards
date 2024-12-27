@@ -37,6 +37,7 @@
     "barryvdh/laravel-ide-helper": "^3.0",
     "deployer/deployer": "^7.4",
     "fakerphp/faker": "^1.23",
+    "laracasts/cypress": "^3.0",
     "laravel/pint": "^1.16",
     "laravel/sail": "^1.26",
     "laravel/telescope": "^5.0",
