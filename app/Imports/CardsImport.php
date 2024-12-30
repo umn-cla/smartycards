@@ -5,6 +5,7 @@ namespace App\Imports;
 use App\Models\Card;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
+use Str;
 
 class CardsImport implements ToModel, WithHeadingRow
 {
@@ -15,6 +16,16 @@ class CardsImport implements ToModel, WithHeadingRow
         $this->deckId = $deckId;
     }
 
+    protected function createBlock(string $content, string $type = 'text')
+    {
+        return [
+            'id' => Str::uuid()->toString(),
+            'type' => $type,
+            'content' => $content,
+            'meta' => null,
+        ];
+    }
+
     /**
      * @return \Illuminate\Database\Eloquent\Model|null
      */
@@ -23,33 +34,17 @@ class CardsImport implements ToModel, WithHeadingRow
 
         return new Card([
             'deck_id' => $this->deckId,
-            'front' => [
-                'type' => $row['front_type'],
-                'content' => $row['front_content'],
-                'meta' => isset($row['front_alt']) && $row['front_alt']
-                ? ['alt' => $row['front_alt']]
-                : null,
-            ],
-            'back' => [
-                'type' => $row['back_type'],
-                'content' => $row['back_content'],
-                'meta' => isset($row['back_alt']) && $row['back_alt']
-                ? ['alt' => $row['back_alt']]
-                : null,
-            ],
+            //create a single block for each side of the card
+            'front' => [$this->createBlock($row['front'])],
+            'back' => [$this->createBlock($row['back'])],
         ]);
     }
 
     public function rules(): array
     {
         return [
-            'front_type' => 'required|string',
-            'front_content' => 'required|string',
-            'front_alt' => 'sometimes|nullable|string',
-
-            'back_type' => 'required|string',
-            'back_content' => 'required|string',
-            'back_alt' => 'sometimes|nullable|string',
+            'front' => 'required|string',
+            'back' => 'required|string',
         ];
     }
 }

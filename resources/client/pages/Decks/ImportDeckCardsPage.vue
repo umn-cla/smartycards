@@ -17,46 +17,29 @@
       <main>
         <section class="my-8">
           <p>
-            Import cards into the <b>{{ deck.name }}</b> deck from a CSV file in
-            the following format:
+            Import text cards into the <b>{{ deck.name }}</b> deck from a CSV
+            file in the following format:
           </p>
 
           <div class="font-mono border my-4 rounded-lg p-4">
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead class="w-[100px]">front_type</TableHead>
-                  <TableHead>front_content</TableHead>
-                  <TableHead>front_alt</TableHead>
-                  <TableHead>back_type</TableHead>
-                  <TableHead>back_content</TableHead>
-                  <TableHead>back_alt</TableHead>
+                  <TableHead>front</TableHead>
+                  <TableHead>back</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 <TableRow>
-                  <TableCell>image</TableCell>
-                  <TableCell>https://...</TableCell>
-                  <TableCell>Map of MN</TableCell>
-                  <TableCell>text</TableCell>
-                  <TableCell>Minnesota</TableCell>
-                  <TableCell></TableCell>
+                  <TableCell>Bonjour</TableCell>
+                  <TableCell>Hello</TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell>Comment ça va?</TableCell>
+                  <TableCell>How are you?</TableCell>
                 </TableRow>
               </TableBody>
             </Table>
-          </div>
-
-          <div
-            class="bg-blue-50 border border-blue-100 p-4 rounded-lg text-xs text-blue-800 flex gap-4 items-center"
-          >
-            <div class="bg-blue-100 p-2 rounded-full">
-              <IconExclamationTriangle />
-            </div>
-            <p>
-              Supported <code>front_type</code> and <code>back_type</code>:
-              <code>text</code>, <code>image</code>, <code>audio</code>,
-              <code>embed</code>
-            </p>
           </div>
         </section>
 
@@ -70,6 +53,7 @@
             type="file"
             ref="fileInput"
             class="p-4 h-auto my-2 border border-dashed border-black/50 rounded-lg"
+            @change="handleFileInputChange"
           />
           <Button
             type="submit"
@@ -110,12 +94,20 @@ const props = defineProps<{
 }>();
 
 const fileInput = ref<HTMLInputElement | null>(null);
-// const selectedFile = ref<File | null>(null);
-const selectedFile = computed(() => fileInput.value?.files?.[0] || null);
+const selectedFile = ref<File | null>(null);
 const deckIdRef = computed(() => props.deckId);
 const { data: deck } = useDeckByIdQuery(deckIdRef);
 
 const router = useRouter();
+
+function handleFileInputChange(event: Event) {
+  const target = event.target as HTMLInputElement;
+  if (!target.files) {
+    return;
+  }
+
+  selectedFile.value = target.files[0];
+}
 
 async function handleImport() {
   if (!selectedFile.value) {
