@@ -21,7 +21,7 @@
           Practice
         </RouterLink>
       </DropdownMenuItem>
-      <!-- <DropdownMenuItem asChild v-if="deck.capabilities.canUpdate">
+      <DropdownMenuItem asChild v-if="deck.capabilities.canUpdate">
         <RouterLink
           :to="{ name: 'decks.import', params: { deckId: deck.id } }"
           class="btn"
@@ -30,7 +30,7 @@
           <IconUpload class="size-5 mr-4" />
           Import Cards
         </RouterLink>
-      </DropdownMenuItem> -->
+      </DropdownMenuItem>
       <DropdownMenuItem
         v-if="deck.capabilities.canLeave"
         @click="handleLeaveDeck(deck.id)"
