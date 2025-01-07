@@ -12,7 +12,7 @@ jobs:
       - run: cp .env.example .env
 
       - name: Setup PHP
-        uses: shivammathur/setup-php@v2
+        uses: umn-cla/setup-php@main
         with:
           php-version: "8.3"
 
