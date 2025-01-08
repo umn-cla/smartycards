@@ -68,7 +68,7 @@ jobs:
         uses: cypress-io/github-action@v6
         with:
           wait-on: "http://localhost:8000"
-          browser: chrome
+          # browser: chrome
           config: baseUrl=http://localhost:8000
 
       - name: Upload test screenshots if any
