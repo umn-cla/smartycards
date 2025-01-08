@@ -56,7 +56,7 @@ jobs:
         run: npm run build
 
       - name: Start Laravel server
-        run: php artisan serve --host=0.0.0.0 --port=8080
+        run: php artisan serve --host=0.0.0.0 --port=80 &
 
       - name: Run E2E tests with Cypress
         uses: cypress-io/github-action@v6
