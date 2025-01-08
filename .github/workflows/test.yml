@@ -9,6 +9,23 @@ env:
 jobs:
   tests:
     runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql/mysql-server:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: password
+          MYSQL_DATABASE: smartycards
+          MYSQL_USER: sail
+          MYSQL_PASSWORD: password
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -p password"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -20,26 +37,21 @@ jobs:
         with:
           php-version: "8.3"
 
-      - run: |
+      - name: Install Composer dependencies
+        run: |
           php --version
           composer config "http-basic.nova.laravel.com" "${{ secrets.NOVA_USERNAME }}" "${{ secrets.NOVA_LICENSE_KEY }}"
           composer install --no-interaction --prefer-dist
 
-      - name: Build
-        run: docker compose build
-
-      - name: Start
-        run: docker compose up -d
-
-      - name: Check
+      - name: Setup Laravel
         run: |
-          docker compose ps --all
+          php artisan key:generate
+          php artisan storage:link
+          chmod -R 777 storage bootstrap/cache
+          php artisan config:clear
 
-      - name: setup laravel
-        run: docker compose exec -T app ./bin/ci.sh
-
-      - name: migrate and seed DB
-        run: docker compose exec -T app php artisan migrate:fresh --seed
+      - name: DB Migrate and Seed
+        run: php artisan migrate:fresh --seed
 
       - name: Install NPM dependencies
         run: npm ci
@@ -47,11 +59,8 @@ jobs:
       - name: build client app
         run: npm run build
 
-      # - name: Run integration tests with Pest
-      #   run: docker compose exec -T app ./vendor/bin/pest
-
-      # - name: Run unit tests with Jest
-      #   run: yarn test:unit
+      - name: Start Laravel server
+        run: php artisan serve --host=0.0.0.0 --port=8080
 
       - name: Run E2E tests with Cypress
         uses: cypress-io/github-action@v6
