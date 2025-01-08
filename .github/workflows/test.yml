@@ -6,6 +6,8 @@ env:
   WWWGROUP: 1000
   WWWUSER: 1000
   DB_HOST: 127.0.0.1
+  APP_URL: http://localhost
+  APP_PORT: 80
 
 jobs:
   tests:
@@ -32,6 +34,10 @@ jobs:
         uses: umn-cla/setup-php@main
         with:
           php-version: "8.3"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
 
       - name: Install Composer dependencies
         run: |
