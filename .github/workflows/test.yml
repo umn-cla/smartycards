@@ -6,12 +6,10 @@ env:
   WWWGROUP: 1000
   WWWUSER: 1000
   DB_HOST: 127.0.0.1
-  APP_URL: http://localhost:8000
-  APP_PORT: 8000
 
 jobs:
   tests:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
 
     services:
       mysql:
