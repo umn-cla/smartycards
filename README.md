@@ -6,8 +6,6 @@
 
 ## Introduction
 
-<iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/2KR-T_Pt3cI?si=1Lh35s-vMk7E_hX9" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-
 SmartyCards is a free, collaborative platform for studying with digital flashcards, quizzes, and games. Any student, faculty, or staff at any University of Minesota campus can use SmartyCards.
 
 - Sign in: [smartycards.cla.umn.edu](https://smartycards.cla.umn.edu)
