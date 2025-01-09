@@ -32,9 +32,10 @@
                 @click="handleSave({ saveAndAddAnother: true })"
                 variant="outline"
                 class="bg-transparent border-brand-maroon-800"
+                data-cy="create-and-another-card-button"
                 >Create + Another</Button
               >
-              <Button @click="handleSave">
+              <Button @click="handleSave" data-cy="save-card-button">
                 {{ isCreateMode ? "Create" : "Save" }}
               </Button>
             </div>
@@ -45,6 +46,7 @@
                 :id="`${deckId}-${side}`"
                 v-model="form[side]"
                 :label="capitalize(side)"
+                :data-cy="`${side}-side-input`"
               />
             </div>
           </div>

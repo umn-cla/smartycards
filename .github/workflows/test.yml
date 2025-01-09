@@ -1,0 +1,84 @@
+name: Tests
+
+on: [push, pull_request, workflow_dispatch]
+
+env:
+  WWWGROUP: 1000
+  WWWUSER: 1000
+  DB_HOST: 127.0.0.1
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: password
+          MYSQL_DATABASE: smartycards
+          MYSQL_USER: sail
+          MYSQL_PASSWORD: password
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - run: cp .env.example .env
+
+      - name: Setup PHP
+        uses: umn-cla/setup-php@main
+        with:
+          php-version: "8.3"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install Composer dependencies
+        run: |
+          php --version
+          composer config "http-basic.nova.laravel.com" "${{ secrets.NOVA_USERNAME }}" "${{ secrets.NOVA_LICENSE_KEY }}"
+          composer install --no-interaction --prefer-dist
+
+      - name: Setup Laravel
+        run: |
+          php artisan key:generate
+          php artisan storage:link
+          chmod -R 777 storage bootstrap/cache
+          php artisan config:clear
+
+      - name: DB Migrate and Seed
+        run: php artisan migrate:fresh --seed
+
+      - name: Install NPM dependencies
+        run: npm ci
+
+      - name: build client app
+        run: npm run build
+
+      - name: Start Laravel server
+        run: php artisan serve --host=0.0.0.0 --port=8000 &
+
+      - name: Run E2E tests with Cypress
+        uses: cypress-io/github-action@v6
+        with:
+          wait-on: "http://localhost:8000"
+          browser: chrome
+          config: baseUrl=http://localhost:8000
+
+      - name: Upload test screenshots if any
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: cypress-screenshots
+          path: tests/cypress/screenshots
+
+      - name: Upload snapshots
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: cypress-snapshots
+          path: cypress/snapshots
