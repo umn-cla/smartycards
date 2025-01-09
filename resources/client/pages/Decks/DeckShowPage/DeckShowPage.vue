@@ -71,6 +71,7 @@
             <form class="relative">
               <IconSearch class="absolute left-2 top-2 w-4 h-4 z-10" />
               <Input
+                v-model="cardSearch"
                 placeholder="Search cards"
                 class="pl-8 placeholder:text-black/40 h-full"
               />
@@ -90,7 +91,7 @@
             <span>Create Card</span>
           </RouterLink>
 
-          <template v-for="card in deck.cards" :key="card.id">
+          <template v-for="card in filteredCards" :key="card.id">
             <FlippableCard
               data-cy="flippable-card"
               :front="card.front"
@@ -146,6 +147,7 @@ const props = defineProps<{
   deckId: number;
 }>();
 
+const cardSearch = ref("");
 const deckIdRef = computed(() => props.deckId);
 
 const canEdit = computed(() => {
@@ -186,6 +188,23 @@ function handleDeleteCard(card: T.Card) {
 }
 
 const initialCardSide = ref<T.CardSideName>("front");
+
+function doesBlockContainText(block: T.ContentBlock, text: string) {
+  if (block.type !== "text") return false;
+  return (block as T.TextContentBlock).content
+    .toLowerCase()
+    .includes(text.toLowerCase());
+}
+
+const filteredCards = computed((): T.Card[] => {
+  if (!deck.value?.cards) return [];
+
+  return deck.value.cards.filter((card) => {
+    return [...card.front, ...card.back].some((block) => {
+      return doesBlockContainText(block, cardSearch.value);
+    });
+  });
+});
 
 function flipAllCards() {
   initialCardSide.value = initialCardSide.value === "front" ? "back" : "front";
