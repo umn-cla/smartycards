@@ -67,7 +67,18 @@
           class="flex justify-between items-baseline sticky top-16 lg:top-0 z-10 bg-brand-oatmeal-100 py-4"
         >
           <h3 class="text-3xl font-bold">Cards</h3>
-          <Button @click="flipAllCards" variant="secondary"> Flip All </Button>
+          <div class="flex gap-4">
+            <form class="relative">
+              <IconSearch class="absolute left-2 top-2 w-4 h-4 z-10" />
+              <Input
+                placeholder="Search cards"
+                class="pl-8 placeholder:text-black/40 h-full"
+              />
+            </form>
+            <Button @click="flipAllCards" variant="secondary">
+              Flip All
+            </Button>
+          </div>
         </header>
         <div class="card-grid">
           <RouterLink
@@ -128,6 +139,8 @@ import LevelProgress from "@/components/LevelProgress.vue";
 import { useActivityTypesQuery } from "@/queries/activityTypes/useActivityTypesQuery";
 import { useIsDeckTTSEnabled } from "@/composables/useIsDeckTTSEnabled";
 import { IS_DECK_TTS_ENABLED_INJECTION_KEY } from "@/constants";
+import { Input } from "@/components/ui/input";
+import { IconSearch } from "@/components/icons";
 
 const props = defineProps<{
   deckId: number;
