@@ -69,7 +69,9 @@
           <h3 class="text-3xl font-bold">Cards</h3>
           <div class="flex gap-4">
             <form class="relative">
-              <IconSearch class="absolute left-2 top-2 w-4 h-4 z-10" />
+              <IconSearch
+                class="absolute left-2 top-1/2 -translate-y-1/2 size-4 z-10"
+              />
               <Input
                 v-model="cardSearch"
                 placeholder="Search cards"
