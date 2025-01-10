@@ -73,9 +73,29 @@ describe("DeckShowPage", () => {
       .closest('[data-cy="card-side-view--Front"]')
       .within(() => {
         cy.get('[data-cy="more-card-actions-button"]').click();
-        //https://github.com/radix-ui/primitives/issues/1241
-        // .click();
       });
+
+    cy.contains("Edit Card").click();
+    // edit the front side
+    cy.get('[data-cy="front-side-input"]').within(() => {
+      cy.get(
+        '[data-cy="text-block-input-container"] [data-cy="text-block-input"] .ql-editor',
+      ).type(" edited");
+    });
+
+    // save the card
+    cy.get('[data-cy="save-card-button"]').click();
+
+    // we should be on the deck page
+    cy.contains("Deck 1");
+
+    // we should see the card
+    cy.get('[data-cy="flippable-card"]').within(() => {
+      cy.contains("Front side edited");
+      cy.contains("Flip").click();
+
+      cy.contains("Back side");
+    });
   });
 
   it("deletes a card");
