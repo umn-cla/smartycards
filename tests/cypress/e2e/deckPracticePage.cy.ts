@@ -67,4 +67,23 @@ describe("DeckShowPage", () => {
     // we should see the first card again
     cy.contains(/Front side \d/);
   });
+
+  it("changes the initial card side", () => {
+    cy.visit(`/decks/${deckId}/practice`);
+
+    // expect front side by default
+    cy.contains(/Front side \d/);
+
+    // select back
+    cy.get("#starting-side-select").select("Back");
+
+    // expect back side now
+    cy.contains(/Back side \d/);
+
+    // expect it to persist to next cart
+    cy.contains("✅").click();
+
+    // expect back side again
+    cy.contains(/Back side \d/);
+  });
 });
