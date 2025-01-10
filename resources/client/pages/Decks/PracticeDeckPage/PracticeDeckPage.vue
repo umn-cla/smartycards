@@ -12,16 +12,14 @@
       <div class="flex items-center justify-between w-full flex-wrap">
         <div class="flex gap-1 items-baseline">
           <Label for="starting-side-select" class="sr-only">Start Side</Label>
-          <Select v-model="state.initialSideName" id="starting-side-select">
-            <SelectTrigger class="w-28 bg-brand-maroon-800/5">
-              <SelectValue placeholder="Starting side" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="front">Front</SelectItem>
-              <SelectItem value="back">Back</SelectItem>
-              <SelectItem value="random">Random</SelectItem>
-            </SelectContent>
-          </Select>
+          <SimpleSelect
+            v-model="state.initialSideName"
+            id="starting-side-select"
+          >
+            <SelectOption value="front">Front</SelectOption>
+            <SelectOption value="back">Back</SelectOption>
+            <SelectOption value="random">Random</SelectOption>
+          </SimpleSelect>
         </div>
         <div class="hidden sm:flex items-center justify-center">
           <Button
@@ -84,13 +82,7 @@ import { AuthenticatedLayout } from "@/layouts/AuthenticatedLayout";
 import { useDeckByIdQuery } from "@/queries/decks";
 import * as T from "@/types";
 import { Button } from "@/components/ui/button";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { SimpleSelect, SelectOption } from "@/components/SimpleSelect";
 import { Label } from "@/components/ui/label";
 import { useCreateDeckActivityEventMutation } from "@/queries/deckActivityEvents/useCreateDeckActivityEventMutation";
 import LevelProgress from "@/components/LevelProgress.vue";
