@@ -41,7 +41,6 @@ const forwarded = useForwardPropsEmits(delegatedProps, emits);
         )
       "
     >
-      {{ props }}
       <slot />
 
       <DialogClose
