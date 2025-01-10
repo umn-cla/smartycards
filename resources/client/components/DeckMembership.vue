@@ -12,7 +12,8 @@
       <div>
         <p
           v-if="
-            membership.role === 'owner' || !membership.capabilities.canUpdate
+            membership.role === T.MembershipRole.OWNER ||
+            !membership.capabilities.canUpdate
           "
           class="px-4 py-3 border border-black/10 rounded-lg text-sm capitalize leading-none"
         >
@@ -24,8 +25,8 @@
           </SelectTrigger>
           <SelectContent>
             <SelectGroup>
-              <SelectItem value="viewer">Viewer</SelectItem>
-              <SelectItem value="editor">Editor</SelectItem>
+              <SelectItem :value="T.MembershipRole.VIEWER">Viewer</SelectItem>
+              <SelectItem :value="T.MembershipRole.EDITOR">Editor</SelectItem>
             </SelectGroup>
           </SelectContent>
         </Select>

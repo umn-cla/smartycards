@@ -35,7 +35,11 @@ export interface User {
   };
 }
 
-type MembershipRole = "viewer" | "editor" | "owner";
+export enum MembershipRole {
+  VIEWER = "viewer",
+  EDITOR = "editor",
+  OWNER = "owner",
+}
 
 export interface DeckMembership {
   id: number;
