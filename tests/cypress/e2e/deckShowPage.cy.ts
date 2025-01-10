@@ -80,7 +80,7 @@ describe("DeckShowPage", () => {
     });
   });
 
-  it.only("deletes a card", () => {
+  it("deletes a card", () => {
     cy.createTextCardInDeck(deckId, { front: "Front side", back: "Back side" });
 
     cy.visit(`/decks/${deckId}`);
@@ -103,5 +103,23 @@ describe("DeckShowPage", () => {
     cy.contains("Front side").should("not.be.visible");
   });
 
-  it("filters the list of cards given a search term");
+  it("filters the list of cards given a search term", () => {
+    cy.createTextCardInDeck(deckId, { front: "Front side", back: "Back side" });
+    cy.createTextCardInDeck(deckId, {
+      front: "Another card",
+      back: "Back side",
+    });
+
+    cy.visit(`/decks/${deckId}`);
+
+    // verify that we see all the cards
+    cy.get('[data-cy="flippable-card"]').should("have.length", 2);
+
+    // search for a card
+    cy.get('[data-cy="card-search-input"]').type("Another");
+
+    // verify that we see only the card that matches the search term
+    cy.get('[data-cy="flippable-card"]').should("have.length", 1);
+    cy.contains("Another card");
+  });
 });

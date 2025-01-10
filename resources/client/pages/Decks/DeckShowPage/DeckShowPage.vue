@@ -75,7 +75,9 @@
               <Input
                 v-model="cardSearch"
                 placeholder="Search cards"
+                type="search"
                 class="pl-8 placeholder:text-black/40 h-full"
+                data-cy="card-search-input"
               />
             </form>
             <Button @click="flipAllCards" variant="secondary">
