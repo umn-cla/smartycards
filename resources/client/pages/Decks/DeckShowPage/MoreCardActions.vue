@@ -1,9 +1,9 @@
 <template>
   <DropdownMenu>
     <DropdownMenuTrigger asChild>
-      <Button variant="ghost" size="icon">
+      <Button variant="ghost" size="icon" data-cy="more-card-actions-button">
         <IconEllipsesVertical />
-        <span class="sr-only">More</span>
+        <span class="sr-only">More actions</span>
       </Button>
     </DropdownMenuTrigger>
     <DropdownMenuContent align="end">

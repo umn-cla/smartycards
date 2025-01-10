@@ -17,7 +17,7 @@ describe("Happy Path", () => {
     cy.contains("Decks");
   });
 
-  it.only("creates a deck", () => {
+  it("creates a deck", () => {
     cy.login({ umndid: "admin" });
 
     cy.visit("/decks");
