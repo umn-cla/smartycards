@@ -39,7 +39,7 @@
     "pinia": "^2.1.7",
     "quill": "^2.0.2",
     "quill-paste-smart": "^2.0.0",
-    "radix-vue": "^1.8.4",
+    "radix-vue": "^1.9.12",
     "ramda": "^0.30.1",
     "uuid": "^10.0.0",
     "vue": "^3.4.21",
