@@ -69,13 +69,17 @@ const { data: decks } = useAllDecksQuery();
 
 const myDecks = computed((): T.Deck[] => {
   return (
-    decks.value?.filter((deck) => deck.current_user_role === "owner") ?? []
+    decks.value?.filter(
+      (deck) => deck.current_user_role === T.MembershipRole.OWNER,
+    ) ?? []
   );
 });
 
 const sharedDecks = computed((): T.Deck[] => {
   return (
-    decks.value?.filter((deck) => deck.current_user_role !== "owner") ?? []
+    decks.value?.filter(
+      (deck) => deck.current_user_role !== T.MembershipRole.OWNER,
+    ) ?? []
   );
 });
 </script>

@@ -27,6 +27,7 @@ export { default as IconPencil } from "./IconPencil.vue";
 export { default as IconPlusFilled } from "./IconPlusFilled.vue";
 export { default as IconUser } from "./IconUser.vue";
 export { default as IconRefresh } from "./IconRefresh.vue";
+export { default as IconSearch } from "./IconSearch.vue";
 export { default as IconSettings } from "./IconSettings.vue";
 export { default as IconSpinner } from "./IconSpinner.vue";
 export { default as IconSound } from "./IconSound.vue";

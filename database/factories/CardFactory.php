@@ -9,6 +9,14 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class CardFactory extends Factory
 {
+    protected function createTextBlock(string $text): array
+    {
+        return [
+            'type' => 'text',
+            'content' => $text,
+        ];
+    }
+
     /**
      * Define the model's default state.
      *
@@ -17,7 +25,13 @@ class CardFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'front' => [
+                $this->createTextBlock($this->faker->sentence),
+            ],
+            'back' => [
+                $this->createTextBlock($this->faker->sentence),
+            ],
+
         ];
     }
 }

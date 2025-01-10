@@ -35,3 +35,59 @@
 //     }
 //   }
 // }
+
+import * as T from "../../../resources/client/types";
+
+Cypress.Commands.add("getUserByUsername", (umndid: string) => {
+  return cy.php(
+    `App\\Models\\User::where('umndid', '${umndid}')->firstOrFail()`,
+  );
+});
+
+Cypress.Commands.add("getUser", (userId: number) => {
+  return cy.php(`App\\Models\\User::findOrFail(${userId});`);
+});
+
+Cypress.Commands.add(
+  "createDeckForUser",
+  (
+    umndid: string,
+    { name, description = "" }: { name: string; description: string },
+  ) => {
+    return cy.php(`
+      $user = \\App\\Models\\User::where("umndid", "${umndid}")->first();
+      $deck = \\App\\Models\\Deck::factory()->create([
+        'name' => '${name}',
+        'description' => '${description}',
+        ]);
+      $user->decks()->attach($deck, ["role" => "${T.MembershipRole.OWNER}"]);
+
+      return $deck;
+    `);
+  },
+);
+
+Cypress.Commands.add(
+  "createTextCardInDeck",
+  (deckId: number, { front, back }: { front: string; back: string }) => {
+    return cy.create("App\\Models\\Card", 1, {
+      deck_id: deckId,
+      front: [
+        {
+          id: crypto.randomUUID(),
+          type: "text",
+          content: front,
+          meta: null,
+        },
+      ],
+      back: [
+        {
+          id: crypto.randomUUID(),
+          type: "text",
+          content: back,
+          meta: null,
+        },
+      ],
+    });
+  },
+);
