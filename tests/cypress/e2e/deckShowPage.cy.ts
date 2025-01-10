@@ -45,27 +45,9 @@ describe("DeckShowPage", () => {
     });
   });
 
-  it.only("edits a card", () => {
+  it("edits a card", () => {
     // create a card
-    cy.create("App\\Models\\Card", 1, {
-      deck_id: deckId,
-      front: [
-        {
-          id: crypto.randomUUID(),
-          type: "text",
-          content: "Front side",
-          meta: null,
-        },
-      ],
-      back: [
-        {
-          id: crypto.randomUUID(),
-          type: "text",
-          content: "Back side",
-          meta: null,
-        },
-      ],
-    });
+    cy.createTextCardInDeck(deckId, { front: "Front side", back: "Back side" });
 
     cy.visit(`/decks/${deckId}`);
 
@@ -98,7 +80,28 @@ describe("DeckShowPage", () => {
     });
   });
 
-  it("deletes a card");
+  it.only("deletes a card", () => {
+    cy.createTextCardInDeck(deckId, { front: "Front side", back: "Back side" });
+
+    cy.visit(`/decks/${deckId}`);
+
+    cy.contains("Front side")
+      .closest('[data-cy="card-side-view--Front"]')
+      .within(() => {
+        cy.get('[data-cy="more-card-actions-button"]').click();
+      });
+
+    cy.contains("Delete Card").click();
+
+    // confirm the deletion
+    cy.get('[data-cy="dialog-content"]').within(() => {
+      // expect a confirm modal
+      cy.contains("Are you sure").should("be.visible");
+      cy.get('button[type="submit"]').should("have.text", "Delete").click();
+    });
+
+    cy.contains("Front side").should("not.be.visible");
+  });
 
   it("filters the list of cards given a search term");
 });

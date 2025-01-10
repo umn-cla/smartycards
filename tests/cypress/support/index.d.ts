@@ -126,5 +126,13 @@ declare namespace Cypress {
         description?: string;
       },
     ): Chainable<any>;
+
+    /**
+     * Create a text card in a deck.
+     */
+    createTextCardInDeck(
+      deckId: number,
+      { front, back }: { front: string; back: string },
+    ): Chainable<any>;
   }
 }

@@ -66,3 +66,28 @@ Cypress.Commands.add(
     `);
   },
 );
+
+Cypress.Commands.add(
+  "createTextCardInDeck",
+  (deckId: number, { front, back }: { front: string; back: string }) => {
+    return cy.create("App\\Models\\Card", 1, {
+      deck_id: deckId,
+      front: [
+        {
+          id: crypto.randomUUID(),
+          type: "text",
+          content: front,
+          meta: null,
+        },
+      ],
+      back: [
+        {
+          id: crypto.randomUUID(),
+          type: "text",
+          content: back,
+          meta: null,
+        },
+      ],
+    });
+  },
+);
