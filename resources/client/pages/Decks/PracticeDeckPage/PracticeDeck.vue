@@ -11,11 +11,7 @@
         :front="state.isTransitiongToNext ? [] : state.activeCard?.front"
         :back="state.isTransitiongToNext ? [] : state.activeCard?.back"
         :showLabels="true"
-        :initialSideName="
-          initialSideName === 'random'
-            ? getRandomSideForCard(state.activeCard?.id)
-            : initialSideName
-        "
+        :initialSideName="getInitialSideName(state.activeCard)"
         class="max-w-full max-h-full mx-auto transition-all duration-300"
         :class="{
           'w-[33dvh] h-[50dvh]': orientation === 'portrait',
@@ -28,6 +24,7 @@
       <div class="my-4 sm:my-8">
         <CardAttemptChoices
           @answer="handleAnswer"
+          :initialSideName="getInitialSideName(state.activeCard)"
           :card="state.activeCard"
           class="relative z-10"
         />
@@ -63,6 +60,12 @@ const state = reactive({
   // so that the user sees the same side when it comes up again
   randomSideMap: {} as Record<T.Card["id"], T.CardSideName>,
 });
+
+function getInitialSideName(card: T.Card): T.CardSideName {
+  return props.initialSideName === "random"
+    ? getRandomSideForCard(card.id)
+    : props.initialSideName;
+}
 
 function getFuzzyReinsertIndex(score: number, length: number): number {
   if (score < 1 || score > 3) {

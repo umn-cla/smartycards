@@ -28,6 +28,7 @@ import { useCreateCardAttemptMutation } from "@/queries/cardAttempts";
 
 const props = defineProps<{
   card: T.Card;
+  initialSideName: T.CardSideName;
 }>();
 
 const emit = defineEmits<{
@@ -40,6 +41,7 @@ function handleAnswer(score: number) {
   createCardAttempt(
     {
       cardId: props.card.id,
+      promptSide: props.initialSideName,
       score,
     },
     {
