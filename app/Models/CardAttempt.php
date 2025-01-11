@@ -15,6 +15,7 @@ class CardAttempt extends Model
         'user_id',
         'card_id',
         'score',
+        'prompt_side',
     ];
 
     public function user()

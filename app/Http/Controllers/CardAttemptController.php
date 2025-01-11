@@ -33,12 +33,14 @@ class CardAttemptController extends Controller
 
         $validated = $request->validate([
             'score' => 'required|integer',
+            'prompt_side' => 'required|in:front,back',
         ]);
 
         $attempt = CardAttempt::create([
             'user_id' => $request->user()->id,
             'card_id' => $card->id,
             'score' => $validated['score'],
+            'prompt_side' => $validated['prompt_side'],
         ]);
         $attempt->deck_id = $attempt->card->deck_id;
 
