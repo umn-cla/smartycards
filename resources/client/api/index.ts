@@ -149,12 +149,15 @@ export async function getAllUserCardAttempts(cardId: number) {
 export async function createCardAttempt({
   cardId,
   score,
+  promptSide,
 }: {
   cardId: number;
   score: number;
+  promptSide: T.CardSideName;
 }) {
   const res = await axios.post<T.CardAttempt>(`/cards/${cardId}/attempts`, {
     score,
+    prompt_side: promptSide,
   });
   return res.data;
 }
