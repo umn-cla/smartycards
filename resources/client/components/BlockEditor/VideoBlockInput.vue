@@ -12,7 +12,7 @@
       Invalid URL
     </div>
     <InputGroup
-      :id="`embedUrl`"
+      :id="makeInputId('video-block')"
       label="YouTube"
       :labelHidden="true"
       required
@@ -29,6 +29,7 @@ import { computed } from "vue";
 import { isValidUrl } from "@/lib/utils";
 import InputGroup from "@/components/InputGroup.vue";
 import EmbedVideo from "@/components/EmbedVideo.vue";
+import { useMakeInputId } from "@/composables/useMakeInputId";
 
 const props = defineProps<{
   modelValue: string;
@@ -39,5 +40,6 @@ const emit = defineEmits<{
 }>();
 
 const isValidUrlComputed = computed(() => isValidUrl(props.modelValue));
+const { makeInputId } = useMakeInputId("video-block-input");
 </script>
 <style scoped></style>

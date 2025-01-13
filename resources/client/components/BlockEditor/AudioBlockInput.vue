@@ -1,8 +1,9 @@
 <template>
   <div class="p-2">
     <div v-if="!modelValue">
-      <Label class="sr-only">Audio</Label>
+      <Label class="sr-only" :for="makeInputId('audio-drop')">Audio</Label>
       <FilePond
+        :id="makeInputId('audio-drop')"
         name="audio"
         ref="pond"
         labelIdle="Add audio file (.mp3, .ogg, .m4a, .aac, .midi)"
@@ -14,8 +15,9 @@
       />
       <p class="text-neutral-400 text-xs text-center">— or —</p>
       <div>
-        <Label class="sr-only" for="image-url">Audio Url</Label>
+        <Label class="sr-only" :for="makeInputId('audio-url')">Audio Url</Label>
         <Input
+          :id="makeInputId('audio-url')"
           :modelValue="modelValue"
           @update:modelValue="$emit('update:modelValue', $event as string)"
           placeholder="Audio URL"
@@ -43,6 +45,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import * as api from "@/api";
+import { ContentBlock } from "@/types";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import vueFilePond from "vue-filepond";
@@ -51,8 +54,10 @@ import { IconX } from "../icons";
 
 import "filepond/dist/filepond.min.css";
 import "filepond-plugin-image-preview/dist/filepond-plugin-image-preview.min.css";
+import { useMakeInputId } from "@/composables/useMakeInputId";
 
-defineProps<{
+const props = defineProps<{
+  id: ContentBlock["id"];
   modelValue: string;
 }>();
 
@@ -60,6 +65,7 @@ const emit = defineEmits<{
   (event: "update:modelValue", value: string): void;
 }>();
 
+const { makeInputId } = useMakeInputId("audio-block-input", props.id);
 const FilePond = vueFilePond(FilePondPluginFileValidateType);
 
 const myFiles = ref<string[]>([]);

@@ -7,7 +7,10 @@
       handle=".drag-handle"
     >
       <template #item="{ element: block }">
-        <div class="flex border-b border-black/5">
+        <div
+          class="flex border-b border-black/5"
+          data-cy="content-block-container"
+        >
           <button class="drag-handle cursor-move flex items-start px-1 py-3">
             <Icons.IconDragHandle class="size-4" />
             <span class="sr-only">Drag to reorder</span>
@@ -20,6 +23,7 @@
               <button
                 class="cursor-pointer flex items-start px-3 py-3"
                 @click="removeBlock(block.id)"
+                data-cy="remove-content-block-button"
               >
                 <Icons.IconX class="size-4" />
                 <span class="sr-only">Remove block</span>
@@ -27,6 +31,7 @@
             </div>
             <div class="pr-3 pb-3">
               <component
+                :id="block.id"
                 :is="getComponentForType(block.type)"
                 :modelValue="block.content"
                 @update:modelValue="handleUpdateBlockContent(block.id, $event)"

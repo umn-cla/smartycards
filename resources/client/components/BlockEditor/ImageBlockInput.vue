@@ -1,8 +1,9 @@
 <template>
-  <div class="p-2">
+  <div class="p-2" data-cy="image-block-input">
     <div v-if="!modelValue">
-      <Label class="sr-only">Image</Label>
+      <Label class="sr-only" :for="makeInputId('image-drop')">Image</Label>
       <FilePond
+        :id="makeInputId('image-drop')"
         name="image"
         ref="pond"
         labelIdle="Add an image"
@@ -36,8 +37,9 @@
     </div>
     <p class="text-neutral-400 text-xs text-center mt-4">— or —</p>
     <div class="mb-2">
-      <Label for="image-url" class="sr-only">Image Url</Label>
+      <Label :for="makeInputId('image-url')" class="sr-only">Image Url</Label>
       <Input
+        :id="makeInputId('image-url')"
         :modelValue="modelValue"
         @update:modelValue="$emit('update:modelValue', $event as string)"
         placeholder="Image URL"
@@ -45,8 +47,9 @@
       />
     </div>
     <div>
-      <Label class="sr-only">Alt Text</Label>
+      <Label class="sr-only" :for="makeInputId('alt-text')">Alt Text</Label>
       <Input
+        :id="makeInputId('alt-text')"
         :modelValue="meta.alt"
         @update:modelValue="
           $emit('update:meta', { ...meta, alt: $event as string })
@@ -65,12 +68,14 @@ import { Input } from "@/components/ui/input";
 import vueFilePond from "vue-filepond";
 import FilePondPluginFileValidateType from "filepond-plugin-file-validate-type";
 import { IconX } from "../icons";
-
 import "filepond/dist/filepond.min.css";
 import "filepond-plugin-image-preview/dist/filepond-plugin-image-preview.min.css";
 import { isValidUrl } from "@/lib/utils";
+import * as T from "@/types";
+import { useMakeInputId } from "@/composables/useMakeInputId";
 
 const props = defineProps<{
+  id: T.ContentBlock["id"];
   modelValue: string;
   meta: {
     alt: string;
@@ -81,6 +86,8 @@ const emit = defineEmits<{
   (event: "update:modelValue", value: string): void;
   (event: "update:meta", value: { alt: string }): void;
 }>();
+
+const { makeInputId } = useMakeInputId("image-block-input", props.id);
 
 const FilePond = vueFilePond(FilePondPluginFileValidateType);
 const isValidUrlComputed = computed(() => isValidUrl(props.modelValue));
