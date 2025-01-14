@@ -10,8 +10,14 @@
         <div
           class="flex border-b border-black/5"
           data-cy="content-block-container"
+          :id="`block-editor__block__${block.id}`"
         >
-          <button class="drag-handle cursor-move flex items-start px-1 py-3">
+          <button
+            class="drag-handle cursor-move flex items-start px-1 py-3 focus:ring-2 focus:ring-blue-600"
+            @focus="handleDragFocus(block, $event)"
+            @blur="handleDragBlur(block, $event)"
+            @click="($event.target as HTMLButtonElement).focus()"
+          >
             <Icons.IconDragHandle class="size-4" />
             <span class="sr-only">Drag to reorder</span>
           </button>
@@ -67,7 +73,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import { capitalize, type Component, computed } from "vue";
+import { capitalize, type Component, computed, nextTick } from "vue";
 import TextBlockInput from "./TextBlockInput.vue";
 import ImageBlockInput from "./ImageBlockInput.vue";
 import AudioBlockInput from "./AudioBlockInput.vue";
@@ -85,6 +91,8 @@ import {
 } from "../ui/dropdown-menu";
 import { type ContentBlock, type ContentBlockType } from "@/types";
 import MathBlockInput from "./MathBlockInput.vue";
+import { shiftArrayItem } from "@/lib/shiftArrayItem";
+import { makeContentBlock } from "@/lib/makeContentBlock";
 
 const lookupComponentType: Record<ContentBlockType, Component> = {
   text: TextBlockInput,
@@ -115,22 +123,7 @@ const blockTypes = computed(() => {
 });
 
 function addEditorBlock(type: ContentBlock["type"]) {
-  const block: ContentBlock = {
-    id: crypto.randomUUID(),
-    type,
-    content: "",
-    meta: null,
-  };
-
-  if (type === "image") {
-    block.meta = { alt: "" };
-  }
-
-  if (type === "hint") {
-    block.meta = { label: "Hint" };
-  }
-
-  emit("update:modelValue", [...props.modelValue, block]);
+  emit("update:modelValue", [...props.modelValue, makeContentBlock(type)]);
 }
 
 function removeBlock(id: string) {
@@ -174,6 +167,54 @@ function getTypeIcon(type: ContentBlock["type"]): Component {
   } as Record<ContentBlockType, Component>;
 
   return icons[type] ?? Icons.IconQuestionMark;
+}
+
+const focusBlockHandle = (block: ContentBlock) => {
+  const el = document.querySelector<HTMLButtonElement>(
+    `#block-editor__block__${block.id} .drag-handle`,
+  );
+  el?.focus();
+};
+
+const handleKeydownMove = (block: ContentBlock) => (event: KeyboardEvent) => {
+  let shiftAmount = 0;
+
+  if (event.key === "ArrowUp") {
+    shiftAmount = -1;
+  }
+
+  if (event.key === "ArrowDown") {
+    shiftAmount = 1;
+  }
+
+  if (!shiftAmount) {
+    return;
+  }
+
+  const shiftedArray = shiftArrayItem<ContentBlock>(
+    props.modelValue,
+    block.id,
+    shiftAmount,
+  );
+
+  emit("update:modelValue", shiftedArray);
+
+  // return focus after dom updates
+  nextTick(() => focusBlockHandle(block));
+};
+
+function handleDragFocus(block: ContentBlock, event: FocusEvent) {
+  (event.target as HTMLButtonElement).addEventListener(
+    "keydown",
+    handleKeydownMove(block),
+  );
+}
+
+function handleDragBlur(block: ContentBlock, event: FocusEvent) {
+  (event.target as HTMLButtonElement).removeEventListener(
+    "keydown",
+    handleKeydownMove(block),
+  );
 }
 </script>
 <style scoped></style>
