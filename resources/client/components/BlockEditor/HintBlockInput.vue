@@ -1,23 +1,24 @@
 <template>
-  <div :id="`hint-block-${id}`">
-    <Label :for="`hint-block-${id}__text`" class="sr-only">Hint</Label>
+  <div data-cy="hint-block-input">
+    <Label :for="makeInputId('hidden-text')" class="sr-only">Hint</Label>
     <InputGroup
-      :id="`hint-block-${id}__text`"
+      :id="makeInputId('hidden-text')"
       label="Hidden Text"
       :labelHidden="true"
       :modelValue="modelValue"
       @update:modelValue="$emit('update:modelValue', $event)"
-      placeholder="Hidden content"
+      placeholder="Hint text"
     />
   </div>
 </template>
 <script setup lang="ts">
 import { Label } from "@/components/ui/label";
 import InputGroup from "@/components/InputGroup.vue";
+import { useMakeInputId } from "@/composables/useMakeInputId";
+import { ContentBlock } from "@/types";
 
-const id = crypto.randomUUID();
-
-defineProps<{
+const props = defineProps<{
+  id: ContentBlock["id"];
   modelValue: string; // hidden content
   meta: {
     label: string; // e.g. "Hint"
@@ -28,5 +29,7 @@ defineEmits<{
   (event: "update:modelValue", value: string): void;
   (event: "update:meta", value: { label: string }): void;
 }>();
+
+const { makeInputId } = useMakeInputId("hint-block-input", props.id);
 </script>
 <style scoped></style>

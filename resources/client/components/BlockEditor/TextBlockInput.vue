@@ -8,6 +8,7 @@
       v-if="isDeckTTSEnabled && charCount < MAX_TTS_CHARS"
     />
 
+    <label :for="makeInputId('text-block')" class="sr-only">Text Block</label>
     <QuillyEditor
       ref="editor"
       :modelValue="modelValue"
@@ -21,9 +22,12 @@
       class="flex gap-2 items-center justify-end mt-2"
       v-if="isDeckTTSEnabled"
     >
+      <label :for="makeInputId('language-select')" class="sr-only">
+        Text-to-Speech Language
+      </label>
       <Select
         v-if="isSettingCustomLanguage"
-        :id="`block-${nonce}__language-select`"
+        :id="makeInputId('language-select')"
         :modelValue="selectedLanguage"
         @update:modelValue="
           $emit('update:meta', { ...meta, lang: $event ?? null })
@@ -71,19 +75,17 @@ import "quill/dist/quill.core.css";
 import "quill/dist/quill.bubble.css";
 import { getTTSLanguageOptions } from "@/lib/getTtsLanguageOptions";
 import { TextContentBlock } from "@/types";
-import { uuid } from "@/lib/utils";
 import { IconGlobe } from "../icons";
 import Toggle from "@/components/Toggle.vue";
 import { IS_DECK_TTS_ENABLED_INJECTION_KEY, MAX_TTS_CHARS } from "@/constants";
-
-import SimpleTTSPlayer from "../SimpleTTSPlayer.vue";
+import { useMakeInputId } from "@/composables/useMakeInputId";
+import SimpleTTSPlayer from "@/components/SimpleTTSPlayer.vue";
 
 const props = defineProps<{
+  id: TextContentBlock["id"];
   modelValue: TextContentBlock["content"];
   meta?: TextContentBlock["meta"];
 }>();
-
-const nonce = uuid();
 
 defineEmits<{
   (event: "update:modelValue", value: string): void;
@@ -92,6 +94,8 @@ defineEmits<{
 
 const editor = ref<InstanceType<typeof QuillyEditor>>();
 let quill: Quill | null = null;
+
+const { makeInputId } = useMakeInputId("text-block-input", props.id);
 
 const selectedLanguage = computed((): string => props.meta?.lang ?? "");
 const isSettingCustomLanguage = ref(!!selectedLanguage.value);
@@ -150,6 +154,22 @@ onMounted(() => {
   }
 
   quill = editor.value.initialize(Quill);
+
+  // some attrs to help with accessibility of the contenteditable area
+  const contentEditableAttrs = {
+    id: makeInputId("text-block"),
+    role: "textbox",
+    "aria-multiline": "true",
+  };
+
+  Object.entries(contentEditableAttrs).forEach(([key, value]) => {
+    if (!quill?.root || !quill.root.contentEditable) {
+      console.error("Can't set attrs for Quilly Editor. Quill root not found.");
+      return;
+    }
+
+    quill.root.setAttribute(key, value);
+  });
 });
 </script>
 <style scoped></style>

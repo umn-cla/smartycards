@@ -11,6 +11,7 @@
         props.class,
       )
     "
+    :aria-pressed="modelValue"
     :aria-label="label"
     :title="label"
   >
