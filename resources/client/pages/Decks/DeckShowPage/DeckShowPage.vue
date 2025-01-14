@@ -203,6 +203,8 @@ function doesBlockContainText(block: T.ContentBlock, text: string) {
 const filteredCards = computed((): T.Card[] => {
   if (!deck.value?.cards) return [];
 
+  if (!cardSearch.value) return deck.value.cards;
+
   return deck.value.cards.filter((card) => {
     return [...card.front, ...card.back].some((block) => {
       return doesBlockContainText(block, cardSearch.value);
