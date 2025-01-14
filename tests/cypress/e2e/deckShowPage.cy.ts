@@ -122,4 +122,70 @@ describe("DeckShowPage", () => {
     cy.get('[data-cy="flippable-card"]').should("have.length", 1);
     cy.contains("Another card");
   });
+
+  it("'Create and Add Another' button uses previous card's structure", () => {
+    // setup intercept for creating a card
+    cy.intercept("POST", "/api/decks/*/cards").as("createCard");
+
+    cy.visit(`/decks/${deckId}/cards/create`);
+
+    // set up aliases
+    cy.get('[data-cy="front-side-input"]').as("frontSideInput");
+    cy.get('[data-cy="back-side-input"]').as("backSideInput");
+
+    // remove old front-side block
+    cy.get("@frontSideInput").within(() => {
+      cy.get('[data-cy="remove-content-block-button"]').click();
+    });
+
+    // add a new image block
+    cy.get("@frontSideInput").contains("Add Block").click();
+    cy.get("[role='menu']").contains("Image").click();
+    cy.get("@frontSideInput").within(() => {
+      cy.getInputByLabel("Image Url").type(
+        "https://upload.wikimedia.org/wikipedia/commons/4/41/Weisman_Art_Museum.jpg",
+      );
+    });
+
+    // add a hint block to front side
+    cy.get("@frontSideInput").contains("Add Block").click();
+    cy.get("[role='menu']").contains("Hint").click();
+    cy.get("@frontSideInput").within(() => {
+      cy.getInputByLabel("Hint Text").type("This is a hint");
+    });
+
+    // remove the default text block from back side
+    cy.get("@backSideInput").within(() => {
+      cy.get('[data-cy="remove-content-block-button"]').click();
+    });
+
+    // add an image block to back side
+    cy.get("@backSideInput").contains("Add Block").click();
+    cy.get("[role='menu']").contains("Image").click();
+    cy.get("@backSideInput").within(() => {
+      cy.getInputByLabel("Image Url").type(
+        "https://upload.wikimedia.org/wikipedia/commons/5/59/Goldy_the_Gopher.jpg",
+      );
+    });
+
+    // CREATE AND ADD ANOTHER
+    cy.contains("Create + Another").click();
+    cy.wait("@createCard");
+
+    cy.get("[data-cy='front-side-input']").within(() => {
+      // verify that the front side has the image block and hint block
+      cy.get("[data-cy='image-block-input']").should("exist");
+      cy.get("[data-cy='hint-block-input']").should("exist");
+
+      // and that it doesn't have a text block
+      cy.get("[data-cy='text-block-input-container']").should("not.exist");
+    });
+
+    cy.get("[data-cy='back-side-input']").within(() => {
+      // and that the back side has the image block
+      cy.get("[data-cy='image-block-input']").should("exist");
+      // and that it doesn't have a text block
+      cy.get("[data-cy='text-block-input-container']").should("not.exist");
+    });
+  });
 });

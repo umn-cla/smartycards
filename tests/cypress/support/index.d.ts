@@ -134,5 +134,10 @@ declare namespace Cypress {
       deckId: number,
       { front, back }: { front: string; back: string },
     ): Chainable<any>;
+
+    /**
+     * Get the input element matching the label text.
+     */
+    getInputByLabel(label: string): Chainable<any>;
   }
 }

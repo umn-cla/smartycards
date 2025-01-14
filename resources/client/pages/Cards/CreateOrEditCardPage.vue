@@ -80,6 +80,7 @@ import { Button } from "@/components/ui/button";
 import PageTitle from "@/components/PageTitle.vue";
 import PageSubtitle from "@/components/PageSubtitle.vue";
 import { useIsDeckTTSEnabled } from "@/composables/useIsDeckTTSEnabled";
+import { makeContentBlock } from "@/lib/makeContentBlock";
 import { IS_DECK_TTS_ENABLED_INJECTION_KEY } from "@/constants";
 
 const props = defineProps<{
@@ -101,23 +102,14 @@ const cardIdRef = computed(() => props.cardId ?? null);
 const { data: deck } = useDeckByIdQuery(deckIdRef);
 const { data: card } = useCardByIdQuery(cardIdRef);
 
-function createTextContentBlock(): T.TextContentBlock {
-  return {
-    id: crypto.randomUUID(),
-    type: "text",
-    content: "",
-    meta: null,
-  };
-}
-
 onMounted(() => {
   if (!isCreateMode.value) {
     return;
   }
 
   // add two text content blocks
-  form.front = [createTextContentBlock()];
-  form.back = [createTextContentBlock()];
+  form.front = [makeContentBlock("text")];
+  form.back = [makeContentBlock("text")];
 });
 
 watch(
@@ -154,10 +146,23 @@ function handleSave({ saveAndAddAnother = false } = {}) {
   form.back = removeEmptyBlocks(form.back);
   form.front = removeEmptyBlocks(form.front);
 
+  // snapshot the types of the front and back blocks before saving
+  // so that we can use them as the default for the next card
+  // if user clicks "Create + Another"
+  const frontTypes = form.front.map((block) => block.type);
+  const backTypes = form.back.map((block) => block.type);
+
   const onSuccess = () => {
     if (saveAndAddAnother) {
-      form.front = [createTextContentBlock()];
-      form.back = [createTextContentBlock()];
+      // when saving and adding another, use the previous card's front
+      // and back types as the default for the new card. If there are no types
+      // (e.g. the user deleted all content), default to text
+      form.front = frontTypes.length
+        ? frontTypes.map(makeContentBlock)
+        : [makeContentBlock("text")];
+      form.back = backTypes.length
+        ? backTypes.map(makeContentBlock)
+        : [makeContentBlock("text")];
       return;
     }
 

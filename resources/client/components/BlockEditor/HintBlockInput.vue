@@ -1,8 +1,8 @@
 <template>
   <div data-cy="hint-block-input">
-    <Label :for="makeInputId('hidden-text')" class="sr-only">Hint</Label>
+    <Label :for="makeInputId('hint-text')" class="sr-only">Hint Text</Label>
     <InputGroup
-      :id="makeInputId('hidden-text')"
+      :id="makeInputId('hint-text')"
       label="Hidden Text"
       :labelHidden="true"
       :modelValue="modelValue"
