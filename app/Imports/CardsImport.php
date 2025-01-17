@@ -16,12 +16,12 @@ class CardsImport implements ToModel, WithHeadingRow
         $this->deckId = $deckId;
     }
 
-    protected function createBlock(string $content, string $type = 'text')
+    protected function createBlock(?string $content, string $type = 'text')
     {
         return [
             'id' => Str::uuid()->toString(),
             'type' => $type,
-            'content' => $content,
+            'content' => $content ?? '',
             'meta' => null,
         ];
     }
