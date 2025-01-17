@@ -3,11 +3,12 @@
 namespace App\Imports;
 
 use App\Models\Card;
+use Maatwebsite\Excel\Concerns\SkipsEmptyRows;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Str;
 
-class CardsImport implements ToModel, WithHeadingRow
+class CardsImport implements SkipsEmptyRows, ToModel, WithHeadingRow
 {
     protected $deckId;
 
