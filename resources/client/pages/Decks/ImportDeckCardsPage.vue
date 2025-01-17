@@ -54,6 +54,7 @@
             ref="fileInput"
             class="p-4 h-auto my-2 border border-dashed border-black/50 rounded-lg"
             @change="handleFileInputChange"
+            accept=".csv, .xls, .xlsx"
           />
           <Button
             type="submit"
