@@ -17,6 +17,8 @@
             @click="($event.target as HTMLButtonElement).focus()"
             @keydown.up="moveBlock(block, 'up')"
             @keydown.down="moveBlock(block, 'down')"
+            @keydown.left="$emit('dragHandle:left', block)"
+            @keydown.right="$emit('dragHandle:right', block)"
           >
             <Icons.IconDragHandle class="size-4" />
             <span class="sr-only">Drag to reorder</span>
@@ -94,6 +96,7 @@ import MathBlockInput from "./MathBlockInput.vue";
 import { makeContentBlock } from "@/lib/makeContentBlock";
 import { clamp, move } from "ramda";
 import invariant from "tiny-invariant";
+import { focusBlockDragHandle } from "@/lib/blockEditorHelpers";
 
 const lookupComponentType: Record<ContentBlockType, Component> = {
   text: TextBlockInput,
@@ -116,6 +119,8 @@ const props = withDefaults(
 
 const emit = defineEmits<{
   (event: "update:modelValue", value: ContentBlock[]): void;
+  (event: "dragHandle:left", block: ContentBlock): void;
+  (event: "dragHandle:right", block: ContentBlock): void;
 }>();
 
 const blockTypes = computed(() => {
@@ -170,13 +175,6 @@ function getTypeIcon(type: ContentBlock["type"]): Component {
   return icons[type] ?? Icons.IconQuestionMark;
 }
 
-const focusBlockHandle = (block: ContentBlock) => {
-  const el = document.querySelector<HTMLButtonElement>(
-    `#block-editor__block__${block.id} .drag-handle`,
-  );
-  el?.focus();
-};
-
 function moveBlock(block: ContentBlock, direction: "up" | "down") {
   const delta = direction === "up" ? -1 : 1;
 
@@ -192,7 +190,10 @@ function moveBlock(block: ContentBlock, direction: "up" | "down") {
   emit("update:modelValue", updatedArray);
 
   // return focus after dom updates
-  nextTick(() => focusBlockHandle(block));
+  nextTick(() => {
+    focusBlockDragHandle(block);
+    // flashBlock(block);
+  });
 }
 </script>
 <style scoped></style>

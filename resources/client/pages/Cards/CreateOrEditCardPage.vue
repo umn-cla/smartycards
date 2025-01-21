@@ -41,12 +41,14 @@
             </div>
           </header>
           <div class="my-4 grid sm:grid-cols-2 gap-4 mb-12">
-            <div v-for="side in ['front', 'back']">
+            <div v-for="side in ['front', 'back'] as const" :key="side">
               <CardSideInput
                 :id="`${deckId}-${side}`"
                 v-model="form[side]"
                 :label="capitalize(side)"
                 :data-cy="`${side}-side-input`"
+                @dragHandle:left="(block) => handleSwapBlockSide(block, side)"
+                @dragHandle:right="(block) => handleSwapBlockSide(block, side)"
               />
             </div>
           </div>
@@ -65,6 +67,7 @@ import {
   onMounted,
   capitalize,
   provide,
+  nextTick,
 } from "vue";
 import {
   useUpdateCardMutation,
@@ -82,6 +85,8 @@ import PageSubtitle from "@/components/PageSubtitle.vue";
 import { useIsDeckTTSEnabled } from "@/composables/useIsDeckTTSEnabled";
 import { makeContentBlock } from "@/lib/makeContentBlock";
 import { IS_DECK_TTS_ENABLED_INJECTION_KEY } from "@/constants";
+import { focusBlockDragHandle } from "@/lib/blockEditorHelpers";
+import { useAnnouncer } from "@vue-a11y/announcer";
 
 const props = defineProps<{
   deckId: number;
@@ -195,6 +200,26 @@ function handleSave({ saveAndAddAnother = false } = {}) {
     },
     { onSuccess },
   );
+}
+
+const announcer = useAnnouncer();
+
+function handleSwapBlockSide(
+  block: T.ContentBlock,
+  currentSide: "front" | "back",
+) {
+  const otherSide = currentSide === "front" ? "back" : "front";
+
+  // remove block from current side
+  form[currentSide] = form[currentSide].filter((b) => b.id !== block.id);
+
+  // add block to other side
+  form[otherSide] = [...form[otherSide], block];
+
+  nextTick(() => {
+    // focus the block that was just moved
+    focusBlockDragHandle(block);
+  });
 }
 
 // provide info about TTS to any card blocks that need it

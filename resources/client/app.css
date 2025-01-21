@@ -40,3 +40,16 @@
   grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr));
   gap: 1rem;
 }
+
+.drag-drop-item--flash {
+  animation: post-move-flash 1s;
+}
+
+@keyframes post-move-flash {
+  0% {
+    @apply bg-teal-500;
+  }
+  100% {
+    @apply bg-inherit;
+  }
+}

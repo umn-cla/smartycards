@@ -26,6 +26,7 @@
     "@radix-icons/vue": "^1.0.0",
     "@tanstack/vue-query": "^5.64.1",
     "@umn-latis/cla-vue-template": "^2.0.0",
+    "@vue-a11y/announcer": "^3.1.5",
     "@vueuse/core": "^12.4.0",
     "axios": "^1.7.9",
     "class-variance-authority": "^0.7.1",
