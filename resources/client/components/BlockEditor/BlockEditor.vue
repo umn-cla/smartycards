@@ -14,9 +14,9 @@
         >
           <button
             class="drag-handle cursor-move flex items-start px-1 py-3 focus:ring-2 focus:ring-blue-600"
-            @focus="handleDragFocus(block, $event)"
-            @blur="handleDragBlur(block, $event)"
             @click="($event.target as HTMLButtonElement).focus()"
+            @keydown.up="moveBlock(block, 'up')"
+            @keydown.down="moveBlock(block, 'down')"
           >
             <Icons.IconDragHandle class="size-4" />
             <span class="sr-only">Drag to reorder</span>
@@ -91,8 +91,9 @@ import {
 } from "../ui/dropdown-menu";
 import { type ContentBlock, type ContentBlockType } from "@/types";
 import MathBlockInput from "./MathBlockInput.vue";
-import { shiftArrayItem } from "@/lib/shiftArrayItem";
 import { makeContentBlock } from "@/lib/makeContentBlock";
+import { clamp, move } from "ramda";
+import invariant from "tiny-invariant";
 
 const lookupComponentType: Record<ContentBlockType, Component> = {
   text: TextBlockInput,
@@ -146,7 +147,7 @@ function handleUpdateBlockContent(id: string, content: string) {
   );
 }
 
-function handleUpdateBlockMeta(id: string, meta: Record<string, any>) {
+function handleUpdateBlockMeta(id: string, meta: Record<string, unknown>) {
   emit(
     "update:modelValue",
     props.modelValue.map((block) =>
@@ -176,45 +177,22 @@ const focusBlockHandle = (block: ContentBlock) => {
   el?.focus();
 };
 
-const handleKeydownMove = (block: ContentBlock) => (event: KeyboardEvent) => {
-  let shiftAmount = 0;
+function moveBlock(block: ContentBlock, direction: "up" | "down") {
+  const delta = direction === "up" ? -1 : 1;
 
-  if (event.key === "ArrowUp") {
-    shiftAmount = -1;
-  }
-
-  if (event.key === "ArrowDown") {
-    shiftAmount = 1;
-  }
-
-  if (!shiftAmount) {
-    return;
-  }
-
-  const shiftedArray = shiftArrayItem<ContentBlock>(
-    props.modelValue,
-    block.id,
-    shiftAmount,
+  const fromIndex = props.modelValue.findIndex((b) => b.id === block.id);
+  invariant(
+    fromIndex >= 0,
+    `Index of block with id ${block.id} not found in modelValue`,
   );
+  const toIndex = clamp(0, props.modelValue.length - 1, fromIndex + delta);
 
-  emit("update:modelValue", shiftedArray);
+  const updatedArray = move(fromIndex, toIndex, props.modelValue);
+
+  emit("update:modelValue", updatedArray);
 
   // return focus after dom updates
   nextTick(() => focusBlockHandle(block));
-};
-
-function handleDragFocus(block: ContentBlock, event: FocusEvent) {
-  (event.target as HTMLButtonElement).addEventListener(
-    "keydown",
-    handleKeydownMove(block),
-  );
-}
-
-function handleDragBlur(block: ContentBlock, event: FocusEvent) {
-  (event.target as HTMLButtonElement).removeEventListener(
-    "keydown",
-    handleKeydownMove(block),
-  );
 }
 </script>
 <style scoped></style>
