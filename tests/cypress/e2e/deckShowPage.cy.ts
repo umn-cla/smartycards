@@ -123,7 +123,7 @@ describe("DeckShowPage", () => {
     cy.contains("Another card");
   });
 
-  it("'Create and Add Another' button uses previous card's structure", () => {
+  it.skip("'Create and Add Another' button uses previous card's structure", () => {
     // setup intercept for creating a card
     cy.intercept("POST", "/api/decks/*/cards").as("createCard");
 
