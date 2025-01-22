@@ -1,5 +1,3 @@
-import * as T from "../../../resources/client/types";
-
 describe("DeckShowPage", () => {
   let deckId = null;
   beforeEach(() => {
@@ -123,7 +121,7 @@ describe("DeckShowPage", () => {
     cy.contains("Another card");
   });
 
-  it.only("'Create and Add Another' button uses previous card's structure", () => {
+  it("'Create and Add Another' button uses previous card's structure", () => {
     // setup intercept for creating a card
     cy.intercept("POST", "/api/decks/*/cards").as("createCard");
 
@@ -142,57 +140,64 @@ describe("DeckShowPage", () => {
     cy.get("@frontSideInput").contains("Add Block").click();
     cy.get("[role='menu']").contains("Image").click();
     cy.get("@frontSideInput").within(() => {
-      cy.get('[data-cy="image-block-input"] [data-cy="image-url-text-input"]')
-        .should("exist")
-        .should("be.visible");
-      cy.get(
-        '[data-cy="image-block-input"] [data-cy="image-url-text-input"]',
-      ).realType("image.jpg");
-      // cy.get(
-      //   '[data-cy="image-block-input"] [data-cy="image-url-text-input"]',
-      // ).type("image.jpg");
+      // IMPORTANT: Use `.realType` instead of `.type` here.
+      // Using `.type` can sometimes lead to test failures with the
+      // following error:
+      //
+      // InvalidStateError: Failed to set the 'value' property on
+      // 'HTMLInputElement': This input element accepts a filename, which may
+      // only be programmatically set to an empty string.
+      //
+      // This issue arises from a conflict between Cypress's simulated `.type`
+      // events and the FilePond library.
+      // Cypress attempts to set a string value on the
+      // `<input type="file">` element, which is not allowed.
+      cy.getInputByLabel("Image Url").realType(
+        "https://upload.wikimedia.org/wikipedia/commons/4/41/Weisman_Art_Museum.jpg",
+      );
     });
 
-    // // add a hint block to front side
-    // cy.get("@frontSideInput").contains("Add Block").click();
-    // cy.get("[role='menu']").contains("Hint").click();
-    // cy.get("@frontSideInput").within(() => {
-    //   cy.getInputByLabel("Hint Text").type("This is a hint", { delay: 0 });
-    // });
+    // add a hint block to front side
+    cy.get("@frontSideInput").contains("Add Block").click();
+    cy.get("[role='menu']").contains("Hint").click();
+    cy.get("@frontSideInput").within(() => {
+      cy.getInputByLabel("Hint Text").type("This is a hint");
+    });
 
-    // // remove the default text block from back side
-    // cy.get("@backSideInput").within(() => {
-    //   cy.get('[data-cy="remove-content-block-button"]').click();
-    // });
+    // remove the default text block from back side
+    cy.get("@backSideInput").within(() => {
+      cy.get('[data-cy="remove-content-block-button"]').click();
+    });
 
-    // // add an image block to back side
-    // cy.get("@backSideInput").contains("Add Block").click();
-    // cy.get("[role='menu']").contains("Image").click();
-    // cy.get("@backSideInput").within(() => {
-    //   cy.getInputByLabel("Image Url").type("image.jpg", {
-    //     delay: 0,
-    //     waitForAnimations: true,
-    //   });
-    // });
+    // add an image block to back side
+    cy.get("@backSideInput").contains("Add Block").click();
+    cy.get("[role='menu']").contains("Image").click();
+    cy.get("@backSideInput").within(() => {
+      // IMPORTANT: Use `.realType` instead of `.type` here.
+      // see above
+      cy.getInputByLabel("Image Url").realType(
+        "https://upload.wikimedia.org/wikipedia/commons/5/59/Goldy_the_Gopher.jpg",
+      );
+    });
 
-    // // CREATE AND ADD ANOTHER
-    // cy.contains("Create + Another").click();
-    // cy.wait("@createCard");
+    // CREATE AND ADD ANOTHER
+    cy.contains("Create + Another").click();
+    cy.wait("@createCard");
 
-    // cy.get("[data-cy='front-side-input']").within(() => {
-    //   // verify that the front side has the image block and hint block
-    //   cy.get("[data-cy='image-block-input']").should("exist");
-    //   cy.get("[data-cy='hint-block-input']").should("exist");
+    cy.get("[data-cy='front-side-input']").within(() => {
+      // verify that the front side has the image block and hint block
+      cy.get("[data-cy='image-block-input']").should("exist");
+      cy.get("[data-cy='hint-block-input']").should("exist");
 
-    //   // and that it doesn't have a text block
-    //   cy.get("[data-cy='text-block-input-container']").should("not.exist");
-    // });
+      // and that it doesn't have a text block
+      cy.get("[data-cy='text-block-input-container']").should("not.exist");
+    });
 
-    // cy.get("[data-cy='back-side-input']").within(() => {
-    //   // and that the back side has the image block
-    //   cy.get("[data-cy='image-block-input']").should("exist");
-    //   // and that it doesn't have a text block
-    //   cy.get("[data-cy='text-block-input-container']").should("not.exist");
-    // });
+    cy.get("[data-cy='back-side-input']").within(() => {
+      // and that the back side has the image block
+      cy.get("[data-cy='image-block-input']").should("exist");
+      // and that it doesn't have a text block
+      cy.get("[data-cy='text-block-input-container']").should("not.exist");
+    });
   });
 });
