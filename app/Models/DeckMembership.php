@@ -97,4 +97,12 @@ class DeckMembership extends Model implements AuditableContract
             ->withHasActivity(ActivityTypeEnum::QUIZ)
             ->withHasActivity(ActivityTypeEnum::MATCHING);
     }
+
+    public function isRoleAPromotion($role)
+    {
+        $canPromoteToEditor = $this->role === self::ROLE_VIEWER && $role === self::ROLE_EDITOR;
+        $canPromoteToOwner = $this->role === self::ROLE_EDITOR && $role === self::ROLE_OWNER;
+
+        return $canPromoteToEditor || $canPromoteToOwner;
+    }
 }
