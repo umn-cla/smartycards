@@ -93,7 +93,7 @@ import {
 import { type ContentBlock, type ContentBlockType } from "@/types";
 import MathBlockInput from "./MathBlockInput.vue";
 import { makeContentBlock } from "@/lib/makeContentBlock";
-import { focusBlockDragHandle } from "@/lib/blockEditorHelpers";
+import { focusBlockInput } from "@/lib/blockEditorHelpers";
 
 const lookupComponentType: Record<ContentBlockType, Component> = {
   text: TextBlockInput,
@@ -130,6 +130,13 @@ const blockTypes = computed(() => {
 function addEditorBlock(type: ContentBlock["type"]) {
   const newBlock = makeContentBlock(type);
   emit("update:modelValue", [...props.modelValue, newBlock]);
+
+  // focus new block's input after creation
+  // by default focus returns to dropdown button so we need to wait
+  // a little longer than next tick for this to work
+  setTimeout(() => {
+    focusBlockInput(newBlock);
+  }, 250);
 }
 
 function removeBlock(id: string) {
