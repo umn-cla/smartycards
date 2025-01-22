@@ -54,7 +54,7 @@
       <DropdownMenuTrigger asChild>
         <Button
           variant="ghost"
-          class="rounded-t-none hover:bg-brand-maroon-800/10 focus:ring-2 focus-visible:ring-2 focus-visible:ring-blue-600 focus:ring-blue-600 active:ring-2 active:ring-blue-600"
+          class="rounded-t-none hover:bg-brand-maroon-800/10 focus-visible:ring-2 focus-visible:ring-blue-600"
         >
           <Icons.IconPlusFilled class="size-4 mr-2" />
           Add Block
