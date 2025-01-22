@@ -12,6 +12,7 @@
           process: handleProcessImage,
         }"
         :files="myFiles"
+        class="focus-within:ring-2 focus-within:ring-blue-600"
       />
     </div>
     <div v-else class="relative pt-2 pr-2">
