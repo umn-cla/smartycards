@@ -6,7 +6,7 @@ export function getBlockSelector(block: ContentBlock) {
 }
 
 export function focusBlockInput(block: ContentBlock) {
-  const selector = `${getBlockSelector(block)} input`;
+  const selector = `${getBlockSelector(block)} :is(input, [contenteditable="true"]`;
   const el = document.querySelector<HTMLInputElement>(selector);
   invariant(el, `input not found with selector: ${selector}`);
   el?.focus();

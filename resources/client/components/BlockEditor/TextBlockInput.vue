@@ -37,7 +37,11 @@
           <SelectValue placeholder="Language (Auto)"> </SelectValue>
         </SelectTrigger>
         <SelectContent>
-          <SelectItem v-for="lang in languages" :value="lang.locale">
+          <SelectItem
+            v-for="lang in languages"
+            :value="lang.locale"
+            :key="lang.locale"
+          >
             {{ lang.name }}
           </SelectItem>
         </SelectContent>
