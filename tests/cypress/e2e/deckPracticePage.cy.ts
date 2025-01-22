@@ -39,7 +39,6 @@ describe("DeckShowPage", () => {
     cy.contains(/Front side \d/).then(($el: JQuery<HTMLElement>) => {
       // we should not see the same card again
       const cardText = $el.text();
-      console.log({ cardText });
       expect(cardsSeen.has(cardText)).to.be.false;
       cardsSeen.add(cardText);
     });

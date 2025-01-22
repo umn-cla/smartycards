@@ -128,15 +128,8 @@ const blockTypes = computed(() => {
 });
 
 function addEditorBlock(type: ContentBlock["type"]) {
-  console.log("addEditorBlock", type);
   const newBlock = makeContentBlock(type);
   emit("update:modelValue", [...props.modelValue, newBlock]);
-
-  // attempt to focus the drag handle of the new block
-  // a little hacky. Not sure if it's better or not to do this.
-  setTimeout(() => {
-    focusBlockDragHandle(newBlock);
-  }, 250);
 }
 
 function removeBlock(id: string) {
