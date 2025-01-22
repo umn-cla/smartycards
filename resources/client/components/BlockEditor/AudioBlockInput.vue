@@ -12,6 +12,7 @@
           process: handleProcessImage,
         }"
         :files="myFiles"
+        class="focus-within:ring-2 focus-within:ring-blue-600"
       />
     </div>
 
