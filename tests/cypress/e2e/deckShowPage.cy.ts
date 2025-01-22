@@ -142,7 +142,7 @@ describe("DeckShowPage", () => {
     cy.get("@frontSideInput").contains("Add Block").click();
     cy.get("[role='menu']").contains("Image").click();
     cy.get("@frontSideInput").within(() => {
-      cy.getInputByLabel("Image Url").type("image.jpg");
+      cy.getInputByLabel("Image Url").type("image.jpg", { delay: 0 });
     });
 
     // add a hint block to front side
@@ -161,7 +161,7 @@ describe("DeckShowPage", () => {
     cy.get("@backSideInput").contains("Add Block").click();
     cy.get("[role='menu']").contains("Image").click();
     cy.get("@backSideInput").within(() => {
-      cy.getInputByLabel("Image Url").type("image.jpg");
+      cy.getInputByLabel("Image Url").type("image.jpg", { delay: 0 });
     });
 
     // CREATE AND ADD ANOTHER
