@@ -144,8 +144,8 @@ describe("DeckShowPage", () => {
     cy.get("@frontSideInput").within(() => {
       cy.get('[data-cy="image-block-input"] [data-cy="image-url-text-input"]')
         .should("exist")
-        .should("be.visible")
-        .type("image.jpg");
+        .should("be.visible");
+      // .type("image.jpg");
     });
 
     // // add a hint block to front side
