@@ -33,7 +33,7 @@
       </DropdownMenuItem>
       <DropdownMenuItem
         v-if="deck.capabilities.canLeave"
-        @click="handleLeaveDeck(deck.id)"
+        @click="state.isConfirmLeaveDeckModalOpen = true"
       >
         <IconExit class="size-5 mr-4" />
         Leave
@@ -49,6 +49,22 @@
       </DropdownMenuItem>
     </DropdownMenuContent>
   </DropdownMenu>
+  <Modal
+    title="Leave Deck"
+    submitButtonLabel="Leave Deck"
+    @submit="handleLeaveDeck(deck.id)"
+    v-if="deck.capabilities.canLeave"
+    :open="state.isConfirmLeaveDeckModalOpen"
+    @update:open="state.isConfirmLeaveDeckModalOpen = false"
+    triggerButtonVariant="none"
+    submitButtonVariant="destructive"
+    variant="danger"
+  >
+    <p>
+      Are you sure you want to leave this deck? You will no longer have access
+      to these cards.
+    </p>
+  </Modal>
   <Modal
     title="Delete Deck"
     submitButtonLabel="Delete"
@@ -102,6 +118,7 @@ const props = defineProps<{
 
 const state = reactive({
   isConfirmDeleteModalOpen: false,
+  isConfirmLeaveDeckModalOpen: false,
 });
 
 const { mutate: deleteDeck } = useDeleteDeckMutation();
@@ -110,6 +127,7 @@ const router = useRouter();
 
 function handleLeaveDeck(deckId: number) {
   leaveDeck(deckId);
+  state.isConfirmLeaveDeckModalOpen = false;
   router.push({ name: "decks.index" });
 }
 </script>
