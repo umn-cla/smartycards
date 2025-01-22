@@ -1,13 +1,14 @@
 import { ContentBlock } from "@/types";
+import invariant from "tiny-invariant";
 
 export function getBlockSelector(block: ContentBlock) {
   return `#block-editor__block__${block.id}`;
 }
 
 export function focusBlockDragHandle(block: ContentBlock) {
-  const el = document.querySelector<HTMLButtonElement>(
-    `${getBlockSelector(block)} .drag-handle`,
-  );
+  const selector = `${getBlockSelector(block)} .drag-handle`;
+  const el = document.querySelector<HTMLButtonElement>(selector);
+  invariant(el, `drag handle not found with selector: ${selector}`);
   el?.focus();
 }
 

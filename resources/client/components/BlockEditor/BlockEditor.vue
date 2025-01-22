@@ -13,8 +13,7 @@
           :id="`block-editor__block__${block.id}`"
         >
           <button
-            class="drag-handle cursor-move flex items-start px-1 py-3 focus:ring-2 focus:ring-blue-600"
-            @click="($event.target as HTMLButtonElement).focus()"
+            class="drag-handle cursor-move flex items-start px-1 py-3 focus:ring-2 focus-visible:ring-2 focus-visible:ring-blue-600 focus:ring-blue-600 active:ring-2 active:ring-blue-600"
             @keydown.up.prevent="$emit('dragHandle:up', block)"
             @keydown.down.prevent="$emit('dragHandle:down', block)"
             @keydown.left.prevent="$emit('dragHandle:left', block)"
@@ -65,7 +64,7 @@
         <DropdownMenuItem
           v-for="type in blockTypes"
           :key="type"
-          @click="addEditorBlock(type)"
+          @select="addEditorBlock(type)"
         >
           <component :is="getTypeIcon(type)" class="mr-2" />
           {{ capitalize(type) }}
@@ -94,6 +93,7 @@ import {
 import { type ContentBlock, type ContentBlockType } from "@/types";
 import MathBlockInput from "./MathBlockInput.vue";
 import { makeContentBlock } from "@/lib/makeContentBlock";
+import { focusBlockDragHandle } from "@/lib/blockEditorHelpers";
 
 const lookupComponentType: Record<ContentBlockType, Component> = {
   text: TextBlockInput,
@@ -128,7 +128,15 @@ const blockTypes = computed(() => {
 });
 
 function addEditorBlock(type: ContentBlock["type"]) {
-  emit("update:modelValue", [...props.modelValue, makeContentBlock(type)]);
+  console.log("addEditorBlock", type);
+  const newBlock = makeContentBlock(type);
+  emit("update:modelValue", [...props.modelValue, newBlock]);
+
+  // attempt to focus the drag handle of the new block
+  // a little hacky. Not sure if it's better or not to do this.
+  setTimeout(() => {
+    focusBlockDragHandle(newBlock);
+  }, 250);
 }
 
 function removeBlock(id: string) {
@@ -173,25 +181,5 @@ function getTypeIcon(type: ContentBlock["type"]): Component {
 
   return icons[type] ?? Icons.IconQuestionMark;
 }
-
-// function moveBlock(block: ContentBlock, direction: "up" | "down") {
-//   const delta = direction === "up" ? -1 : 1;
-
-//   const fromIndex = props.modelValue.findIndex((b) => b.id === block.id);
-//   invariant(
-//     fromIndex >= 0,
-//     `Index of block with id ${block.id} not found in modelValue`,
-//   );
-//   const toIndex = clamp(0, props.modelValue.length - 1, fromIndex + delta);
-
-//   const updatedArray = move(fromIndex, toIndex, props.modelValue);
-
-//   emit("update:modelValue", updatedArray);
-
-//   // return focus after dom updates
-//   nextTick(() => {
-//     focusBlockDragHandle(block);
-//   });
-// }
 </script>
 <style scoped></style>
