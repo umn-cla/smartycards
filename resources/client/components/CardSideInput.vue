@@ -6,6 +6,10 @@
       :modelValue="modelValue"
       @update:modelValue="emit('update:modelValue', $event)"
       class="rounded-lg"
+      @dragHandle:left="$emit('dragHandle:left', $event)"
+      @dragHandle:right="$emit('dragHandle:right', $event)"
+      @dragHandle:up="$emit('dragHandle:up', $event)"
+      @dragHandle:down="$emit('dragHandle:down', $event)"
     />
   </div>
 </template>
@@ -21,6 +25,10 @@ defineProps<{
 
 const emit = defineEmits<{
   (event: "update:modelValue", value: T.ContentBlock[]): void;
+  (event: "dragHandle:left", block: T.ContentBlock): void;
+  (event: "dragHandle:right", block: T.ContentBlock): void;
+  (event: "dragHandle:up", block: T.ContentBlock): void;
+  (event: "dragHandle:down", block: T.ContentBlock): void;
 }>();
 </script>
 <style scoped></style>

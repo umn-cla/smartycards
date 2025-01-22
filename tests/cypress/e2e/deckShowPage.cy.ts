@@ -1,5 +1,3 @@
-import * as T from "../../../resources/client/types";
-
 describe("DeckShowPage", () => {
   let deckId = null;
   beforeEach(() => {
@@ -142,7 +140,19 @@ describe("DeckShowPage", () => {
     cy.get("@frontSideInput").contains("Add Block").click();
     cy.get("[role='menu']").contains("Image").click();
     cy.get("@frontSideInput").within(() => {
-      cy.getInputByLabel("Image Url").type(
+      // IMPORTANT: Use `.realType` instead of `.type` here.
+      // Using `.type` can sometimes lead to test failures with the
+      // following error:
+      //
+      // InvalidStateError: Failed to set the 'value' property on
+      // 'HTMLInputElement': This input element accepts a filename, which may
+      // only be programmatically set to an empty string.
+      //
+      // This issue arises from a conflict between Cypress's simulated `.type`
+      // events and the FilePond library.
+      // Cypress attempts to set a string value on the
+      // `<input type="file">` element, which is not allowed.
+      cy.getInputByLabel("Image Url").realType(
         "https://upload.wikimedia.org/wikipedia/commons/4/41/Weisman_Art_Museum.jpg",
       );
     });
@@ -163,7 +173,9 @@ describe("DeckShowPage", () => {
     cy.get("@backSideInput").contains("Add Block").click();
     cy.get("[role='menu']").contains("Image").click();
     cy.get("@backSideInput").within(() => {
-      cy.getInputByLabel("Image Url").type(
+      // IMPORTANT: Use `.realType` instead of `.type` here.
+      // see above
+      cy.getInputByLabel("Image Url").realType(
         "https://upload.wikimedia.org/wikipedia/commons/5/59/Goldy_the_Gopher.jpg",
       );
     });

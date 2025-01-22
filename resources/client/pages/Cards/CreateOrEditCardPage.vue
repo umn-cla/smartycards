@@ -41,12 +41,16 @@
             </div>
           </header>
           <div class="my-4 grid sm:grid-cols-2 gap-4 mb-12">
-            <div v-for="side in ['front', 'back']">
+            <div v-for="side in ['front', 'back'] as const" :key="side">
               <CardSideInput
                 :id="`${deckId}-${side}`"
                 v-model="form[side]"
                 :label="capitalize(side)"
                 :data-cy="`${side}-side-input`"
+                @dragHandle:left="(block) => handleSwapBlockSide(block, side)"
+                @dragHandle:right="(block) => handleSwapBlockSide(block, side)"
+                @dragHandle:up="(block) => moveBlock(block, side, 'up')"
+                @dragHandle:down="(block) => moveBlock(block, side, 'down')"
               />
             </div>
           </div>
@@ -65,6 +69,7 @@ import {
   onMounted,
   capitalize,
   provide,
+  nextTick,
 } from "vue";
 import {
   useUpdateCardMutation,
@@ -82,6 +87,10 @@ import PageSubtitle from "@/components/PageSubtitle.vue";
 import { useIsDeckTTSEnabled } from "@/composables/useIsDeckTTSEnabled";
 import { makeContentBlock } from "@/lib/makeContentBlock";
 import { IS_DECK_TTS_ENABLED_INJECTION_KEY } from "@/constants";
+import { focusBlockDragHandle } from "@/lib/blockEditorHelpers";
+import { useAnnouncer } from "@vue-a11y/announcer";
+import invariant from "tiny-invariant";
+import { clamp, move } from "ramda";
 
 const props = defineProps<{
   deckId: number;
@@ -195,6 +204,53 @@ function handleSave({ saveAndAddAnother = false } = {}) {
     },
     { onSuccess },
   );
+}
+
+const announcer = useAnnouncer();
+
+function moveBlock(block, side: "front" | "back", direction: "up" | "down") {
+  const delta = direction === "up" ? -1 : 1;
+
+  const fromIndex = form[side].findIndex((b) => b.id === block.id);
+  invariant(
+    "fromIndex >= 0",
+    `Index of block with id ${block.id} not found in modelValue`,
+  );
+
+  const toIndex = clamp(0, form[side].length - 1, fromIndex + delta);
+
+  if (fromIndex === toIndex) {
+    announcer.assertive(`Block already at position ${toIndex + 1}.`);
+    return;
+  }
+
+  form[side] = move(fromIndex, toIndex, form[side]);
+
+  nextTick(() => {
+    focusBlockDragHandle(block);
+    announcer.assertive(`Moved block ${direction} to position ${toIndex + 1}`);
+  });
+}
+
+function handleSwapBlockSide(
+  block: T.ContentBlock,
+  currentSide: "front" | "back",
+) {
+  const otherSide = currentSide === "front" ? "back" : "front";
+
+  // remove block from current side
+  form[currentSide] = form[currentSide].filter((b) => b.id !== block.id);
+
+  // add block to other side
+  form[otherSide] = [...form[otherSide], block];
+
+  nextTick(() => {
+    // focus the block that was just moved
+    focusBlockDragHandle(block);
+    announcer.assertive(
+      `Moved block to ${capitalize(otherSide)} side, position ${form[otherSide].length}`,
+    );
+  });
 }
 
 // provide info about TTS to any card blocks that need it

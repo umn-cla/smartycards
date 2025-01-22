@@ -15,6 +15,7 @@
 
 /// <reference types="./" />
 
+import "cypress-real-events";
 import "./laravel-commands";
 import "./laravel-routes";
 import "./assertions";

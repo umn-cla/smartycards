@@ -10,8 +10,15 @@
         <div
           class="flex border-b border-black/5"
           data-cy="content-block-container"
+          :id="`block-editor__block__${block.id}`"
         >
-          <button class="drag-handle cursor-move flex items-start px-1 py-3">
+          <button
+            class="drag-handle cursor-move flex items-start px-1 py-3 focus:ring-2 focus-visible:ring-2 focus-visible:ring-blue-600 focus:ring-blue-600 active:ring-2 active:ring-blue-600"
+            @keydown.up.prevent="$emit('dragHandle:up', block)"
+            @keydown.down.prevent="$emit('dragHandle:down', block)"
+            @keydown.left.prevent="$emit('dragHandle:left', block)"
+            @keydown.right.prevent="$emit('dragHandle:right', block)"
+          >
             <Icons.IconDragHandle class="size-4" />
             <span class="sr-only">Drag to reorder</span>
           </button>
@@ -47,7 +54,7 @@
       <DropdownMenuTrigger asChild>
         <Button
           variant="ghost"
-          class="rounded-t-none hover:bg-brand-maroon-800/10"
+          class="rounded-t-none hover:bg-brand-maroon-800/10 focus-visible:ring-2 focus-visible:ring-blue-600"
         >
           <Icons.IconPlusFilled class="size-4 mr-2" />
           Add Block
@@ -57,7 +64,7 @@
         <DropdownMenuItem
           v-for="type in blockTypes"
           :key="type"
-          @click="addEditorBlock(type)"
+          @select="addEditorBlock(type)"
         >
           <component :is="getTypeIcon(type)" class="mr-2" />
           {{ capitalize(type) }}
@@ -67,7 +74,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import { capitalize, type Component, computed } from "vue";
+import { capitalize, type Component, computed, nextTick } from "vue";
 import TextBlockInput from "./TextBlockInput.vue";
 import ImageBlockInput from "./ImageBlockInput.vue";
 import AudioBlockInput from "./AudioBlockInput.vue";
@@ -85,6 +92,8 @@ import {
 } from "../ui/dropdown-menu";
 import { type ContentBlock, type ContentBlockType } from "@/types";
 import MathBlockInput from "./MathBlockInput.vue";
+import { makeContentBlock } from "@/lib/makeContentBlock";
+import { focusBlockInput } from "@/lib/blockEditorHelpers";
 
 const lookupComponentType: Record<ContentBlockType, Component> = {
   text: TextBlockInput,
@@ -107,6 +116,10 @@ const props = withDefaults(
 
 const emit = defineEmits<{
   (event: "update:modelValue", value: ContentBlock[]): void;
+  (event: "dragHandle:left", block: ContentBlock): void;
+  (event: "dragHandle:right", block: ContentBlock): void;
+  (event: "dragHandle:up", block: ContentBlock): void;
+  (event: "dragHandle:down", block: ContentBlock): void;
 }>();
 
 const blockTypes = computed(() => {
@@ -115,22 +128,15 @@ const blockTypes = computed(() => {
 });
 
 function addEditorBlock(type: ContentBlock["type"]) {
-  const block: ContentBlock = {
-    id: crypto.randomUUID(),
-    type,
-    content: "",
-    meta: null,
-  };
+  const newBlock = makeContentBlock(type);
+  emit("update:modelValue", [...props.modelValue, newBlock]);
 
-  if (type === "image") {
-    block.meta = { alt: "" };
-  }
-
-  if (type === "hint") {
-    block.meta = { label: "Hint" };
-  }
-
-  emit("update:modelValue", [...props.modelValue, block]);
+  // focus new block's input after creation
+  // by default focus returns to dropdown button so we need to wait
+  // a little longer than next tick for this to work
+  setTimeout(() => {
+    focusBlockInput(newBlock);
+  }, 250);
 }
 
 function removeBlock(id: string) {
@@ -153,7 +159,7 @@ function handleUpdateBlockContent(id: string, content: string) {
   );
 }
 
-function handleUpdateBlockMeta(id: string, meta: Record<string, any>) {
+function handleUpdateBlockMeta(id: string, meta: Record<string, unknown>) {
   emit(
     "update:modelValue",
     props.modelValue.map((block) =>

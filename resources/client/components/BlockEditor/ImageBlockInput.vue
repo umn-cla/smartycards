@@ -12,6 +12,7 @@
           process: handleProcessImage,
         }"
         :files="myFiles"
+        class="focus-within:ring-2 focus-within:ring-blue-600"
       />
     </div>
     <div v-else class="relative pt-2 pr-2">
@@ -44,6 +45,7 @@
         @update:modelValue="$emit('update:modelValue', $event as string)"
         placeholder="Image URL"
         class="bg-brand-maroon-800/5"
+        data-cy="image-url-text-input"
       />
     </div>
     <div>

@@ -15,13 +15,16 @@ import katex from "katex";
 window.katex = katex;
 import "katex/contrib/mhchem/mhchem.js";
 
+// for accessibility
+import VueAnnouncer from "@vue-a11y/announcer";
+
 import App from "./App.vue";
 import router from "./router";
 
-const app = createApp(App);
-
-app.use(createPinia());
-app.use(router);
-app.use(VueQueryPlugin);
+const app = createApp(App)
+  .use(createPinia())
+  .use(VueAnnouncer)
+  .use(router)
+  .use(VueQueryPlugin);
 
 app.mount("#app");

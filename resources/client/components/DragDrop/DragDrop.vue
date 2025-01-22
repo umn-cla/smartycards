@@ -48,8 +48,9 @@ defineEmits<{
 const isDragging = ref(false);
 </script>
 <style>
-.dragdrop__container .ghost {
-  opacity: 0.5;
+.dragdrop__container .ghost,
+.dragdrop__container .drag-drop__list-item:has(.drag-handle:focus) {
+  opacity: 0.75;
   background: #c8ebfb;
 }
 </style>
