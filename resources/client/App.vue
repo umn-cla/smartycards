@@ -2,6 +2,7 @@
   <div class="min-h-dvh flex flex-col font-sans text-brand-maroon-800">
     <ErrorModal />
     <RouterView />
+    <VueAnnouncer class="sr-only" />
     <!-- <VueQueryDevtools /> -->
   </div>
 </template>

@@ -15,10 +15,10 @@
           <button
             class="drag-handle cursor-move flex items-start px-1 py-3 focus:ring-2 focus:ring-blue-600"
             @click="($event.target as HTMLButtonElement).focus()"
-            @keydown.up="moveBlock(block, 'up')"
-            @keydown.down="moveBlock(block, 'down')"
-            @keydown.left="$emit('dragHandle:left', block)"
-            @keydown.right="$emit('dragHandle:right', block)"
+            @keydown.up.prevent="$emit('dragHandle:up', block)"
+            @keydown.down.prevent="$emit('dragHandle:down', block)"
+            @keydown.left.prevent="$emit('dragHandle:left', block)"
+            @keydown.right.prevent="$emit('dragHandle:right', block)"
           >
             <Icons.IconDragHandle class="size-4" />
             <span class="sr-only">Drag to reorder</span>
@@ -94,9 +94,6 @@ import {
 import { type ContentBlock, type ContentBlockType } from "@/types";
 import MathBlockInput from "./MathBlockInput.vue";
 import { makeContentBlock } from "@/lib/makeContentBlock";
-import { clamp, move } from "ramda";
-import invariant from "tiny-invariant";
-import { focusBlockDragHandle } from "@/lib/blockEditorHelpers";
 
 const lookupComponentType: Record<ContentBlockType, Component> = {
   text: TextBlockInput,
@@ -121,6 +118,8 @@ const emit = defineEmits<{
   (event: "update:modelValue", value: ContentBlock[]): void;
   (event: "dragHandle:left", block: ContentBlock): void;
   (event: "dragHandle:right", block: ContentBlock): void;
+  (event: "dragHandle:up", block: ContentBlock): void;
+  (event: "dragHandle:down", block: ContentBlock): void;
 }>();
 
 const blockTypes = computed(() => {
@@ -175,25 +174,24 @@ function getTypeIcon(type: ContentBlock["type"]): Component {
   return icons[type] ?? Icons.IconQuestionMark;
 }
 
-function moveBlock(block: ContentBlock, direction: "up" | "down") {
-  const delta = direction === "up" ? -1 : 1;
+// function moveBlock(block: ContentBlock, direction: "up" | "down") {
+//   const delta = direction === "up" ? -1 : 1;
 
-  const fromIndex = props.modelValue.findIndex((b) => b.id === block.id);
-  invariant(
-    fromIndex >= 0,
-    `Index of block with id ${block.id} not found in modelValue`,
-  );
-  const toIndex = clamp(0, props.modelValue.length - 1, fromIndex + delta);
+//   const fromIndex = props.modelValue.findIndex((b) => b.id === block.id);
+//   invariant(
+//     fromIndex >= 0,
+//     `Index of block with id ${block.id} not found in modelValue`,
+//   );
+//   const toIndex = clamp(0, props.modelValue.length - 1, fromIndex + delta);
 
-  const updatedArray = move(fromIndex, toIndex, props.modelValue);
+//   const updatedArray = move(fromIndex, toIndex, props.modelValue);
 
-  emit("update:modelValue", updatedArray);
+//   emit("update:modelValue", updatedArray);
 
-  // return focus after dom updates
-  nextTick(() => {
-    focusBlockDragHandle(block);
-    // flashBlock(block);
-  });
-}
+//   // return focus after dom updates
+//   nextTick(() => {
+//     focusBlockDragHandle(block);
+//   });
+// }
 </script>
 <style scoped></style>

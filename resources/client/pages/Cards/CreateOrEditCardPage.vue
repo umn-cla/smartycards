@@ -49,6 +49,8 @@
                 :data-cy="`${side}-side-input`"
                 @dragHandle:left="(block) => handleSwapBlockSide(block, side)"
                 @dragHandle:right="(block) => handleSwapBlockSide(block, side)"
+                @dragHandle:up="(block) => moveBlock(block, side, 'up')"
+                @dragHandle:down="(block) => moveBlock(block, side, 'down')"
               />
             </div>
           </div>
@@ -87,6 +89,8 @@ import { makeContentBlock } from "@/lib/makeContentBlock";
 import { IS_DECK_TTS_ENABLED_INJECTION_KEY } from "@/constants";
 import { focusBlockDragHandle } from "@/lib/blockEditorHelpers";
 import { useAnnouncer } from "@vue-a11y/announcer";
+import invariant from "tiny-invariant";
+import { clamp, move } from "ramda";
 
 const props = defineProps<{
   deckId: number;
@@ -204,6 +208,30 @@ function handleSave({ saveAndAddAnother = false } = {}) {
 
 const announcer = useAnnouncer();
 
+function moveBlock(block, side: "front" | "back", direction: "up" | "down") {
+  const delta = direction === "up" ? -1 : 1;
+
+  const fromIndex = form[side].findIndex((b) => b.id === block.id);
+  invariant(
+    "fromIndex >= 0",
+    `Index of block with id ${block.id} not found in modelValue`,
+  );
+
+  const toIndex = clamp(0, form[side].length - 1, fromIndex + delta);
+
+  if (fromIndex === toIndex) {
+    announcer.assertive(`Block already at position ${toIndex + 1}.`);
+    return;
+  }
+
+  form[side] = move(fromIndex, toIndex, form[side]);
+
+  nextTick(() => {
+    focusBlockDragHandle(block);
+    announcer.assertive(`Moved block ${direction} to position ${toIndex + 1}`);
+  });
+}
+
 function handleSwapBlockSide(
   block: T.ContentBlock,
   currentSide: "front" | "back",
@@ -219,6 +247,9 @@ function handleSwapBlockSide(
   nextTick(() => {
     // focus the block that was just moved
     focusBlockDragHandle(block);
+    announcer.assertive(
+      `Moved block to ${capitalize(otherSide)} side, position ${form[otherSide].length}`,
+    );
   });
 }
 
