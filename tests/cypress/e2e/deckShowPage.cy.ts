@@ -147,7 +147,10 @@ describe("DeckShowPage", () => {
         .should("be.visible");
       cy.get(
         '[data-cy="image-block-input"] [data-cy="image-url-text-input"]',
-      ).type("image.jpg");
+      ).realType("image.jpg");
+      // cy.get(
+      //   '[data-cy="image-block-input"] [data-cy="image-url-text-input"]',
+      // ).type("image.jpg");
     });
 
     // // add a hint block to front side
