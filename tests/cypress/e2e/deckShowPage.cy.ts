@@ -142,16 +142,14 @@ describe("DeckShowPage", () => {
     cy.get("@frontSideInput").contains("Add Block").click();
     cy.get("[role='menu']").contains("Image").click();
     cy.get("@frontSideInput").within(() => {
-      cy.getInputByLabel("Image Url").type(
-        "https://upload.wikimedia.org/wikipedia/commons/4/41/Weisman_Art_Museum.jpg",
-      );
+      cy.getInputByLabel("Image Url").type("image.jpg");
     });
 
     // add a hint block to front side
     cy.get("@frontSideInput").contains("Add Block").click();
     cy.get("[role='menu']").contains("Hint").click();
     cy.get("@frontSideInput").within(() => {
-      cy.getInputByLabel("Hint Text").type("This is a hint");
+      cy.getInputByLabel("Hint Text").type("This is a hint", { delay: 0 });
     });
 
     // remove the default text block from back side
@@ -163,9 +161,7 @@ describe("DeckShowPage", () => {
     cy.get("@backSideInput").contains("Add Block").click();
     cy.get("[role='menu']").contains("Image").click();
     cy.get("@backSideInput").within(() => {
-      cy.getInputByLabel("Image Url").type(
-        "https://upload.wikimedia.org/wikipedia/commons/5/59/Goldy_the_Gopher.jpg",
-      );
+      cy.getInputByLabel("Image Url").type("image.jpg");
     });
 
     // CREATE AND ADD ANOTHER
