@@ -45,6 +45,7 @@
         @update:modelValue="$emit('update:modelValue', $event as string)"
         placeholder="Image URL"
         class="bg-brand-maroon-800/5"
+        data-cy="image-url-text-input"
       />
     </div>
     <div>
