@@ -42,6 +42,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        // No actions needed for down migration
+        //
     }
 };

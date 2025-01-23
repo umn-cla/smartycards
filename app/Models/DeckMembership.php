@@ -18,8 +18,6 @@ class DeckMembership extends Model implements AuditableContract
 
     const ROLE_VIEWER = 'viewer';
 
-    protected $table = 'deck_memberships';
-
     protected $fillable = [
         'deck_id',
         'user_id',

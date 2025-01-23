@@ -56,8 +56,7 @@ class User extends Authenticatable implements AuditableContract
 
     public function decks()
     {
-        return $this->belongsToMany(Deck::class, 'deck_memberships')
-            ->withPivot('role');
+        return $this->belongsToMany(Deck::class, 'deck_memberships')->withPivot('role');
     }
 
     public function cards()
