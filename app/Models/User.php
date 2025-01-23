@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Nova\Auth\Impersonatable;
@@ -13,7 +14,7 @@ use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable implements AuditableContract
 {
-    use AuditableTrait, HasFactory, HasRoles, Impersonatable, Notifiable;
+    use AuditableTrait, HasFactory, HasRoles, Impersonatable, Notifiable, SoftDeletes;
 
     /**
      * The attributes that are mass assignable.

@@ -6,13 +6,14 @@ use Auth;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\DB;
 use OwenIt\Auditing\Auditable as AuditableTrait;
 use OwenIt\Auditing\Contracts\Auditable as AuditableContract;
 
 class Deck extends Model implements AuditableContract
 {
-    use AuditableTrait, HasFactory;
+    use AuditableTrait, HasFactory, SoftDeletes;
 
     protected $casts = [
         'last_attempted_at' => 'datetime',
