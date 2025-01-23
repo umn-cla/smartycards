@@ -22,10 +22,6 @@ return new class extends Migration
         Schema::table('cards', function (Blueprint $table) {
             $table->softDeletes();
         });
-
-        Schema::table('deck_memberships', function (Blueprint $table) {
-            $table->softDeletes();
-        });
     }
 
     /**
@@ -42,10 +38,6 @@ return new class extends Migration
         });
 
         Schema::table('cards', function (Blueprint $table) {
-            $table->dropSoftDeletes();
-        });
-
-        Schema::table('deck_memberships', function (Blueprint $table) {
             $table->dropSoftDeletes();
         });
     }
