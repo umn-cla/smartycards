@@ -86,7 +86,6 @@ class Deck extends Model implements AuditableContract
             'user_role' => DeckMembership::select('role')
                 ->whereColumn('deck_id', 'decks.id')
                 ->where('user_id', $user->id)
-                ->whereNull('deleted_at')
                 ->limit(1),
         ]);
     }
