@@ -5,7 +5,7 @@
     :open="!!error"
     @update:open="errorStore.clearError"
     triggerButtonVariant="none"
-    submitButtonLabel="Reload Page"
+    submitButtonLabel="Go Home"
     cancelButtonLabel="Close"
     @submit="handleRefreshClick"
   >
@@ -17,6 +17,7 @@ import { computed } from "vue";
 import { ApiError } from "@/api/ApiError";
 import Modal from "./Modal.vue";
 import { useErrorStore } from "@/stores/useErrorStore";
+import config from "@/config";
 
 const errorStore = useErrorStore();
 
@@ -48,7 +49,7 @@ const message = computed(() => {
 
 function handleRefreshClick() {
   errorStore.clearError();
-  window.location.reload();
+  window.location.href = config.client.baseUrl;
 }
 </script>
 <style scoped></style>
