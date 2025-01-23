@@ -32,7 +32,7 @@ class Deck extends Model implements AuditableContract
 
     public function users()
     {
-        return $this->belongsToMany(User::class, 'deck_memberships')->withPivot('role')->whereNull('deck_memberships.deleted_at');
+        return $this->belongsToMany(User::class, 'deck_memberships')->withPivot('role');
     }
 
     public function cards()

@@ -43,29 +43,24 @@ class DeckInviteController extends Controller
             abort(403, 'User does not have permission to invite to this deck.');
         }
 
-        $userId = $request->user()->id;
         $existingMembership = DeckMembership::where('deck_id', $deck->id)
-            ->where('user_id', $userId)
-            ->withTrashed()
+            ->where('user_id', $request->user()->id)
             ->first();
 
-        if (! $existingMembership) {
-            DeckMembership::create([
+        // only create/update a new membership if the user is not already a
+        // member, or the role is a promotion (e.g. viewer -> editor)
+        // we don't want to accidentally demote owners if they click
+        // on their own invite link
+        if (! $existingMembership || $existingMembership->isRoleAPromotion($validated['role'])) {
+            DeckMembership::updateOrCreate([
                 'deck_id' => $deck->id,
-                'user_id' => $userId,
-                'role' => $validated['role'],
-            ]);
-        } elseif ($existingMembership->trashed()) {
-            $existingMembership->restore();
-            $existingMembership->update([
-                'role' => $validated['role'],
-            ]);
-        } elseif ($existingMembership->isRoleAPromotion($validated['role'])) {
-            $existingMembership->update([
+                'user_id' => $request->user()->id,
+            ], [
                 'role' => $validated['role'],
             ]);
         }
 
+        // redirect to the deck
         return redirect("/decks/{$deck->id}");
     }
 }
