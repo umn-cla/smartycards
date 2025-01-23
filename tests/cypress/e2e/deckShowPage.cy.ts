@@ -79,11 +79,14 @@ describe("DeckShowPage", () => {
   });
 
   it("deletes a card", () => {
+    cy.intercept("DELETE", "/api/cards/*").as("deleteCard");
+
     cy.createTextCardInDeck(deckId, { front: "Front side", back: "Back side" });
 
     cy.visit(`/decks/${deckId}`);
 
     cy.contains("Front side")
+      .should("be.visible")
       .closest('[data-cy="card-side-view--Front"]')
       .within(() => {
         cy.get('[data-cy="more-card-actions-button"]').click();
@@ -98,7 +101,9 @@ describe("DeckShowPage", () => {
       cy.get('button[type="submit"]').should("have.text", "Delete").click();
     });
 
-    cy.contains("Front side").should("not.be.visible");
+    cy.wait("@deleteCard");
+
+    cy.contains("Front Side").should("not.exist");
   });
 
   it("filters the list of cards given a search term", () => {
@@ -121,7 +126,7 @@ describe("DeckShowPage", () => {
     cy.contains("Another card");
   });
 
-  it.skip("'Create and Add Another' button uses previous card's structure", () => {
+  it("'Create and Add Another' button uses previous card's structure", () => {
     // setup intercept for creating a card
     cy.intercept("POST", "/api/decks/*/cards").as("createCard");
 
@@ -152,9 +157,7 @@ describe("DeckShowPage", () => {
       // events and the FilePond library.
       // Cypress attempts to set a string value on the
       // `<input type="file">` element, which is not allowed.
-      cy.getInputByLabel("Image Url").realType(
-        "https://upload.wikimedia.org/wikipedia/commons/4/41/Weisman_Art_Museum.jpg",
-      );
+      cy.getInputByLabel("Image Url").focus().realType("image.jpg");
     });
 
     // add a hint block to front side
@@ -175,9 +178,7 @@ describe("DeckShowPage", () => {
     cy.get("@backSideInput").within(() => {
       // IMPORTANT: Use `.realType` instead of `.type` here.
       // see above
-      cy.getInputByLabel("Image Url").realType(
-        "https://upload.wikimedia.org/wikipedia/commons/5/59/Goldy_the_Gopher.jpg",
-      );
+      cy.getInputByLabel("Image Url").focus().realType("image.jpg");
     });
 
     // CREATE AND ADD ANOTHER

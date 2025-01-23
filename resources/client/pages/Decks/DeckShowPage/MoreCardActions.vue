@@ -25,7 +25,7 @@
     </DropdownMenuContent>
   </DropdownMenu>
   <Modal
-    title="Delete Deck"
+    title="Delete Card"
     submitButtonLabel="Delete"
     @submit="
       () => {
