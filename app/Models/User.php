@@ -56,12 +56,15 @@ class User extends Authenticatable implements AuditableContract
 
     public function decks()
     {
-        return $this->belongsToMany(Deck::class, 'deck_memberships')->withPivot('role');
+        return $this->belongsToMany(Deck::class, 'deck_memberships')
+            ->withPivot('role')
+            ->whereNull('deck_memberships.deleted_at');
     }
 
     public function cards()
     {
-        return $this->hasManyThrough(Card::class, DeckMembership::class, 'user_id', 'deck_id', 'id', 'deck_id');
+        return $this->hasManyThrough(Card::class, DeckMembership::class, 'user_id', 'deck_id', 'id', 'deck_id')
+            ->whereNull('deck_memberships.deleted_at');
     }
 
     public function cardAttempts()
