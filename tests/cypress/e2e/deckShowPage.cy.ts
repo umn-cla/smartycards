@@ -79,11 +79,14 @@ describe("DeckShowPage", () => {
   });
 
   it("deletes a card", () => {
+    cy.intercept("DELETE", "/api/cards/*").as("deleteCard");
+
     cy.createTextCardInDeck(deckId, { front: "Front side", back: "Back side" });
 
     cy.visit(`/decks/${deckId}`);
 
     cy.contains("Front side")
+      .should("be.visible")
       .closest('[data-cy="card-side-view--Front"]')
       .within(() => {
         cy.get('[data-cy="more-card-actions-button"]').click();
@@ -98,7 +101,9 @@ describe("DeckShowPage", () => {
       cy.get('button[type="submit"]').should("have.text", "Delete").click();
     });
 
-    cy.contains("Front side").should("not.be.visible");
+    cy.wait("@deleteCard");
+
+    cy.contains("Front Side").should("not.exist");
   });
 
   it("filters the list of cards given a search term", () => {
