@@ -4,7 +4,6 @@ namespace App\Library;
 
 use App\Library\OpenAIService\OpenAIService;
 use App\Models\Deck;
-use Barryvdh\Debugbar\Facades\Debugbar;
 use Illuminate\Support\Collection;
 
 class QuizMaker
@@ -181,13 +180,6 @@ interface Quiz {
         $response = $this->removeMarkdownFences($response);
 
         $quiz = json_decode($response, true);
-
-        Debugbar::info([
-            'prompt' => $this->getPrompt(),
-            'systemText' => $this->getSystemText(),
-            'response' => $response,
-            'quiz' => $quiz,
-        ]);
 
         $sourceCardIds = collect($quiz['questions'])->map(fn ($question) => $question['sourceCardId']);
 
