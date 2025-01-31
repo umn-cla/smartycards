@@ -21,22 +21,27 @@
         class="pl-4"
       >
         <div
-          class="flex items-center p-2"
+          class="flex items-center p-4 bg-brand-maroon-950/5 rounded-md transition"
           v-for="(choice, index) in activeQuestion.choices"
           :key="index"
           :class="{
-            'bg-brand-teal-300/10 rounded-md border border-brand-teal-500/50':
+            '!bg-brand-teal-300/10 rounded-md border border-brand-teal-500/50 !text-brand-teal-700':
               isChoiceMade && isChoiceIndexCorrect(index),
+            'hover:bg-brand-gold-500/50': !isChoiceMade,
           }"
         >
           <RadioGroupItem
             :id="getQuestionChoiceId(state.activeQuestionIndex, index)"
             :value="index.toString()"
             class="mr-2"
+            :class="{
+              'border-brand-teal-700':
+                isChoiceMade && isChoiceIndexCorrect(index),
+            }"
           />
           <Label
             :for="getQuestionChoiceId(state.activeQuestionIndex, index)"
-            class="flex w-full items-center justify-between gap-4"
+            class="flex w-full items-center justify-between gap-4 cursor-pointer"
           >
             <Markdown :content="choice" />
             <!-- <span>{{ choice }}</span> -->
