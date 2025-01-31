@@ -118,10 +118,7 @@ interface Quiz {
 
         $prompts = [
             'easy' => "Generate a quiz of {$numberOfQuestions} questions from the following flash cards. Use the {$cardSide} side of the card as the basis for a question prompt. Include only the required information in the prompt. If the question has mathematical content, the question should require the user to apply the mathematical concept to solve a problem and not use the exact same numbers.",
-
-            'medium' => "Generate a quiz of {$numberOfQuestions} questions from the following flash cards, but the quiz prompt and responses MUST NOT be a simple repetition of the flash card data. If the flash card data is a simple fact, the quiz question should require the user to apply, analyze, or synthesize the information to answer the question. If the question has mathematical content, the question should require the user to apply the mathematical concept to solve a problem and not use the exact same numbers.",
-
-            'hard' => "Generate a quiz of {$numberOfQuestions} questions from the following flash cards, testing both front to back and back to front knowledge. The questions should be at a higher level of Bloom's Taxonomy, requiring application, analysis, or synthesis of multiple cards to answer.",
+            'medium' => "Generate a quiz of {$numberOfQuestions} questions from the following flash cards, testing both front to back and back to front knowledge. The questions should be at a higher level of Bloom's Taxonomy, requiring application, analysis, or synthesis of multiple cards to answer.",
         ];
 
         $prompt = $prompts[$level];
