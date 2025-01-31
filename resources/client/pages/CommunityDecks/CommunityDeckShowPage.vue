@@ -19,7 +19,7 @@
             </Button>
             <Button
               v-if="deck.capabilities.canJoinAsViewer"
-              @click="joinDeck(deck.id)"
+              @click="handleJoinDeck"
               >Join</Button
             >
             <Button
@@ -54,6 +54,7 @@ import FlippableCard from "@/components/FlippableCard.vue";
 import { ref } from "vue";
 import { useJoinCommunityDeckMutation } from "@/queries/community";
 import { useLeaveDeckMutation } from "@/queries/deckMemberships";
+import { useRouter } from "vue-router";
 
 const props = defineProps<{
   deckId: number;
@@ -70,6 +71,12 @@ function flipAllCards() {
 }
 
 const { mutate: joinDeck } = useJoinCommunityDeckMutation();
+
+const router = useRouter();
+async function handleJoinDeck() {
+  await joinDeck(deckIdRef.value);
+  router.push({ name: "decks.show", params: { deckId: deckIdRef.value } });
+}
 const { mutate: leaveDeck } = useLeaveDeckMutation();
 </script>
 <style scoped></style>

@@ -18,7 +18,26 @@
               <h3 class="text-lg font-bold">{{ deck.name }}</h3>
               <p class="text-sm text-stone-400 mb-4">{{ deck.description }}</p>
 
-              <div class="flex gap-2 justify-end">
+              <div v-if="deck.current_user_role" class="flex gap-2 justify-end">
+                <Button asChild variant="secondary">
+                  <RouterLink
+                    :to="{
+                      name: 'decks.show',
+                      params: { deckId: deck.id },
+                    }"
+                    class="btn btn-primary"
+                    >View</RouterLink
+                  >
+                </Button>
+                <Button
+                  v-if="deck.capabilities.canLeave"
+                  @click="leaveDeck(deck.id)"
+                  variant="destructive"
+                  >Leave</Button
+                >
+              </div>
+
+              <div v-else class="flex gap-2 justify-end">
                 <Button asChild variant="secondary">
                   <RouterLink
                     :to="{
@@ -33,12 +52,6 @@
                   v-if="deck.capabilities.canJoinAsViewer"
                   @click="joinDeck(deck.id)"
                   >Join</Button
-                >
-                <Button
-                  v-else-if="deck.capabilities.canLeave"
-                  @click="leaveDeck(deck.id)"
-                  variant="destructive"
-                  >Leave</Button
                 >
               </div>
             </article>
