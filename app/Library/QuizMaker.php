@@ -31,7 +31,7 @@ class QuizMaker
     {
         $challengeLevel = $this->options['challenge_level'];
         $systemText =
-"You generate high quality multiple choice quizzes from a set of json flash card data at the {$challengeLevel} level. Include challenging distractors that are not part of the flash card data set. Your response should use the following formats and respond in JSON. Both the prompt and choices should be plain text only with no markup.".
+"You generate high quality multiple choice quizzes from a set of json flash card data at the {$challengeLevel} level. Include challenging distractors that are not part of the flash card data set. Your response should use the following formats and respond in JSON. The prompt and responses should be in proper markdown. Use proper markdown any math or LaTeX wrapping it with $, like $\\frac{1}{2}$.".
 
 "```ts
 interface Question {
@@ -65,7 +65,7 @@ interface Quiz {
 
         return collect($contentBlocks)
             ->map(function ($block) {
-                if ($block['type'] === 'text') {
+                if (collect(['text', 'math'])->contains($block['type'])) {
                     return $block['content'];
                 }
 
@@ -110,7 +110,7 @@ interface Quiz {
             ->map(fn ($card) => $this->normalizeCard($card));
     }
 
-    public function getPrompt($level = 'easy')
+    public function getPrompt($level = 'medium')
     {
         $stringifiedCards = $this->getNormalizedCards()->toJson();
         $numberOfQuestions = $this->options['numberOfQuestions'];
@@ -119,7 +119,9 @@ interface Quiz {
         $prompts = [
             'easy' => "Generate a quiz of {$numberOfQuestions} questions from the following flash cards. Use the {$cardSide} side of the card as the basis for a question prompt. Include only the required information in the prompt.",
 
-            'medium' => "Generate a quiz of {$numberOfQuestions} questions from the following flash cards, testing both front to back and back to front knowledge. The questions should be at a higher level of Bloom's Taxonomy, requiring application, analysis, or synthesis of multiple cards to answer.",
+            'medium' => "Generate a quiz of {$numberOfQuestions} questions from the following flash cards, but the quiz prompt and responses MUST NOT be a simple repetition of the flash card data. If the flash card data is a simple fact, the quiz question should require the user to apply, analyze, or synthesize the information to answer the question. If the question has mathematical content, the question should require the user to apply the mathematical concept to solve a problem and not use the exact same numbers.",
+
+            'hard' => "Generate a quiz of {$numberOfQuestions} questions from the following flash cards, testing both front to back and back to front knowledge. The questions should be at a higher level of Bloom's Taxonomy, requiring application, analysis, or synthesis of multiple cards to answer.",
         ];
 
         $prompt = $prompts[$level];

@@ -11,7 +11,8 @@
         :side="activeQuestionPromptMedia"
         class="mb-4"
       />
-      <p class="mb-4">{{ activeQuestion.prompt }}</p>
+      <!-- <p class="mb-4">{{ activeQuestion.prompt }}</p> -->
+      <Markdown :content="activeQuestion.prompt" class="mb-4" />
 
       <RadioGroup
         :modelValue="state.activeChoiceIndex?.toString()"
@@ -22,6 +23,7 @@
         <div
           class="flex items-center p-2"
           v-for="(choice, index) in activeQuestion.choices"
+          :key="index"
           :class="{
             'bg-brand-teal-300/10 rounded-md border border-brand-teal-500/50':
               isChoiceMade && isChoiceIndexCorrect(index),
@@ -36,7 +38,8 @@
             :for="getQuestionChoiceId(state.activeQuestionIndex, index)"
             class="flex w-full items-center justify-between gap-4"
           >
-            <span>{{ choice }}</span>
+            <Markdown :content="choice" />
+            <!-- <span>{{ choice }}</span> -->
             <span v-if="isChoiceMade && isChoiceIndexCorrect(index)">✅</span>
             <span v-else-if="isChoiceMade && state.activeChoiceIndex === index"
               >❌</span
@@ -83,6 +86,7 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Button } from "@/components/ui/button";
 import CardSideView from "@/components/CardSideView/CardSideView.vue";
+import Markdown from "@/components/Markdown.vue";
 
 const props = defineProps<{
   quiz: T.Quiz;
@@ -116,9 +120,11 @@ const activeQuestionPromptMedia = computed((): T.ContentBlock[] => {
   const card = activeQuestion.value.sourceCard;
   const side = activeQuestion.value.sourceCardSide;
   const contentBlocks = card[side];
-  const nonTextBlocks = contentBlocks.filter((block) => block.type !== "text");
+  const nonMarkdownableBlocks = contentBlocks.filter(
+    (block) => !["text", "math"].includes(block.type),
+  );
 
-  return nonTextBlocks;
+  return nonMarkdownableBlocks;
 });
 function isChoiceIndexCorrect(choiceIndex?: number): boolean {
   return activeQuestion.value.correctChoiceIndex === choiceIndex;
