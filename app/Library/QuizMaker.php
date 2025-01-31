@@ -110,14 +110,14 @@ interface Quiz {
             ->map(fn ($card) => $this->normalizeCard($card));
     }
 
-    public function getPrompt($level = 'medium')
+    public function getPrompt($level = 'easy')
     {
         $stringifiedCards = $this->getNormalizedCards()->toJson();
         $numberOfQuestions = $this->options['numberOfQuestions'];
         $cardSide = $this->options['cardSide'];
 
         $prompts = [
-            'easy' => "Generate a quiz of {$numberOfQuestions} questions from the following flash cards. Use the {$cardSide} side of the card as the basis for a question prompt. Include only the required information in the prompt.",
+            'easy' => "Generate a quiz of {$numberOfQuestions} questions from the following flash cards. Use the {$cardSide} side of the card as the basis for a question prompt. Include only the required information in the prompt. If the question has mathematical content, the question should require the user to apply the mathematical concept to solve a problem and not use the exact same numbers.",
 
             'medium' => "Generate a quiz of {$numberOfQuestions} questions from the following flash cards, but the quiz prompt and responses MUST NOT be a simple repetition of the flash card data. If the flash card data is a simple fact, the quiz question should require the user to apply, analyze, or synthesize the information to answer the question. If the question has mathematical content, the question should require the user to apply the mathematical concept to solve a problem and not use the exact same numbers.",
 
