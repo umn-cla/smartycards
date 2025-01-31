@@ -4,6 +4,7 @@ namespace App\Library;
 
 use App\Library\OpenAIService\OpenAIService;
 use App\Models\Deck;
+// use Barryvdh\Debugbar\Facades\Debugbar;
 use Illuminate\Support\Collection;
 
 class QuizMaker
@@ -164,30 +165,37 @@ interface Quiz {
 
     public function generateQuiz()
     {
-        try {
-            $response = $this->openAI->request($this->getPrompt(), $this->getSystemText());
+        $response = $this->openAI->request($this->getPrompt(), $this->getSystemText());
 
-            $quiz = json_decode($response, true);
+        // sometimes the response is not valid JSON and
+        // includes markdown fences, so we need to strip them
+        $response = preg_replace('/^```.*\n$/', '', $response);
 
-            $sourceCardIds = collect($quiz['questions'])->map(fn ($question) => $question['sourceCardId']);
+        $quiz = json_decode($response, true);
 
-            // get cards the quiz questions are based on
-            $cards = $this->deck->cards()->whereIn('id', $sourceCardIds)->get();
+        // Debugbar::info([
+        //     'prompt' => $this->getPrompt(),
+        //     'systemText' => $this->getSystemText(),
+        //     'response' => $response,
+        //     'quiz' => $quiz,
+        // ]);
 
-            // create a card lookup
-            $cardLookup = $cards->keyBy('id');
+        $sourceCardIds = collect($quiz['questions'])->map(fn ($question) => $question['sourceCardId']);
 
-            // add the card data to the quiz
-            foreach ($quiz['questions'] as &$question) {
-                $card = $cardLookup[$question['sourceCardId']];
+        // get cards the quiz questions are based on
+        $cards = $this->deck->cards()->whereIn('id', $sourceCardIds)->get();
 
-                $question['sourceCard'] = $card;
-                $question['sourceCardSide'] = $this->options['cardSide'];
-            }
+        // create a card lookup
+        $cardLookup = $cards->keyBy('id');
 
-            return $this->randomizeQuiz($quiz);
-        } catch (\Exception $e) {
-            throw new \Exception("Failed to generate quiz: {$e->getMessage()}");
+        // add the card data to the quiz
+        foreach ($quiz['questions'] as &$question) {
+            $card = $cardLookup[$question['sourceCardId']];
+
+            $question['sourceCard'] = $card;
+            $question['sourceCardSide'] = $this->options['cardSide'];
         }
+
+        return $this->randomizeQuiz($quiz);
     }
 }
