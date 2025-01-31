@@ -4,7 +4,7 @@ namespace App\Library;
 
 use App\Library\OpenAIService\OpenAIService;
 use App\Models\Deck;
-// use Barryvdh\Debugbar\Facades\Debugbar;
+use Barryvdh\Debugbar\Facades\Debugbar;
 use Illuminate\Support\Collection;
 
 class QuizMaker
@@ -163,22 +163,31 @@ interface Quiz {
         ];
     }
 
+    private function removeMarkdownFences($response)
+    {
+        // remove markdown fences
+        $response = preg_replace('/^```json\n/', '', $response);
+        $response = preg_replace('/```$/', '', $response);
+
+        return $response;
+    }
+
     public function generateQuiz()
     {
         $response = $this->openAI->request($this->getPrompt(), $this->getSystemText());
 
         // sometimes the response is not valid JSON and
         // includes markdown fences, so we need to strip them
-        $response = preg_replace('/^```.*\n$/', '', $response);
+        $response = $this->removeMarkdownFences($response);
 
         $quiz = json_decode($response, true);
 
-        // Debugbar::info([
-        //     'prompt' => $this->getPrompt(),
-        //     'systemText' => $this->getSystemText(),
-        //     'response' => $response,
-        //     'quiz' => $quiz,
-        // ]);
+        Debugbar::info([
+            'prompt' => $this->getPrompt(),
+            'systemText' => $this->getSystemText(),
+            'response' => $response,
+            'quiz' => $quiz,
+        ]);
 
         $sourceCardIds = collect($quiz['questions'])->map(fn ($question) => $question['sourceCardId']);
 
