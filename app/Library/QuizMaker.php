@@ -32,24 +32,43 @@ class QuizMaker
     {
         $challengeLevel = $this->options['challenge_level'];
         $systemText =
-"You generate high quality multiple choice quizzes from a set of json flash card data at the {$challengeLevel} level. Include challenging distractors that are not part of the flash card data set. Your response should use the following formats. The prompt and choices should be in proper markdown. Whenever you output any math content (like \\frac{1}{2} or \\sqrt{2}), please always wrap it in $ for inline math. For example, output \\frac{1}{2} as $\\frac{1}{2}$.".
-
-"```ts
-interface Question {
-  sourceCardId: number; // the id of the flash card the question is based on
-  prompt: string; // the question the user will be asked
-  choices: string[];
-  correctChoiceIndex: number;
-}
-
-interface Quiz {
-   difficulty: 'hs' | 'undergrad' | 'grad';
-   questions: Question[];
-}
-```
-";
+"You generate high quality multiple choice quizzes from a set of json flash card data at the {$challengeLevel} level. Include challenging distractors that are not part of the flash card data set. Your response should use the following formats. The prompt and choices should be in proper markdown. Whenever you output any math content (like \\frac{1}{2} or \\sqrt{2}), please always wrap it in $ for inline math. For example, output \\frac{1}{2} as $\\frac{1}{2}$.";
 
         return $systemText;
+    }
+
+    public function getResponseSchema()
+    {
+        return [
+            'name' => 'quiz',
+            'strict' => true,
+            'schema' => [
+                'type' => 'object',
+                'properties' => [
+                    'difficulty' => ['type' => 'string'],
+                    'questions' => [
+                        'type' => 'array',
+                        'items' => [
+                            'type' => 'object',
+                            'properties' => [
+                                'sourceCardId' => ['type' => 'number'],
+                                'prompt' => ['type' => 'string'],
+                                'choices' => [
+                                    'type' => 'array',
+                                    'items' => ['type' => 'string'],
+                                    'additionalProperties' => false,
+                                ],
+                                'correctChoiceIndex' => ['type' => 'number'],
+                            ],
+                            'required' => ['sourceCardId', 'prompt', 'choices', 'correctChoiceIndex'],
+                            'additionalProperties' => false,
+                        ],
+                    ],
+                ],
+                'required' => ['difficulty', 'questions'],
+                'additionalProperties' => false,
+            ],
+        ];
     }
 
     /**
@@ -173,7 +192,11 @@ interface Quiz {
 
     public function generateQuiz()
     {
-        $response = $this->openAI->request($this->getPrompt(), $this->getSystemText());
+        $response = $this->openAI->request(
+            prompt: $this->getPrompt(),
+            systemText: $this->getSystemText(),
+            responseSchema: $this->getResponseSchema()
+        );
 
         Debugbar::info($response);
 

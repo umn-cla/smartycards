@@ -36,10 +36,14 @@ class OpenAIService
     /**
      * Sends a chat request to the OpenAI service.
      */
-    public function request(string $prompt, ?string $systemText = null): string
+    public function request(string $prompt, ?string $systemText, array $responseSchema): string
     {
         $systemText = $systemText ?? $this->systemText;
-        $payload = ChatRequest::createPayload($prompt, $systemText);
+        $payload = ChatRequest::createPayload(
+            prompt: $prompt,
+            systemText: $systemText,
+            responseSchema: $responseSchema
+        );
 
         try {
             $response = $this->client->chat()->create($payload);
