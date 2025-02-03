@@ -31,7 +31,7 @@ class QuizMaker
     {
         $challengeLevel = $this->options['challenge_level'];
         $systemText =
-"You generate high quality multiple choice quizzes from a set of json flash card data at the {$challengeLevel} level. Include challenging distractors that are not part of the flash card data set. Your response should use the following formats. The prompt and choices should be in proper markdown. Whenever you output any math content (like \\frac{1}{2} or \\sqrt{2}), please always wrap it in $ for inline math. For example, output `\\frac{1}{2}` as `$\\frac{1}{2}$`.";
+"You generate high quality multiple choice quizzes from a set of json flash card data at the {$challengeLevel} level. Include challenging distractors that are not part of the flash card data set. The prompt and choices should be in proper markdown. LaTeX math expressions should be wrapped with $ or $$. For example, output `\\frac{1}{2}` as `$ \\frac{1}{2} $`.";
 
         return $systemText;
     }
