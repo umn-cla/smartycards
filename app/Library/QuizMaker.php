@@ -4,7 +4,6 @@ namespace App\Library;
 
 use App\Library\OpenAIService\OpenAIService;
 use App\Models\Deck;
-use Barryvdh\Debugbar\Facades\Debugbar;
 use Illuminate\Support\Collection;
 
 class QuizMaker
@@ -197,8 +196,6 @@ class QuizMaker
             systemText: $this->getSystemText(),
             responseSchema: $this->getResponseSchema()
         );
-
-        Debugbar::info($response);
 
         // sometimes the response is not valid JSON and
         // includes markdown fences, so we need to strip them
