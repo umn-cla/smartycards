@@ -4,6 +4,7 @@ namespace App\Library;
 
 use App\Library\OpenAIService\OpenAIService;
 use App\Models\Deck;
+use Barryvdh\Debugbar\Facades\Debugbar;
 use Illuminate\Support\Collection;
 
 class QuizMaker
@@ -31,7 +32,7 @@ class QuizMaker
     {
         $challengeLevel = $this->options['challenge_level'];
         $systemText =
-"You generate high quality multiple choice quizzes from a set of json flash card data at the {$challengeLevel} level. Include challenging distractors that are not part of the flash card data set. Your response should use the following formats and respond in JSON. The prompt and choices should be in proper markdown. Whenever you output any math content (like \\frac{1}{2} or \\sqrt{2}), please always wrap it in $ for inline math. For example, output \\frac{1}{2} as $\\frac{1}{2}$.".
+"You generate high quality multiple choice quizzes from a set of json flash card data at the {$challengeLevel} level. Include challenging distractors that are not part of the flash card data set. Your response should use the following formats. The prompt and choices should be in proper markdown. Whenever you output any math content (like \\frac{1}{2} or \\sqrt{2}), please always wrap it in $ for inline math. For example, output \\frac{1}{2} as $\\frac{1}{2}$.".
 
 "```ts
 interface Question {
@@ -46,8 +47,7 @@ interface Quiz {
    questions: Question[];
 }
 ```
-".
-"Be sure you're only returning valid minimized JSON with no additional markup or markdown, like wrapping with '```json' nor any `\n` characters.";
+";
 
         return $systemText;
     }
@@ -174,6 +174,8 @@ interface Quiz {
     public function generateQuiz()
     {
         $response = $this->openAI->request($this->getPrompt(), $this->getSystemText());
+
+        Debugbar::info($response);
 
         // sometimes the response is not valid JSON and
         // includes markdown fences, so we need to strip them

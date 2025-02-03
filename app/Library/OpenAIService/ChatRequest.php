@@ -41,6 +41,7 @@ class ChatRequest
             'temperature' => $this->temperature,
             'max_tokens' => $this->maxTokens,
             'top_p' => $this->topP,
+            'response_format' => ['type' => 'json_object'],
         ];
     }
 
