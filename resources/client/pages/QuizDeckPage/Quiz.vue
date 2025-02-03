@@ -20,14 +20,15 @@
         :disabled="isChoiceMade"
         class="pl-4"
       >
-        <div
+        <Label
           class="flex items-center p-4 bg-brand-maroon-950/5 rounded-md transition"
           v-for="(choice, index) in activeQuestion.choices"
           :key="index"
+          :for="getQuestionChoiceId(state.activeQuestionIndex, index)"
           :class="{
             '!bg-brand-teal-300/10 rounded-md border border-brand-teal-500/50 !text-brand-teal-700':
               isChoiceMade && isChoiceIndexCorrect(index),
-            'hover:bg-brand-gold-500/50': !isChoiceMade,
+            'hover:bg-brand-gold-500/50 cursor-pointer': !isChoiceMade,
           }"
         >
           <RadioGroupItem
@@ -39,18 +40,15 @@
                 isChoiceMade && isChoiceIndexCorrect(index),
             }"
           />
-          <Label
-            :for="getQuestionChoiceId(state.activeQuestionIndex, index)"
-            class="flex w-full items-center justify-between gap-4 cursor-pointer"
-          >
+          <div class="flex w-full items-center justify-between gap-4">
             <Markdown :content="choice" />
             <!-- <span>{{ choice }}</span> -->
             <span v-if="isChoiceMade && isChoiceIndexCorrect(index)">✅</span>
             <span v-else-if="isChoiceMade && state.activeChoiceIndex === index"
               >❌</span
             >
-          </Label>
-        </div>
+          </div>
+        </Label>
       </RadioGroup>
 
       <footer v-if="isChoiceMade">
