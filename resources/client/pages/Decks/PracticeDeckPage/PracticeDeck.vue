@@ -21,6 +21,9 @@
         }"
       />
 
+      <p class="text-xs text-center text-brand-maroon-900/40 my-2">
+        {{ cardsRemaining }} cards left
+      </p>
       <div class="my-4 sm:my-8">
         <CardAttemptChoices
           @answer="handleAnswer"
@@ -37,7 +40,7 @@ import * as T from "@/types";
 import CardAttemptChoices from "@/components/CardAttemptChoices.vue";
 import FlippableCard from "@/components/FlippableCard.vue";
 import { Button } from "@/components/ui/button";
-import { reactive, watch, onMounted } from "vue";
+import { reactive, watch, onMounted, computed } from "vue";
 import { toShuffled, getRandomIntInclusive } from "@/lib/utils";
 import { partition } from "ramda";
 
@@ -60,6 +63,8 @@ const state = reactive({
   // so that the user sees the same side when it comes up again
   randomSideMap: {} as Record<T.Card["id"], T.CardSideName>,
 });
+
+const cardsRemaining = computed(() => state.cardsToPractice.length);
 
 function getInitialSideName(card: T.Card): T.CardSideName {
   return props.initialSideName === "random"
