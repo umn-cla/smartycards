@@ -12,10 +12,8 @@
         :back="state.isTransitiongToNext ? [] : state.activeCard?.back"
         :showLabels="true"
         :initialSideName="getInitialSideName(state.activeCard)"
-        class="max-w-full max-h-full mx-auto transition-all duration-300"
+        class="max-w-screen-sm h-[50dvh] mx-auto transition-all duration-300"
         :class="{
-          'w-[33dvh] h-[50dvh]': orientation === 'portrait',
-          'w-[50dvw] h-[33dvw]': orientation === 'landscape',
           'opacity-0 translate-y-[50vh]': state.isTransitiongToNext,
           'opacity-100': !state.isTransitiongToNext,
         }"
@@ -47,7 +45,6 @@ import { partition } from "ramda";
 const props = defineProps<{
   deck: T.DeckWithCards;
   initialSideName: T.CardSideName | "random";
-  orientation: "portrait" | "landscape";
 }>();
 
 const emit = defineEmits<{

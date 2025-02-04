@@ -190,6 +190,7 @@ const tailwindConfig = {
         "collapsible-up": "collapsible-up 0.2s ease-in-out",
       },
       screens: {
+        xs: "480px",
         landscape: { raw: "(min-aspect-ratio: 1/1)" }, // width > height
         portrait: { raw: "(max-aspect-ratio: 1/1)" },
       },

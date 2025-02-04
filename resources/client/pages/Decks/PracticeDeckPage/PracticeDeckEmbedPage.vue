@@ -1,7 +1,7 @@
 <template>
   <EmbedLayout>
     <header
-      class="flex mb-4 sm:mb-6 -mt-2 sm:mt-0 flex-col mx-auto max-w-screen-sm gap-4"
+      class="flex flex-col mx-auto max-w-screen-sm gap-4 mb-4"
       v-if="deck"
     >
       <h1
@@ -21,34 +21,6 @@
             <SelectOption value="random">Random</SelectOption>
           </SimpleSelect>
         </div>
-        <div class="hidden sm:flex items-center justify-center">
-          <Button
-            @click="state.orientation = 'portrait'"
-            :variant="
-              state.orientation === 'portrait' ? 'default' : 'secondary'
-            "
-            class="uppercase text-xs tracking-wider rounded-r-none"
-          >
-            Tall
-          </Button>
-          <Button
-            @click="state.orientation = 'landscape'"
-            :variant="
-              state.orientation === 'landscape' ? 'default' : 'secondary'
-            "
-            class="uppercase text-xs tracking-wider rounded-l-none"
-          >
-            Wide
-          </Button>
-        </div>
-        <Button asChild variant="secondary">
-          <RouterLink
-            :to="{ name: 'decks.show', params: { deckId: props.deckId } }"
-            class="flex gap-2 items-center"
-          >
-            End Practice
-          </RouterLink>
-        </Button>
       </div>
       <LevelProgress
         :xp="deckStats?.current_user_xp ?? 0"
@@ -90,7 +62,6 @@ import { useDeckStatsQuery } from "@/queries/decks/useDeckStatsQuery";
 import PracticeDeck from "./PracticeDeck.vue";
 import { IS_DECK_TTS_ENABLED_INJECTION_KEY } from "@/constants";
 import { useIsDeckTTSEnabled } from "@/composables/useIsDeckTTSEnabled";
-import invariant from "tiny-invariant";
 
 const props = defineProps<{
   deckId: number;
@@ -98,7 +69,6 @@ const props = defineProps<{
 
 const state = reactive({
   initialSideName: "front" as T.CardSideName | "random",
-  orientation: "portrait" as "portrait" | "landscape",
 });
 
 const deckIdRef = computed(() => props.deckId);

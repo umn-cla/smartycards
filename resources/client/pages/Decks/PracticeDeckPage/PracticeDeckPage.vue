@@ -21,26 +21,6 @@
             <SelectOption value="random">Random</SelectOption>
           </SimpleSelect>
         </div>
-        <div class="hidden sm:flex items-center justify-center">
-          <Button
-            @click="state.orientation = 'portrait'"
-            :variant="
-              state.orientation === 'portrait' ? 'default' : 'secondary'
-            "
-            class="uppercase text-xs tracking-wider rounded-r-none"
-          >
-            Tall
-          </Button>
-          <Button
-            @click="state.orientation = 'landscape'"
-            :variant="
-              state.orientation === 'landscape' ? 'default' : 'secondary'
-            "
-            class="uppercase text-xs tracking-wider rounded-l-none"
-          >
-            Wide
-          </Button>
-        </div>
         <Button asChild variant="secondary">
           <RouterLink
             :to="{ name: 'decks.show', params: { deckId: props.deckId } }"
@@ -97,7 +77,6 @@ const props = defineProps<{
 
 const state = reactive({
   initialSideName: "front" as T.CardSideName | "random",
-  orientation: "portrait" as "portrait" | "landscape",
 });
 
 const deckIdRef = computed(() => props.deckId);
