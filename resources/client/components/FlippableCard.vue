@@ -1,6 +1,6 @@
 <template>
   <div
-    class="flippable-card relative min-h-[20rem] perspective flex items-center gap-4 text-brand-maroon-950"
+    class="flippable-card relative min-h-[20rem] perspective w-full flex items-center gap-4 text-brand-maroon-950"
     data-cy="flippable-card"
   >
     <div
