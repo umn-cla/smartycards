@@ -21,6 +21,12 @@
           Practice
         </RouterLink>
       </DropdownMenuItem>
+      <DropdownMenuItem asChild>
+        <button @click="state.isEmbedModalOpen = true" class="block w-full">
+          <IconEmbed class="size-5 mr-4" />
+          Embed
+        </button>
+      </DropdownMenuItem>
       <DropdownMenuItem asChild v-if="deck.capabilities.canUpdate">
         <RouterLink
           :to="{ name: 'decks.import', params: { deckId: deck.id } }"
@@ -87,16 +93,17 @@
       This cannot be undone.
     </p>
   </Modal>
+  <EmbedDeckModal :deck="deck" v-model:isOpen="state.isEmbedModalOpen" />
 </template>
 <script setup lang="ts">
 import {
   IconEllipsesVertical,
-  IconPencil,
   IconExit,
   IconTrash,
   IconUpload,
   IconCirclePlay,
   IconSettings,
+  IconEmbed,
 } from "@/components/icons";
 import {
   DropdownMenu,
@@ -104,13 +111,15 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import * as T from "@/types";
 import { useDeleteDeckMutation } from "@/queries/decks";
 import { useLeaveDeckMutation } from "@/queries/deckMemberships";
 import Modal from "@/components/Modal.vue";
-import { reactive } from "vue";
+import { computed, reactive } from "vue";
 import { useRouter } from "vue-router";
+import EmbedDeckModal from "@/components/EmbedDeckModal.vue";
 
 const props = defineProps<{
   deck: T.Deck;
@@ -119,6 +128,7 @@ const props = defineProps<{
 const state = reactive({
   isConfirmDeleteModalOpen: false,
   isConfirmLeaveDeckModalOpen: false,
+  isEmbedModalOpen: false,
 });
 
 const { mutate: deleteDeck } = useDeleteDeckMutation();
