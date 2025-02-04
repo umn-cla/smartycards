@@ -15,24 +15,30 @@ const router = createRouter({
       path: "/",
       name: "home",
       component: HomePage,
+      meta: {
+        requireAuth: false,
+      },
     },
     {
       path: "/auth/login",
       name: "auth.login",
       component: () => import("../pages/Auth/LoginPage.vue"),
+      meta: {
+        requireAuth: false,
+      },
     },
     {
       path: "/auth/callback",
       name: "auth.callback",
       redirect: "/decks",
+      meta: {
+        requireAuth: false,
+      },
     },
     {
       path: "/decks",
       name: "decks.index",
       component: () => import("../pages/Decks/DeckIndexPage"),
-      meta: {
-        requireAuth: true,
-      },
     },
     {
       path: "/community/decks",
@@ -141,6 +147,15 @@ const router = createRouter({
       }),
     },
     {
+      path: "/decks/:deckId/practice/embed",
+      name: "decks.practice.embed",
+      component: () =>
+        import("@/pages/Decks/PracticeDeckPage/PracticeDeckEmbedPage.vue"),
+      props: (route) => ({
+        deckId: Number(route.params.deckId),
+      }),
+    },
+    {
       path: "/decks/:deckId/quiz",
       name: "decks.quiz",
       component: () => import("../pages/QuizDeckPage/QuizDeckPage.vue"),
@@ -194,7 +209,8 @@ const router = createRouter({
 
 router.beforeEach(async (to, from, next) => {
   const queryClient = useQueryClient();
-  if (!to.meta?.requireAuth) {
+  const isAuthRequired = to.meta?.requireAuth ?? true;
+  if (!isAuthRequired) {
     return next();
   }
 
