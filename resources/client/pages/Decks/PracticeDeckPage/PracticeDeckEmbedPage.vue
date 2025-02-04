@@ -4,13 +4,11 @@
       class="flex mb-4 sm:mb-6 -mt-2 sm:mt-0 flex-col mx-auto max-w-screen-sm gap-4"
       v-if="deck"
     >
-      <div class="flex items-center justify-between w-full flex-wrap">
-        <h1
-          class="font-bold text-brand-maroon-800 sm:text-xl text-center leading-none"
-        >
-          {{ deck.name }}
-        </h1>
-      </div>
+      <h1
+        class="font-bold text-brand-maroon-800 sm:text-xl text-center leading-none"
+      >
+        {{ deck.name }}
+      </h1>
       <div class="flex items-center justify-between w-full flex-wrap">
         <div class="flex gap-1 items-baseline">
           <Label for="starting-side-select" class="sr-only">Start Side</Label>
