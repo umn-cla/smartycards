@@ -1,5 +1,5 @@
 <template>
-  <div class="math-block-view flex justify-center">
+  <div class="math-block-view flex flex-wrap">
     <VueMathField
       :readOnly="true"
       :modelValue="block.content"

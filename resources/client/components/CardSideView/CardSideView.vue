@@ -25,7 +25,11 @@
           :modelValue="block.content"
           :meta="block.meta"
         />
-        <MathBlockView v-else-if="isMathBlock(block)" :block="block" />
+        <MathBlockView
+          v-else-if="isMathBlock(block)"
+          :block="block"
+          class="mx-auto"
+        />
         <UnknownBlockView v-else :block="block" />
       </template>
     </div>

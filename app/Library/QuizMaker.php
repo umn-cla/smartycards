@@ -31,25 +31,43 @@ class QuizMaker
     {
         $challengeLevel = $this->options['challenge_level'];
         $systemText =
-"You generate high quality multiple choice quizzes from a set of json flash card data at the {$challengeLevel} level. Include challenging distractors that are not part of the flash card data set. Your response should use the following formats and respond in JSON. Both the prompt and choices should be plain text only with no markup.".
-
-"```ts
-interface Question {
-  sourceCardId: number; // the id of the flash card the question is based on
-  prompt: string; // the question the user will be asked
-  choices: string[];
-  correctChoiceIndex: number;
-}
-
-interface Quiz {
-   difficulty: 'hs' | 'undergrad' | 'grad';
-   questions: Question[];
-}
-```
-".
-"Be sure you're only returning valid minimized JSON with no additional markup or markdown, like wrapping with '```json' nor any `\n` characters.";
+"You generate high quality multiple choice quizzes from a set of json flash card data at the {$challengeLevel} level. Include challenging distractors that are not part of the flash card data set. The prompt and choices should be in proper markdown. LaTeX math expressions should be wrapped with $ or $$. For example, output `\\frac{1}{2}` as `$ \\frac{1}{2} $`.";
 
         return $systemText;
+    }
+
+    public function getResponseSchema()
+    {
+        return [
+            'name' => 'quiz',
+            'strict' => true,
+            'schema' => [
+                'type' => 'object',
+                'properties' => [
+                    'difficulty' => ['type' => 'string'],
+                    'questions' => [
+                        'type' => 'array',
+                        'items' => [
+                            'type' => 'object',
+                            'properties' => [
+                                'sourceCardId' => ['type' => 'number'],
+                                'prompt' => ['type' => 'string'],
+                                'choices' => [
+                                    'type' => 'array',
+                                    'items' => ['type' => 'string'],
+                                    'additionalProperties' => false,
+                                ],
+                                'correctChoiceIndex' => ['type' => 'number'],
+                            ],
+                            'required' => ['sourceCardId', 'prompt', 'choices', 'correctChoiceIndex'],
+                            'additionalProperties' => false,
+                        ],
+                    ],
+                ],
+                'required' => ['difficulty', 'questions'],
+                'additionalProperties' => false,
+            ],
+        ];
     }
 
     /**
@@ -65,7 +83,7 @@ interface Quiz {
 
         return collect($contentBlocks)
             ->map(function ($block) {
-                if ($block['type'] === 'text') {
+                if (collect(['text', 'math'])->contains($block['type'])) {
                     return $block['content'];
                 }
 
@@ -117,8 +135,7 @@ interface Quiz {
         $cardSide = $this->options['cardSide'];
 
         $prompts = [
-            'easy' => "Generate a quiz of {$numberOfQuestions} questions from the following flash cards. Use the {$cardSide} side of the card as the basis for a question prompt. Include only the required information in the prompt.",
-
+            'easy' => "Generate a quiz of {$numberOfQuestions} questions from the following flash cards. Use the {$cardSide} side of the card as the basis for a question prompt. Include only the required information in the prompt. If the question has mathematical content, the question should require the user to apply the mathematical concept to solve a problem and not use the exact same numbers.",
             'medium' => "Generate a quiz of {$numberOfQuestions} questions from the following flash cards, testing both front to back and back to front knowledge. The questions should be at a higher level of Bloom's Taxonomy, requiring application, analysis, or synthesis of multiple cards to answer.",
         ];
 
@@ -165,30 +182,30 @@ interface Quiz {
 
     public function generateQuiz()
     {
-        try {
-            $response = $this->openAI->request($this->getPrompt(), $this->getSystemText());
+        $response = $this->openAI->request(
+            prompt: $this->getPrompt(),
+            systemText: $this->getSystemText(),
+            responseSchema: $this->getResponseSchema()
+        );
 
-            $quiz = json_decode($response, true);
+        $quiz = json_decode($response, true);
 
-            $sourceCardIds = collect($quiz['questions'])->map(fn ($question) => $question['sourceCardId']);
+        $sourceCardIds = collect($quiz['questions'])->map(fn ($question) => $question['sourceCardId']);
 
-            // get cards the quiz questions are based on
-            $cards = $this->deck->cards()->whereIn('id', $sourceCardIds)->get();
+        // get cards the quiz questions are based on
+        $cards = $this->deck->cards()->whereIn('id', $sourceCardIds)->get();
 
-            // create a card lookup
-            $cardLookup = $cards->keyBy('id');
+        // create a card lookup
+        $cardLookup = $cards->keyBy('id');
 
-            // add the card data to the quiz
-            foreach ($quiz['questions'] as &$question) {
-                $card = $cardLookup[$question['sourceCardId']];
+        // add the card data to the quiz
+        foreach ($quiz['questions'] as &$question) {
+            $card = $cardLookup[$question['sourceCardId']];
 
-                $question['sourceCard'] = $card;
-                $question['sourceCardSide'] = $this->options['cardSide'];
-            }
-
-            return $this->randomizeQuiz($quiz);
-        } catch (\Exception $e) {
-            throw new \Exception("Failed to generate quiz: {$e->getMessage()}");
+            $question['sourceCard'] = $card;
+            $question['sourceCardSide'] = $this->options['cardSide'];
         }
+
+        return $this->randomizeQuiz($quiz);
     }
 }
