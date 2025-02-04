@@ -197,6 +197,12 @@ const router = createRouter({
       component: () => import("@/pages/Test/TTSPage.vue"),
       props: true,
     },
+    {
+      path: "/test/embed",
+      name: "test.embed",
+      component: () => import("@/pages/Test/EmbedPage.vue"),
+      props: true,
+    },
 
     // catch all 404
     {
