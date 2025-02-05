@@ -23,14 +23,14 @@
       </div>
       <Textarea
         readonly
-        :modelValue="embedCodes.practice"
+        :modelValue="embedCodes[mode]"
         class="h-20 bg-brand-maroon-900/5 border-none"
       />
     </div>
   </Modal>
 </template>
 <script setup lang="ts">
-import { capitalize, computed, ref, reactive } from "vue";
+import { capitalize, computed, ref, reactive, toRef } from "vue";
 import * as T from "@/types";
 import Modal from "@/components/Modal.vue";
 import { Label } from "./ui/label";
@@ -38,6 +38,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { IconCopy, IconCheck } from "@/components/icons";
 import { useClipboard } from "@vueuse/core";
+import { useDeckShareLinkQuery } from "@/queries/deckMemberships";
 
 const props = defineProps<{
   deck: T.Deck;
@@ -48,10 +49,6 @@ defineEmits<{
   (eventName: "update:isOpen", isOpen: boolean): void;
 }>();
 
-const deckUrl = computed(
-  () => `${window.location.origin}/decks/${props.deck.id}`,
-);
-
 type EmbedMode = "practice" | "matching" | "quiz";
 
 const embedModes: EmbedMode[] = ["practice", "matching", "quiz"];
@@ -60,12 +57,39 @@ type PracticeEmbedCodes = {
   [key in EmbedMode]: string;
 };
 
+const { data: shareThenPracticeUrl } = useDeckShareLinkQuery(
+  toRef(props.deck.id),
+  "view",
+  `/decks/${props.deck.id}/practice/embed`,
+);
+const { data: shareThenQuizUrl } = useDeckShareLinkQuery(
+  toRef(props.deck.id),
+  "view",
+  `/decks/${props.deck.id}/quiz/embed`,
+);
+
+const { data: shareThenMatchingUrl } = useDeckShareLinkQuery(
+  toRef(props.deck.id),
+  "view",
+  `/decks/${props.deck.id}/matching/embed`,
+);
+
+const getIframeForEmbedMode = (mode: EmbedMode) => {
+  const src = {
+    practice: shareThenPracticeUrl.value,
+    matching: shareThenMatchingUrl.value,
+    quiz: shareThenQuizUrl.value,
+  };
+
+  return `<iframe src="${src[mode]}" width="100%" height="640px" frameborder="0" allowfullscreen></iframe>`;
+};
+
 const embedCodes = computed((): PracticeEmbedCodes => {
-  return embedModes.reduce((acc, mode) => {
-    acc[mode] =
-      `<iframe src="${deckUrl.value}/${mode}/embed" width="100%" height="640px" frameborder="0" allowfullscreen></iframe>`;
-    return acc;
-  }, {} as PracticeEmbedCodes);
+  return {
+    practice: getIframeForEmbedMode("practice"),
+    matching: getIframeForEmbedMode("matching"),
+    quiz: getIframeForEmbedMode("quiz"),
+  };
 });
 
 const { copy } = useClipboard();
