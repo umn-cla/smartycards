@@ -7,7 +7,11 @@
         <p>Enter your embed code below to preview it.</p>
       </div>
 
-      <div v-else v-html="embedcode" class="border border-neutral-900" />
+      <div
+        v-else
+        v-html="embedcode"
+        class="border border-neutral-900 bg-white"
+      />
 
       <Textarea v-model="embedcode" class="bg-brand-oatmeal-50" />
     </div>
