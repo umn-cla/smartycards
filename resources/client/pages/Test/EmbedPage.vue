@@ -18,7 +18,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { ref } from "vue";
 
 const embedcode = ref(
-  `<iframe src="https://localhost/decks/19/practice/embed" height="640" width="100%" style="border: 0" />`,
+  `<iframe src="https://localhost/decks/20/invite?fromUserId=4&redirectTo=%2Fdecks%2F20%2Fpractice%2Fembed&role=viewer&token=rBVKBLw7koo3WunJwttULg9yda0Id7oY&signature=fca4a1ca74e079477b951e52264a1048a9e29535349d394bf06538d855b4ec6f" width="100%" height="640px" frameborder="0" allowfullscreen></iframe>`,
 );
 </script>
 <style scoped></style>
