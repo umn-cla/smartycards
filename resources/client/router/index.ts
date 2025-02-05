@@ -20,22 +20,6 @@ const router = createRouter({
       },
     },
     {
-      path: "/auth/login",
-      name: "auth.login",
-      component: () => import("../pages/Auth/LoginPage.vue"),
-      meta: {
-        requireAuth: false,
-      },
-    },
-    {
-      path: "/auth/callback",
-      name: "auth.callback",
-      redirect: "/decks",
-      meta: {
-        requireAuth: false,
-      },
-    },
-    {
       path: "/decks",
       name: "decks.index",
       component: () => import("../pages/Decks/DeckIndexPage"),
@@ -215,6 +199,8 @@ const router = createRouter({
 
 router.beforeEach(async (to, from, next) => {
   const queryClient = useQueryClient();
+
+  // unless explicitly set to false, require auth
   const isAuthRequired = to.meta?.requireAuth ?? true;
   if (!isAuthRequired) {
     return next();
@@ -241,11 +227,7 @@ router.beforeEach(async (to, from, next) => {
   });
 
   if (!isAuthenticated) {
-    // Redirect to login if not authenticated
-    return next({
-      name: "auth.login",
-      query: { redirect: to.fullPath },
-    });
+    window.location.href = to.fullPath;
   }
 
   next();

@@ -16,6 +16,11 @@ use App\Http\Controllers\TTSController;
 use App\Http\Controllers\UploadFileController;
 use Illuminate\Support\Facades\Route;
 
+// homepage is public
+Route::get('/', function () {
+    return view('app');
+});
+
 // stateful api routes ()
 Route::middleware(['auth'])
     ->prefix('api')
@@ -74,6 +79,7 @@ Route::get('decks/{deck}/invite', DeckInviteController::class)
     ->name('decks.memberships.acceptInvite')
     ->middleware(['auth', 'signed']);
 
+// guard everything else with auth
 Route::fallback(function () {
     return view('app');
-});
+})->middleware(['auth'])->name('app');

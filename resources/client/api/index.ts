@@ -21,9 +21,11 @@ axios.interceptors.response.use(undefined, async (err: AxiosError) => {
     // that falls out of the range of 2xx
 
     if (err.response.status === 401) {
-      // Unauthorized
-      // Redirect to login page
-      await redirectToLogin(window.location.href);
+      // reload page to retrigger server-side auth
+      // if we do it server-side, we don't have to worry about the
+      // redirect back to the intended page after login
+      window.location.reload();
+
       return;
     }
 
