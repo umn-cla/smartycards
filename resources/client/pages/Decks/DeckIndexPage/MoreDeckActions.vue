@@ -21,7 +21,7 @@
           Practice
         </RouterLink>
       </DropdownMenuItem>
-      <DropdownMenuItem asChild>
+      <DropdownMenuItem asChild v-if="deck.capabilities.canUpdate">
         <button @click="state.isEmbedModalOpen = true" class="block w-full">
           <IconEmbed class="size-5 mr-4" />
           Embed
@@ -93,7 +93,11 @@
       This cannot be undone.
     </p>
   </Modal>
-  <EmbedDeckModal :deck="deck" v-model:isOpen="state.isEmbedModalOpen" />
+  <EmbedDeckModal
+    v-if="deck.capabilities.canUpdate"
+    :deck="deck"
+    v-model:isOpen="state.isEmbedModalOpen"
+  />
 </template>
 <script setup lang="ts">
 import {
