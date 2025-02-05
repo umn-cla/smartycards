@@ -4,6 +4,36 @@ import { useQueryClient } from "@tanstack/vue-query";
 import * as api from "@/api";
 import { PROFILE_QUERY_KEY } from "@/queries/queryKeys";
 
+function includeDevRoutesIfDev() {
+  if (!import.meta.env.DEV) {
+    return [];
+  }
+
+  return [
+    {
+      path: "/tests/editor",
+      name: "tests.editor",
+      component: () => import("@/pages/TestPages/EditorPage.vue"),
+      props: true,
+      meta: { requireAuth: false },
+    },
+    {
+      path: "/tests/tts",
+      name: "tests.tts",
+      component: () => import("@/pages/TestPages/TTSPage.vue"),
+      props: true,
+      meta: { requireAuth: false },
+    },
+    {
+      path: "/tests/embed",
+      name: "tests.embed",
+      component: () => import("@/pages/TestPages/EmbedPage.vue"),
+      props: true,
+      meta: { requireAuth: false },
+    },
+  ];
+}
+
 const router = createRouter({
   history: createWebHistory(),
   scrollBehavior(to, from, savedPosition) {
@@ -169,24 +199,7 @@ const router = createRouter({
       name: "admin",
       component: () => import("@/pages/AdminPage.vue"),
     },
-    {
-      path: "/test/editor",
-      name: "test.editor",
-      component: () => import("@/pages/Test/EditorPage.vue"),
-      props: true,
-    },
-    {
-      path: "/test/tts",
-      name: "test.tts",
-      component: () => import("@/pages/Test/TTSPage.vue"),
-      props: true,
-    },
-    {
-      path: "/test/embed",
-      name: "test.embed",
-      component: () => import("@/pages/Test/EmbedPage.vue"),
-      props: true,
-    },
+    ...includeDevRoutesIfDev(),
 
     // catch all 404
     {

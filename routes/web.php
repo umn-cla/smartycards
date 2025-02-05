@@ -79,6 +79,13 @@ Route::get('decks/{deck}/invite', DeckInviteController::class)
     ->name('decks.memberships.acceptInvite')
     ->middleware(['auth', 'signed']);
 
+// skip auth for test routes in local environment
+if (App::environment(['local'])) {
+    Route::get('tests/{any}', function () {
+        return view('app');
+    })->where(['any' => '.*']);
+}
+
 // guard everything else with auth
 Route::fallback(function () {
     return view('app');
