@@ -8,17 +8,21 @@
     @update:open="$emit('update:isOpen', $event)"
   >
     <p>Copy the following code to embed this deck on your website.</p>
-    <div v-for="mode in PracticeMode" :key="mode" class="my-4">
-      <div class="flex gap-4 items-center justify-between">
+    <div
+      v-for="mode in ['practice', 'quiz', 'matching'] as const"
+      :key="mode"
+      class="my-4"
+    >
+      <div class="flex gap-4 items-center justify-between mb-1">
         <Label for="embed-practice"> {{ capitalize(mode) }} Mode </Label>
         <Button
           @click="handleCopy(mode)"
           variant="ghost"
-          class="flex gap-1 text-xs py-2"
+          class="flex gap-1 text-xs py-1"
         >
-          <IconCopy v-if="!isCopied" class="size-4" />
+          <IconCopy v-if="!isEmbedCopied[mode]" class="size-4" />
           <IconCheck v-else class="size-4" />
-          <span>{{ isCopied ? "Copied" : "Copy" }}</span>
+          <span>{{ isEmbedCopied[mode] ? "Copied" : "Copy" }}</span>
         </Button>
       </div>
       <Textarea
@@ -30,7 +34,7 @@
   </Modal>
 </template>
 <script setup lang="ts">
-import { capitalize, computed, ref } from "vue";
+import { capitalize, computed, ref, reactive } from "vue";
 import * as T from "@/types";
 import Modal from "@/components/Modal.vue";
 import { Label } from "./ui/label";
@@ -52,17 +56,13 @@ const deckUrl = computed(
   () => `${window.location.origin}/decks/${props.deck.id}`,
 );
 
-enum PracticeMode {
-  PRACTICE = "practice",
-  MATCHING = "matching",
-  QUIZ = "quiz",
-}
+type EmbedMode = "practice" | "matching" | "quiz";
 
 type PracticeEmbedCodes = {
-  [key in PracticeMode]: string;
+  [key in EmbedMode]: string;
 };
 
-const createModeEmbedCode = (mode: string) =>
+const createModeEmbedCode = (mode: EmbedMode) =>
   `<iframe src="${deckUrl.value}/${mode}/embed" width="100%" height="640px" frameborder="0" allowfullscreen></iframe>`;
 
 const embedCodes = computed((): PracticeEmbedCodes => {
@@ -73,16 +73,21 @@ const embedCodes = computed((): PracticeEmbedCodes => {
   };
 });
 
-const isCopied = ref(false);
 const { copy } = useClipboard();
 
-function handleCopy(mode: "practice" | "matching" | "quiz") {
+const isEmbedCopied = reactive<Record<EmbedMode, boolean>>({
+  practice: false,
+  matching: false,
+  quiz: false,
+});
+
+function handleCopy(mode: EmbedMode) {
   const embedCodeForMode = embedCodes.value[mode];
   copy(embedCodeForMode);
-  isCopied.value = true;
+  isEmbedCopied[mode] = true;
 
   setTimeout(() => {
-    isCopied.value = false;
+    isEmbedCopied[mode] = false;
   }, 2000);
 }
 </script>
