@@ -8,11 +8,7 @@
     @update:open="$emit('update:isOpen', $event)"
   >
     <p>Copy the following code to embed this deck on your website.</p>
-    <div
-      v-for="mode in ['practice', 'quiz', 'matching'] as const"
-      :key="mode"
-      class="my-4"
-    >
+    <div v-for="mode in embedModes" :key="mode" class="my-4">
       <div class="flex gap-4 items-center justify-between mb-1">
         <Label for="embed-practice"> {{ capitalize(mode) }} Mode </Label>
         <Button
@@ -58,19 +54,18 @@ const deckUrl = computed(
 
 type EmbedMode = "practice" | "matching" | "quiz";
 
+const embedModes: EmbedMode[] = ["practice", "matching", "quiz"];
+
 type PracticeEmbedCodes = {
   [key in EmbedMode]: string;
 };
 
-const createModeEmbedCode = (mode: EmbedMode) =>
-  `<iframe src="${deckUrl.value}/${mode}/embed" width="100%" height="640px" frameborder="0" allowfullscreen></iframe>`;
-
 const embedCodes = computed((): PracticeEmbedCodes => {
-  return {
-    practice: createModeEmbedCode("practice"),
-    matching: createModeEmbedCode("matching"),
-    quiz: createModeEmbedCode("quiz"),
-  };
+  return embedModes.reduce((acc, mode) => {
+    acc[mode] =
+      `<iframe src="${deckUrl.value}/${mode}/embed" width="100%" height="640px" frameborder="0" allowfullscreen></iframe>`;
+    return acc;
+  }, {} as PracticeEmbedCodes);
 });
 
 const { copy } = useClipboard();

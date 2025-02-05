@@ -204,9 +204,17 @@ export async function leaveDeck(deckId: number) {
   await axios.delete(`/decks/${deckId}/memberships/self`);
 }
 
-export async function getDeckShareLink(deckId: number, permission) {
-  const res = await axios.get<{ url: string }>(
-    `/decks/${deckId}/memberships/share/${permission}`,
+export async function getDeckShareLink(
+  deckId: number,
+  permission: "view" | "edit",
+  redirectUrl?: string,
+) {
+  const res = await axios.post<{ url: string }>(
+    `/decks/${deckId}/memberships/share`,
+    {
+      permission,
+      redirect_url: redirectUrl,
+    },
   );
   return res.data.url;
 }
@@ -292,10 +300,15 @@ export async function createQuizForDeck(
 export async function regenerateShareLinkForDeck(
   deckId: number,
   permission: "view" | "edit",
+  redirectUrl?: string,
 ) {
   await csrf();
   const res = await axios.post<{ url: string }>(
-    `/decks/${deckId}/memberships/share/${permission}/regenerate`,
+    `/decks/${deckId}/memberships/share/regenerate`,
+    {
+      permission,
+      redirect_url: redirectUrl,
+    },
   );
 
   return res.data.url;

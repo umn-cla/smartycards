@@ -30,10 +30,10 @@ Route::middleware(['auth'])
         Route::delete('decks/{deck}/memberships/self', [DeckMembershipController::class, 'leave'])
             ->name('decks.memberships.leave');
 
-        Route::get('decks/{deck}/memberships/share/{permission}', [DeckMembershipController::class, 'shareLink'])
+        Route::post('decks/{deck}/memberships/share', [DeckMembershipController::class, 'shareLink'])
             ->name('decks.memberships.share');
 
-        Route::post('decks/{deck}/memberships/share/{permission}/regenerate', [DeckMembershipController::class, 'regenerateShareLink'])
+        Route::post('decks/{deck}/memberships/share/regenerate', [DeckMembershipController::class, 'regenerateShareLink'])
             ->name('decks.memberships.share.regenerate');
 
         Route::get('community/decks', [DeckController::class, 'publicDecks']);

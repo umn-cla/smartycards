@@ -28,6 +28,9 @@ class DeckInviteController extends Controller
             'fromUserId' => 'required|exists:users,id',
             'role' => 'required|string|in:viewer,editor',
             'token' => 'required|string|exists:deck_invite_tokens,token',
+            // optional redirect to a location within this deck
+            // should begin with `/decks/:id`
+            'redirectTo' => "nullable|string|regex:/^\/decks\/{$deck->id}/",
         ]);
 
         // verify that the token is valid for deck and role
@@ -60,7 +63,9 @@ class DeckInviteController extends Controller
             ]);
         }
 
+        $redirectTo = $validated['redirectTo'] ?? "/decks/{$deck->id}";
+
         // redirect to the deck
-        return redirect("/decks/{$deck->id}");
+        return redirect($redirectTo);
     }
 }
