@@ -201,11 +201,17 @@ const router = createRouter({
     },
     ...includeDevRoutesIfDev(),
 
+    {
+      path: "/errors/403",
+      name: "errors.403",
+      component: () => import("../pages/Errors/403Page.vue"),
+    },
+
     // catch all 404
     {
       path: "/:pathMatch(.*)*",
-      name: "not-found",
-      component: () => import("../pages/NotFoundPage.vue"),
+      name: "error.404",
+      component: () => import("../pages/Errors/404Page.vue"),
     },
   ],
 });
