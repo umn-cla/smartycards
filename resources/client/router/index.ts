@@ -178,6 +178,14 @@ const router = createRouter({
       }),
     },
     {
+      path: "/decks/:deckId/quiz/embed",
+      name: "decks.quiz.embed",
+      component: () => import("@/pages/QuizDeckPage/QuizDeckEmbedPage.vue"),
+      props: (route) => ({
+        deckId: Number(route.params.deckId),
+      }),
+    },
+    {
       path: "/decks/:deckId/games/matching",
       name: "decks.games.matching",
       component: () =>
