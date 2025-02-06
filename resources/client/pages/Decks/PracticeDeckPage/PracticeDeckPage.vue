@@ -50,7 +50,6 @@
         v-else-if="deck"
         :deck="deck"
         :initialSideName="state.initialSideName"
-        :orientation="state.orientation"
         @complete="handlePracticeComplete"
       />
     </div>
