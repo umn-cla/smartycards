@@ -138,7 +138,7 @@ import {
 } from "@/components/ui/table";
 import Tuple from "@/components/Tuple.vue";
 import Boolean from "@/components/Boolean.vue";
-import MatchingSide from "@/pages/Games/MatchingGame/MatchingSide.vue";
+import MatchingSide from "@/pages/Activities/MatchingGamePage/MatchingSide.vue";
 import { Badge } from "@/components/ui/badge";
 import { useDeckSummaryReportQuery } from "@/queries/decks/useDeckSummaryReportQuery";
 

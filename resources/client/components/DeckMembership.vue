@@ -1,9 +1,9 @@
 <template>
   <li
-    class="grid sm:grid-cols-4 lg:grid-cols-6 gap-2 sm:gap-4 border p-1 rounded-xl sm:border-none"
+    class="flex flex-col sm:flex-row border p-1 rounded-xl sm:border-none gap-1 flex-wrap"
   >
     <div
-      class="sm:col-span-3 lg:col-span-5 bg-brand-maroon-800/5 rounded-lg p-4 sm:flex justify-between items-center"
+      class="bg-brand-maroon-800/5 rounded-lg p-4 flex-1 sm:flex justify-between items-center flex-wrap"
     >
       <div>
         <p>{{ membership.user.name }}</p>
@@ -33,20 +33,20 @@
       </div>
     </div>
     <div
-      class="flex gap-1 items-center justify-start flex-row-reverse sm:flex-row sm:justify-center sm:border sm:rounded-lg sm:p-2 flex-wrap"
+      class="flex sm:flex-col gap-2 sm:gap-1 justify-end"
       v-if="
         membership.capabilities.canUpdate || membership.capabilities.canDelete
       "
     >
       <Button
-        variant="outline"
-        class="disabled:opacity-25 bg-brand-maroon-800/5 hover:bg-brand-maroon-800/10"
+        variant="ghost"
+        class="test disabled:bg-brand-maroon-900/10 disabled:text-brand-maroon-900/50 disabled:cursor-not-allowed !pointer-events-auto bg-brand-teal-500/10 text-brand-teal-500 hover:bg-brand-teal-300 hover:text-white flex gap-2 items-center justify-start"
         :disabled="selectedRole === membership.role"
         @click="handleSave"
         v-if="membership.capabilities.canUpdate"
       >
         <IconCheck class="size-4" />
-        <span class="sr-only">Save</span>
+        <span>Save</span>
       </Button>
       <Modal
         variant="danger"
@@ -61,9 +61,12 @@
           the deck?
         </p>
         <template #trigger>
-          <Button variant="ghost">
-            <IconX class="size-4" />
-            <span class="sr-only">Remove</span>
+          <Button
+            variant="ghost"
+            class="disabled:opacity-25 text-brand-orange-500 bg-brand-orange-500/5 hover:bg-brand-orange-500 hover:text-white flex gap-2 items-center justify-start"
+          >
+            <IconTrash class="size-4 flex-shrink-0" />
+            <span>Remove</span>
           </Button>
         </template>
       </Modal>
@@ -87,7 +90,7 @@ import {
   SelectValue,
 } from "./ui/select";
 import IconX from "./icons/IconX.vue";
-import { IconCheck } from "./icons";
+import { IconCheck, IconTrash } from "./icons";
 import Modal from "./Modal.vue";
 
 const props = defineProps<{

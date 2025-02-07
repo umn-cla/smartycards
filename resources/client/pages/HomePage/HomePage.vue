@@ -21,7 +21,7 @@
 
         <div class="flex gap-4 items-baseline mt-8">
           <RouterLink
-            :to="{ name: 'auth.login' }"
+            :to="{ name: 'decks.index' }"
             class="bg-brand-oatmeal-100 text-brand-maroon-950 md:text-2xl rounded-xl px-6 py-2 block border-2 border-brand-oatmeal-100"
           >
             Sign In

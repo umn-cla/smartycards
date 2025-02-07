@@ -20,6 +20,7 @@ const umnColors = {
 
 const brandColors = {
   oatmeal: {
+    25: "rgb(255, 253, 250)",
     50: "#fffbf3",
     100: "#F8F0DF",
     300: "#E7CAC0",
@@ -190,6 +191,7 @@ const tailwindConfig = {
         "collapsible-up": "collapsible-up 0.2s ease-in-out",
       },
       screens: {
+        xs: "480px",
         landscape: { raw: "(min-aspect-ratio: 1/1)" }, // width > height
         portrait: { raw: "(max-aspect-ratio: 1/1)" },
       },

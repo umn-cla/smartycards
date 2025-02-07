@@ -16,6 +16,11 @@ use App\Http\Controllers\TTSController;
 use App\Http\Controllers\UploadFileController;
 use Illuminate\Support\Facades\Route;
 
+// homepage is public
+Route::get('/', function () {
+    return view('app');
+});
+
 // stateful api routes ()
 Route::middleware(['auth'])
     ->prefix('api')
@@ -30,10 +35,10 @@ Route::middleware(['auth'])
         Route::delete('decks/{deck}/memberships/self', [DeckMembershipController::class, 'leave'])
             ->name('decks.memberships.leave');
 
-        Route::get('decks/{deck}/memberships/share/{permission}', [DeckMembershipController::class, 'shareLink'])
+        Route::post('decks/{deck}/memberships/share', [DeckMembershipController::class, 'shareLink'])
             ->name('decks.memberships.share');
 
-        Route::post('decks/{deck}/memberships/share/{permission}/regenerate', [DeckMembershipController::class, 'regenerateShareLink'])
+        Route::post('decks/{deck}/memberships/share/regenerate', [DeckMembershipController::class, 'regenerateShareLink'])
             ->name('decks.memberships.share.regenerate');
 
         Route::get('community/decks', [DeckController::class, 'publicDecks']);
@@ -74,6 +79,14 @@ Route::get('decks/{deck}/invite', DeckInviteController::class)
     ->name('decks.memberships.acceptInvite')
     ->middleware(['auth', 'signed']);
 
+// skip auth for test routes in local environment
+if (App::environment(['local'])) {
+    Route::get('tests/{any}', function () {
+        return view('app');
+    })->where(['any' => '.*']);
+}
+
+// guard everything else with auth
 Route::fallback(function () {
     return view('app');
-});
+})->middleware(['auth'])->name('app');

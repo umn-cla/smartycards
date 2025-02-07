@@ -4,6 +4,36 @@ import { useQueryClient } from "@tanstack/vue-query";
 import * as api from "@/api";
 import { PROFILE_QUERY_KEY } from "@/queries/queryKeys";
 
+function includeDevRoutesIfDev() {
+  if (!import.meta.env.DEV) {
+    return [];
+  }
+
+  return [
+    {
+      path: "/tests/editor",
+      name: "tests.editor",
+      component: () => import("@/pages/TestPages/EditorPage.vue"),
+      props: true,
+      meta: { requireAuth: false },
+    },
+    {
+      path: "/tests/tts",
+      name: "tests.tts",
+      component: () => import("@/pages/TestPages/TTSPage.vue"),
+      props: true,
+      meta: { requireAuth: false },
+    },
+    {
+      path: "/tests/embed",
+      name: "tests.embed",
+      component: () => import("@/pages/TestPages/EmbedPage.vue"),
+      props: true,
+      meta: { requireAuth: false },
+    },
+  ];
+}
+
 const router = createRouter({
   history: createWebHistory(),
   scrollBehavior(to, from, savedPosition) {
@@ -15,24 +45,14 @@ const router = createRouter({
       path: "/",
       name: "home",
       component: HomePage,
-    },
-    {
-      path: "/auth/login",
-      name: "auth.login",
-      component: () => import("../pages/Auth/LoginPage.vue"),
-    },
-    {
-      path: "/auth/callback",
-      name: "auth.callback",
-      redirect: "/decks",
+      meta: {
+        requireAuth: false,
+      },
     },
     {
       path: "/decks",
       name: "decks.index",
       component: () => import("../pages/Decks/DeckIndexPage"),
-      meta: {
-        requireAuth: true,
-      },
     },
     {
       path: "/community/decks",
@@ -135,7 +155,16 @@ const router = createRouter({
       path: "/decks/:deckId/practice",
       name: "decks.practice",
       component: () =>
-        import("../pages/Decks/PracticeDeckPage/PracticeDeckPage.vue"),
+        import("../pages/Activities/PracticeDeckPage/PracticeDeckPage.vue"),
+      props: (route) => ({
+        deckId: Number(route.params.deckId),
+      }),
+    },
+    {
+      path: "/decks/:deckId/practice/embed",
+      name: "decks.practice.embed",
+      component: () =>
+        import("@/pages/Activities/PracticeDeckPage/PracticeDeckEmbedPage.vue"),
       props: (route) => ({
         deckId: Number(route.params.deckId),
       }),
@@ -143,7 +172,17 @@ const router = createRouter({
     {
       path: "/decks/:deckId/quiz",
       name: "decks.quiz",
-      component: () => import("../pages/QuizDeckPage/QuizDeckPage.vue"),
+      component: () =>
+        import("@/pages/Activities/QuizDeckPage/QuizDeckPage.vue"),
+      props: (route) => ({
+        deckId: Number(route.params.deckId),
+      }),
+    },
+    {
+      path: "/decks/:deckId/quiz/embed",
+      name: "decks.quiz.embed",
+      component: () =>
+        import("@/pages/Activities/QuizDeckPage/QuizDeckEmbedPage.vue"),
       props: (route) => ({
         deckId: Number(route.params.deckId),
       }),
@@ -152,7 +191,16 @@ const router = createRouter({
       path: "/decks/:deckId/games/matching",
       name: "decks.games.matching",
       component: () =>
-        import("../pages/Games/MatchingGame/MatchingGamePage.vue"),
+        import("@/pages/Activities/MatchingGamePage/MatchingGamePage.vue"),
+      props: (route) => ({
+        deckId: Number(route.params.deckId),
+      }),
+    },
+    {
+      path: "/decks/:deckId/games/matching/embed",
+      name: "decks.games.matching.embed",
+      component: () =>
+        import("@/pages/Activities/MatchingGamePage/MatchingGameEmbedPage.vue"),
       props: (route) => ({
         deckId: Number(route.params.deckId),
       }),
@@ -170,31 +218,29 @@ const router = createRouter({
       name: "admin",
       component: () => import("@/pages/AdminPage.vue"),
     },
+    ...includeDevRoutesIfDev(),
+
     {
-      path: "/test/editor",
-      name: "test.editor",
-      component: () => import("@/pages/Test/EditorPage.vue"),
-      props: true,
-    },
-    {
-      path: "/test/tts",
-      name: "test.tts",
-      component: () => import("@/pages/Test/TTSPage.vue"),
-      props: true,
+      path: "/errors/403",
+      name: "errors.403",
+      component: () => import("../pages/Errors/403Page.vue"),
     },
 
     // catch all 404
     {
       path: "/:pathMatch(.*)*",
-      name: "not-found",
-      component: () => import("../pages/NotFoundPage.vue"),
+      name: "error.404",
+      component: () => import("../pages/Errors/404Page.vue"),
     },
   ],
 });
 
 router.beforeEach(async (to, from, next) => {
   const queryClient = useQueryClient();
-  if (!to.meta?.requireAuth) {
+
+  // unless explicitly set to false, require auth
+  const isAuthRequired = to.meta?.requireAuth ?? true;
+  if (!isAuthRequired) {
     return next();
   }
 
@@ -219,11 +265,7 @@ router.beforeEach(async (to, from, next) => {
   });
 
   if (!isAuthenticated) {
-    // Redirect to login if not authenticated
-    return next({
-      name: "auth.login",
-      query: { redirect: to.fullPath },
-    });
+    window.location.href = to.fullPath;
   }
 
   next();

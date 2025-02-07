@@ -5,7 +5,7 @@
       type="text"
       readonly="readonly"
       :modelValue="value"
-      class="font-mono text-sm bg-brand-maroon-800/5"
+      class="font-mono text-xs bg-brand-maroon-800/5"
     />
     <Button
       :icon="copied ? 'check' : 'content_copy'"
