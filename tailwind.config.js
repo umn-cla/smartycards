@@ -20,6 +20,7 @@ const umnColors = {
 
 const brandColors = {
   oatmeal: {
+    25: "rgb(255, 253, 250)",
     50: "#fffbf3",
     100: "#F8F0DF",
     300: "#E7CAC0",

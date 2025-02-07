@@ -7,7 +7,7 @@
         }}</Button>
       </slot>
     </DialogTrigger>
-    <DialogContent class="sm:max-w-[425px]">
+    <DialogContent class="sm:max-w-[425px] bg-brand-oatmeal-25">
       <DialogHeader>
         <div
           :class="{
@@ -69,6 +69,7 @@ import {
 } from "@/components/ui/dialog";
 import { IconExclamationTriangle } from "@/components/icons";
 import { computed } from "vue";
+import { CSSClass } from "@/types";
 
 type ModalButtonVariant =
   | "default"

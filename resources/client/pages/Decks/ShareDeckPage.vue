@@ -19,35 +19,55 @@
         </div>
       </header>
 
-      <section class="border-b border-brand-maroon-900/25 pb-8 mb-8">
-        <h3 class="text-xl font-bold mb-4">Invite</h3>
-        <p class="mb-4">
-          Share the link below to invite others to this deck with view or edit
-          permissions.
-        </p>
-        <ShareLink
-          :url="shareViewUrl ?? ''"
-          type="view"
-          @regenerate="regenerateViewLink"
-          class="mb-4"
-        />
-        <ShareLink
-          :url="shareEditUrl ?? ''"
-          type="edit"
-          @regenerate="regenerateEditLink"
-        />
-      </section>
-      <section>
-        <h2 class="text-xl font-bold mb-4">Members</h2>
-        <ul v-if="deckMemberships" class="flex flex-col gap-2">
-          <DeckMembership
-            v-for="membership in deckMemberships"
-            :key="membership.id"
-            :membership="membership"
+      <div class="flex flex-col gap-8">
+        <section
+          class="bg-brand-oatmeal-50 p-4 rounded-md border border-brand-maroon-900/10"
+        >
+          <h3 class="text-xl font-bold mb-4">Invite</h3>
+          <p class="mb-4">
+            Share the link below to invite others to this deck with view or edit
+            permissions.
+          </p>
+          <ShareLink
+            :url="shareViewUrl ?? ''"
+            type="view"
+            @regenerate="regenerateViewLink"
+            class="mb-4"
           />
-        </ul>
-        <p v-else>No one yet</p>
-      </section>
+          <ShareLink
+            :url="shareEditUrl ?? ''"
+            type="edit"
+            @regenerate="regenerateEditLink"
+          />
+        </section>
+
+        <!-- Embed links -->
+        <section
+          class="bg-brand-oatmeal-50 p-4 rounded-md border border-brand-maroon-900/10"
+        >
+          <h3 class="text-xl font-bold mb-4">Embed Deck</h3>
+          <p class="mb-4">
+            Copy the following code to embed this deck on your website. Viewers
+            will automatically be added with `view` permissions.
+          </p>
+
+          <EmbedDeckSection :deck="deck" />
+        </section>
+
+        <section
+          class="bg-brand-oatmeal-50 p-4 rounded-md border border-brand-maroon-900/10"
+        >
+          <h2 class="text-xl font-bold mb-4">Members</h2>
+          <ul v-if="deckMemberships" class="flex flex-col gap-2">
+            <DeckMembership
+              v-for="membership in deckMemberships"
+              :key="membership.id"
+              :membership="membership"
+            />
+          </ul>
+          <p v-else>No one yet</p>
+        </section>
+      </div>
     </div>
   </AuthenticatedLayout>
 </template>
@@ -63,6 +83,7 @@ import { useDeckByIdQuery } from "@/queries/decks";
 import DeckMembership from "@/components/DeckMembership.vue";
 import { IconChevronLeft } from "@/components/icons";
 import ShareLink from "@/components/ShareLink.vue";
+import EmbedDeckSection from "@/components/EmbedDeckSection.vue";
 
 const props = defineProps<{
   deckId: number;
