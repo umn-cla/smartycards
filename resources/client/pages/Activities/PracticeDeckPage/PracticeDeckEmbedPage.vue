@@ -1,15 +1,7 @@
 <template>
   <EmbedLayout>
-    <header
-      class="flex flex-col mx-auto max-w-screen-sm gap-4 mb-4"
-      v-if="deck"
-    >
-      <h1
-        class="font-bold text-brand-maroon-800 sm:text-xl text-center leading-none"
-      >
-        {{ deck.name }}
-      </h1>
-      <div class="flex items-center justify-between w-full flex-wrap">
+    <AcitivityPageHeader title="Flashcards">
+      <template #actions>
         <div class="flex gap-1 items-baseline">
           <Label for="starting-side-select" class="sr-only">Start Side</Label>
           <SimpleSelect
@@ -21,12 +13,12 @@
             <SelectOption value="random">Random</SelectOption>
           </SimpleSelect>
         </div>
-      </div>
+      </template>
       <LevelProgress
         :xp="deckStats?.current_user_xp ?? 0"
         class="w-full px-2"
       />
-    </header>
+    </AcitivityPageHeader>
 
     <div>
       <div v-if="isDeckLoading" class="text-center">...</div>
@@ -61,6 +53,7 @@ import { useDeckStatsQuery } from "@/queries/decks/useDeckStatsQuery";
 import PracticeDeck from "./PracticeDeck.vue";
 import { IS_DECK_TTS_ENABLED_INJECTION_KEY } from "@/constants";
 import { useIsDeckTTSEnabled } from "@/composables/useIsDeckTTSEnabled";
+import AcitivityPageHeader from "../AcitivityPageHeader.vue";
 
 const props = defineProps<{
   deckId: number;

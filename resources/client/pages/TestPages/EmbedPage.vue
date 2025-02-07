@@ -42,7 +42,7 @@ const PRACTICE_EMBED = `<iframe src="https://localhost/decks/1/invite?fromUserId
 
 const QUIZ_EMBED = `<iframe src="https://localhost/decks/1/invite?fromUserId=1&redirectTo=%2Fdecks%2F1%2Fquiz%2Fembed&role=viewer&token=mvZugOYD2ByaIi6V3Kc7meFRIePd9uCY&signature=e5cd1f01a3ac26ea5e4369bae5ca01dc4861d047917550e5a9871b228b245edb" width="100%" height="640px" frameborder="0" allowfullscreen></iframe>`;
 
-const MATCHING_EMBED = ``;
+const MATCHING_EMBED = `<iframe src="https://localhost/decks/1/invite?fromUserId=1&redirectTo=%2Fdecks%2F1%2Fgames%2Fmatching%2Fembed&role=viewer&token=mvZugOYD2ByaIi6V3Kc7meFRIePd9uCY&signature=67ba65cbdc0fc5c25b5bc26b335a841d95843ff5063761760f0bc2df1ca36c35" width="100%" height="640px" frameborder="0" allowfullscreen></iframe>`;
 
 const embedCodes = reactive({
   practice: PRACTICE_EMBED,

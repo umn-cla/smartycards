@@ -1,25 +1,11 @@
 <template>
   <EmbedLayout>
-    <header
-      class="flex flex-col mb-8 rounded-xl mx-auto max-w-screen-sm gap-6"
-      v-if="deck"
-    >
-      <div>
-        <h1
-          class="font-bold text-brand-maroon-800 text-lg sm:text-xl text-center"
-        >
-          {{ deck?.name }}
-        </h1>
-        <p class="font-bold text-lg text-brand-maroon-800/50 text-center">
-          Practice Quiz
-        </p>
-      </div>
-
+    <AcitivityPageHeader title="Practice Quiz" :subtitle="deck?.name">
       <LevelProgress
         :xp="deckStats?.current_user_xp ?? 0"
         class="w-full px-2"
       />
-    </header>
+    </AcitivityPageHeader>
 
     <div
       class="p-4 sm:p-8 pb-8 sm:pb-12 rounded-xl mx-auto max-w-screen-sm bg-brand-oatmeal-50"
@@ -83,7 +69,7 @@
         </div>
 
         <div class="flex justify-center">
-          <Button @click="startQuiz">Start Practice Quiz</Button>
+          <Button @click="startQuiz">Start</Button>
         </div>
       </section>
 
@@ -164,6 +150,7 @@ import { useCreateDeckActivityEventMutation } from "@/queries/deckActivityEvents
 import { useDeckStatsQuery } from "@/queries/decks/useDeckStatsQuery";
 import LevelProgress from "@/components/LevelProgress.vue";
 import { IconExclamationTriangle } from "@/components/icons";
+import AcitivityPageHeader from "../AcitivityPageHeader.vue";
 
 const props = defineProps<{
   deckId: number;

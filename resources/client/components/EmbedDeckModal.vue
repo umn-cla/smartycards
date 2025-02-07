@@ -51,7 +51,7 @@ defineEmits<{
 
 type EmbedMode = "practice" | "matching" | "quiz";
 
-const embedModes: EmbedMode[] = ["practice", "matching", "quiz"];
+const embedModes: EmbedMode[] = ["practice", "quiz", "matching"];
 
 type PracticeEmbedCodes = {
   [key in EmbedMode]: string;
@@ -71,14 +71,14 @@ const { data: shareThenQuizUrl } = useDeckShareLinkQuery(
 const { data: shareThenMatchingUrl } = useDeckShareLinkQuery(
   toRef(props.deck.id),
   "view",
-  `/decks/${props.deck.id}/matching/embed`,
+  `/decks/${props.deck.id}/games/matching/embed`,
 );
 
 const getIframeForEmbedMode = (mode: EmbedMode) => {
   const src = {
     practice: shareThenPracticeUrl.value,
-    matching: shareThenMatchingUrl.value,
     quiz: shareThenQuizUrl.value,
+    matching: shareThenMatchingUrl.value,
   };
 
   return `<iframe src="${src[mode]}" width="100%" height="640px" frameborder="0" allowfullscreen></iframe>`;
@@ -87,8 +87,8 @@ const getIframeForEmbedMode = (mode: EmbedMode) => {
 const embedCodes = computed((): PracticeEmbedCodes => {
   return {
     practice: getIframeForEmbedMode("practice"),
-    matching: getIframeForEmbedMode("matching"),
     quiz: getIframeForEmbedMode("quiz"),
+    matching: getIframeForEmbedMode("matching"),
   };
 });
 
@@ -96,8 +96,8 @@ const { copy } = useClipboard();
 
 const isEmbedCopied = reactive<Record<EmbedMode, boolean>>({
   practice: false,
-  matching: false,
   quiz: false,
+  matching: false,
 });
 
 function handleCopy(mode: EmbedMode) {

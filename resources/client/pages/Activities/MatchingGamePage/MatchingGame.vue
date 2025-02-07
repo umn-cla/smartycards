@@ -1,6 +1,5 @@
 <template>
   <div>
-    <h2 class="text-center font-bold text-xl mb-4">Matching</h2>
     <div class="relative">
       <div
         v-if="gameState === 'win'"

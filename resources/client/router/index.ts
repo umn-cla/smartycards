@@ -155,7 +155,7 @@ const router = createRouter({
       path: "/decks/:deckId/practice",
       name: "decks.practice",
       component: () =>
-        import("../pages/Decks/PracticeDeckPage/PracticeDeckPage.vue"),
+        import("../pages/Activities/PracticeDeckPage/PracticeDeckPage.vue"),
       props: (route) => ({
         deckId: Number(route.params.deckId),
       }),
@@ -164,7 +164,7 @@ const router = createRouter({
       path: "/decks/:deckId/practice/embed",
       name: "decks.practice.embed",
       component: () =>
-        import("@/pages/Decks/PracticeDeckPage/PracticeDeckEmbedPage.vue"),
+        import("@/pages/Activities/PracticeDeckPage/PracticeDeckEmbedPage.vue"),
       props: (route) => ({
         deckId: Number(route.params.deckId),
       }),
@@ -172,7 +172,8 @@ const router = createRouter({
     {
       path: "/decks/:deckId/quiz",
       name: "decks.quiz",
-      component: () => import("../pages/QuizDeckPage/QuizDeckPage.vue"),
+      component: () =>
+        import("@/pages/Activities/QuizDeckPage/QuizDeckPage.vue"),
       props: (route) => ({
         deckId: Number(route.params.deckId),
       }),
@@ -180,7 +181,8 @@ const router = createRouter({
     {
       path: "/decks/:deckId/quiz/embed",
       name: "decks.quiz.embed",
-      component: () => import("@/pages/QuizDeckPage/QuizDeckEmbedPage.vue"),
+      component: () =>
+        import("@/pages/Activities/QuizDeckPage/QuizDeckEmbedPage.vue"),
       props: (route) => ({
         deckId: Number(route.params.deckId),
       }),
@@ -189,7 +191,16 @@ const router = createRouter({
       path: "/decks/:deckId/games/matching",
       name: "decks.games.matching",
       component: () =>
-        import("../pages/Games/MatchingGame/MatchingGamePage.vue"),
+        import("@/pages/Activities/MatchingGamePage/MatchingGamePage.vue"),
+      props: (route) => ({
+        deckId: Number(route.params.deckId),
+      }),
+    },
+    {
+      path: "/decks/:deckId/games/matching/embed",
+      name: "decks.games.matching.embed",
+      component: () =>
+        import("@/pages/Activities/MatchingGamePage/MatchingGameEmbedPage.vue"),
       props: (route) => ({
         deckId: Number(route.params.deckId),
       }),
