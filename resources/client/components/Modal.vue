@@ -7,7 +7,7 @@
         }}</Button>
       </slot>
     </DialogTrigger>
-    <DialogContent class="sm:max-w-[425px] bg-brand-oatmeal-25">
+    <DialogContent class="sm:max-w-screen-sm bg-brand-oatmeal-25">
       <DialogHeader>
         <div
           :class="{

@@ -1,25 +1,27 @@
 <template>
-  <div v-for="mode in embedModes" :key="mode" class="my-4">
-    <div class="flex gap-4 items-center justify-between mb-1">
-      <Label :for="`embed-${mode}`" class="font-bold text-brand-maroon-900/75">
-        {{ capitalize(mode) }} Mode
-      </Label>
-      <Button
-        @click="handleCopy(mode)"
-        variant="ghost"
-        class="flex gap-1 text-xs py-1"
-      >
-        <IconCopy v-if="!isEmbedCopied[mode]" class="size-4" />
-        <IconCheck v-else class="size-4" />
-        <span>{{ isEmbedCopied[mode] ? "Copied" : "Copy" }}</span>
-      </Button>
-    </div>
+  <div
+    v-for="mode in embedModes"
+    :key="mode"
+    class="my-4 flex gap-2 items-baseline flex-wrap"
+  >
+    <Label :for="`embed-${mode}`" class="w-16">
+      {{ capitalize(mode) }}
+    </Label>
     <Textarea
       readonly
       :id="`embed-${mode}`"
       :modelValue="embedCodes[mode]"
-      class="h-20 bg-brand-maroon-900/5 border-none font-mono text-xs"
+      class="h-20 bg-brand-maroon-900/5 border-none font-mono text-xs flex-1"
     />
+    <Button
+      @click="handleCopy(mode)"
+      variant="outline"
+      class="flex gap-1 text-xs"
+    >
+      <IconCopy v-if="!isEmbedCopied[mode]" class="size-4" />
+      <IconCheck v-else class="size-4" />
+      <span class="sr-only">{{ isEmbedCopied[mode] ? "Copied" : "Copy" }}</span>
+    </Button>
   </div>
 </template>
 <script setup lang="ts">
