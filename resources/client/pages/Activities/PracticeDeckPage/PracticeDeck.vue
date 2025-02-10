@@ -12,15 +12,16 @@
         :back="state.isTransitiongToNext ? [] : state.activeCard?.back"
         :showLabels="true"
         :initialSideName="getInitialSideName(state.activeCard)"
-        class="max-w-full max-h-full mx-auto transition-all duration-300"
+        class="max-w-screen-sm h-[50dvh] mx-auto transition-all duration-300"
         :class="{
-          'w-[33dvh] h-[50dvh]': orientation === 'portrait',
-          'w-[50dvw] h-[33dvw]': orientation === 'landscape',
           'opacity-0 translate-y-[50vh]': state.isTransitiongToNext,
           'opacity-100': !state.isTransitiongToNext,
         }"
       />
 
+      <p class="text-xs text-center text-brand-maroon-900/40 my-2">
+        {{ cardsRemaining }} cards left
+      </p>
       <div class="my-4 sm:my-8">
         <CardAttemptChoices
           @answer="handleAnswer"
@@ -37,14 +38,13 @@ import * as T from "@/types";
 import CardAttemptChoices from "@/components/CardAttemptChoices.vue";
 import FlippableCard from "@/components/FlippableCard.vue";
 import { Button } from "@/components/ui/button";
-import { reactive, watch, onMounted } from "vue";
+import { reactive, watch, onMounted, computed } from "vue";
 import { toShuffled, getRandomIntInclusive } from "@/lib/utils";
 import { partition } from "ramda";
 
 const props = defineProps<{
   deck: T.DeckWithCards;
   initialSideName: T.CardSideName | "random";
-  orientation: "portrait" | "landscape";
 }>();
 
 const emit = defineEmits<{
@@ -60,6 +60,8 @@ const state = reactive({
   // so that the user sees the same side when it comes up again
   randomSideMap: {} as Record<T.Card["id"], T.CardSideName>,
 });
+
+const cardsRemaining = computed(() => state.cardsToPractice.length);
 
 function getInitialSideName(card: T.Card): T.CardSideName {
   return props.initialSideName === "random"

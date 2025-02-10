@@ -24,15 +24,19 @@ class DeckInviteController extends Controller
      */
     public function __invoke(Request $request, Deck $deck)
     {
+
         $validated = $request->validate([
             'fromUserId' => 'required|exists:users,id',
             'role' => 'required|string|in:viewer,editor',
-            'token' => 'required|string|exists:deck_invite_tokens,token',
+            'token' => 'required|string',
+            // optional redirect to a location within this deck
+            // should begin with `/decks/:id`
+            'redirectTo' => "nullable|string|regex:/^\/decks\/{$deck->id}/",
         ]);
 
         // verify that the token is valid for deck and role
         if (! $this->hasValidToken(token: $validated['token'], deck: $deck, role: $validated['role'])) {
-            abort(403, 'Invalid token.');
+            abort(403, 'This invite link is invalid or expired.');
         }
 
         // verify that the invitingUser has permission to invite
@@ -60,7 +64,9 @@ class DeckInviteController extends Controller
             ]);
         }
 
+        $redirectTo = $validated['redirectTo'] ?? "/decks/{$deck->id}";
+
         // redirect to the deck
-        return redirect("/decks/{$deck->id}");
+        return redirect($redirectTo);
     }
 }

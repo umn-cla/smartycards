@@ -1,11 +1,11 @@
 <template>
   <div
-    class="flippable-card relative min-h-[24rem] min-w-[16rem] perspective flex items-center gap-4 text-brand-maroon-950"
+    class="flippable-card relative min-h-[20rem] perspective w-full flex items-center gap-4 text-brand-maroon-950"
     data-cy="flippable-card"
   >
     <div
       :class="{ 'rotate-y-180': currentCardSide === 'back' }"
-      class="relative w-full min-h-[24rem] h-full transition-transform duration-500 transform-style-preserve-3d"
+      class="relative w-full h-full transition-transform duration-500 transform-style-preserve-3d"
     >
       <CardSideView
         v-for="{ side, label } in labelledCardSides"

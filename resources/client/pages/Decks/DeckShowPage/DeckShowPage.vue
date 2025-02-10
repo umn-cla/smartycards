@@ -64,7 +64,7 @@
 
       <section class="my-8">
         <header
-          class="flex justify-between items-baseline sticky top-16 lg:top-0 z-10 bg-brand-oatmeal-100 py-4"
+          class="flex justify-between items-baseline sticky top-16 lg:top-0 z-10 bg-brand-oatmeal-100 py-4 gap-4 flex-wrap"
         >
           <h3 class="text-3xl font-bold">Cards</h3>
           <div class="flex gap-4">
