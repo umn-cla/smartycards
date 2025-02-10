@@ -1,11 +1,11 @@
 <template>
   <EmbedLayout>
-    <AcitivityPageHeader title="Practice Quiz" :subtitle="deck?.name">
+    <ActivityPageHeader title="Practice Quiz" :subtitle="deck?.name">
       <LevelProgress
         :xp="deckStats?.current_user_xp ?? 0"
         class="w-full px-2"
       />
-    </AcitivityPageHeader>
+    </ActivityPageHeader>
 
     <div
       class="p-4 sm:p-8 pb-8 sm:pb-12 rounded-xl mx-auto max-w-screen-sm bg-brand-oatmeal-50"
@@ -143,14 +143,13 @@ import Quiz from "./Quiz.vue";
 import * as api from "@/api";
 import * as T from "@/types";
 import Tuple from "@/components/Tuple.vue";
-import IconChevronLeft from "@/components/icons/IconChevronLeft.vue";
 import IconSpinner from "@/components/icons/IconSpinner.vue";
 import HintTooltip from "@/components/HintTooltip.vue";
 import { useCreateDeckActivityEventMutation } from "@/queries/deckActivityEvents/useCreateDeckActivityEventMutation";
 import { useDeckStatsQuery } from "@/queries/decks/useDeckStatsQuery";
 import LevelProgress from "@/components/LevelProgress.vue";
 import { IconExclamationTriangle } from "@/components/icons";
-import AcitivityPageHeader from "../AcitivityPageHeader.vue";
+import ActivityPageHeader from "../ActivityPageHeader.vue";
 
 const props = defineProps<{
   deckId: number;

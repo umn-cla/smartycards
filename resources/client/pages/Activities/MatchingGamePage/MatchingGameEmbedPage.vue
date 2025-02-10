@@ -1,11 +1,11 @@
 <template>
   <EmbedLayout>
-    <AcitivityPageHeader title="Matching" :subtitle="deck?.name ?? ''">
+    <ActivityPageHeader title="Matching" :subtitle="deck?.name ?? ''">
       <LevelProgress
         :xp="deckStats?.current_user_xp ?? 0"
         class="w-full px-2"
       />
-    </AcitivityPageHeader>
+    </ActivityPageHeader>
 
     <div v-if="deck" class="max-w-screen-sm mx-auto">
       <div
@@ -38,7 +38,7 @@ import { useCreateDeckActivityEventMutation } from "@/queries/deckActivityEvents
 import LevelProgress from "@/components/LevelProgress.vue";
 import { useDeckStatsQuery } from "@/queries/decks/useDeckStatsQuery";
 import * as T from "@/types";
-import AcitivityPageHeader from "../AcitivityPageHeader.vue";
+import ActivityPageHeader from "../ActivityPageHeader.vue";
 
 const props = defineProps<{
   deckId: number;
@@ -46,7 +46,7 @@ const props = defineProps<{
 
 const deckIdRef = computed(() => props.deckId);
 
-const { data: deck, isLoading: isDeckLoading } = useDeckByIdQuery(deckIdRef);
+const { data: deck } = useDeckByIdQuery(deckIdRef);
 const { data: deckStats } = useDeckStatsQuery(deckIdRef);
 
 const { mutate: createActivityEvent } = useCreateDeckActivityEventMutation();

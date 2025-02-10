@@ -1,6 +1,6 @@
 <template>
   <EmbedLayout>
-    <AcitivityPageHeader title="Flashcards">
+    <ActivityPageHeader title="Flashcards">
       <template #actions>
         <div class="flex gap-1 items-baseline">
           <Label for="starting-side-select" class="sr-only">Start Side</Label>
@@ -18,7 +18,7 @@
         :xp="deckStats?.current_user_xp ?? 0"
         class="w-full px-2"
       />
-    </AcitivityPageHeader>
+    </ActivityPageHeader>
 
     <div>
       <div v-if="isDeckLoading" class="text-center">...</div>
@@ -53,7 +53,7 @@ import { useDeckStatsQuery } from "@/queries/decks/useDeckStatsQuery";
 import PracticeDeck from "./PracticeDeck.vue";
 import { IS_DECK_TTS_ENABLED_INJECTION_KEY } from "@/constants";
 import { useIsDeckTTSEnabled } from "@/composables/useIsDeckTTSEnabled";
-import AcitivityPageHeader from "../AcitivityPageHeader.vue";
+import ActivityPageHeader from "../ActivityPageHeader.vue";
 
 const props = defineProps<{
   deckId: number;
