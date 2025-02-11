@@ -63,6 +63,11 @@ export default defineConfig({
         text: "Teaching",
         items: [
           {
+            text: "Using with Canvas",
+            link: "/teaching/using-with-canvas",
+          },
+
+          {
             text: "Deck Summary Report",
             link: "/teaching/deck-summary-report",
           },
