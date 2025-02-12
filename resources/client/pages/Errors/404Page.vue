@@ -1,6 +1,6 @@
 <template>
   <GuestLayout class="not-found-page">
-    <div class="flex-1 flex items-center justify-center">
+    <div class="flex-1 flex items-center justify-center p-8">
       <FlippableCardSimple class="m-auto my-auto w-full" :showLabels="false">
         <template #front>
           <div class="my-auto text-center">
