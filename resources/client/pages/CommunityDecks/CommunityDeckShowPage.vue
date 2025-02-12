@@ -34,10 +34,16 @@
           <FlippableCard
             v-for="card in deck.cards"
             :key="card.id"
-            :front="card.front"
-            :back="card.back"
             :initialSideName="initialCardSide"
-          />
+            class="max-h-[20rem]"
+          >
+            <template #front>
+              <CardSideView :side="card.front" class="my-auto" />
+            </template>
+            <template #back>
+              <CardSideView :side="card.back" class="my-auto" />
+            </template>
+          </FlippableCard>
         </div>
       </section>
     </main>
@@ -51,6 +57,7 @@ import { computed } from "vue";
 import { Button } from "@/components/ui/button";
 import PageHeader from "@/components/PageHeader.vue";
 import FlippableCard from "@/components/FlippableCard.vue";
+import CardSideView from "@/components/CardSideView/CardSideView.vue";
 import { ref } from "vue";
 import { useJoinCommunityDeckMutation } from "@/queries/community";
 import { useLeaveDeckMutation } from "@/queries/deckMemberships";

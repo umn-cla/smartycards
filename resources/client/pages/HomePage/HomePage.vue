@@ -18,7 +18,6 @@
             Digital flashcards for every learner
           </p>
         </div>
-
         <div class="flex gap-4 items-baseline mt-8">
           <RouterLink
             :to="{ name: 'decks.index' }"
