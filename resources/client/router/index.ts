@@ -113,6 +113,14 @@ const router = createRouter({
       }),
     },
     {
+      path: "/decks/:deckId/clone",
+      name: "decks.clone",
+      component: () => import("@/pages/Decks/CloneDeckPage.vue"),
+      props: (route) => ({
+        deckId: Number(route.params.deckId),
+      }),
+    },
+    {
       path: "/decks/:deckId/share",
       name: "decks.share",
       component: () => import("../pages/Decks/ShareDeckPage.vue"),

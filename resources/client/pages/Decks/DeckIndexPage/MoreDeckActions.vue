@@ -14,18 +14,10 @@
         </RouterLink>
       </DropdownMenuItem>
       <DropdownMenuItem asChild>
-        <RouterLink
-          :to="{ name: 'decks.practice', params: { deckId: deck.id } }"
-        >
-          <IconCirclePlay class="size-5 mr-4" />
-          Practice
+        <RouterLink :to="{ name: 'decks.clone', params: { deckId: deck.id } }">
+          <IconCopy class="size-5 mr-4" />
+          Clone
         </RouterLink>
-      </DropdownMenuItem>
-      <DropdownMenuItem asChild v-if="deck.capabilities.canUpdate">
-        <button @click="state.isEmbedModalOpen = true" class="block w-full">
-          <IconEmbed class="size-5 mr-4" />
-          Embed
-        </button>
       </DropdownMenuItem>
       <DropdownMenuItem asChild v-if="deck.capabilities.canUpdate">
         <RouterLink
@@ -124,6 +116,7 @@ import Modal from "@/components/Modal.vue";
 import { computed, reactive } from "vue";
 import { useRouter } from "vue-router";
 import EmbedDeckModal from "@/components/EmbedDeckModal.vue";
+import IconCopy from "@/components/icons/IconCopy.vue";
 
 const props = defineProps<{
   deck: T.Deck;
