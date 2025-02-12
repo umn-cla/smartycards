@@ -17,7 +17,18 @@
           'opacity-0 translate-y-[50vh]': state.isTransitiongToNext,
           'opacity-100': !state.isTransitiongToNext,
         }"
-      />
+      >
+        <template
+          v-for="sideName in ['front', 'back']"
+          :key="sideName"
+          #[sideName]
+        >
+          <CardSideView
+            :side="state.isTransitiongToNext ? [] : state.activeCard[sideName]"
+            class="my-auto"
+          />
+        </template>
+      </FlippableCard>
 
       <p class="text-xs text-center text-brand-maroon-900/40 my-2">
         {{ cardsRemaining }} cards left
@@ -41,6 +52,7 @@ import { Button } from "@/components/ui/button";
 import { reactive, watch, onMounted, computed } from "vue";
 import { toShuffled, getRandomIntInclusive } from "@/lib/utils";
 import { partition } from "ramda";
+import CardSideView from "@/components/CardSideView/CardSideView.vue";
 
 const props = defineProps<{
   deck: T.DeckWithCards;

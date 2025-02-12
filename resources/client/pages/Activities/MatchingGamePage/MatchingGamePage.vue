@@ -38,6 +38,7 @@
       </div>
 
       <MatchingGame
+        v-else
         :cards="deck.cards"
         class="mx-auto max-h-[66vh] aspect-square"
         @gameover="handleWin"

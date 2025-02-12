@@ -2,7 +2,7 @@
   <img
     :src="src"
     :alt="alt"
-    class="rounded-sm w-full h-full object-contain"
+    class="rounded-sm object-contain max-w-full max-h-full"
     @click="onImageClick"
   />
   <Teleport to="body">

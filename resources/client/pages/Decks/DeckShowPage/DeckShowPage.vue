@@ -98,9 +98,8 @@
           <template v-for="card in filteredCards" :key="card.id">
             <FlippableCard
               data-cy="flippable-card"
-              :front="card.front"
-              :back="card.back"
               :initialSideName="initialCardSide"
+              class="max-h-[22rem]"
             >
               <template #prepend>
                 <div class="flex justify-between items-center">
@@ -117,6 +116,10 @@
                     @delete="handleDeleteCard"
                   />
                 </div>
+              </template>
+
+              <template v-for="side in ['front', 'back']" #[side] :key="side">
+                <CardSideView :side="card[side]" class="my-auto" />
               </template>
             </FlippableCard>
           </template>
@@ -146,6 +149,7 @@ import { useIsDeckTTSEnabled } from "@/composables/useIsDeckTTSEnabled";
 import { IS_DECK_TTS_ENABLED_INJECTION_KEY } from "@/constants";
 import { Input } from "@/components/ui/input";
 import { IconSearch } from "@/components/icons";
+import { CardSideView } from "@/components/CardSideView";
 
 const props = defineProps<{
   deckId: number;

@@ -1,11 +1,20 @@
 <template>
-  <FlippableCard :front="front" :back="back" />
+  <FlippableCard>
+    <template #front>
+      <CardSideView :side="front" class="my-auto border-4 border-green-500" />
+    </template>
+
+    <template #back>
+      <CardSideView :side="back" class="my-auto" />
+    </template>
+  </FlippableCard>
 </template>
 
 <script setup lang="ts">
 import twoFridasImgUrl from "@/assets/demo-cards/the-two-fridas.jpg";
 import { CardSide } from "@/types";
 import FlippableCard from "@/components/FlippableCard.vue";
+import CardSideView from "@/components/CardSideView/CardSideView.vue";
 
 const front: CardSide = [
   {
