@@ -49,7 +49,6 @@
             <h3 class="text-xl">Image</h3>
             <ImageDemoCard />
           </article>
-
           <article class="flex flex-col gap-2 items-center">
             <h3 class="text-xl">Video</h3>
             <VideoDemoCard />

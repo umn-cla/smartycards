@@ -1,7 +1,7 @@
 <template>
   <FlippableCard>
     <template #front>
-      <CardSideView :side="front" class="my-auto border-4 border-green-500" />
+      <CardSideView :side="front" class="my-auto" />
     </template>
 
     <template #back>

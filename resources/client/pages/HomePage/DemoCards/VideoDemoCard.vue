@@ -1,9 +1,18 @@
 <template>
-  <FlippableCard :front="front" :back="back" initialSideName="back" />
+  <FlippableCard initialSideName="back">
+    <template #front>
+      <CardSideView :side="front" class="my-auto" />
+    </template>
+
+    <template #back>
+      <CardSideView :side="back" class="my-auto" />
+    </template>
+  </FlippableCard>
 </template>
 
 <script setup lang="ts">
 import { CardSide } from "@/types";
+import CardSideView from "@/components/CardSideView/CardSideView.vue";
 import FlippableCard from "@/components/FlippableCard.vue";
 
 const back: CardSide = [
