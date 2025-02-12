@@ -67,6 +67,8 @@ import { Button } from "@/components/ui/button";
 import Switch from "@/components/ui/switch/Switch.vue";
 import Label from "@/components/ui/label/Label.vue";
 import HintTooltip from "@/components/HintTooltip.vue";
+import { useCloneDeckMutation } from "@/queries/decks/useCloneDeckMutation";
+import invariant from "tiny-invariant";
 
 const props = defineProps<{
   deckId: number | null;
@@ -80,6 +82,7 @@ const form = reactive({
 
 const deckIdRef = computed(() => props.deckId);
 const { data: deck } = useDeckByIdQuery(deckIdRef);
+const { mutate: cloneDeck } = useCloneDeckMutation();
 
 const router = useRouter();
 
@@ -106,8 +109,23 @@ const unwatchDeck = watch(
   },
 );
 
-function handleClone() {
-  console.log("clone!");
+async function handleClone() {
+  invariant(deckIdRef.value, "Deck ID is required to clone a deck");
+
+  cloneDeck(
+    {
+      sourceDeckId: deckIdRef.value,
+      name: form.name,
+      description: form.description,
+      isTTSEnabled: form.isTTSEnabled,
+    },
+    {
+      onSuccess: (newDeck) => {
+        console.log("cloneDeck onSuccess", { newDeck });
+        router.push({ name: "decks.show", params: { deckId: newDeck.id } });
+      },
+    },
+  );
 }
 </script>
 <style scoped></style>
