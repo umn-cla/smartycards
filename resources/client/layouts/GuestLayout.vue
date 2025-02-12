@@ -1,9 +1,9 @@
 <template>
-  <div class="min-h-screen guest-layout relative h-full bg-brand-maroon-900">
+  <div
+    class="min-h-screen guest-layout relative flex flex-col gap-4 bg-brand-maroon-900"
+  >
     <UniversityHeader />
-    <main class="py-8">
-      <slot />
-    </main>
+    <slot />
   </div>
 </template>
 <script setup lang="ts">
