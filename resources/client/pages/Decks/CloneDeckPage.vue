@@ -59,7 +59,7 @@
 <script setup lang="ts">
 import PageHeader from "@/components/PageHeader.vue";
 import { AuthenticatedLayout } from "@/layouts/AuthenticatedLayout";
-import { computed, reactive, watch } from "vue";
+import { computed, nextTick, reactive, watch } from "vue";
 import { useDeckByIdQuery } from "@/queries/decks";
 import { useRouter } from "vue-router";
 import InputGroup from "@/components/InputGroup.vue";
@@ -102,7 +102,10 @@ const unwatchDeck = watch(
     form.description = deck.value.description;
     form.isTTSEnabled = deck.value.is_tts_enabled;
 
-    unwatchDeck();
+    // use nextTick and a closure to avoid `lexical warning`
+    // about undeclared unwatchDeck. This happens because
+    // unwatch is undefined at this point (temporal dead zone).
+    nextTick(() => unwatchDeck());
   },
   {
     immediate: true,
