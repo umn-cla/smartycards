@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use OwenIt\Auditing\Auditable as AuditableTrait;
 use OwenIt\Auditing\Contracts\Auditable as AuditableContract;
 
@@ -29,6 +30,19 @@ class Deck extends Model implements AuditableContract
         'is_public',
         'is_tts_enabled',
     ];
+
+    protected static function booted()
+    {
+        static::created(function ($deck) {
+            foreach (['view', 'edit'] as $permission) {
+                DeckInviteToken::create([
+                    'deck_id' => $deck->id,
+                    'permission' => $permission,
+                    'token' => Str::random(32),
+                ]);
+            }
+        });
+    }
 
     public function users()
     {
