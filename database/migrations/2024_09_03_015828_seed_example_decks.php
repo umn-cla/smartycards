@@ -2,6 +2,7 @@
 
 use App\Models\Deck;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Events\Dispatcher;
 
 return new class extends Migration
 {
@@ -854,9 +855,17 @@ return new class extends Migration
      */
     public function up(): void
     {
+        // Temporarily disable dispatching a `created` event,
+        // which will attempt to create tokens. However, the token
+        // table doesn't exist yet.
+        Deck::unsetEventDispatcher();
+
         $this->addArtHistoryExampleDeck();
         $this->addBeginningItalianExampleDeck();
         $this->addBackyardBirdsDeck();
+
+        // Reset event dispatcher
+        Deck::setEventDispatcher(new Dispatcher);
     }
 
     /**

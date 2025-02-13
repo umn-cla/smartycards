@@ -5,10 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Resources\DeckResource;
 use App\Imports\CardsImport;
 use App\Models\Deck;
-use App\Models\DeckInviteToken;
 use Gate;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
 use Maatwebsite\Excel\Facades\Excel;
 
 class DeckController extends Controller
@@ -48,15 +46,6 @@ class DeckController extends Controller
             'user_id' => $request->user()->id,
             'role' => 'owner',
         ]);
-
-        // Create initial tokens for each permission type
-        foreach (['view', 'edit'] as $permission) {
-            DeckInviteToken::create([
-                'deck_id' => $deck->id,
-                'permission' => $permission,
-                'token' => Str::random(32),
-            ]);
-        }
 
         return DeckResource::make($deck->fresh())
             ->response()
@@ -167,7 +156,10 @@ class DeckController extends Controller
             'role' => 'owner',
         ]);
 
-        return DeckResource::make($newDeck);
+        // refresh to get all attributes like `is_public`
+        return DeckResource::make($newDeck->fresh())
+            ->response()
+            ->setStatusCode(201);
     }
 
     public function stats(Deck $deck)
