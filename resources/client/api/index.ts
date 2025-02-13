@@ -85,6 +85,29 @@ export async function createDeck(
   return res.data.data;
 }
 
+export async function cloneDeck({
+  sourceDeckId,
+  name,
+  description,
+  isTTSEnabled,
+}: {
+  sourceDeckId: T.Deck["id"];
+  name: string;
+  description: string;
+  isTTSEnabled: boolean;
+}) {
+  const res = await axios.post<{ data: T.Deck }>(
+    `/decks/${sourceDeckId}/clone`,
+    {
+      name,
+      description,
+      is_tts_enabled: isTTSEnabled,
+    },
+  );
+
+  return res.data.data;
+}
+
 export async function deleteDeck(
   deckId: number,
   customConfig: T.CustomAxiosRequestConfig = {},

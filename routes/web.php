@@ -29,6 +29,8 @@ Route::middleware(['auth'])
         Route::get('features', [FeatureFlagController::class, 'index']);
 
         Route::resource('decks', DeckController::class);
+        Route::post('decks/{deck}/clone', [DeckController::class, 'clone'])
+            ->name('decks.clone');
 
         Route::resource('decks.memberships', DeckMembershipController::class)
             ->shallow();

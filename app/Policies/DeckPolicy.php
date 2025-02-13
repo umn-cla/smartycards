@@ -37,6 +37,11 @@ class DeckPolicy
         return true;
     }
 
+    public function clone(User $user, Deck $deck): bool
+    {
+        return $user->isMemberOfDeck($deck) || $deck->is_public;
+    }
+
     /**
      * Determine whether the user can update the model.
      */

@@ -145,6 +145,31 @@ class DeckController extends Controller
         return DeckResource::collection($decks);
     }
 
+    public function clone(Request $request, Deck $deck)
+    {
+        Gate::authorize('clone', $deck);
+
+        $validated = $request->validate([
+            'name' => ['required', 'string'],
+            'description' => ['string', 'nullable'],
+            'is_tts_enabled' => ['boolean', 'nullable'],
+        ]);
+
+        $newDeck = $deck->create($validated);
+
+        $deck->cards->each(function ($card) use ($newDeck) {
+            $newDeck->cards()->create($card->toArray());
+        });
+
+        // enroll the current user as the owner of the new deck
+        $newDeck->memberships()->create([
+            'user_id' => $request->user()->id,
+            'role' => 'owner',
+        ]);
+
+        return DeckResource::make($newDeck);
+    }
+
     public function stats(Deck $deck)
     {
         Gate::authorize('view', $deck);
