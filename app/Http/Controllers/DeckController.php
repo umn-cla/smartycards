@@ -156,7 +156,10 @@ class DeckController extends Controller
             'role' => 'owner',
         ]);
 
-        return DeckResource::make($newDeck);
+        // refresh to get all attributes like `is_public`
+        return DeckResource::make($newDeck->fresh())
+            ->response()
+            ->setStatusCode(201);
     }
 
     public function stats(Deck $deck)
