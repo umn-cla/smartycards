@@ -3,11 +3,25 @@
     class="flex flex-col sm:flex-row border p-1 rounded-xl sm:border-none gap-1 flex-wrap"
   >
     <div
-      class="bg-brand-maroon-800/5 rounded-lg p-4 flex-1 sm:flex justify-between items-center flex-wrap"
+      :class="[
+        'bg-brand-maroon-800/5 rounded-lg p-4 flex-1 sm:flex justify-between items-center flex-wrap',
+        {
+          'bg-brand-gold-500/30 text-brand-maroon-900': isCurrentUserMembership,
+        },
+      ]"
     >
       <div>
-        <p>{{ membership.user.name }}</p>
-        <p class="text-sm text-neutral-500">{{ membership.user.email }}</p>
+        <p class="flex items-center gap-2">
+          {{ membership.user.name }}
+          <Badge
+            v-if="isCurrentUserMembership"
+            class="bg-brand-gold-500 text-brand-maroon-900"
+            >You</Badge
+          >
+        </p>
+        <p class="text-sm text-brand-maroon-900/50">
+          {{ membership.user.email }}
+        </p>
       </div>
       <div>
         <p
@@ -17,7 +31,9 @@
           {{ membership.role }}
         </p>
         <Select v-else v-model="selectedRole">
-          <SelectTrigger class="bg-brand-maroon-800/5">
+          <SelectTrigger
+            class="bg-brand-maroon-800/5 border-brand-maroon-900/10"
+          >
             <SelectValue placeholder="Select a role" />
           </SelectTrigger>
           <SelectContent>
@@ -48,13 +64,17 @@
       </Button>
       <Modal
         variant="danger"
-        title="Remove User"
+        :title="isCurrentUserMembership ? 'Leave Deck?' : 'Remove User?'"
         submitButtonVariant="destructive"
-        submitButtonLabel="Remove"
+        :submitButtonLabel="isCurrentUserMembership ? 'Leave' : 'Remove'"
         v-if="membership.capabilities.canDelete"
         @submit="deleteMembership(membership)"
       >
-        <p>
+        <p v-if="isCurrentUserMembership">
+          Are you sure you want to <b>remove yourself</b> from this deck? You
+          will lose access until you are re-invited.
+        </p>
+        <p v-else>
           Are you sure you want to remove <b>{{ membership.user.name }}</b> from
           the deck?
         </p>
@@ -72,7 +92,7 @@
   </li>
 </template>
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import * as T from "@/types";
 import {
   useUpdateDeckMembershipMutation,
@@ -89,6 +109,8 @@ import {
 } from "./ui/select";
 import { IconCheck, IconTrash } from "./icons";
 import Modal from "./Modal.vue";
+import { useAuthQuery } from "@/queries/auth";
+import { Badge } from "./ui/badge";
 
 const props = defineProps<{
   membership: T.DeckMembership;
@@ -98,6 +120,11 @@ const selectedRole = ref<T.DeckMembership["role"] | "">(props.membership.role);
 
 const { mutate: updateMembership } = useUpdateDeckMembershipMutation();
 const { mutate: deleteMembership } = useDeleteDeckMembershipMutation();
+const { data: currentUser } = useAuthQuery();
+
+const isCurrentUserMembership = computed(
+  () => props.membership.user.id === currentUser.value?.id,
+);
 
 function handleSave() {
   if (selectedRole.value === "") {
