@@ -6,12 +6,12 @@ import { IconRefresh } from "@/components/icons"
 
 ![Deck sharing page](/img/share-deck.png)
 
-[Deck owners and editors]() can invite other users to view or collaborate on their deck.
+[Deck owners](#deck-roles-and-permissions) can invite other users to view or collaborate on their deck.
 
 To start sharing, click `Share` on your deck's page.
 
 ::: info
-Users with **view-only** permissions to a deck cannot invite others, or see the list of members. See [Deck Roles and Permissions](#what-exactly-can-an-owner-editor-and-viewer-do-with-my-deck) for details.
+Users with **view-only** permissions to a deck cannot invite others, or see the list of members. See [Deck Roles and Permissions](#deck-roles-and-permissions) for details.
 :::
 
 On the Share page, you'll see two sections: Invite and Members
