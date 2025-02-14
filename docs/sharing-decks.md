@@ -23,7 +23,7 @@ On the Share page, you'll see two sections: Invite and Members
 Deck members can have three roles:
 
 - **owner** – the deck creator, with full permissions
-- **editor** - can edit the deck and invite others
+- **editor** - can add, remove, and edit deck cards
 - **viewer** - can view the deck, practice, and play
 
 In the invite section, you'll see a `View` invite links and an `Edit` invite link.
@@ -44,7 +44,7 @@ Accidentally shared a link? Need to stop members from joining? Click the <IconRe
 
 Below the invites, are a list of all current deck members and their roles.
 
-You can promote, demote, or remove users in this list.
+Deck owners can promote, demote, or remove users in this list.
 
 ## Deck Roles and Permissions
 
@@ -54,17 +54,18 @@ Here's a more granular list of what deck owners, editors, and viewers can do:
 | :----------------------------------------------- | ----- | ------ | ------ |
 | **DECK**                                         |       |        |        |
 | Delete Deck                                      | x     | -      | -      |
-| Change deck name/description                     | x     | x      | -      |
+| Change deck name/description                     | x     | -      | -      |
 | Add/Remove/Edit Cards                            | x     | x      | -      |
+| Clone deck (make their own copy)                 | x     | x      | x      |
 | **REPORTING**                                    |       |        |        |
 | view avg card score (all members)                | x     | -      | -      |
 | member participation summary                     | x     | -      | -      |
 | **SHARING**                                      |       |        |        |
-| share deck with others                           | x     | x      | -      |
-| view member list                                 | x     | x      | -      |
-| promote/demote members<br>(up to the same level) | x     | x      | -      |
-| remove members                                   | x     | x      | -      |
-| reset share links                                | x     | x      | -      |
+| share deck with others                           | x     | -      | -      |
+| view member list                                 | x     | -      | -      |
+| promote/demote members<br>(up to the same level) | x     | -      | -      |
+| remove members                                   | x     | -      | -      |
+| reset share links                                | x     | -      | -      |
 | **ACTIVITIES**                                   |       |        |        |
 | Practice Deck                                    | x     | x      | x      |
 | Quiz                                             | x     | x      | x      |
@@ -82,15 +83,17 @@ You've created a deck as a self-study tool and want to share it with a friend to
 
 They will see your new cards, but won't be able to edit. Their practice and play history will be separate from your own.
 
+They can `Clone` your deck if they wish to have a copy of their own.
+
 #### Class Study
 
 You've create a deck to help your class practice and study.
 
-- **Editors** – TA's or instructional support staff to help you create/edit cards, and manage invites.
+- **Owners** – TA's or instructional support staff to help you create/edit cards, and manage invites.
 - **Viewers** – Students
 
 :::tip
-Post your `View` invite link in your Canvas classroom, so that students can add themselves.
+Post your `View` invite link or [`Embed` a practice activity](./teaching/using-with-canvas.md) in your Canvas classroom, so that students can add themselves.
 :::
 
 #### Collaborative Study
