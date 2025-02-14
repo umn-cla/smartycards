@@ -100,3 +100,25 @@ Cypress.Commands.add("getInputByLabel", (label: string) => {
       cy.get("#" + id);
     });
 });
+
+Cypress.Commands.add(
+  "addUserToDeck",
+  (umndid: string, deckId: number, role: T.MembershipRole) => {
+    let user = null;
+    let deck = null;
+    return cy
+      .php(`\\App\\Models\\User::where("umndid", "${umndid}")->firstOrFail();`)
+      .then((u) => {
+        user = u;
+        return cy.php(`\\App\\Models\\Deck::find(${deckId});`);
+      })
+      .then((d) => {
+        deck = d;
+        return cy.php(`\\App\\Models\\DeckMembership::updateOrCreate([
+            "user_id" => ${user.id},
+            "deck_id" => ${deck.id},
+            "role" => "${role}",
+          ]);`);
+      });
+  },
+);

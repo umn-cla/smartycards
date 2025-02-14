@@ -1,12 +1,12 @@
 <template>
   <DropdownMenu>
     <DropdownMenuTrigger asChild>
-      <Button variant="ghost" size="icon">
+      <Button variant="ghost" size="icon" data-cy="more-deck-actions-button">
         <IconEllipsesVertical />
         <span class="sr-only">More</span>
       </Button>
     </DropdownMenuTrigger>
-    <DropdownMenuContent align="end">
+    <DropdownMenuContent align="end" data-cy="more-deck-actions-menu">
       <DropdownMenuItem asChild v-if="deck.capabilities.canUpdate">
         <RouterLink :to="{ name: 'decks.edit', params: { deckId: deck.id } }">
           <IconSettings class="size-5 mr-4" />

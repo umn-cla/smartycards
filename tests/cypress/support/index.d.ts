@@ -139,5 +139,13 @@ declare namespace Cypress {
      * Get the input element matching the label text.
      */
     getInputByLabel(label: string): Chainable<any>;
+
+    /**
+     * Adds a user to a given deck with a role
+     * @param umndid
+     * @param deckId
+     * @param role
+     */
+    addUserToDeck(umndid: string, deckId: number, role: string): Chainable<any>;
   }
 }
