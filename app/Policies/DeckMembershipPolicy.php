@@ -38,7 +38,19 @@ class DeckMembershipPolicy
      */
     public function update(User $user, DeckMembership $deckMembership): bool
     {
-        return $user->hasRoleInDeck($deckMembership->deck, 'owner');
+        $isOwnMembership = $user->id === $deckMembership->user_id;
+
+        // if it's not their own membership, just check if they're an owner
+        if (! $isOwnMembership) {
+            return $user->isOwnerOfDeck($deckMembership->deck);
+        }
+
+        // if they're trying to update their own membership,
+        // we want to avoid decks without any owners
+        // so we need to check if they're the only owner
+        $ownerCount = $deckMembership->deck->memberships()->where('role', 'owner')->count();
+
+        return $ownerCount > 1;
     }
 
     /**
@@ -50,11 +62,6 @@ class DeckMembershipPolicy
         // a user can remove themselves from a deck
         if ($user->id === $deckMembership->user_id) {
             return $user->can('removeSelf', $deckMembership);
-        }
-
-        // prevent deletion of owner roles
-        if ($deckMembership->role === 'owner') {
-            return false;
         }
 
         return $user->hasRoleInDeck($deckMembership->deck, 'owner');
