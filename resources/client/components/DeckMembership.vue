@@ -11,10 +11,7 @@
       </div>
       <div>
         <p
-          v-if="
-            membership.role === T.MembershipRole.OWNER ||
-            !membership.capabilities.canUpdate
-          "
+          v-if="!membership.capabilities.canUpdate"
           class="px-4 py-3 border border-black/10 rounded-lg text-sm capitalize leading-none"
         >
           {{ membership.role }}
@@ -27,6 +24,7 @@
             <SelectGroup>
               <SelectItem :value="T.MembershipRole.VIEWER">Viewer</SelectItem>
               <SelectItem :value="T.MembershipRole.EDITOR">Editor</SelectItem>
+              <SelectItem :value="T.MembershipRole.OWNER">Owner</SelectItem>
             </SelectGroup>
           </SelectContent>
         </Select>
@@ -89,7 +87,6 @@ import {
   SelectItem,
   SelectValue,
 } from "./ui/select";
-import IconX from "./icons/IconX.vue";
 import { IconCheck, IconTrash } from "./icons";
 import Modal from "./Modal.vue";
 
