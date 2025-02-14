@@ -87,7 +87,7 @@
         </header>
         <div class="card-grid">
           <RouterLink
-            v-if="deck.capabilities.canUpdate"
+            v-if="deck.capabilities.canCreateCards"
             :to="{ name: 'cards.create' }"
             class="flex w-full h-full items-center justify-center rounded-xl flex-col gap-2 border-2 border-dashed border-black/10 px-4 py-8 hover:bg-brand-teal-300/10 transition-colors hover:text-brand-teal-500"
           >
@@ -111,8 +111,8 @@
                     class="my-1"
                   />
                   <MoreCardActions
-                    :canDelete="canDelete"
-                    :canEdit="canEdit"
+                    :canDelete="card.capabilities.canDelete"
+                    :canEdit="card.capabilities.canUpdate"
                     :card="card"
                     @delete="handleDeleteCard"
                   />
@@ -153,14 +153,6 @@ const props = defineProps<{
 
 const cardSearch = ref("");
 const deckIdRef = computed(() => props.deckId);
-
-const canEdit = computed(() => {
-  return deck.value?.capabilities.canUpdate ?? false;
-});
-
-const canDelete = computed(() => {
-  return deck.value?.capabilities.canDelete ?? false;
-});
 
 const { data: deck } = useDeckByIdQuery(deckIdRef);
 const { mutate: deleteCard } = useDeleteCardMutation();

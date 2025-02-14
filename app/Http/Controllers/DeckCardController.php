@@ -52,7 +52,7 @@ class DeckCardController extends Controller
 
         Gate::authorize('create', [
             Card::class,
-            $deck->id,
+            $deck,
         ]);
 
         $card = Card::create([
