@@ -13,7 +13,7 @@ class DeckMembershipPolicy
      */
     public function viewAny(User $user, Deck $deck): bool
     {
-        return $user->hasRoleInDeck($deck, ['owner', 'editor']);
+        return $user->hasRoleInDeck($deck, 'owner');
 
     }
 
@@ -22,7 +22,7 @@ class DeckMembershipPolicy
      */
     public function view(User $user, DeckMembership $deckMembership): bool
     {
-        return $user->hasRoleInDeck($deckMembership->deck, ['owner', 'editor']);
+        return $user->hasRoleInDeck($deckMembership->deck, 'owner');
     }
 
     /**
@@ -30,7 +30,7 @@ class DeckMembershipPolicy
      */
     public function create(User $user, Deck $deck): bool
     {
-        return $user->hasRoleInDeck($deck, ['owner', 'editor']);
+        return $user->hasRoleInDeck($deck, 'owner');
     }
 
     /**
@@ -38,12 +38,7 @@ class DeckMembershipPolicy
      */
     public function update(User $user, DeckMembership $deckMembership): bool
     {
-        // for now, just prevent any changes to owner roles
-        if ($deckMembership->role === 'owner') {
-            return false;
-        }
-
-        return $user->hasRoleInDeck($deckMembership->deck, ['owner', 'editor']);
+        return $user->hasRoleInDeck($deckMembership->deck, 'owner');
     }
 
     /**
@@ -62,7 +57,7 @@ class DeckMembershipPolicy
             return false;
         }
 
-        return $user->hasRoleInDeck($deckMembership->deck, ['owner', 'editor']);
+        return $user->hasRoleInDeck($deckMembership->deck, 'owner');
     }
 
     public function removeSelf(User $user, DeckMembership $deckMembership): bool
@@ -83,7 +78,7 @@ class DeckMembershipPolicy
      */
     public function restore(User $user, DeckMembership $deckMembership): bool
     {
-        return $user->hasRoleInDeck($deckMembership->deck, ['owner', 'editor']);
+        return $user->hasRoleInDeck($deckMembership->deck, 'owner');
 
     }
 

@@ -47,7 +47,7 @@ class DeckPolicy
      */
     public function update(User $user, Deck $deck): bool
     {
-        return $user->memberships()->where('deck_id', $deck->id)->whereIn('role', ['editor', 'owner'])->exists();
+        return $user->isOwnerOfDeck($deck);
     }
 
     /**
