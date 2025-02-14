@@ -44,6 +44,7 @@ class DeckResource extends JsonResource
                 'canViewMemberships' => $request->user()->can('viewMemberships', $this->resource),
                 'canCreateMembership' => $request->user()->can('createMembership', $this->resource),
                 'canViewReports' => $request->user()->can('viewReports', $this->resource),
+                'canCreateCards' => $request->user()->can('createCards', $this->resource),
                 'canLeave' => $request->user()->can('leave', $this->resource),
                 // only allow joining as viewer if the user is not a member of the deck
                 'canJoinAsViewer' => $this->current_user_role === null && $request->user()->can('joinAsViewer', $this->resource),

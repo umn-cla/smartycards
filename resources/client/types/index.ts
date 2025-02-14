@@ -87,6 +87,7 @@ export interface Deck {
     canLeave: boolean;
     canJoinAsViewer: boolean; // can join if not already a member, and deck is public
     canViewReports: boolean;
+    canCreateCards: boolean;
   };
   created_at: ISODateTime;
   updated_at: ISODateTime;
@@ -112,6 +113,10 @@ export interface Card {
   attempts_count: number;
   last_attempted_at: ISODateTime;
   avg_score: number | null;
+  capabilities: {
+    canUpdate: boolean;
+    canDelete: boolean;
+  };
 }
 
 export interface UserCardScore {

@@ -27,11 +27,9 @@ class CardPolicy
     /**
      * Determine whether the user can create models.
      */
-    public function create(User $user, $deckId): bool
+    public function create(User $user, Deck $deck): bool
     {
-        $deck = Deck::findOrFail($deckId);
-
-        return $user->can('update', $deck);
+        return $user->hasRoleInDeck($deck, ['owner', 'editor']);
     }
 
     /**
@@ -39,7 +37,8 @@ class CardPolicy
      */
     public function update(User $user, Card $card): bool
     {
-        return $user->can('update', $card->deck);
+        return $user->hasRoleInDeck($card->deck, ['owner', 'editor']);
+
     }
 
     /**
@@ -47,7 +46,8 @@ class CardPolicy
      */
     public function delete(User $user, Card $card): bool
     {
-        return $user->can('update', $card->deck);
+        return $user->hasRoleInDeck($card->deck, ['owner', 'editor']);
+
     }
 
     /**
@@ -55,7 +55,7 @@ class CardPolicy
      */
     public function restore(User $user, Card $card): bool
     {
-        return $user->can('update', $card->deck);
+        return $user->hasRoleInDeck($card->deck, ['owner', 'editor']);
     }
 
     /**

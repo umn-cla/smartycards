@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Models\Card;
 use App\Models\Deck;
 use App\Models\DeckMembership;
 use App\Models\User;
@@ -72,6 +73,11 @@ class DeckPolicy
     public function forceDelete(User $user, Deck $deck): bool
     {
         return false;
+    }
+
+    public function createCards(User $user, Deck $deck): bool
+    {
+        return $user->can('create', [Card::class, $deck]);
     }
 
     public function viewMemberships(User $user, Deck $deck): bool
