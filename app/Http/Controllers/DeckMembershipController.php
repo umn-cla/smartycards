@@ -41,7 +41,7 @@ class DeckMembershipController extends Controller
         Gate::authorize('update', $membership);
 
         $validated = $request->validate([
-            'role' => 'required|string|in:viewer,editor',
+            'role' => 'required|string|in:viewer,editor,owner',
         ]);
 
         $membership->update($validated);
