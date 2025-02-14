@@ -4,9 +4,10 @@
   >
     <div
       :class="[
-        'bg-brand-maroon-800/5 rounded-lg p-4 flex-1 sm:flex justify-between items-center flex-wrap',
+        'rounded-lg p-4 flex-1 sm:flex justify-between items-center flex-wrap text-brand-maroon-900',
         {
-          'bg-brand-gold-500/30 text-brand-maroon-900': isCurrentUserMembership,
+          'bg-brand-gold-500/30 ': isCurrentUserMembership,
+          'bg-brand-maroon-800/5': !isCurrentUserMembership,
         },
       ]"
     >
