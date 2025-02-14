@@ -30,13 +30,23 @@ In the invite section, you'll see a `View` invite links and an `Edit` invite lin
 
 Share the link with users you wish to invite. Once they click on them (and sign in), they'll join your deck.
 
-::: warning
-Be careful sharing the `edit` link – any user who clicks this link will have full edit permissions. If you send an email to a user, and they forward it to another, and so on, you may get a number of unexpected editors.
-:::
-
 ::: tip
 Accidentally shared a link? Need to stop members from joining? Click the <IconRefresh /> refresh icon next to the link to generate a new link.
 :::
+
+## Cloning Decks
+
+Any deck member can use `clone` to make a fresh copy of a deck of their own. No practice history or members will copied.
+
+To clone a deck:
+
+1. Choose `⋮` and select `Clone`. You will be prompted for the name and description of the new deck.
+
+   ![Choose clone deck from the more options menu on the deck page](./img/select-clone-deck.png)
+
+2. Give your cloned deck a name and description and click `Clone` to save:
+
+   ![Fill out clone page](./img/clone-deck-page.png)
 
 ## Members List
 
