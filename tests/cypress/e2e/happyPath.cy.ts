@@ -10,15 +10,15 @@ describe("Happy Path", () => {
 
     cy.contains("Sign In").click();
 
-    cy.get("#username").type("admin");
-    cy.get("#password").type("admin");
+    cy.get("#username").type("user");
+    cy.get("#password").type("user");
     cy.contains("input", "Login").click();
 
     cy.contains("Decks");
   });
 
-  it("creates a deck", () => {
-    cy.login({ umndid: "admin" });
+  it("creates a deck with a card and flips it", () => {
+    cy.login({ umndid: "user" });
 
     cy.visit("/decks");
 
