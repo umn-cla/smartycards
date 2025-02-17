@@ -57,6 +57,7 @@ import { Switch } from "@/components/ui/switch";
 import HintTooltip from "@/components/HintTooltip.vue";
 import { Label } from "@/components/ui/label";
 import { Deck } from "@/types";
+import { useErrorStore } from "@/stores/useErrorStore";
 
 const props = defineProps<{
   deckId: number | null;
@@ -74,15 +75,25 @@ const deckIdRef = computed(() => props.deckId);
 const { data: deck } = useDeckByIdQuery(deckIdRef);
 const { mutate: createDeck } = useCreateDeckMutation();
 const { mutate: updateDeck } = useUpdateDeckMutation();
+const errorStore = useErrorStore();
 
 watch(
   deck,
   () => {
-    if (deck.value) {
-      form.name = deck.value.name;
-      form.description = deck.value.description ?? "";
-      form.isTTSEnabled = deck.value.is_tts_enabled;
+    if (!deck.value) return;
+
+    // if we're in editor mode and the user cannot update the deck,
+    // dispatch an error
+    if (!deck.value.capabilities.canUpdate) {
+      errorStore.setError(
+        new Error("You do not have permission to edit this deck"),
+      );
+      return;
     }
+
+    form.name = deck.value.name;
+    form.description = deck.value.description ?? "";
+    form.isTTSEnabled = deck.value.is_tts_enabled;
   },
   { immediate: true },
 );

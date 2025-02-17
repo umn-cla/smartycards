@@ -74,7 +74,7 @@ describe("deck", () => {
       // trying to navigate to the deck edit page gives error
       cy.visit(`/decks/${deckId}/edit`);
 
-      cy.contains("You don't have permission to edit this deck");
+      cy.contains("You do not have permission to edit this deck");
     });
   });
 });
