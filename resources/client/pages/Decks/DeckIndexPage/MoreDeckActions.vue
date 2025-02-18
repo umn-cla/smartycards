@@ -19,11 +19,10 @@
           Clone
         </RouterLink>
       </DropdownMenuItem>
-      <DropdownMenuItem asChild v-if="deck.capabilities.canUpdate">
+      <DropdownMenuItem asChild v-if="deck.capabilities.canCreateCards">
         <RouterLink
           :to="{ name: 'decks.import', params: { deckId: deck.id } }"
           class="btn"
-          v-if="deck.capabilities.canUpdate"
         >
           <IconUpload class="size-5 mr-4" />
           Import Cards
@@ -97,9 +96,7 @@ import {
   IconExit,
   IconTrash,
   IconUpload,
-  IconCirclePlay,
   IconSettings,
-  IconEmbed,
 } from "@/components/icons";
 import {
   DropdownMenu,
@@ -107,18 +104,17 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import * as T from "@/types";
 import { useDeleteDeckMutation } from "@/queries/decks";
 import { useLeaveDeckMutation } from "@/queries/deckMemberships";
 import Modal from "@/components/Modal.vue";
-import { computed, reactive } from "vue";
+import { reactive } from "vue";
 import { useRouter } from "vue-router";
 import EmbedDeckModal from "@/components/EmbedDeckModal.vue";
 import IconCopy from "@/components/icons/IconCopy.vue";
 
-const props = defineProps<{
+defineProps<{
   deck: T.Deck;
 }>();
 

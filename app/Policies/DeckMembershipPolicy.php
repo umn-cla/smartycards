@@ -13,7 +13,7 @@ class DeckMembershipPolicy
      */
     public function viewAny(User $user, Deck $deck): bool
     {
-        return $user->hasRoleInDeck($deck, ['owner', 'editor']);
+        return $user->hasRoleInDeck($deck, 'owner');
 
     }
 
@@ -22,7 +22,7 @@ class DeckMembershipPolicy
      */
     public function view(User $user, DeckMembership $deckMembership): bool
     {
-        return $user->hasRoleInDeck($deckMembership->deck, ['owner', 'editor']);
+        return $user->hasRoleInDeck($deckMembership->deck, 'owner');
     }
 
     /**
@@ -30,7 +30,7 @@ class DeckMembershipPolicy
      */
     public function create(User $user, Deck $deck): bool
     {
-        return $user->hasRoleInDeck($deck, ['owner', 'editor']);
+        return $user->hasRoleInDeck($deck, 'owner');
     }
 
     /**
@@ -38,12 +38,19 @@ class DeckMembershipPolicy
      */
     public function update(User $user, DeckMembership $deckMembership): bool
     {
-        // for now, just prevent any changes to owner roles
-        if ($deckMembership->role === 'owner') {
-            return false;
+        $isOwnMembership = $user->id === $deckMembership->user_id;
+
+        // if it's not their own membership, just check if they're an owner
+        if (! $isOwnMembership) {
+            return $user->isOwnerOfDeck($deckMembership->deck);
         }
 
-        return $user->hasRoleInDeck($deckMembership->deck, ['owner', 'editor']);
+        // if they're trying to update their own membership,
+        // we want to avoid decks without any owners
+        // so we need to check if they're the only owner
+        $ownerCount = $deckMembership->deck->memberships()->where('role', 'owner')->count();
+
+        return $ownerCount > 1;
     }
 
     /**
@@ -57,12 +64,7 @@ class DeckMembershipPolicy
             return $user->can('removeSelf', $deckMembership);
         }
 
-        // prevent deletion of owner roles
-        if ($deckMembership->role === 'owner') {
-            return false;
-        }
-
-        return $user->hasRoleInDeck($deckMembership->deck, ['owner', 'editor']);
+        return $user->hasRoleInDeck($deckMembership->deck, 'owner');
     }
 
     public function removeSelf(User $user, DeckMembership $deckMembership): bool
@@ -83,7 +85,7 @@ class DeckMembershipPolicy
      */
     public function restore(User $user, DeckMembership $deckMembership): bool
     {
-        return $user->hasRoleInDeck($deckMembership->deck, ['owner', 'editor']);
+        return $user->hasRoleInDeck($deckMembership->deck, 'owner');
 
     }
 
