@@ -38,7 +38,7 @@
     "katex": "^0.16.21",
     "marked": "^15.0.7",
     "marked-katex-extension": "^5.1.4",
-    "mathlive": "^0.104.0",
+    "mathlive": "^0.103.0",
     "p-debounce": "^4.0.0",
     "pinia": "^2.3.1",
     "quill": "^2.0.3",
