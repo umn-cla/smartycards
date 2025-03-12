@@ -6,7 +6,7 @@ import type { RouteLocationRaw } from "vue-router";
  */
 declare global {
   interface Window {
-    katex: any;
+    katex: unknown;
   }
 }
 
@@ -144,7 +144,7 @@ export interface NavMenuItem {
   name: string;
   to?: RouteLocationRaw;
   href?: string;
-  icon?: any;
+  icon?: unknown;
 }
 
 export type ContentBlockType =
@@ -291,4 +291,9 @@ export interface DeckStats {
   cards_count: number;
   memberships_count: number;
   current_user_xp: number;
+}
+
+export interface LanguageOption {
+  name: string;
+  locale: string;
 }
