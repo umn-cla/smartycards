@@ -35,14 +35,14 @@
         >
           <div>
             <Label for="default-front-locale">Default Front Language</Label>
-            <LanguageSelect
+            <SelectLanguage
               id="default-front-locale"
               v-model="form.defaultTTSLocaleFront"
             />
           </div>
           <div>
             <Label for="default-back-locale">Default Back Language</Label>
-            <LanguageSelect
+            <SelectLanguage
               id="default-back-locale"
               v-model="form.defaultTTSLocaleBack"
             />
@@ -76,7 +76,7 @@ import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import HintTooltip from "@/components/HintTooltip.vue";
 import { Label } from "@/components/ui/label";
-import LanguageSelect from "@/components/LanguageSelect.vue";
+import SelectLanguage from "@/components/SelectLanguage.vue";
 import * as T from "@/types";
 
 const props = defineProps<{
