@@ -22,11 +22,11 @@ class TTSService
         $this->voice = config('services.azure.tts.voice');
     }
 
-    protected function toSSML(string $text, ?string $lang = null)
+    protected function toSSML(string $text, string $lang = 'auto'): string
     {
 
         // if a language is specified, wrap text in a lang tag
-        if ($lang) {
+        if ($lang !== 'auto') {
             $text = "<lang xml:lang='{$lang}'>{$text}</lang>";
         }
 
@@ -37,12 +37,12 @@ class TTSService
             .'</speak>';
     }
 
-    protected function getCacheKey(string $text, ?string $lang = null): string
+    protected function getCacheKey(string $text, string $lang = 'auto'): string
     {
         return md5($text.$lang.$this->voice);
     }
 
-    public function getSpeech(string $text, ?string $lang = null)
+    public function getSpeech(string $text, string $lang = 'auto')
     {
 
         if (strlen($text) > self::MAX_TEXT_LENGTH) {
