@@ -8,9 +8,10 @@
     "
   >
     <SelectTrigger class="bg-brand-maroon-800/5">
-      <SelectValue placeholder="Language (Auto)"> </SelectValue>
+      <SelectValue placeholder="Language (Auto)"></SelectValue>
     </SelectTrigger>
     <SelectContent>
+      <SelectItem value="auto">Auto</SelectItem>
       <SelectItem
         v-for="lang in ttsLanguageOptions"
         :value="lang.locale"
