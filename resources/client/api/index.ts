@@ -388,7 +388,7 @@ export async function getDeckStats(deckId: number) {
 
 export async function getAudioForText(
   text: string,
-  lang?: string | null, // undefined means "best guess"?
+  lang = 'auto'
 ): Promise<Blob> {
   const res = await axios.post<Blob>(
     `/tts`,
