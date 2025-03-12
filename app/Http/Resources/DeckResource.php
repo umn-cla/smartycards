@@ -20,6 +20,8 @@ class DeckResource extends JsonResource
             'description' => $this->description,
             'is_public' => $this->is_public,
             'is_tts_enabled' => $this->is_tts_enabled,
+            'default_tts_locale_front' => $this->default_tts_locale_front,
+            'default_tts_locale_back' => $this->default_tts_locale_back,
 
             'cards_count' => $this->when(isset($this->cards_count), $this->cards_count),
 

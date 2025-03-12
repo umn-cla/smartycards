@@ -34,12 +34,16 @@ class DeckController extends Controller
             'name' => 'required|string',
             'description' => 'string|nullable',
             'is_tts_enabled' => 'boolean|nullable',
+            'default_tts_locale_front' => 'string|nullable',
+            'default_tts_locale_back' => 'string|nullable',
         ]);
 
         $deck = Deck::create([
             'name' => $validated['name'],
             'description' => $validated['description'] ?? null,
             'is_tts_enabled' => $validated['is_tts_enabled'] ?? false,
+            'default_tts_locale_front' => $validated['default_tts_locale_front'] ?? null,
+            'default_tts_locale_back' => $validated['default_tts_locale_back'] ?? null,
         ]);
 
         $deck->memberships()->create([
@@ -88,12 +92,16 @@ class DeckController extends Controller
             'name' => 'string',
             'description' => 'string|nullable',
             'is_tts_enabled' => 'boolean|nullable',
+            'default_tts_locale_front' => 'string|nullable',
+            'default_tts_locale_back' => 'string|nullable',
         ]);
 
         $deck->update([
             'name' => $validated['name'] ?? $deck->name,
             'description' => $validated['description'] ?? $deck->description,
             'is_tts_enabled' => $validated['is_tts_enabled'] ?? $deck->is_tts_enabled,
+            'default_tts_locale_front' => $validated['default_tts_locale_front'] ?? $deck->default_tts_locale_front,
+            'default_tts_locale_back' => $validated['default_tts_locale_back'] ?? $deck->default_tts_locale_back,
         ]);
 
         return DeckResource::make($deck->fresh());
