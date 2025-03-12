@@ -66,7 +66,7 @@
 <script setup lang="ts">
 import { QuillyEditor } from "vue-quilly";
 import Quill from "quill/quill"; // Core build
-import { ref, onMounted, computed, watch, inject, toRef } from "vue";
+import { ref, onMounted, computed, inject, toRef } from "vue";
 import {
   Select,
   SelectTrigger,
@@ -77,7 +77,7 @@ import {
 import "quill-paste-smart";
 import "quill/dist/quill.core.css";
 import "quill/dist/quill.bubble.css";
-import { getTTSLanguageOptions } from "@/lib/getTtsLanguageOptions";
+import { ttsLanguageOptions as languages } from "@/lib/ttsLanguageOptions";
 import { TextContentBlock } from "@/types";
 import { IconGlobe } from "../icons";
 import Toggle from "@/components/Toggle.vue";
@@ -103,7 +103,6 @@ const { makeInputId } = useMakeInputId("text-block-input", props.id);
 
 const selectedLanguage = computed((): string => props.meta?.lang ?? "");
 const isSettingCustomLanguage = ref(!!selectedLanguage.value);
-const languages = getTTSLanguageOptions();
 const text = computed(() => props.modelValue);
 const charCount = computed(() => text.value.length);
 

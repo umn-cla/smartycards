@@ -1,4 +1,6 @@
-const ttsLanguageOptions = [
+import { LanguageOption } from "@/types";
+
+export const ttsLanguageOptions: LanguageOption[] = [
   // { name: "Afrikaans", locale: "af-ZA" },
   // { name: "Amharic", locale: "am-ET" },
   // { name: "Arabic (Egypt)", locale: "ar-EG" },
@@ -90,8 +92,5 @@ const ttsLanguageOptions = [
   // { name: "Chinese (Hong Kong)", locale: "zh-HK" },
   // { name: "Chinese (Traditional)", locale: "zh-TW" },
   // { name: "Zulu", locale: "zu-ZA" },
-];
+].toSorted((a, b) => a.name.localeCompare(b.name));
 
-export function getTTSLanguageOptions() {
-  return ttsLanguageOptions.toSorted((a, b) => a.name.localeCompare(b.name));
-}
