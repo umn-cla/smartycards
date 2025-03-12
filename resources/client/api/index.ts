@@ -69,16 +69,28 @@ export async function getDeckById(deckId: number) {
   return res.data.data;
 }
 
+
+interface CreateDeckParams {
+  name: string;
+  description: string;
+  isTTSEnabled: boolean;
+  defaultTTSLocaleFront: string | null;
+  defaultTTSLocaleBack: string | null;
+}
+
 export async function createDeck(
-  deck: { name: string; description: string; isTTSEnabled: boolean },
+  deck: CreateDeckParams,
   customConfig: T.CustomAxiosRequestConfig = {},
 ) {
   await csrf();
   const res = await axios.post<{ data: T.Deck }>(
     `/decks`,
     {
-      ...deck,
+      name: deck.name,
+      description: deck.description,
       is_tts_enabled: deck.isTTSEnabled,
+      default_tts_locale_front: deck.defaultTTSLocaleFront,
+      default_tts_locale_back: deck.defaultTTSLocaleBack,
     },
     customConfig,
   );
@@ -116,21 +128,17 @@ export async function deleteDeck(
   await axios.delete(`/decks/${deckId}`, customConfig);
 }
 
-export async function updateDeck({
-  id,
-  name,
-  description,
-  isTTSEnabled,
-}: {
+
+interface UpdateDeckParams extends CreateDeckParams {
   id: number;
-  name: string;
-  description: string;
-  isTTSEnabled: boolean;
-}) {
-  const res = await axios.put<{ data: T.Deck }>(`/decks/${id}`, {
-    name,
-    description,
-    is_tts_enabled: isTTSEnabled,
+}
+export async function updateDeck(deck: UpdateDeckParams) {
+  const res = await axios.put<{ data: T.Deck }>(`/decks/${deck.id}`, {
+    name: deck.name,
+    description: deck.description,
+    is_tts_enabled: deck.isTTSEnabled,
+    default_tts_locale_front: deck.defaultTTSLocaleFront,
+    default_tts_locale_back: deck.defaultTTSLocaleBack,
   });
   return res.data.data;
 }
