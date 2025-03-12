@@ -29,6 +29,26 @@
             </HintTooltip>
           </Label>
         </div>
+        <div
+          v-show="form.isTTSEnabled"
+          class="flex gap-4 p-4 border border-brand-maroon-800/10 rounded-md"
+        >
+          <div>
+            <Label for="default-front-locale">Default Front Language</Label>
+            <LanguageSelect
+              id="default-front-locale"
+              v-model="form.ttsFrontLocale"
+            />
+          </div>
+          <div>
+            <Label for="default-back-locale">Default Back Language</Label>
+            <LanguageSelect
+              id="default-back-locale"
+              v-model="form.ttsBackLocale"
+            />
+          </div>
+        </div>
+
         <div class="flex items-center justify-end py-4 gap-2">
           <Button asChild variant="secondary">
             <RouterLink :to="{ name: 'decks.index' }"> Cancel </RouterLink>
@@ -56,7 +76,8 @@ import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import HintTooltip from "@/components/HintTooltip.vue";
 import { Label } from "@/components/ui/label";
-import { Deck } from "@/types";
+import LanguageSelect from "@/components/LanguageSelect.vue";
+import * as T from "@/types";
 
 const props = defineProps<{
   deckId: number | null;
@@ -66,6 +87,8 @@ const form = reactive({
   name: "",
   description: "",
   isTTSEnabled: false,
+  ttsFrontLocale: null as T.LanguageOption["locale"] | null,
+  ttsBackLocale: null as T.LanguageOption["locale"] | null,
 });
 
 const isCreateMode = computed(() => props.deckId === null);
@@ -104,7 +127,7 @@ async function handleSubmit() {
   updateDeck(
     { id: props.deckId, ...form },
     {
-      onSuccess: (updatedDeck: Deck) => {
+      onSuccess: (updatedDeck: T.Deck) => {
         router.push({ name: "decks.show", params: { deckId: updatedDeck.id } });
       },
     },
