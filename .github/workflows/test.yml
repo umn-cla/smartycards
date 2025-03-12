@@ -26,7 +26,9 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - run: cp .env.example .env
+      - run: |
+          cp .env.example .env
+          echo "APP_URL=http://localhost:8000" >> .env
 
       - name: Setup PHP
         uses: umn-cla/setup-php@main
