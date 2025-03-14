@@ -96,7 +96,19 @@ describe("Text Block", () => {
         });
     });
 
-    it("permits setting a language for the block");
+    it("permits setting a language for the block", () => {
+      cy.visit(`/decks/${deckId}`);
+      cy.contains("Front side 0")
+        .parent()
+        .within(() => {
+          // cy.get('[data-cy="simple-tts-player"]').click();
+          // cy.get('[data-cy="tts-language-select"]').select("en");
+          // cy.get('[data-cy="simple-tts-player"] .sr-only').should(
+          //   "have.text",
+          //   "English",
+          // );
+        });
+    });
 
     it("plays the block content in the selected language");
 
