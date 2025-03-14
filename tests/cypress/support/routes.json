@@ -211,7 +211,7 @@
     "name": null,
     "domain": null,
     "action": "Closure",
-    "uri": "{fallbackPlaceholder}",
+    "uri": "tests/{any}",
     "method": [
       "GET",
       "HEAD"
@@ -488,6 +488,15 @@
       "DELETE"
     ]
   },
+  "decks.clone": {
+    "name": "decks.clone",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\DeckController@clone",
+    "uri": "api/decks/{deck}/clone",
+    "method": [
+      "POST"
+    ]
+  },
   "decks.memberships.index": {
     "name": "decks.memberships.index",
     "domain": null,
@@ -569,17 +578,16 @@
     "name": "decks.memberships.share",
     "domain": null,
     "action": "App\\Http\\Controllers\\DeckMembershipController@shareLink",
-    "uri": "api/decks/{deck}/memberships/share/{permission}",
+    "uri": "api/decks/{deck}/memberships/share",
     "method": [
-      "GET",
-      "HEAD"
+      "POST"
     ]
   },
   "decks.memberships.share.regenerate": {
     "name": "decks.memberships.share.regenerate",
     "domain": null,
     "action": "App\\Http\\Controllers\\DeckMembershipController@regenerateShareLink",
-    "uri": "api/decks/{deck}/memberships/share/{permission}/regenerate",
+    "uri": "api/decks/{deck}/memberships/share/regenerate",
     "method": [
       "POST"
     ]
@@ -813,6 +821,16 @@
     "domain": null,
     "action": "App\\Http\\Controllers\\DeckInviteController",
     "uri": "decks/{deck}/invite",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "app": {
+    "name": "app",
+    "domain": null,
+    "action": "Closure",
+    "uri": "{fallbackPlaceholder}",
     "method": [
       "GET",
       "HEAD"

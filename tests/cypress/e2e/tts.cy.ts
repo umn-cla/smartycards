@@ -21,6 +21,14 @@ describe("Text Block", () => {
   });
 
   it("shows the TTS player if TTS is enabled", () => {
+    // verify that the TTS player is not visible if not enabled
+    cy.visit(`/decks/${deckId}`);
+    cy.contains("Front side 0")
+      .parent()
+      .within(() => {
+        cy.get('[data-cy="simple-tts-player"]').should("not.exist");
+      });
+
     // enable TTS for the deck
     cy.visit(`/decks/${deckId}/edit`);
 
@@ -59,8 +67,6 @@ describe("Text Block", () => {
         );
       });
   });
-
-  it("does not show the TTS player if TTS is disabled");
 
   it(
     "defaults to an `auto` language if no language is set for the block or the deck side",
