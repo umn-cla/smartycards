@@ -68,15 +68,40 @@ describe("Text Block", () => {
       });
   });
 
-  it(
-    "defaults to an `auto` language if no language is set for the block or the deck side",
-  );
+  context("when TTS is enabled for a deck", () => {
+    beforeEach(() => {
+      // enable TTS for the deck
+      cy.visit(`/decks/${deckId}/edit`);
 
-  it("permits setting a language for the block");
+      // wait for deck info to load
+      cy.get("#name").should("have.value", "My Deck");
+      cy.get("[data-cy=tts-switch]").click();
 
-  it("plays the block content in the selected language");
+      // save the deck
+      cy.intercept("PUT", `/api/decks/${deckId}`).as("updateDeck");
+      cy.contains("button", "Save").click();
 
-  it("uses the deck side default language if no language is set");
+      // wait for the request to complete
+      cy.wait("@updateDeck");
+    });
 
-  it("overrides the deck side default language if a language is set");
+    it("defaults to an `auto` language if no language is set for the block or the deck side", () => {
+      cy.contains("Front side 0")
+        .parent()
+        .within(() => {
+          cy.get('[data-cy="simple-tts-player"] .sr-only').should(
+            "have.text",
+            "Auto",
+          );
+        });
+    });
+
+    it("permits setting a language for the block");
+
+    it("plays the block content in the selected language");
+
+    it("uses the deck side default language if no language is set");
+
+    it("overrides the deck side default language if a language is set");
+  });
 });

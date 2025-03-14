@@ -11,13 +11,13 @@
   >
     <IconSound class="size-5" />
     <span
-      v-if="languageName"
       class="text-xs"
       :class="{
         'text-brand-maroon-800/50': !isPlaying,
+        'sr-only': !languageName || languageName === 'auto',
       }"
     >
-      {{ languageName }}</span
+      {{ languageName ?? "Auto" }}</span
     >
   </Toggle>
 </template>
