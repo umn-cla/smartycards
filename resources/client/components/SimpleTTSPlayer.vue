@@ -7,6 +7,7 @@
       [isIdleClass]: !isPlaying && props.isIdleClass,
       '!opacity-25 cursor-not-allowed': isEmpty,
     }"
+    data-cy="simple-tts-player"
   >
     <IconSound class="size-5" />
     <span

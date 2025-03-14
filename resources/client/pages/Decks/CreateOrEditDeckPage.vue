@@ -20,6 +20,7 @@
             :checked="form.isTTSEnabled"
             @update:checked="form.isTTSEnabled = $event"
             label="Enable TTS"
+            data-cy="tts-switch"
           />
           <Label for="tts-enabled">
             Enable Text-to-Speech
