@@ -29,8 +29,8 @@ class Deck extends Model implements AuditableContract
         'description',
         'is_public',
         'is_tts_enabled',
-        'default_tts_locale_front',
-        'default_tts_locale_back',
+        'tts_locale_front',
+        'tts_locale_back',
     ];
 
     protected static function booted()

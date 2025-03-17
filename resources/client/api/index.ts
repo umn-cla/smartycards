@@ -69,13 +69,12 @@ export async function getDeckById(deckId: number) {
   return res.data.data;
 }
 
-
 interface CreateDeckParams {
   name: string;
   description: string;
   isTTSEnabled: boolean;
-  defaultTTSLocaleFront: string | null;
-  defaultTTSLocaleBack: string | null;
+  ttsLocaleFront: string | null;
+  ttsLocaleBack: string | null;
 }
 
 export async function createDeck(
@@ -89,8 +88,8 @@ export async function createDeck(
       name: deck.name,
       description: deck.description,
       is_tts_enabled: deck.isTTSEnabled,
-      default_tts_locale_front: deck.defaultTTSLocaleFront,
-      default_tts_locale_back: deck.defaultTTSLocaleBack,
+      tts_locale_front: deck.ttsLocaleFront,
+      tts_locale_back: deck.ttsLocaleBack,
     },
     customConfig,
   );
@@ -128,7 +127,6 @@ export async function deleteDeck(
   await axios.delete(`/decks/${deckId}`, customConfig);
 }
 
-
 interface UpdateDeckParams extends CreateDeckParams {
   id: number;
 }
@@ -137,8 +135,8 @@ export async function updateDeck(deck: UpdateDeckParams) {
     name: deck.name,
     description: deck.description,
     is_tts_enabled: deck.isTTSEnabled,
-    default_tts_locale_front: deck.defaultTTSLocaleFront,
-    default_tts_locale_back: deck.defaultTTSLocaleBack,
+    tts_locale_front: deck.ttsLocaleFront,
+    tts_locale_back: deck.ttsLocaleBack,
   });
   return res.data.data;
 }
@@ -388,7 +386,7 @@ export async function getDeckStats(deckId: number) {
 
 export async function getAudioForText(
   text: string,
-  lang = 'auto'
+  lang: string | null,
 ): Promise<Blob> {
   const res = await axios.post<Blob>(
     `/tts`,

@@ -35,17 +35,17 @@
           class="flex gap-4 p-4 border border-brand-maroon-800/10 rounded-md"
         >
           <div>
-            <Label for="default-front-locale">Default Front Language</Label>
+            <Label for="default-front-locale">Front Side Language</Label>
             <SelectLanguage
               id="default-front-locale"
-              v-model="form.defaultTTSLocaleFront"
+              v-model="form.ttsLocaleFront"
             />
           </div>
           <div>
-            <Label for="default-back-locale">Default Back Language</Label>
+            <Label for="default-back-locale">Back Side Language</Label>
             <SelectLanguage
               id="default-back-locale"
-              v-model="form.defaultTTSLocaleBack"
+              v-model="form.ttsLocaleBack"
             />
           </div>
         </div>
@@ -88,8 +88,8 @@ const form = reactive({
   name: "",
   description: "",
   isTTSEnabled: false,
-  defaultTTSLocaleFront: null as T.LanguageOption["locale"] | null,
-  defaultTTSLocaleBack: null as T.LanguageOption["locale"] | null,
+  ttsLocaleFront: null as T.LanguageOption["locale"] | null,
+  ttsLocaleBack: null as T.LanguageOption["locale"] | null,
 });
 
 const isCreateMode = computed(() => props.deckId === null);
@@ -106,8 +106,8 @@ watch(
       form.name = deck.value.name;
       form.description = deck.value.description ?? "";
       form.isTTSEnabled = deck.value.is_tts_enabled;
-      form.defaultTTSLocaleFront = deck.value.default_tts_locale_front;
-      form.defaultTTSLocaleBack = deck.value.default_tts_locale_back;
+      form.ttsLocaleFront = deck.value.tts_locale_front;
+      form.ttsLocaleBack = deck.value.tts_locale_back;
     }
   },
   { immediate: true },
