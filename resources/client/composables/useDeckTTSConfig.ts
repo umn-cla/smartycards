@@ -20,7 +20,16 @@ export const useDeckTTSConfig = (
       (toValue(deck)?.is_tts_enabled ?? false),
   );
 
+  const ttsLocaleFront = computed(
+    (): string | null => toValue(deck)?.tts_locale_front ?? null,
+  );
+  const ttsLocaleBack = computed(
+    (): string | null => toValue(deck)?.tts_locale_back ?? null,
+  );
+
   return {
     isTTSEnabled,
+    ttsLocaleFront,
+    ttsLocaleBack,
   };
 };
