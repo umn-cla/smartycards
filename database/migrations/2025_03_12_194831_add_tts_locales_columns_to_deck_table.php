@@ -12,8 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('decks', function (Blueprint $table) {
-            $table->string('default_tts_locale_front')->nullable();
-            $table->string('default_tts_locale_back')->nullable();
+            $table->string('tts_locale_front')->nullable();
+            $table->string('tts_locale_back')->nullable();
         });
     }
 
@@ -23,8 +23,8 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('decks', function (Blueprint $table) {
-            $table->dropColumn('default_tts_locale_front');
-            $table->dropColumn('default_tts_locale_back');
+            $table->dropColumn('tts_locale_front');
+            $table->dropColumn('tts_locale_back');
         });
     }
 };
