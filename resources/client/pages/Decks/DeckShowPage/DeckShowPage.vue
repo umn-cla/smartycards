@@ -142,7 +142,7 @@ import MoreCardActions from "./MoreCardActions.vue";
 import { ref } from "vue";
 import LevelProgress from "@/components/LevelProgress.vue";
 import { useActivityTypesQuery } from "@/queries/activityTypes/useActivityTypesQuery";
-import { useDeckTTSConfig } from "@/composables/useIsDeckTTSEnabled";
+import { useDeckTTSConfig } from "@/composables/useDeckTTSConfig";
 import { IS_DECK_TTS_ENABLED_INJECTION_KEY } from "@/constants";
 import { Input } from "@/components/ui/input";
 import { IconSearch } from "@/components/icons";

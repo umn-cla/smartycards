@@ -84,7 +84,7 @@ import { IconChevronLeft } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import PageTitle from "@/components/PageTitle.vue";
 import PageSubtitle from "@/components/PageSubtitle.vue";
-import { useDeckTTSConfig } from "@/composables/useIsDeckTTSEnabled";
+import { useDeckTTSConfig } from "@/composables/useDeckTTSConfig";
 import { makeContentBlock } from "@/lib/makeContentBlock";
 import { IS_DECK_TTS_ENABLED_INJECTION_KEY } from "@/constants";
 import { focusBlockDragHandle } from "@/lib/blockEditorHelpers";

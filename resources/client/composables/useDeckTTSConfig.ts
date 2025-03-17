@@ -13,7 +13,7 @@ export const useDeckTTSConfig = (
   const { data: featureFlags } = useAllFeatureFlagsQuery();
 
   const isTTSEnabled = computed(
-    () =>
+    (): boolean =>
       // global tts feature flag is enabled
       (featureFlags.value?.text_to_speech ?? false) &&
       // and deck has tts enabled

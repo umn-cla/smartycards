@@ -68,7 +68,7 @@ import LevelProgress from "@/components/LevelProgress.vue";
 import { useDeckStatsQuery } from "@/queries/decks/useDeckStatsQuery";
 import PracticeDeck from "./PracticeDeck.vue";
 import { IS_DECK_TTS_ENABLED_INJECTION_KEY } from "@/constants";
-import { useDeckTTSConfig } from "@/composables/useIsDeckTTSEnabled";
+import { useDeckTTSConfig } from "@/composables/useDeckTTSConfig";
 
 const props = defineProps<{
   deckId: number;
