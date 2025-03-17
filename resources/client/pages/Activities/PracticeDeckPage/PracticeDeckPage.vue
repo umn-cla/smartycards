@@ -68,7 +68,7 @@ import LevelProgress from "@/components/LevelProgress.vue";
 import { useDeckStatsQuery } from "@/queries/decks/useDeckStatsQuery";
 import PracticeDeck from "./PracticeDeck.vue";
 import { IS_DECK_TTS_ENABLED_INJECTION_KEY } from "@/constants";
-import { useIsDeckTTSEnabled } from "@/composables/useIsDeckTTSEnabled";
+import { useDeckTTSConfig } from "@/composables/useIsDeckTTSEnabled";
 
 const props = defineProps<{
   deckId: number;
@@ -96,7 +96,7 @@ async function handlePracticeComplete(cardCount: number) {
 }
 
 // provide info about TTS to any card blocks that need it
-const { isDeckTTSEnabled } = useIsDeckTTSEnabled(deck);
+const { isTTSEnabled: isDeckTTSEnabled } = useDeckTTSConfig(deck);
 provide(IS_DECK_TTS_ENABLED_INJECTION_KEY, isDeckTTSEnabled);
 </script>
 <style scoped>

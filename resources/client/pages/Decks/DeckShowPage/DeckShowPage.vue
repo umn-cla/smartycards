@@ -142,7 +142,7 @@ import MoreCardActions from "./MoreCardActions.vue";
 import { ref } from "vue";
 import LevelProgress from "@/components/LevelProgress.vue";
 import { useActivityTypesQuery } from "@/queries/activityTypes/useActivityTypesQuery";
-import { useIsDeckTTSEnabled } from "@/composables/useIsDeckTTSEnabled";
+import { useDeckTTSConfig } from "@/composables/useIsDeckTTSEnabled";
 import { IS_DECK_TTS_ENABLED_INJECTION_KEY } from "@/constants";
 import { Input } from "@/components/ui/input";
 import { IconSearch } from "@/components/icons";
@@ -209,7 +209,7 @@ function flipAllCards() {
 }
 
 // provide info about TTS to any card blocks that need it
-const { isDeckTTSEnabled } = useIsDeckTTSEnabled(deck);
+const { isTTSEnabled: isDeckTTSEnabled } = useDeckTTSConfig(deck);
 provide(IS_DECK_TTS_ENABLED_INJECTION_KEY, isDeckTTSEnabled);
 </script>
 <style scoped></style>

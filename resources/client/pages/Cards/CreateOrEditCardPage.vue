@@ -84,7 +84,7 @@ import { IconChevronLeft } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import PageTitle from "@/components/PageTitle.vue";
 import PageSubtitle from "@/components/PageSubtitle.vue";
-import { useIsDeckTTSEnabled } from "@/composables/useIsDeckTTSEnabled";
+import { useDeckTTSConfig } from "@/composables/useIsDeckTTSEnabled";
 import { makeContentBlock } from "@/lib/makeContentBlock";
 import { IS_DECK_TTS_ENABLED_INJECTION_KEY } from "@/constants";
 import { focusBlockDragHandle } from "@/lib/blockEditorHelpers";
@@ -254,7 +254,7 @@ function handleSwapBlockSide(
 }
 
 // provide info about TTS to any card blocks that need it
-const { isDeckTTSEnabled } = useIsDeckTTSEnabled(deck);
+const { isTTSEnabled: isDeckTTSEnabled } = useDeckTTSConfig(deck);
 provide(IS_DECK_TTS_ENABLED_INJECTION_KEY, isDeckTTSEnabled);
 </script>
 <style scoped></style>
