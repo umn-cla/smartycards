@@ -2,10 +2,10 @@
   <div class="relative" data-cy="text-block-input-container">
     <SimpleTTSPlayer
       :text="text"
-      :selectedLanguage="selectedLanguage"
-      class="top-1 right-1 absolute z-10"
+      :selectedLanguage="ttsLanguage"
       isIdleClass="bg-brand-oatmeal-50"
       v-if="isTTSEnabled && charCount < MAX_TTS_CHARS"
+      class="float-right m-1 rounded-sm relative z-10"
     />
 
     <label :for="makeInputId('text-block')" class="sr-only">Text Block</label>
@@ -109,6 +109,10 @@ const selectedLanguage = computed((): string => props.meta?.lang ?? "");
 const text = computed(() => props.modelValue);
 const charCount = computed(() => text.value.length);
 const isSettingCustomLanguage = ref(!!selectedLanguage.value);
+const ttsLanguage = computed(() => {
+  // use the selected language if it's set, otherwise use the default language
+  return selectedLanguage.value || defaultLanguageOption.value.locale || "auto";
+});
 
 const options = computed(() => ({
   theme: "bubble",
