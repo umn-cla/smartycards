@@ -132,7 +132,7 @@ import { useDeleteCardMutation } from "@/queries/cards";
 import { useDeckByIdQuery } from "@/queries/decks";
 import * as T from "@/types";
 import { RouterLink } from "vue-router";
-import { computed, provide } from "vue";
+import { computed } from "vue";
 import { Button } from "@/components/ui/button";
 import MoreDeckActions from "@/pages/Decks/DeckIndexPage/MoreDeckActions.vue";
 import PageHeader from "@/components/PageHeader.vue";
@@ -143,8 +143,6 @@ import MoreCardActions from "./MoreCardActions.vue";
 import { ref } from "vue";
 import LevelProgress from "@/components/LevelProgress.vue";
 import { useActivityTypesQuery } from "@/queries/activityTypes/useActivityTypesQuery";
-import { useDeckTTSConfig } from "@/composables/useDeckTTSConfig";
-import { IS_DECK_TTS_ENABLED_INJECTION_KEY } from "@/constants";
 import { Input } from "@/components/ui/input";
 import { IconSearch } from "@/components/icons";
 
@@ -208,9 +206,5 @@ const filteredCards = computed((): T.Card[] => {
 function flipAllCards() {
   initialCardSide.value = initialCardSide.value === "front" ? "back" : "front";
 }
-
-// provide info about TTS to any card blocks that need it
-const { isTTSEnabled: isDeckTTSEnabled } = useDeckTTSConfig(deck);
-provide(IS_DECK_TTS_ENABLED_INJECTION_KEY, isDeckTTSEnabled);
 </script>
 <style scoped></style>

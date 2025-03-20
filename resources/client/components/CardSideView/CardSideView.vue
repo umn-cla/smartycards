@@ -10,7 +10,7 @@
     <div
       class="flex flex-col gap-4 my-auto overflow-y-auto scrollbar-thin scrollbar-thumb-black/10 scrollbar-track-transparent py-1"
     >
-      <CardSideContextProvider :deck="deck ?? null" :cardSideName="sideName">
+      <TTSContextProvider :deck="deck ?? null" :cardSideName="sideName">
         <template v-for="block in contentBlocks" :key="block.id">
           <TextBlockView v-if="isTextBlock(block)" :block="block" />
           <ImageBlockView
@@ -33,7 +33,7 @@
           />
           <UnknownBlockView v-else :block="block" />
         </template>
-      </CardSideContextProvider>
+      </TTSContextProvider>
     </div>
     <slot name="append" />
   </div>
@@ -58,7 +58,7 @@ import {
   isHintBlock,
 } from "@/lib/isBlockOfType";
 import UnknownBlockView from "./UnknownBlockView.vue";
-import CardSideContextProvider from "@/components/TTSContextProvider.vue";
+import TTSContextProvider from "@/components/TTSContextProvider.vue";
 
 const props = withDefaults(
   defineProps<{

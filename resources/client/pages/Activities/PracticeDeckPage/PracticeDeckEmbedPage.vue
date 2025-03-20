@@ -40,7 +40,7 @@
   </EmbedLayout>
 </template>
 <script setup lang="ts">
-import { computed, reactive, provide, watch } from "vue";
+import { computed, reactive } from "vue";
 import EmbedLayout from "@/layouts/EmbedLayout.vue";
 import { useDeckByIdQuery } from "@/queries/decks";
 import * as T from "@/types";
@@ -52,7 +52,6 @@ import LevelProgress from "@/components/LevelProgress.vue";
 import { useDeckStatsQuery } from "@/queries/decks/useDeckStatsQuery";
 import PracticeDeck from "./PracticeDeck.vue";
 import { IS_DECK_TTS_ENABLED_INJECTION_KEY } from "@/constants";
-import { useDeckTTSConfig } from "@/composables/useDeckTTSConfig";
 import ActivityPageHeader from "../ActivityPageHeader.vue";
 
 const props = defineProps<{
@@ -79,10 +78,6 @@ async function handlePracticeComplete(cardCount: number) {
     totalCount: cardCount,
   });
 }
-
-// provide info about TTS to any card blocks that need it
-const { isTTSEnabled: isDeckTTSEnabled } = useDeckTTSConfig(deck);
-provide(IS_DECK_TTS_ENABLED_INJECTION_KEY, isDeckTTSEnabled);
 </script>
 <style scoped>
 button {

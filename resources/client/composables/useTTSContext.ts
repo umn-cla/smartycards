@@ -22,7 +22,7 @@ interface TTSContext {
   languageOptions: T.LanguageOption[];
 }
 
-const TTS_CONTEXT_KEY: InjectionKey<TTSContext> = Symbol("cardSideContext");
+const TTS_CONTEXT_KEY: InjectionKey<TTSContext> = Symbol("ttsContext");
 
 /**
  * provide deck and card side information for the component
@@ -46,7 +46,7 @@ export function provideTTSContext(
     (): T.LanguageOption => getDefaultLanguageOption(deck, cardSideName),
   );
 
-  const cardSideContext: TTSContext = {
+  const ttsContext: TTSContext = {
     deck: toRef(deck),
     cardSideName: toRef(cardSideName),
     isTTSEnabled,
@@ -54,7 +54,7 @@ export function provideTTSContext(
     languageOptions: ttsLanguageOptions,
   };
 
-  provide(TTS_CONTEXT_KEY, cardSideContext);
+  provide(TTS_CONTEXT_KEY, ttsContext);
 }
 
 /**
@@ -62,15 +62,15 @@ export function provideTTSContext(
  * from the component tree
  */
 export function useTTSContext() {
-  const cardSideContext = inject(TTS_CONTEXT_KEY);
+  const ttsContext = inject(TTS_CONTEXT_KEY);
 
-  if (!cardSideContext) {
+  if (!ttsContext) {
     throw new Error(
-      "useCardSideContext must be used within a parent provider. Use `provideCardSideContext()` to provide the context.",
+      "useTTSContext must be used within a parent provider. Use `provideTTSContext()` to provide the context.",
     );
   }
 
-  return cardSideContext;
+  return ttsContext;
 }
 
 /**
