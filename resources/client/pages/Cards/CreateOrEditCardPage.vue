@@ -42,16 +42,20 @@
           </header>
           <div class="my-4 grid sm:grid-cols-2 gap-4 mb-12">
             <div v-for="side in ['front', 'back'] as const" :key="side">
-              <CardSideInput
-                :id="`${deckId}-${side}`"
-                v-model="form[side]"
-                :label="capitalize(side)"
-                :data-cy="`${side}-side-input`"
-                @dragHandle:left="(block) => handleSwapBlockSide(block, side)"
-                @dragHandle:right="(block) => handleSwapBlockSide(block, side)"
-                @dragHandle:up="(block) => moveBlock(block, side, 'up')"
-                @dragHandle:down="(block) => moveBlock(block, side, 'down')"
-              />
+              <CardSideContextProvider :deck="deck" :cardSideName="side">
+                <CardSideInput
+                  :id="`${deckId}-${side}`"
+                  v-model="form[side]"
+                  :label="capitalize(side)"
+                  :data-cy="`${side}-side-input`"
+                  @dragHandle:left="(block) => handleSwapBlockSide(block, side)"
+                  @dragHandle:right="
+                    (block) => handleSwapBlockSide(block, side)
+                  "
+                  @dragHandle:up="(block) => moveBlock(block, side, 'up')"
+                  @dragHandle:down="(block) => moveBlock(block, side, 'down')"
+                />
+              </CardSideContextProvider>
             </div>
           </div>
         </div>
@@ -91,6 +95,8 @@ import { focusBlockDragHandle } from "@/lib/blockEditorHelpers";
 import { useAnnouncer } from "@vue-a11y/announcer";
 import invariant from "tiny-invariant";
 import { clamp, move } from "ramda";
+import CardSideContextProvide from "@/components/CardSideContextProvider.vue";
+import CardSideContextProvider from "@/components/CardSideContextProvider.vue";
 
 const props = defineProps<{
   deckId: number;
