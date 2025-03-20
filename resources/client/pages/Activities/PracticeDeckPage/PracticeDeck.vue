@@ -12,6 +12,7 @@
         :back="state.isTransitiongToNext ? [] : state.activeCard?.back"
         :showLabels="true"
         :initialSideName="getInitialSideName(state.activeCard)"
+        :deck="deck"
         class="max-w-screen-sm h-[50dvh] mx-auto transition-all duration-300"
         :class="{
           'opacity-0 translate-y-[50vh]': state.isTransitiongToNext,
