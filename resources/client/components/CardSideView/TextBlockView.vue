@@ -18,12 +18,9 @@
     />
     <div
       class="flex items-center justify-center"
-      v-if="isDeckTTSEnabled && charCount < MAX_TTS_CHARS"
+      v-if="isTTSEnabled && charCount < MAX_TTS_CHARS"
     >
-      <SimpleTTSPlayer
-        :text="block.content"
-        :selectedLanguage="block.meta?.lang ?? null"
-      />
+      <SimpleTTSPlayer :text="block.content" :selectedLanguage="ttsLocale" />
     </div>
   </div>
 </template>
@@ -33,6 +30,7 @@ import { computed, inject, toRef } from "vue";
 import { cn } from "@/lib/utils";
 import SimpleTTSPlayer from "@/components/SimpleTTSPlayer.vue";
 import { MAX_TTS_CHARS, IS_DECK_TTS_ENABLED_INJECTION_KEY } from "@/constants";
+import { useCardSideContext } from "@/composables/useCardSideContext";
 
 const props = defineProps<{
   block: T.TextContentBlock;
@@ -46,6 +44,12 @@ const isDeckTTSEnabled = inject(
   IS_DECK_TTS_ENABLED_INJECTION_KEY,
   toRef(false),
 );
+
+const { isTTSEnabled, defaultLanguageOption } = useCardSideContext();
+
+const ttsLocale = computed(() => {
+  return props.block.meta?.lang || defaultLanguageOption.value.locale || null;
+});
 </script>
 <style type="post-css">
 /**

@@ -6,7 +6,7 @@ import * as T from "@/types";
 import { provideCardSideContext } from "@/composables/useCardSideContext";
 
 const props = defineProps<{
-  deck: T.Deck;
+  deck: T.Deck | null;
   cardSideName: T.CardSideName;
 }>();
 

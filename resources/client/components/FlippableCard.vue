@@ -13,6 +13,8 @@
         :label="label === 'back' ? 'Back' : 'Front'"
         :showLabel="showLabels"
         :side="side"
+        :deck="deck"
+        :sideName="label"
         class="absolute w-full h-full backface-hidden color-maroon-950"
         :class="{
           'z-20': label === currentCardSide,
@@ -42,7 +44,7 @@
 <script setup lang="ts">
 import { CardSideView } from "@/components/CardSideView";
 import { ref, watch, computed } from "vue";
-import { CardSide, CardSideName } from "@/types";
+import { CardSide, CardSideName, Deck } from "@/types";
 import { Button } from "@/components/ui/button";
 
 const props = withDefaults(
@@ -51,6 +53,7 @@ const props = withDefaults(
     back: CardSide;
     initialSideName?: CardSideName;
     showLabels?: boolean;
+    deck?: Deck | null;
   }>(),
   {
     initialSideName: "front",

@@ -101,6 +101,7 @@
               :front="card.front"
               :back="card.back"
               :initialSideName="initialCardSide"
+              :deck="deck"
             >
               <template #prepend>
                 <div class="flex justify-between items-center">
