@@ -14,7 +14,7 @@
       class="text-xs"
       :class="{
         'text-brand-maroon-800/50': !isPlaying,
-        'sr-only': !languageName || languageName === 'auto',
+        'sr-only': !selectedLanguage || selectedLanguage === 'auto',
       }"
     >
       {{ languageName ?? "Auto" }}</span
