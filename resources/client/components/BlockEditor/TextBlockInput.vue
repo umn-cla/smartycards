@@ -5,7 +5,7 @@
       :selectedLanguage="selectedLanguage"
       class="top-1 right-1 absolute z-10"
       isIdleClass="bg-brand-oatmeal-50"
-      v-if="isDeckTTSEnabled && charCount < MAX_TTS_CHARS"
+      v-if="isTTSEnabled && charCount < MAX_TTS_CHARS"
     />
 
     <label :for="makeInputId('text-block')" class="sr-only">Text Block</label>
@@ -19,11 +19,11 @@
     />
 
     <div
-      class="flex gap-2 items-center justify-end mt-2"
-      v-if="isDeckTTSEnabled"
+      class="flex gap-2 items-center justify-end mt-2 text-xs"
+      v-if="isTTSEnabled"
     >
       <label :for="makeInputId('language-select')" class="sr-only">
-        Text-to-Speech Language
+        Language
       </label>
       <Select
         v-if="isSettingCustomLanguage"
@@ -33,8 +33,11 @@
           $emit('update:meta', { ...meta, lang: $event ?? null })
         "
       >
-        <SelectTrigger class="bg-brand-maroon-800/5">
-          <SelectValue placeholder="Language (Auto)"> </SelectValue>
+        <SelectTrigger class="bg-brand-maroon-800/5 w-64">
+          <SelectValue
+            :placeholder="`Language - ${defaultLanguageOption.name}`"
+          >
+          </SelectValue>
         </SelectTrigger>
         <SelectContent>
           <SelectItem
@@ -65,8 +68,8 @@
 </template>
 <script setup lang="ts">
 import { QuillyEditor } from "vue-quilly";
-import Quill from "quill/quill"; // Core build
-import { ref, onMounted, computed, inject, toRef } from "vue";
+import Quill from "quill/quill";
+import { ref, onMounted, computed } from "vue";
 import {
   Select,
   SelectTrigger,
@@ -79,11 +82,12 @@ import "quill/dist/quill.core.css";
 import "quill/dist/quill.bubble.css";
 import { ttsLanguageOptions as languages } from "@/lib/ttsLanguageOptions";
 import { TextContentBlock } from "@/types";
-import { IconGlobe } from "../icons";
-import Toggle from "@/components/Toggle.vue";
-import { IS_DECK_TTS_ENABLED_INJECTION_KEY, MAX_TTS_CHARS } from "@/constants";
+import { MAX_TTS_CHARS } from "@/constants";
 import { useMakeInputId } from "@/composables/useMakeInputId";
 import SimpleTTSPlayer from "@/components/SimpleTTSPlayer.vue";
+import { useCardSideContext } from "@/composables/useCardSideContext";
+import { IconGlobe } from "../icons";
+import Toggle from "@/components/Toggle.vue";
 
 const props = defineProps<{
   id: TextContentBlock["id"];
@@ -102,9 +106,9 @@ let quill: Quill | null = null;
 const { makeInputId } = useMakeInputId("text-block-input", props.id);
 
 const selectedLanguage = computed((): string => props.meta?.lang ?? "");
-const isSettingCustomLanguage = ref(!!selectedLanguage.value);
 const text = computed(() => props.modelValue);
 const charCount = computed(() => text.value.length);
+const isSettingCustomLanguage = ref(!!selectedLanguage.value);
 
 const options = computed(() => ({
   theme: "bubble",
@@ -146,10 +150,7 @@ const options = computed(() => ({
   readOnly: false,
 }));
 
-const isDeckTTSEnabled = inject(
-  IS_DECK_TTS_ENABLED_INJECTION_KEY,
-  toRef(false),
-);
+const { isTTSEnabled, defaultLanguageOption } = useCardSideContext();
 
 onMounted(() => {
   if (!editor.value) {
