@@ -3,14 +3,14 @@
 </template>
 <script setup lang="ts">
 import * as T from "@/types";
-import { provideCardSideContext } from "@/composables/useCardSideContext";
+import { provideTTSContext } from "@/composables/useTTSContext";
 
 const props = defineProps<{
   deck: T.Deck | null;
   cardSideName: T.CardSideName;
 }>();
 
-provideCardSideContext(
+provideTTSContext(
   () => props.deck,
   () => props.cardSideName,
 );

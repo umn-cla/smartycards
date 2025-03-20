@@ -95,8 +95,8 @@ import { focusBlockDragHandle } from "@/lib/blockEditorHelpers";
 import { useAnnouncer } from "@vue-a11y/announcer";
 import invariant from "tiny-invariant";
 import { clamp, move } from "ramda";
-import CardSideContextProvide from "@/components/CardSideContextProvider.vue";
-import CardSideContextProvider from "@/components/CardSideContextProvider.vue";
+import CardSideContextProvide from "@/components/TTSContextProvider.vue";
+import CardSideContextProvider from "@/components/TTSContextProvider.vue";
 
 const props = defineProps<{
   deckId: number;

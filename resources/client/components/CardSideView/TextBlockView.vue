@@ -30,7 +30,7 @@ import { computed, inject, toRef } from "vue";
 import { cn } from "@/lib/utils";
 import SimpleTTSPlayer from "@/components/SimpleTTSPlayer.vue";
 import { MAX_TTS_CHARS, IS_DECK_TTS_ENABLED_INJECTION_KEY } from "@/constants";
-import { useCardSideContext } from "@/composables/useCardSideContext";
+import { useTTSContext } from "@/composables/useTTSContext";
 
 const props = defineProps<{
   block: T.TextContentBlock;
@@ -45,7 +45,7 @@ const isDeckTTSEnabled = inject(
   toRef(false),
 );
 
-const { isTTSEnabled, defaultLanguageOption } = useCardSideContext();
+const { isTTSEnabled, defaultLanguageOption } = useTTSContext();
 
 const ttsLocale = computed(() => {
   return props.block.meta?.lang || defaultLanguageOption.value.locale || null;

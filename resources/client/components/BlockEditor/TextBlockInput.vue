@@ -85,7 +85,7 @@ import { TextContentBlock } from "@/types";
 import { MAX_TTS_CHARS } from "@/constants";
 import { useMakeInputId } from "@/composables/useMakeInputId";
 import SimpleTTSPlayer from "@/components/SimpleTTSPlayer.vue";
-import { useCardSideContext } from "@/composables/useCardSideContext";
+import { useTTSContext } from "@/composables/useTTSContext";
 import { IconGlobe } from "../icons";
 import Toggle from "@/components/Toggle.vue";
 
@@ -154,7 +154,7 @@ const options = computed(() => ({
   readOnly: false,
 }));
 
-const { isTTSEnabled, defaultLanguageOption } = useCardSideContext();
+const { isTTSEnabled, defaultLanguageOption } = useTTSContext();
 
 onMounted(() => {
   if (!editor.value) {

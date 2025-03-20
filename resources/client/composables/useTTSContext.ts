@@ -14,7 +14,7 @@ import { ttsLanguageOptions } from "@/lib/ttsLanguageOptions";
 
 import * as T from "@/types";
 
-interface CardSideContext {
+interface TTSContext {
   deck: Ref<T.Deck | null | undefined>;
   cardSideName: Ref<T.CardSideName>;
   isTTSEnabled: Ref<boolean>;
@@ -22,14 +22,13 @@ interface CardSideContext {
   languageOptions: T.LanguageOption[];
 }
 
-const CARD_SIDE_CONTEXT_KEY: InjectionKey<CardSideContext> =
-  Symbol("cardSideContext");
+const TTS_CONTEXT_KEY: InjectionKey<TTSContext> = Symbol("cardSideContext");
 
 /**
  * provide deck and card side information for the component
  * tree to avoid prop drilling. e.g. card side's default TTS
  */
-export function provideCardSideContext(
+export function provideTTSContext(
   deck: MaybeRefOrGetter<T.Deck | null | undefined>,
   cardSideName: MaybeRefOrGetter<T.CardSideName>,
 ) {
@@ -47,7 +46,7 @@ export function provideCardSideContext(
     (): T.LanguageOption => getDefaultLanguageOption(deck, cardSideName),
   );
 
-  const cardSideContext: CardSideContext = {
+  const cardSideContext: TTSContext = {
     deck: toRef(deck),
     cardSideName: toRef(cardSideName),
     isTTSEnabled,
@@ -55,15 +54,15 @@ export function provideCardSideContext(
     languageOptions: ttsLanguageOptions,
   };
 
-  provide(CARD_SIDE_CONTEXT_KEY, cardSideContext);
+  provide(TTS_CONTEXT_KEY, cardSideContext);
 }
 
 /**
  * use provided deck and card side information
  * from the component tree
  */
-export function useCardSideContext() {
-  const cardSideContext = inject(CARD_SIDE_CONTEXT_KEY);
+export function useTTSContext() {
+  const cardSideContext = inject(TTS_CONTEXT_KEY);
 
   if (!cardSideContext) {
     throw new Error(

@@ -58,7 +58,7 @@ import {
   isHintBlock,
 } from "@/lib/isBlockOfType";
 import UnknownBlockView from "./UnknownBlockView.vue";
-import CardSideContextProvider from "@/components/CardSideContextProvider.vue";
+import CardSideContextProvider from "@/components/TTSContextProvider.vue";
 
 const props = withDefaults(
   defineProps<{
