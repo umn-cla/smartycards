@@ -1,23 +1,23 @@
 import { LanguageOption } from "@/types";
 
 export const ttsLanguageOptions: LanguageOption[] = [
-  { name: "✨ Auto", locale: "auto" }, // the sparkles are really just to make this first when sorted
-
+  // the sparkles are really just to make this first when sorted
+  { name: "✨ Auto", locale: "auto" },
   { name: "Afrikaans", locale: "af-ZA" },
   { name: "Amharic", locale: "am-ET" },
-  { name: "Arabic (Egypt)", locale: "ar-EG" },
-  { name: "Arabic (Saudi Arabia)", locale: "ar-SA" },
+  { name: "Arabic", locale: "ar-EG" }, // Egypt
+  // { name: "Arabic (Saudi Arabia)", locale: "ar-SA" },
   { name: "Azerbaijani", locale: "az-AZ" },
   { name: "Bulgarian", locale: "bg-BG" },
-  { name: "Bengali (Bangladesh)", locale: "bn-BD" },
-  { name: "Bengali (India)", locale: "bn-IN" },
+  { name: "Bengali", locale: "bn-BD" },
+  // { name: "Bengali (India)", locale: "bn-IN" },
   { name: "Bosnian", locale: "bs-BA" },
   { name: "Catalan", locale: "ca-ES" },
   { name: "Czech", locale: "cs-CZ" },
-  { name: "Welsh", locale: "cy-GB" },
+  // { name: "Welsh", locale: "cy-GB" },
   { name: "Danish", locale: "da-DK" },
-  { name: "German (Austria)", locale: "de-AT" },
-  { name: "German (Switzerland)", locale: "de-CH" },
+  // { name: "German (Austria)", locale: "de-AT" },
+  // { name: "German (Switzerland)", locale: "de-CH" },
   { name: "German", locale: "de-DE" },
   { name: "Greek", locale: "el-GR" },
   // { name: "English (Australia)", locale: "en-AU" },
@@ -25,7 +25,7 @@ export const ttsLanguageOptions: LanguageOption[] = [
   // { name: "English (United Kingdom)", locale: "en-GB" },
   // { name: "English (Ireland)", locale: "en-IE" },
   // { name: "English (India)", locale: "en-IN" },
-  { name: "English (United States)", locale: "en-US" },
+  { name: "English", locale: "en-US" },
   { name: "Spanish (Spain)", locale: "es-ES" },
   { name: "Spanish (Mexico)", locale: "es-MX" },
   { name: "Estonian", locale: "et-EE" },

@@ -11,7 +11,6 @@
       <SelectValue placeholder="Language (Auto)"></SelectValue>
     </SelectTrigger>
     <SelectContent>
-      <SelectItem value="auto">Auto</SelectItem>
       <SelectItem
         v-for="lang in ttsLanguageOptions"
         :value="lang.locale"
