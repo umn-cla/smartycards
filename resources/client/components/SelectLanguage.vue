@@ -3,8 +3,8 @@
     :modelValue="modelValue"
     @update:modelValue="$emit('update:modelValue', $event)"
     class="block !w-40"
+    placeholder="Select Language (Auto)"
   >
-    <SelectOption value="" disabled> -- Select Language -- </SelectOption>
     <SelectOption
       v-for="lang in ttsLanguageOptions"
       :value="lang.locale"
