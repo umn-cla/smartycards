@@ -1,13 +1,10 @@
 <template>
-  <Select
-    :id="id"
-    :modelValue="modelValue ?? ''"
+  <SimpleSelect
+    :modelValue="modelValue"
+    @update:modelValue="$emit('update:modelValue', $event)"
     class="block !w-40"
-    @update:modelValue="
-      (locale: LanguageOption['locale'] | '') =>
-        $emit('update:modelValue', locale || null)
-    "
   >
+    <SelectOption value="" disabled> -- Select Language -- </SelectOption>
     <SelectOption
       v-for="lang in ttsLanguageOptions"
       :value="lang.locale"
@@ -15,16 +12,14 @@
     >
       {{ lang.name }}
     </SelectOption>
-  </Select>
+  </SimpleSelect>
 </template>
 <script setup lang="ts">
-import Select from "./SimpleSelect/Select.vue";
 import { ttsLanguageOptions } from "@/lib/ttsLanguageOptions";
 import { LanguageOption } from "@/types";
-import { SelectOption } from "./SimpleSelect";
+import { SimpleSelect, SelectOption } from "./SimpleSelect";
 
 defineProps<{
-  id: string;
   modelValue: LanguageOption["locale"] | null;
 }>();
 

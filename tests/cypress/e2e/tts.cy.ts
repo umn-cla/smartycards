@@ -125,8 +125,19 @@ describe("Text Block", () => {
       // wait for the request to complete
       cy.wait("@updateDeck");
 
-      // we should now be on the deck index page
-      cy.location("pathname").should("eq", `/decks/${deckId}`);
+      // verify that the change was saved
+      // set the deck side default language
+      cy.visit(`/decks/${deckId}/edit`);
+
+      // wait for deck info to load
+      cy.get("#name").should("have.value", "My Deck");
+
+      // verify that the default languages are set and rendering correcly
+      cy.get("#default-front-locale").should("have.value", "fr-FR");
+      cy.get("#default-back-locale").should("have.value", "es-MX");
+
+      // back to the deck index page
+      cy.visit(`/decks/${deckId}`);
 
       // check that the TTS Player is visible on the first card
       // and is using French as the language
@@ -176,16 +187,53 @@ describe("Text Block", () => {
 
     it("overrides the default language when a specific language for the text block is chosen", () => {
       cy.visit(`/decks/${deckId}`);
-      // cy.contains("Front side 0")
-      //   .parent()
-      //   .within(() => {
-      //     cy.get('[data-cy="simple-tts-player"]').click();
-      //     cy.get('[data-cy="tts-language-select"]').select("fr-FR");
-      //     cy.get('[data-cy="simple-tts-player"]').should(
-      //       "have.text",
-      //       "English",
-      //     );
-      //   });
+
+      // set the deck side default language
+      cy.visit(`/decks/${deckId}/edit`);
+
+      // wait for deck info to load
+      cy.get("#name").should("have.value", "My Deck");
+
+      // set the deck side default language
+      cy.visit(`/decks/${deckId}/edit`);
+
+      // wait for deck info to load
+      cy.get("#name").should("have.value", "My Deck");
+
+      // Click to open the select dropdown
+      cy.get("#default-front-locale")
+        .select("fr-FR")
+        .should("have.value", "fr-FR");
+
+      // save the deck
+      cy.intercept("PUT", `/api/decks/${deckId}`).as("updateDeck");
+
+      cy.wait(5000);
+
+      cy.contains("button", "Save").click();
+
+      // wait for the request to complete
+      cy.wait("@updateDeck");
+
+      // we should now be on the deck index page
+      cy.location("pathname").should("eq", `/decks/${deckId}`);
+
+      // now let's set the language for the text block on the first card
+      cy.contains("Front side 0")
+        .closest('[data-cy="card-side-view--Front"]')
+        .within(() => {
+          cy.get('[data-cy="more-card-actions-button"]').click();
+        });
+
+      cy.contains("Edit Card").click();
+
+      // we should now be on the card edit page
+      // set the language for the text block
+      cy.get(
+        '[data-cy="front-side-input"] [data-cy="text-block-input-container"]',
+      ).within(() => {
+        cy.get('[data-cy="set-language-toggle"]').click();
+      });
     });
 
     it("plays the block content in the selected language");

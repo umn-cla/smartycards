@@ -25,33 +25,18 @@
       <label :for="makeInputId('language-select')" class="sr-only">
         Language
       </label>
-      <Select
+      <SelectLanguage
         v-if="isSettingCustomLanguage"
         :id="makeInputId('language-select')"
         :modelValue="selectedLanguage"
         @update:modelValue="
           $emit('update:meta', { ...meta, lang: $event ?? null })
         "
-      >
-        <SelectTrigger class="bg-brand-maroon-800/5 w-64">
-          <SelectValue
-            :placeholder="`Language - ${defaultLanguageOption.name}`"
-          >
-          </SelectValue>
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem
-            v-for="lang in languages"
-            :value="lang.locale"
-            :key="lang.locale"
-          >
-            {{ lang.name }}
-          </SelectItem>
-        </SelectContent>
-      </Select>
+      />
       <Toggle
         :modelValue="isSettingCustomLanguage"
         label="Set Language"
+        data-cy="set-language-toggle"
         @update:modelValue="
           () => {
             isSettingCustomLanguage = !isSettingCustomLanguage;
@@ -70,17 +55,10 @@
 import { QuillyEditor } from "vue-quilly";
 import Quill from "quill/quill";
 import { ref, onMounted, computed } from "vue";
-import {
-  Select,
-  SelectTrigger,
-  SelectContent,
-  SelectItem,
-  SelectValue,
-} from "@/components/ui/select";
+import SelectLanguage from "../SelectLanguage.vue";
 import "quill-paste-smart";
 import "quill/dist/quill.core.css";
 import "quill/dist/quill.bubble.css";
-import { ttsLanguageOptions as languages } from "@/lib/ttsLanguageOptions";
 import { TextContentBlock } from "@/types";
 import { MAX_TTS_CHARS } from "@/constants";
 import { useMakeInputId } from "@/composables/useMakeInputId";
