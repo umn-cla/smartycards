@@ -7,10 +7,13 @@
         $emit('update:modelValue', locale || null)
     "
   >
-    <SelectTrigger class="bg-brand-maroon-800/5">
+    <SelectTrigger
+      class="bg-brand-maroon-800/5"
+      data-cy="select-language__trigger"
+    >
       <SelectValue placeholder="Language (Auto)"></SelectValue>
     </SelectTrigger>
-    <SelectContent>
+    <SelectContent data-cy="select-language__content">
       <SelectItem
         v-for="lang in ttsLanguageOptions"
         :value="lang.locale"

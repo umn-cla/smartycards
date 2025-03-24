@@ -9,8 +9,8 @@ import {
   toRef,
   inject,
 } from "vue";
-import { useAllFeatureFlagsQuery } from "@/queries/featureFlags";
 import { ttsLanguageOptions } from "@/lib/ttsLanguageOptions";
+import config from "@/config";
 
 import * as T from "@/types";
 
@@ -32,12 +32,10 @@ export function provideTTSContext(
   deck: MaybeRefOrGetter<T.Deck | null | undefined>,
   cardSideName: MaybeRefOrGetter<T.CardSideName>,
 ) {
-  const { data: featureFlags } = useAllFeatureFlagsQuery();
-
   const isTTSEnabled = computed(
     (): boolean =>
       // global tts feature flag is enabled
-      (featureFlags.value?.text_to_speech ?? false) &&
+      config.features.isTTSEnabled &&
       // and deck has tts enabled
       (toValue(deck)?.is_tts_enabled ?? false),
   );

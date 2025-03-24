@@ -10,8 +10,10 @@ const back: CardSide = [
   {
     id: crypto.randomUUID(),
     type: "text",
-    content: "<p>Trường học</p>",
-    meta: null,
+    content: "<p>escuela</p>",
+    meta: {
+      lang: "es-MX",
+    },
   },
 ];
 
@@ -19,9 +21,7 @@ const front: CardSide = [
   {
     id: crypto.randomUUID(),
     type: "text",
-    content: `
-    <p>School</p>
-    <small><i>Vietnamese</i></small>`,
+    content: `<p>school</p>`,
     meta: null,
   },
 ];

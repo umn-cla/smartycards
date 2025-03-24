@@ -13,4 +13,7 @@ export default {
   client: {
     baseUrl: env("VITE_CLIENT_BASE_URL", "http://localhost:5173"),
   },
+  features: {
+    isTTSEnabled: env("VITE_FEATURE_TTS_ENABLED", "true") === "true",
+  },
 };
