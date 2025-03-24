@@ -2,38 +2,26 @@
   <Select
     :id="id"
     :modelValue="modelValue ?? ''"
+    class="block !w-40"
     @update:modelValue="
       (locale: LanguageOption['locale'] | '') =>
         $emit('update:modelValue', locale || null)
     "
   >
-    <SelectTrigger
-      class="bg-brand-maroon-800/5"
-      data-cy="select-language__trigger"
+    <SelectOption
+      v-for="lang in ttsLanguageOptions"
+      :value="lang.locale"
+      :key="lang.locale"
     >
-      <SelectValue placeholder="Language (Auto)"></SelectValue>
-    </SelectTrigger>
-    <SelectContent data-cy="select-language__content">
-      <SelectItem
-        v-for="lang in ttsLanguageOptions"
-        :value="lang.locale"
-        :key="lang.locale"
-      >
-        {{ lang.name }}
-      </SelectItem>
-    </SelectContent>
+      {{ lang.name }}
+    </SelectOption>
   </Select>
 </template>
 <script setup lang="ts">
-import {
-  Select,
-  SelectTrigger,
-  SelectContent,
-  SelectItem,
-  SelectValue,
-} from "@/components/ui/select";
+import Select from "./SimpleSelect/Select.vue";
 import { ttsLanguageOptions } from "@/lib/ttsLanguageOptions";
 import { LanguageOption } from "@/types";
+import { SelectOption } from "./SimpleSelect";
 
 defineProps<{
   id: string;
