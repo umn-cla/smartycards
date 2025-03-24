@@ -1,8 +1,7 @@
 import { LanguageOption } from "@/types";
 
 export const ttsLanguageOptions: LanguageOption[] = [
-  // the sparkles are really just to make this first when sorted
-  { name: "✨ Auto", locale: "auto" },
+  { name: "Auto", locale: "auto" },
   { name: "Afrikaans", locale: "af-ZA" },
   { name: "Amharic", locale: "am-ET" },
   { name: "Arabic", locale: "ar-EG" }, // Egypt
@@ -94,4 +93,12 @@ export const ttsLanguageOptions: LanguageOption[] = [
   { name: "Chinese (Hong Kong)", locale: "zh-HK" },
   { name: "Chinese (Traditional)", locale: "zh-TW" },
   { name: "Zulu", locale: "zu-ZA" },
-].toSorted((a, b) => a.name.localeCompare(b.name));
+].toSorted((a, b) => {
+  if (a.locale === "auto") {
+    return -1;
+  }
+  if (b.locale === "auto") {
+    return 1;
+  }
+  return a.name.localeCompare(b.name);
+});
