@@ -153,9 +153,6 @@ describe("Text Block", () => {
           cy.contains("Flip").click();
         });
 
-      // wait for the card to flip
-      cy.wait(3000);
-
       // check the back side of the card is using Spanish
       cy.contains("Back side 0")
         .closest('[data-cy="card-side-view--Back"]')
@@ -177,7 +174,7 @@ describe("Text Block", () => {
         });
     });
 
-    it("permits setting a language for the block", () => {
+    it("overrides the default language when a specific language for the text block is chosen", () => {
       cy.visit(`/decks/${deckId}`);
       // cy.contains("Front side 0")
       //   .parent()
