@@ -146,8 +146,8 @@ describe("Text Block", () => {
       // and is using French as the language
       cy.intercept("POST", "/api/tts").as("ttsRequest");
 
-      // ignore uncaught exception in CI from pushing the play button
-      cy.once("uncaught:exception", () => false);
+      // ignore uncaught exceptions in CI from pushing the play button
+      cy.on("uncaught:exception", () => false);
 
       cy.contains("Front side 0")
         .parent()
@@ -172,10 +172,6 @@ describe("Text Block", () => {
         });
 
       // check the back side of the card is using Spanish
-
-      // ignore uncaught exception in CI from pushing the play button
-      cy.once("uncaught:exception", () => false);
-
       cy.contains("Back side 0")
         .closest('[data-cy="card-side-view--Back"]')
         // workaround an issue where cypress thinks the tts
