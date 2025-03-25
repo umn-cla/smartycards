@@ -4,6 +4,7 @@
     @update:modelValue="$emit('update:modelValue', $event)"
     class="block !w-40"
     placeholder="Select Language (Auto)"
+    data-cy="select-language"
   >
     <SelectOption
       v-for="lang in ttsLanguageOptions"

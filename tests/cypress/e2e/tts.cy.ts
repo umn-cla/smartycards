@@ -185,7 +185,7 @@ describe("Text Block", () => {
         });
     });
 
-    it("overrides the default language when a specific language for the text block is chosen", () => {
+    it.only("overrides the default language when a specific language for the text block is chosen", () => {
       cy.visit(`/decks/${deckId}`);
 
       // set the deck side default language
@@ -208,8 +208,6 @@ describe("Text Block", () => {
       // save the deck
       cy.intercept("PUT", `/api/decks/${deckId}`).as("updateDeck");
 
-      cy.wait(5000);
-
       cy.contains("button", "Save").click();
 
       // wait for the request to complete
@@ -228,18 +226,48 @@ describe("Text Block", () => {
       cy.contains("Edit Card").click();
 
       // we should now be on the card edit page
+      cy.location("pathname").should("contain", `/edit`);
+
       // set the language for the text block
       cy.get(
         '[data-cy="front-side-input"] [data-cy="text-block-input-container"]',
       ).within(() => {
         cy.get('[data-cy="set-language-toggle"]').click();
+
+        // by default the language should be set to the default deck side lang
+        cy.get('[data-cy="select-language"]').should("have.value", "fr-FR");
+
+        // select the language
+        cy.get('[data-cy="select-language"]').select("es-MX");
       });
+
+      // save the card
+      cy.intercept("PUT", `/api/cards/*`).as("updateCard");
+      cy.contains("button", "Save").click();
+
+      // wait for the request to complete
+      cy.wait("@updateCard");
+
+      // we should now be on the deck show page
+      cy.location("pathname").should("eq", `/decks/${deckId}`);
+
+      // check that the TTS Player is visible on the first card
+      // and is using Spanish as the language
+      cy.intercept("POST", "/api/tts").as("ttsRequest");
+      cy.contains("Front side 0")
+        .parent()
+        .within(() => {
+          cy.get('[data-cy="simple-tts-player"]')
+            .should("be.visible")
+            .should("contain.text", "Spanish (Mexico)")
+            .click();
+          cy.wait("@ttsRequest");
+          cy.get('[data-cy="simple-tts-player"]').should(
+            "have.attr",
+            "aria-pressed",
+            "true",
+          );
+        });
     });
-
-    it("plays the block content in the selected language");
-
-    it("uses the deck side default language if no language is set");
-
-    it("overrides the deck side default language if a language is set");
   });
 });

@@ -30,7 +30,7 @@
         :id="makeInputId('language-select')"
         :modelValue="selectedLanguage"
         @update:modelValue="
-          $emit('update:meta', { ...meta, lang: $event ?? null })
+          $emit('update:meta', { ...meta, lang: $event || null })
         "
       />
       <Toggle
@@ -54,7 +54,7 @@
 <script setup lang="ts">
 import { QuillyEditor } from "vue-quilly";
 import Quill from "quill/quill";
-import { ref, onMounted, computed } from "vue";
+import { ref, onMounted, computed, watch } from "vue";
 import SelectLanguage from "../SelectLanguage.vue";
 import "quill-paste-smart";
 import "quill/dist/quill.core.css";
@@ -83,10 +83,13 @@ let quill: Quill | null = null;
 
 const { makeInputId } = useMakeInputId("text-block-input", props.id);
 
-const selectedLanguage = computed((): string => props.meta?.lang ?? "");
+const selectedLanguage = ref(props.meta?.lang ?? "auto");
+
 const text = computed(() => props.modelValue);
 const charCount = computed(() => text.value.length);
-const isSettingCustomLanguage = ref(!!selectedLanguage.value);
+const isSettingCustomLanguage = ref(
+  selectedLanguage.value !== "auto" && !!selectedLanguage.value,
+);
 const ttsLanguage = computed(() => {
   // use the selected language if it's set, otherwise use the default language
   return selectedLanguage.value || defaultLanguageOption.value.locale || "auto";
@@ -133,6 +136,14 @@ const options = computed(() => ({
 }));
 
 const { isTTSEnabled, defaultLanguageOption } = useTTSContext();
+watch(
+  () => props.meta?.lang,
+  (lang) => {
+    selectedLanguage.value =
+      lang || defaultLanguageOption.value.locale || "auto";
+  },
+  { immediate: true },
+);
 
 onMounted(() => {
   if (!editor.value) {
