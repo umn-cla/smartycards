@@ -100,9 +100,6 @@ describe("Text Block", () => {
     });
 
     it("uses deck side locale defaults if no card language is set", () => {
-      // ignore uncaught exception in CI from pushing the play button
-      cy.once("uncaught:exception", () => false);
-
       // set the deck side default language
       cy.visit(`/decks/${deckId}/edit`);
 
@@ -148,6 +145,10 @@ describe("Text Block", () => {
       // check that the TTS Player is visible on the first card
       // and is using French as the language
       cy.intercept("POST", "/api/tts").as("ttsRequest");
+
+      // ignore uncaught exception in CI from pushing the play button
+      cy.once("uncaught:exception", () => false);
+
       cy.contains("Front side 0")
         .parent()
         .within(() => {
@@ -171,6 +172,10 @@ describe("Text Block", () => {
         });
 
       // check the back side of the card is using Spanish
+
+      // ignore uncaught exception in CI from pushing the play button
+      cy.once("uncaught:exception", () => false);
+
       cy.contains("Back side 0")
         .closest('[data-cy="card-side-view--Back"]')
         // workaround an issue where cypress thinks the tts
