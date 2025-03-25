@@ -11,9 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
+        DB::table('decks')->whereNull('tts_locale_front')->update(['tts_locale_front' => 'auto']);
+        DB::table('decks')->whereNull('tts_locale_back')->update(['tts_locale_back' => 'auto']);
+
         Schema::table('decks', function (Blueprint $table) {
-            $table->string('tts_locale_front')->nullable()->default('auto')->change();
-            $table->string('tts_locale_back')->nullable()->default('auto')->change();
+            $table->string('tts_locale_front')->default('auto')->change();
+            $table->string('tts_locale_back')->default('auto')->change();
         });
     }
 
