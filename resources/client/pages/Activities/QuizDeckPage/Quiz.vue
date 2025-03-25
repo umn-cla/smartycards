@@ -9,9 +9,9 @@
       <CardSideView
         v-if="activeQuestionPromptMedia.length"
         :side="activeQuestionPromptMedia"
+        :sideName="activeQuestion.sourceCardSide"
         class="mb-4"
       />
-      <!-- <p class="mb-4">{{ activeQuestion.prompt }}</p> -->
       <Markdown :content="activeQuestion.prompt" class="mb-4" />
 
       <RadioGroup
