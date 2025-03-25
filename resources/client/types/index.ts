@@ -65,8 +65,8 @@ export interface Deck {
   memberships_count?: number;
   is_public: boolean;
   is_tts_enabled: boolean;
-  tts_locale_back: string | null;
-  tts_locale_front: string | null;
+  tts_locale_back: string; //  "es-MX", "auto"
+  tts_locale_front: string;
   current_user_role: MembershipRole | null; // could be null if public deck
 
   current_user_details: {
