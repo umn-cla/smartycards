@@ -1,7 +1,6 @@
-import { computed, MaybeRefOrGetter, provide, toValue, type Ref } from "vue";
-
-import { Deck } from "@/types";
-import { useAllFeatureFlagsQuery } from "@/queries/featureFlags";
+import { computed, MaybeRefOrGetter, toValue } from "vue";
+import type { Deck } from "@/types";
+import config from "@/config";
 
 /*
  * Provides the isDeckTTSEnabled ref to the component tree.
@@ -10,12 +9,10 @@ import { useAllFeatureFlagsQuery } from "@/queries/featureFlags";
 export const useIsDeckTTSEnabled = (
   deck: MaybeRefOrGetter<Deck | null | undefined>,
 ) => {
-  const { data: featureFlags } = useAllFeatureFlagsQuery();
-
   const isDeckTTSEnabled = computed(
     () =>
       // global tts feature flag is enabled
-      (featureFlags.value?.text_to_speech ?? false) &&
+      config.features.isTTSEnabled &&
       // and deck has tts enabled
       (toValue(deck)?.is_tts_enabled ?? false),
   );
