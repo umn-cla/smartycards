@@ -100,8 +100,8 @@ class DeckController extends Controller
             'name' => $validated['name'] ?? $deck->name,
             'description' => $validated['description'] ?? $deck->description,
             'is_tts_enabled' => $validated['is_tts_enabled'] ?? $deck->is_tts_enabled,
-            'tts_locale_front' => $validated['tts_locale_front'] ?? $deck->tts_locale_front,
-            'tts_locale_back' => $validated['tts_locale_back'] ?? $deck->tts_locale_back,
+            'tts_locale_front' => $validated['tts_locale_front'] ?? $deck->tts_locale_front ?? 'auto',
+            'tts_locale_back' => $validated['tts_locale_back'] ?? $deck->tts_locale_back ?? 'auto',
         ]);
 
         return DeckResource::make($deck->fresh());
