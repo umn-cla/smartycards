@@ -21,6 +21,12 @@ describe("Text Block", () => {
   });
 
   it("shows the TTS player if TTS is enabled", () => {
+    // ignore uncaught exception in CI from pushing the play button
+    cy.once("uncaught:exception", (err) => {
+      cy.log("uncaught exception", err);
+      false;
+    });
+
     // verify that the TTS player is not visible if not enabled
     cy.visit(`/decks/${deckId}`);
     cy.contains("Front side 0")
@@ -58,12 +64,6 @@ describe("Text Block", () => {
     cy.contains("Front side 0")
       .parent()
       .within(() => {
-        // ignore uncaught exception in CI from pushing the play button
-        cy.once("uncaught:exception", (err) => {
-          cy.log("uncaught exception", err);
-          false;
-        });
-
         cy.get('[data-cy="simple-tts-player"]').should("be.visible").click();
         cy.wait("@ttsRequest");
         cy.get('[data-cy="simple-tts-player"]').should(
