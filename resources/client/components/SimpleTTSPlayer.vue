@@ -12,14 +12,16 @@
     <IconSound class="size-5" />
     <span class="sr-only">Listen</span>
     <span
-      v-if="selectedLanguage && selectedLanguage !== 'auto'"
+      data-cy="simple-tts-player-language"
+      v-if="selectedLanguage"
       class="text-xs"
       :class="{
         'text-brand-maroon-800/50': !isPlaying,
+        'sr-only': selectedLanguage === 'auto',
       }"
     >
-      {{ languageName }}</span
-    >
+      {{ languageName }}
+    </span>
   </Toggle>
 </template>
 <script setup lang="ts">

@@ -92,7 +92,7 @@ describe("Text Block", () => {
       cy.contains("Front side 0")
         .parent()
         .within(() => {
-          cy.get('[data-cy="simple-tts-player"] .sr-only').should(
+          cy.get("[data-cy='simple-tts-player-language']").should(
             "have.text",
             "Auto",
           );
