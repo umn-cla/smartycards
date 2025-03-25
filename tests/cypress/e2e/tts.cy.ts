@@ -185,7 +185,7 @@ describe("Text Block", () => {
         });
     });
 
-    it.only("overrides the default language when a specific language for the text block is chosen", () => {
+    it("overrides the default language when a specific language for the text block is chosen", () => {
       cy.visit(`/decks/${deckId}`);
 
       // set the deck side default language
