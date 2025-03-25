@@ -268,6 +268,24 @@ describe("Text Block", () => {
             "true",
           );
         });
+
+      // go to the edit page for the card
+      cy.contains("Front side 0")
+        .closest('[data-cy="card-side-view--Front"]')
+        .within(() => {
+          cy.get('[data-cy="more-card-actions-button"]').click();
+        });
+
+      cy.contains("Edit Card").click();
+
+      // verify that the language override is visible and set correctly
+      cy.get(
+        '[data-cy="front-side-input"] [data-cy="text-block-input-container"]',
+      ).within(() => {
+        cy.get('[data-cy="select-language"]')
+          .should("be.visible")
+          .should("have.value", "es-MX");
+      });
     });
   });
 });

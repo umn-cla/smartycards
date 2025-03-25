@@ -87,9 +87,6 @@ const selectedLanguage = ref(props.meta?.lang ?? "auto");
 
 const text = computed(() => props.modelValue);
 const charCount = computed(() => text.value.length);
-const isSettingCustomLanguage = ref(
-  selectedLanguage.value !== "auto" && !!selectedLanguage.value,
-);
 const ttsLanguage = computed(() => {
   // use the selected language if it's set, otherwise use the default language
   return selectedLanguage.value || defaultLanguageOption.value.locale || "auto";
@@ -136,11 +133,21 @@ const options = computed(() => ({
 }));
 
 const { isTTSEnabled, defaultLanguageOption } = useTTSContext();
+
+const isCustomLang = (locale: string) =>
+  !!locale && // must be defined
+  locale !== "auto" && // and not auto
+  locale !== defaultLanguageOption.value.locale; // and not the default
+
+const isSettingCustomLanguage = ref(isCustomLang(selectedLanguage.value));
+
 watch(
   () => props.meta?.lang,
   (lang) => {
     selectedLanguage.value =
       lang || defaultLanguageOption.value.locale || "auto";
+
+    isSettingCustomLanguage.value = isCustomLang(selectedLanguage.value);
   },
   { immediate: true },
 );
