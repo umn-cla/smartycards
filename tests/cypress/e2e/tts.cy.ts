@@ -22,10 +22,7 @@ describe("Text Block", () => {
 
   it("shows the TTS player if TTS is enabled", () => {
     // ignore uncaught exception in CI from pushing the play button
-    cy.once("uncaught:exception", (err) => {
-      cy.log("uncaught exception", err);
-      false;
-    });
+    cy.once("uncaught:exception", () => false);
 
     // verify that the TTS player is not visible if not enabled
     cy.visit(`/decks/${deckId}`);
@@ -103,6 +100,9 @@ describe("Text Block", () => {
     });
 
     it("uses deck side locale defaults if no card language is set", () => {
+      // ignore uncaught exception in CI from pushing the play button
+      cy.once("uncaught:exception", () => false);
+
       // set the deck side default language
       cy.visit(`/decks/${deckId}/edit`);
 
@@ -192,6 +192,9 @@ describe("Text Block", () => {
     });
 
     it("overrides the default language when a specific language for the text block is chosen", () => {
+      // ignore uncaught exception in CI from pushing the play button
+      cy.once("uncaught:exception", () => false);
+
       cy.visit(`/decks/${deckId}`);
 
       // set the deck side default language
