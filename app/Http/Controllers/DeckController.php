@@ -42,8 +42,8 @@ class DeckController extends Controller
             'name' => $validated['name'],
             'description' => $validated['description'] ?? null,
             'is_tts_enabled' => $validated['is_tts_enabled'] ?? false,
-            'tts_locale_front' => $validated['tts_locale_front'] ?? null,
-            'tts_locale_back' => $validated['tts_locale_back'] ?? null,
+            'tts_locale_front' => $validated['tts_locale_front'] ?? 'auto',
+            'tts_locale_back' => $validated['tts_locale_back'] ?? 'auto',
         ]);
 
         $deck->memberships()->create([
