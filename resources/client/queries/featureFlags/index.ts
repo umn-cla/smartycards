@@ -1,1 +1,0 @@
-export { useAllFeatureFlagsQuery } from "./useAllFeatureFlagsQuery";

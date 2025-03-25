@@ -2,7 +2,6 @@
 
 namespace App\Providers;
 
-use App\Library\FeatureFlagService;
 use App\Models\Role;
 use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Support\Facades\Gate;
@@ -20,11 +19,6 @@ class AppServiceProvider extends ServiceProvider
             $this->app->register(\Laravel\Telescope\TelescopeServiceProvider::class);
             $this->app->register(TelescopeServiceProvider::class);
         }
-
-        // register the feature flag service
-        $this->app->singleton(FeatureFlagService::class, function () {
-            return new FeatureFlagService;
-        });
     }
 
     /**
