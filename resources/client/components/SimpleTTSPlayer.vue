@@ -10,14 +10,15 @@
     data-cy="simple-tts-player"
   >
     <IconSound class="size-5" />
+    <span class="sr-only">Listen</span>
     <span
+      v-if="selectedLanguage && selectedLanguage !== 'auto'"
       class="text-xs"
       :class="{
         'text-brand-maroon-800/50': !isPlaying,
-        'sr-only': !selectedLanguage || selectedLanguage === 'auto',
       }"
     >
-      {{ languageName ?? "Auto" }}</span
+      {{ languageName }}</span
     >
   </Toggle>
 </template>
