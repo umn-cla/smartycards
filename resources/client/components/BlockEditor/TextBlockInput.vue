@@ -136,7 +136,6 @@ const { isTTSEnabled, defaultLanguageOption } = useTTSContext();
 
 const isCustomLang = (locale: string) =>
   !!locale && // must be defined
-  locale !== "auto" && // and not auto
   locale !== defaultLanguageOption.value.locale; // and not the default
 
 const isSettingCustomLanguage = ref(isCustomLang(selectedLanguage.value));
