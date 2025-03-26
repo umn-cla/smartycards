@@ -3,7 +3,6 @@
     v-model="isPlaying"
     label="Listen"
     :disabled="isEmpty"
-    class="w-full flex items-center justify-center"
     :class="{
       [isIdleClass]: !isPlaying && props.isIdleClass,
       '!opacity-25 cursor-not-allowed': isEmpty,
@@ -14,14 +13,12 @@
     <span class="sr-only">Listen</span>
     <span
       data-cy="simple-tts-player-language"
-      v-if="selectedLanguage"
       class="text-xs"
       :class="{
         'text-brand-maroon-800/50': !isPlaying,
-        'sr-only': selectedLanguage === 'auto',
       }"
     >
-      {{ languageName }}
+      {{ selectedLanguage === "auto" ? "" : languageName }}
     </span>
   </Toggle>
 </template>
