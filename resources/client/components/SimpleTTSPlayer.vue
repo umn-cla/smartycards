@@ -3,6 +3,7 @@
     v-model="isPlaying"
     label="Listen"
     :disabled="isEmpty"
+    class="w-full flex items-center justify-center"
     :class="{
       [isIdleClass]: !isPlaying && props.isIdleClass,
       '!opacity-25 cursor-not-allowed': isEmpty,
