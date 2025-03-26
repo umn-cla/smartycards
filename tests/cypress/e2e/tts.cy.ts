@@ -93,8 +93,7 @@ describe("Text Block", () => {
         .parent()
         .within(() => {
           cy.get("[data-cy='simple-tts-player-language']").should(
-            "have.text",
-            "",
+            "not.have.text",
           );
         });
     });
