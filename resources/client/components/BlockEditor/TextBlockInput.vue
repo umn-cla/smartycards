@@ -2,10 +2,10 @@
   <div class="relative" data-cy="text-block-input-container">
     <SimpleTTSPlayer
       :text="text"
-      :selectedLanguage="selectedLanguage"
-      class="top-1 right-1 absolute z-10"
+      :selectedLanguage="ttsLanguage"
       isIdleClass="bg-brand-oatmeal-50"
-      v-if="isDeckTTSEnabled && charCount < MAX_TTS_CHARS"
+      v-if="isTTSEnabled && charCount < MAX_TTS_CHARS"
+      class="float-right m-1 rounded-sm relative z-10"
     />
 
     <label :for="makeInputId('text-block')" class="sr-only">Text Block</label>
@@ -19,36 +19,24 @@
     />
 
     <div
-      class="flex gap-2 items-center justify-end mt-2"
-      v-if="isDeckTTSEnabled"
+      class="flex gap-2 items-center justify-end mt-2 text-xs"
+      v-if="isTTSEnabled"
     >
       <label :for="makeInputId('language-select')" class="sr-only">
-        Text-to-Speech Language
+        Language
       </label>
-      <Select
+      <SelectLanguage
         v-if="isSettingCustomLanguage"
         :id="makeInputId('language-select')"
         :modelValue="selectedLanguage"
         @update:modelValue="
-          $emit('update:meta', { ...meta, lang: $event ?? null })
+          $emit('update:meta', { ...meta, lang: $event || null })
         "
-      >
-        <SelectTrigger class="bg-brand-maroon-800/5">
-          <SelectValue placeholder="Language (Auto)"> </SelectValue>
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem
-            v-for="lang in languages"
-            :value="lang.locale"
-            :key="lang.locale"
-          >
-            {{ lang.name }}
-          </SelectItem>
-        </SelectContent>
-      </Select>
+      />
       <Toggle
         :modelValue="isSettingCustomLanguage"
         label="Set Language"
+        data-cy="set-language-toggle"
         @update:modelValue="
           () => {
             isSettingCustomLanguage = !isSettingCustomLanguage;
@@ -65,25 +53,19 @@
 </template>
 <script setup lang="ts">
 import { QuillyEditor } from "vue-quilly";
-import Quill from "quill/quill"; // Core build
-import { ref, onMounted, computed, watch, inject, toRef } from "vue";
-import {
-  Select,
-  SelectTrigger,
-  SelectContent,
-  SelectItem,
-  SelectValue,
-} from "@/components/ui/select";
+import Quill from "quill/quill";
+import { ref, onMounted, computed, watch } from "vue";
+import SelectLanguage from "../SelectLanguage.vue";
 import "quill-paste-smart";
 import "quill/dist/quill.core.css";
 import "quill/dist/quill.bubble.css";
-import { getTTSLanguageOptions } from "@/lib/getTtsLanguageOptions";
 import { TextContentBlock } from "@/types";
-import { IconGlobe } from "../icons";
-import Toggle from "@/components/Toggle.vue";
-import { IS_DECK_TTS_ENABLED_INJECTION_KEY, MAX_TTS_CHARS } from "@/constants";
+import { MAX_TTS_CHARS } from "@/constants";
 import { useMakeInputId } from "@/composables/useMakeInputId";
 import SimpleTTSPlayer from "@/components/SimpleTTSPlayer.vue";
+import { useTTSContext } from "@/composables/useTTSContext";
+import { IconGlobe } from "../icons";
+import Toggle from "@/components/Toggle.vue";
 
 const props = defineProps<{
   id: TextContentBlock["id"];
@@ -101,11 +83,14 @@ let quill: Quill | null = null;
 
 const { makeInputId } = useMakeInputId("text-block-input", props.id);
 
-const selectedLanguage = computed((): string => props.meta?.lang ?? "");
-const isSettingCustomLanguage = ref(!!selectedLanguage.value);
-const languages = getTTSLanguageOptions();
+const selectedLanguage = ref(props.meta?.lang ?? "auto");
+
 const text = computed(() => props.modelValue);
 const charCount = computed(() => text.value.length);
+const ttsLanguage = computed(() => {
+  // use the selected language if it's set, otherwise use the default language
+  return selectedLanguage.value || defaultLanguageOption.value.locale || "auto";
+});
 
 const options = computed(() => ({
   theme: "bubble",
@@ -147,9 +132,23 @@ const options = computed(() => ({
   readOnly: false,
 }));
 
-const isDeckTTSEnabled = inject(
-  IS_DECK_TTS_ENABLED_INJECTION_KEY,
-  toRef(false),
+const { isTTSEnabled, defaultLanguageOption } = useTTSContext();
+
+const isCustomLang = (locale: string) =>
+  !!locale && // must be defined
+  locale !== defaultLanguageOption.value.locale; // and not the default
+
+const isSettingCustomLanguage = ref(isCustomLang(selectedLanguage.value));
+
+watch(
+  () => props.meta?.lang,
+  (lang) => {
+    selectedLanguage.value =
+      lang || defaultLanguageOption.value.locale || "auto";
+
+    isSettingCustomLanguage.value = isCustomLang(selectedLanguage.value);
+  },
+  { immediate: true },
 );
 
 onMounted(() => {

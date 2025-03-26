@@ -1,18 +1,28 @@
 <template>
   <select
     class="w-28 bg-brand-maroon-800/5 border-none rounded-md text-sm"
-    :modelValue="modelValue"
-    @change="
+    :value="modelValue ?? ''"
+    @input="
       $emit('update:modelValue', ($event.target as HTMLSelectElement).value)
     "
   >
+    <!-- see note about iOS: https://vuejs.org/guide/essentials/forms.html#select -->
+    <SelectOption value="" disabled>{{ placeholder }}</SelectOption>
     <slot />
   </select>
 </template>
 <script setup lang="ts">
-defineProps<{
-  modelValue: string;
-}>();
+import SelectOption from "./SelectOption.vue";
+
+withDefaults(
+  defineProps<{
+    modelValue: string | null;
+    placeholder?: string;
+  }>(),
+  {
+    placeholder: "Select",
+  },
+);
 
 defineEmits<{
   (event: "update:modelValue", value: string): void;

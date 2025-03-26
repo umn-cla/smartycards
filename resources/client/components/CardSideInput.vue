@@ -1,7 +1,8 @@
 <template>
   <div>
-    <Label class="text-sm text-neutral-400">{{ label }}</Label>
-
+    <div>
+      <Label class="text-sm text-brand-maroon-800/50">{{ label }}</Label>
+    </div>
     <BlockEditor
       :modelValue="modelValue"
       @update:modelValue="emit('update:modelValue', $event)"

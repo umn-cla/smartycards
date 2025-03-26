@@ -42,16 +42,20 @@
           </header>
           <div class="my-4 grid sm:grid-cols-2 gap-4 mb-12">
             <div v-for="side in ['front', 'back'] as const" :key="side">
-              <CardSideInput
-                :id="`${deckId}-${side}`"
-                v-model="form[side]"
-                :label="capitalize(side)"
-                :data-cy="`${side}-side-input`"
-                @dragHandle:left="(block) => handleSwapBlockSide(block, side)"
-                @dragHandle:right="(block) => handleSwapBlockSide(block, side)"
-                @dragHandle:up="(block) => moveBlock(block, side, 'up')"
-                @dragHandle:down="(block) => moveBlock(block, side, 'down')"
-              />
+              <TTSContextProvider :deck="deck" :cardSideName="side">
+                <CardSideInput
+                  :id="`${deckId}-${side}`"
+                  v-model="form[side]"
+                  :label="capitalize(side)"
+                  :data-cy="`${side}-side-input`"
+                  @dragHandle:left="(block) => handleSwapBlockSide(block, side)"
+                  @dragHandle:right="
+                    (block) => handleSwapBlockSide(block, side)
+                  "
+                  @dragHandle:up="(block) => moveBlock(block, side, 'up')"
+                  @dragHandle:down="(block) => moveBlock(block, side, 'down')"
+                />
+              </TTSContextProvider>
             </div>
           </div>
         </div>
@@ -68,7 +72,6 @@ import {
   ref,
   onMounted,
   capitalize,
-  provide,
   nextTick,
 } from "vue";
 import {
@@ -84,13 +87,12 @@ import { IconChevronLeft } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import PageTitle from "@/components/PageTitle.vue";
 import PageSubtitle from "@/components/PageSubtitle.vue";
-import { useIsDeckTTSEnabled } from "@/composables/useIsDeckTTSEnabled";
 import { makeContentBlock } from "@/lib/makeContentBlock";
-import { IS_DECK_TTS_ENABLED_INJECTION_KEY } from "@/constants";
 import { focusBlockDragHandle } from "@/lib/blockEditorHelpers";
 import { useAnnouncer } from "@vue-a11y/announcer";
 import invariant from "tiny-invariant";
 import { clamp, move } from "ramda";
+import TTSContextProvider from "@/components/TTSContextProvider.vue";
 
 const props = defineProps<{
   deckId: number;
@@ -252,9 +254,5 @@ function handleSwapBlockSide(
     );
   });
 }
-
-// provide info about TTS to any card blocks that need it
-const { isDeckTTSEnabled } = useIsDeckTTSEnabled(deck);
-provide(IS_DECK_TTS_ENABLED_INJECTION_KEY, isDeckTTSEnabled);
 </script>
 <style scoped></style>

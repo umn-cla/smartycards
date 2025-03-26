@@ -20,6 +20,7 @@
             :checked="form.isTTSEnabled"
             @update:checked="form.isTTSEnabled = $event"
             label="Enable TTS"
+            data-cy="tts-switch"
           />
           <Label for="tts-enabled">
             Enable Text-to-Speech
@@ -29,6 +30,26 @@
             </HintTooltip>
           </Label>
         </div>
+        <div
+          v-show="form.isTTSEnabled"
+          class="flex gap-4 p-4 border border-brand-maroon-800/10 rounded-md"
+        >
+          <div>
+            <Label for="default-front-locale">Front Side Language</Label>
+            <SelectLanguage
+              id="default-front-locale"
+              v-model="form.ttsLocaleFront"
+            />
+          </div>
+          <div>
+            <Label for="default-back-locale">Back Side Language</Label>
+            <SelectLanguage
+              id="default-back-locale"
+              v-model="form.ttsLocaleBack"
+            />
+          </div>
+        </div>
+
         <div class="flex items-center justify-end py-4 gap-2">
           <Button asChild variant="secondary">
             <RouterLink :to="{ name: 'decks.index' }"> Cancel </RouterLink>
@@ -56,7 +77,8 @@ import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import HintTooltip from "@/components/HintTooltip.vue";
 import { Label } from "@/components/ui/label";
-import { Deck } from "@/types";
+import SelectLanguage from "@/components/SelectLanguage.vue";
+import * as T from "@/types";
 
 const props = defineProps<{
   deckId: number | null;
@@ -66,6 +88,8 @@ const form = reactive({
   name: "",
   description: "",
   isTTSEnabled: false,
+  ttsLocaleFront: null as T.LanguageOption["locale"] | null,
+  ttsLocaleBack: null as T.LanguageOption["locale"] | null,
 });
 
 const isCreateMode = computed(() => props.deckId === null);
@@ -82,6 +106,8 @@ watch(
       form.name = deck.value.name;
       form.description = deck.value.description ?? "";
       form.isTTSEnabled = deck.value.is_tts_enabled;
+      form.ttsLocaleFront = deck.value.tts_locale_front;
+      form.ttsLocaleBack = deck.value.tts_locale_back;
     }
   },
   { immediate: true },
@@ -104,7 +130,7 @@ async function handleSubmit() {
   updateDeck(
     { id: props.deckId, ...form },
     {
-      onSuccess: (updatedDeck: Deck) => {
+      onSuccess: (updatedDeck: T.Deck) => {
         router.push({ name: "decks.show", params: { deckId: updatedDeck.id } });
       },
     },

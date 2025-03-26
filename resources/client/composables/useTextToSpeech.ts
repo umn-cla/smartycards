@@ -34,7 +34,7 @@ export function useTextToSpeech(
   }
 
   async function getAudioUrl(): Promise<string> {
-    const blob = await api.getAudioForText(toValue(text).trim(), toValue(lang));
+    const blob = await api.getAudioForText(toValue(text).trim(), toValue(lang) ?? 'auto');
     return URL.createObjectURL(blob);
   }
 

@@ -15,10 +15,10 @@ class TTSController extends Controller
 
         $validated = $request->validate([
             'text' => 'required|string|max:200',
-            'lang' => 'string|nullable',
+            'lang' => 'string',
         ]);
 
-        $audioBlob = $tts->getSpeech($validated['text'], $validated['lang'] ?? null);
+        $audioBlob = $tts->getSpeech($validated['text'], $validated['lang']);
 
         return response($audioBlob, 200, ['Content-Type' => 'audio/mpeg']);
     }

@@ -7,17 +7,19 @@
       [isIdleClass]: !isPlaying && props.isIdleClass,
       '!opacity-25 cursor-not-allowed': isEmpty,
     }"
+    data-cy="simple-tts-player"
   >
     <IconSound class="size-5" />
+    <span class="sr-only">Listen</span>
     <span
-      v-if="languageName"
+      data-cy="simple-tts-player-language"
       class="text-xs"
       :class="{
         'text-brand-maroon-800/50': !isPlaying,
       }"
     >
-      {{ languageName }}</span
-    >
+      {{ selectedLanguage === "auto" ? "" : languageName }}
+    </span>
   </Toggle>
 </template>
 <script setup lang="ts">
@@ -25,7 +27,7 @@ import { useTextToSpeech } from "@/composables/useTextToSpeech";
 import { computed, HTMLAttributes } from "vue";
 import { IconSound } from "./icons";
 import Toggle from "./Toggle.vue";
-import { getTTSLanguageOptions } from "@/lib/getTtsLanguageOptions";
+import { ttsLanguageOptions as languages } from "@/lib/ttsLanguageOptions";
 
 const props = defineProps<{
   text: string;
@@ -38,7 +40,6 @@ const selectedLanguageRef = computed(() => props.selectedLanguage);
 
 const { isPlaying, isEmpty } = useTextToSpeech(textRef, selectedLanguageRef);
 
-const languages = getTTSLanguageOptions();
 const languageName = computed(() => {
   const lang = languages.find((l) => l.locale === props.selectedLanguage);
   return lang?.name;

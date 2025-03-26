@@ -69,16 +69,27 @@ export async function getDeckById(deckId: number) {
   return res.data.data;
 }
 
+interface CreateDeckParams {
+  name: string;
+  description: string;
+  isTTSEnabled: boolean;
+  ttsLocaleFront: string | null;
+  ttsLocaleBack: string | null;
+}
+
 export async function createDeck(
-  deck: { name: string; description: string; isTTSEnabled: boolean },
+  deck: CreateDeckParams,
   customConfig: T.CustomAxiosRequestConfig = {},
 ) {
   await csrf();
   const res = await axios.post<{ data: T.Deck }>(
     `/decks`,
     {
-      ...deck,
+      name: deck.name,
+      description: deck.description,
       is_tts_enabled: deck.isTTSEnabled,
+      tts_locale_front: deck.ttsLocaleFront,
+      tts_locale_back: deck.ttsLocaleBack,
     },
     customConfig,
   );
@@ -116,21 +127,16 @@ export async function deleteDeck(
   await axios.delete(`/decks/${deckId}`, customConfig);
 }
 
-export async function updateDeck({
-  id,
-  name,
-  description,
-  isTTSEnabled,
-}: {
+interface UpdateDeckParams extends CreateDeckParams {
   id: number;
-  name: string;
-  description: string;
-  isTTSEnabled: boolean;
-}) {
-  const res = await axios.put<{ data: T.Deck }>(`/decks/${id}`, {
-    name,
-    description,
-    is_tts_enabled: isTTSEnabled,
+}
+export async function updateDeck(deck: UpdateDeckParams) {
+  const res = await axios.put<{ data: T.Deck }>(`/decks/${deck.id}`, {
+    name: deck.name,
+    description: deck.description,
+    is_tts_enabled: deck.isTTSEnabled,
+    tts_locale_front: deck.ttsLocaleFront,
+    tts_locale_back: deck.ttsLocaleBack,
   });
   return res.data.data;
 }
@@ -380,7 +386,7 @@ export async function getDeckStats(deckId: number) {
 
 export async function getAudioForText(
   text: string,
-  lang?: string | null, // undefined means "best guess"?
+  lang: string | null,
 ): Promise<Blob> {
   const res = await axios.post<Blob>(
     `/tts`,
@@ -392,12 +398,6 @@ export async function getAudioForText(
       responseType: "blob",
     },
   );
-
-  return res.data;
-}
-
-export async function getFeatureFlags() {
-  const res = await axios.get<{ text_to_speech: boolean }>(`/features`);
 
   return res.data;
 }

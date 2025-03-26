@@ -10,28 +10,30 @@
     <div
       class="flex flex-col gap-4 my-auto overflow-y-auto scrollbar-thin scrollbar-thumb-black/10 scrollbar-track-transparent py-1"
     >
-      <template v-for="block in contentBlocks" :key="block.id">
-        <TextBlockView v-if="isTextBlock(block)" :block="block" />
-        <ImageBlockView
-          v-else-if="isImageBlock(block)"
-          :src="block.content"
-          :alt="block.meta?.alt ?? ''"
-        />
-        <VideoBlockView v-else-if="isVideoBlock(block)" :block="block" />
-        <EmbedBlockView v-else-if="isEmbedBlock(block)" :block="block" />
-        <AudioBlockView v-else-if="isAudioBlock(block)" :block="block" />
-        <HintBlockView
-          v-else-if="isHintBlock(block)"
-          :modelValue="block.content"
-          :meta="block.meta"
-        />
-        <MathBlockView
-          v-else-if="isMathBlock(block)"
-          :block="block"
-          class="mx-auto"
-        />
-        <UnknownBlockView v-else :block="block" />
-      </template>
+      <TTSContextProvider :deck="deck ?? null" :cardSideName="sideName">
+        <template v-for="block in contentBlocks" :key="block.id">
+          <TextBlockView v-if="isTextBlock(block)" :block="block" />
+          <ImageBlockView
+            v-else-if="isImageBlock(block)"
+            :src="block.content"
+            :alt="block.meta?.alt ?? ''"
+          />
+          <VideoBlockView v-else-if="isVideoBlock(block)" :block="block" />
+          <EmbedBlockView v-else-if="isEmbedBlock(block)" :block="block" />
+          <AudioBlockView v-else-if="isAudioBlock(block)" :block="block" />
+          <HintBlockView
+            v-else-if="isHintBlock(block)"
+            :modelValue="block.content"
+            :meta="block.meta"
+          />
+          <MathBlockView
+            v-else-if="isMathBlock(block)"
+            :block="block"
+            class="mx-auto"
+          />
+          <UnknownBlockView v-else :block="block" />
+        </template>
+      </TTSContextProvider>
     </div>
     <slot name="append" />
   </div>
@@ -56,12 +58,15 @@ import {
   isHintBlock,
 } from "@/lib/isBlockOfType";
 import UnknownBlockView from "./UnknownBlockView.vue";
+import TTSContextProvider from "@/components/TTSContextProvider.vue";
 
 const props = withDefaults(
   defineProps<{
     label?: string;
     side: T.CardSide;
     showLabel?: boolean;
+    sideName: T.CardSideName;
+    deck?: T.Deck | null;
   }>(),
   {},
 );
