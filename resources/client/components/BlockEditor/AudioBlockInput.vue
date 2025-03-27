@@ -14,6 +14,43 @@
         :files="myFiles"
         class="focus-within:ring-2 focus-within:ring-blue-600"
       />
+
+      <p class="text-neutral-400 text-xs text-center mt-4">— or —</p>
+
+      <!-- Only show the audio recorder if no audio is set -->
+      <div v-if="!isUploading">
+        <AudioRecorder @recording-complete="handleRecordingComplete" />
+      </div>
+      <div
+        v-else
+        class="p-3 bg-gray-100 rounded-lg shadow-sm flex items-center justify-center"
+      >
+        <div class="flex items-center">
+          <svg
+            class="animate-spin h-5 w-5 mr-2 text-blue-500"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+          >
+            <circle
+              class="opacity-25"
+              cx="12"
+              cy="12"
+              r="10"
+              stroke="currentColor"
+              stroke-width="4"
+            ></circle>
+            <path
+              class="opacity-75"
+              fill="currentColor"
+              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+            ></path>
+          </svg>
+          <span class="text-sm font-medium text-neutral-600"
+            >Uploading recording...</span
+          >
+        </div>
+      </div>
     </div>
 
     <div v-else class="relative pt-2 pr-2">
@@ -40,11 +77,6 @@
         <span class="sr-only">Clear</span>
       </button>
     </div>
-    <p class="text-neutral-400 text-xs text-center mt-4">— or —</p>
-    <AudioRecorder
-      v-if="!modelValue"
-      @update:modelValue="$emit('update:modelValue', $event)"
-    />
 
     <p class="text-neutral-400 text-xs text-center mt-4">— or —</p>
     <div class="mb-2">
@@ -70,11 +102,11 @@ import vueFilePond from "vue-filepond";
 import FilePondPluginFileValidateType from "filepond-plugin-file-validate-type";
 import { IconX } from "../icons";
 import { isValidUrl } from "@/lib/utils";
+import AudioRecorder from "../AudioRecorder/AudioRecorder.vue";
 
 import "filepond/dist/filepond.min.css";
 import "filepond-plugin-image-preview/dist/filepond-plugin-image-preview.min.css";
 import { useMakeInputId } from "@/composables/useMakeInputId";
-import AudioRecorder from "../AudioRecorder/AudioRecorder.vue";
 
 const props = defineProps<{
   id: ContentBlock["id"];
@@ -89,6 +121,7 @@ const { makeInputId } = useMakeInputId("audio-block-input", props.id);
 const FilePond = vueFilePond(FilePondPluginFileValidateType);
 
 const myFiles = ref<string[]>([]);
+const isUploading = ref(false);
 const isValidUrlComputed = computed(() => isValidUrl(props.modelValue));
 
 function onFileChange(file: File) {
@@ -111,5 +144,31 @@ async function handleProcessAudio(
   emit("update:modelValue", fileInfo.url);
 
   return { abort };
+}
+
+// Handle the recording complete event from the AudioRecorder
+async function handleRecordingComplete(blob: Blob, url: string) {
+  try {
+    isUploading.value = true;
+
+    // Convert blob to File object
+    const file = new File([blob], `recording-${Date.now()}.webm`, {
+      type: "audio/webm",
+    });
+
+    // Upload the file using your existing API
+    const fileInfo = await onFileChange(file);
+
+    // Update the model value with the new URL
+    emit("update:modelValue", fileInfo.url);
+
+    // Clean up the temporary object URL
+    URL.revokeObjectURL(url);
+  } catch (error) {
+    console.error("Error uploading recording:", error);
+    alert("Failed to upload recording. Please try again.");
+  } finally {
+    isUploading.value = false;
+  }
 }
 </script>
