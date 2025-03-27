@@ -3,8 +3,8 @@ import { ref, onUnmounted } from "vue";
 
 function getSupportedMimeType() {
   const types = [
+    "audio/mp4", // prefer mp4 for safari support
     "audio/webm",
-    "audio/mp4",
     "audio/ogg;codecs=opus",
     "audio/wav",
   ];
