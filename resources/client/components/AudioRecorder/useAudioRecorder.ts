@@ -5,7 +5,6 @@ function getSupportedMimeType() {
     "audio/mp4", // prefer mp4 for safari support
     "audio/webm",
     "audio/ogg;codecs=opus",
-    "audio/wav",
   ];
 
   for (const type of types) {
