@@ -1,13 +1,5 @@
 <template>
   <div class="relative" data-cy="text-block-input-container">
-    <SimpleTTSPlayer
-      :text="text"
-      :selectedLanguage="ttsLanguage"
-      isIdleClass="bg-brand-oatmeal-50"
-      v-if="isTTSEnabled && charCount < MAX_TTS_CHARS"
-      class="float-right m-1 rounded-sm relative z-10"
-    />
-
     <label :for="makeInputId('text-block')" class="sr-only">Text Block</label>
     <QuillyEditor
       ref="editor"
@@ -19,7 +11,7 @@
     />
 
     <div
-      class="flex gap-2 items-center justify-end mt-2 text-xs"
+      class="flex gap-2 items-center justify-end mt-2 text-xs flex-wrap"
       v-if="isTTSEnabled"
     >
       <label :for="makeInputId('language-select')" class="sr-only">
@@ -48,6 +40,13 @@
       >
         <IconGlobe class="size-5" />
       </Toggle>
+      <SimpleTTSPlayer
+        :text="text"
+        :selectedLanguage="ttsLanguage"
+        isIdleClass="bg-brand-oatmeal-50 !text-brand-maroon-800/75"
+        v-if="isTTSEnabled && charCount < MAX_TTS_CHARS"
+        class="float-right m-1 rounded-sm relative z-10"
+      />
     </div>
   </div>
 </template>
@@ -58,7 +57,7 @@ import { ref, onMounted, computed, watch } from "vue";
 import SelectLanguage from "../SelectLanguage.vue";
 import "quill-paste-smart";
 import "quill/dist/quill.core.css";
-import "quill/dist/quill.bubble.css";
+import "quill/dist/quill.snow.css";
 import { TextContentBlock } from "@/types";
 import { MAX_TTS_CHARS } from "@/constants";
 import { useMakeInputId } from "@/composables/useMakeInputId";
@@ -93,7 +92,7 @@ const ttsLanguage = computed(() => {
 });
 
 const options = computed(() => ({
-  theme: "bubble",
+  theme: "snow",
   // bounds: editor.value ? editor.value.$el : null,
   modules: {
     toolbar: [
@@ -105,8 +104,9 @@ const options = computed(() => ({
         "link",
         "code-block",
         "formula",
+        { direction: "rtl" }, // text direction
+        "clean",
       ],
-      ["clean"],
     ],
     keyboard: {
       bindings: {
@@ -181,5 +181,38 @@ onMounted(() => {
   /* prevent clipping link tooltips in bubble theme */
   overflow: visible;
   @apply font-serif text-base leading-5;
+}
+
+.ql-toolbar.ql-snow {
+  border: none;
+}
+.ql-container.ql-snow {
+  border: none;
+}
+
+.ql-toolbar.ql-snow button {
+  @apply text-brand-maroon-800 opacity-50;
+}
+
+.ql-toolbar.ql-snow :is(button:hover, button:focus) {
+  @apply text-brand-maroon-800 opacity-100 bg-brand-maroon-800/5 rounded;
+}
+
+.ql-toolbar.ql-snow :is(button.ql-active) {
+  @apply text-brand-oatmeal-50 opacity-100 bg-brand-maroon-800 rounded;
+}
+
+.ql-toolbar.ql-snow :is(.ql-stroke, button:hover .ql-stroke) {
+  @apply stroke-current;
+}
+
+.ql-toolbar.ql-snow
+  :is(
+    .ql-fill,
+    .ql-stroke.ql-fill,
+    button:hover .ql-fill,
+    button:hover .ql-stroke.ql-fill
+  ) {
+  @apply fill-current;
 }
 </style>

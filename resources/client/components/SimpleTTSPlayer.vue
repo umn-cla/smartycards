@@ -6,18 +6,13 @@
     :class="{
       [isIdleClass]: !isPlaying && props.isIdleClass,
       '!opacity-25 cursor-not-allowed': isEmpty,
+      'text-brand-maroon-800/50': !isPlaying,
     }"
     data-cy="simple-tts-player"
   >
     <IconSound class="size-5" />
     <span class="sr-only">Listen</span>
-    <span
-      data-cy="simple-tts-player-language"
-      class="text-xs"
-      :class="{
-        'text-brand-maroon-800/50': !isPlaying,
-      }"
-    >
+    <span data-cy="simple-tts-player-language" class="text-xs">
       {{ selectedLanguage === "auto" ? "" : languageName }}
     </span>
   </Toggle>
