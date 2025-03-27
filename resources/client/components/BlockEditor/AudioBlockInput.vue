@@ -9,7 +9,7 @@
         labelIdle="Add audio file (.mp3, .ogg, .m4a, .aac, .midi)"
         acceptedFileTypes="audio/mpeg,audio/ogg,audio/vorbis,audio/mp4,audio/aac,audio/midi,audio/x-m4a,audio/m4a"
         :server="{
-          process: handleProcessImage,
+          process: handleProcessAudio,
         }"
         :files="myFiles"
         class="focus-within:ring-2 focus-within:ring-blue-600"
@@ -41,7 +41,10 @@
       </button>
     </div>
     <p class="text-neutral-400 text-xs text-center mt-4">— or —</p>
-    <AudioRecorder />
+    <AudioRecorder
+      v-if="!modelValue"
+      @update:modelValue="$emit('update:modelValue', $event)"
+    />
 
     <p class="text-neutral-400 text-xs text-center mt-4">— or —</p>
     <div class="mb-2">
@@ -56,6 +59,7 @@
     </div>
   </div>
 </template>
+
 <script setup lang="ts">
 import { ref, computed } from "vue";
 import * as api from "@/api";
@@ -91,7 +95,7 @@ function onFileChange(file: File) {
   return api.uploadFile(file);
 }
 
-async function handleProcessImage(
+async function handleProcessAudio(
   _fieldName: string,
   file: File,
   _metadata: unknown,
@@ -109,19 +113,3 @@ async function handleProcessImage(
   return { abort };
 }
 </script>
-<style>
-.filepond--root.filepond--hopper {
-  margin-bottom: 0;
-}
-.filepond--drop-label {
-  background: hsla(0, 0%, 0%, 0.05);
-  border-radius: 1rem;
-  border: 1px dashed hsla(0, 0%, 0%, 0.2);
-}
-.filepond--credits {
-  display: none;
-}
-.filepond--drop-label label {
-  color: hsla(0, 0%, 0%, 0.25);
-}
-</style>
