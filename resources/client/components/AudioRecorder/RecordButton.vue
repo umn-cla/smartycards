@@ -2,11 +2,11 @@
 <template>
   <button
     @click="$emit('click')"
-    class="p-2 rounded-full focus:outline-none focus:ring-2 focus:ring-opacity-50 transition-colors"
+    class="p-2 rounded-full transition-colors border-2"
     :class="
       isRecording
-        ? 'bg-red-500 hover:bg-red-600 focus:ring-red-500 text-white'
-        : 'bg-blue-500 hover:bg-blue-600 focus:ring-blue-500 text-white'
+        ? 'bg-brand-orange-500 hover:bg-brand-orange-500/75 text-white'
+        : 'bg-brand-maroon-800/5 hover:bg-brand-maroon-800 hover:text-white text-brand-maroon-800 border-brand-maroon-800/10'
     "
     :title="isRecording ? 'Stop recording' : 'Start recording'"
   >
