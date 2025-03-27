@@ -1,6 +1,23 @@
 // useAudioRecorder.ts
 import { ref, onUnmounted } from "vue";
 
+function getSupportedMimeType() {
+  const types = [
+    "audio/webm",
+    "audio/mp4",
+    "audio/ogg;codecs=opus",
+    "audio/wav",
+  ];
+
+  for (const type of types) {
+    if (MediaRecorder.isTypeSupported(type)) {
+      return type;
+    }
+  }
+
+  return null; // No supported type found
+}
+
 export function useAudioRecorder(options = { maxDuration: 15 }) {
   const isRecording = ref(false);
   const recordingTime = ref(0);
@@ -26,8 +43,14 @@ export function useAudioRecorder(options = { maxDuration: 15 }) {
         },
       });
 
+      // detect supported mime type
+      const mimeType = getSupportedMimeType();
+      if (!mimeType) {
+        throw new Error("No supported MIME type found for recording.");
+      }
+
       // Create new MediaRecorder
-      mediaRecorder.value = new MediaRecorder(stream);
+      mediaRecorder.value = new MediaRecorder(stream, { mimeType });
 
       // while recording, add audio chunks to the audioChunks array
       mediaRecorder.value.ondataavailable = (event) => {
@@ -39,7 +62,7 @@ export function useAudioRecorder(options = { maxDuration: 15 }) {
       // When recording stops
       mediaRecorder.value.onstop = () => {
         // create a blob from the audio chunks
-        const blob = new Blob(audioChunks.value, { type: "audio/webm" });
+        const blob = new Blob(audioChunks.value, { type: mimeType });
         audioBlob.value = blob;
 
         // Create URL for audio playback
