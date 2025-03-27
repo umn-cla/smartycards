@@ -104,9 +104,9 @@ const options = computed(() => ({
         "link",
         "code-block",
         "formula",
+        { direction: "rtl" }, // text direction
+        "clean",
       ],
-      [{ direction: "rtl" }], // text direction
-      ["clean"],
     ],
     keyboard: {
       bindings: {
