@@ -1,5 +1,5 @@
 <template>
-  <div class="p-3 rounded-lg bg-gray-100 shadow-sm">
+  <div class="p-3 rounded-md bg-white/50">
     <div class="flex items-center justify-between">
       <div class="flex items-center">
         <div

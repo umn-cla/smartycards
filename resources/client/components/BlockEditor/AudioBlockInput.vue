@@ -174,3 +174,9 @@ async function handleRecordingComplete(blob: Blob, url: string) {
   }
 }
 </script>
+<style>
+.filepond--root .filepond--drop-label {
+  background: #f8f2ea;
+  border-radius: 0.5rem;
+}
+</style>
