@@ -41,6 +41,9 @@
       </button>
     </div>
     <p class="text-neutral-400 text-xs text-center mt-4">— or —</p>
+    <AudioRecorder />
+
+    <p class="text-neutral-400 text-xs text-center mt-4">— or —</p>
     <div class="mb-2">
       <Label :for="makeInputId('image-url')" class="sr-only">Audio Url</Label>
       <Input
@@ -67,6 +70,7 @@ import { isValidUrl } from "@/lib/utils";
 import "filepond/dist/filepond.min.css";
 import "filepond-plugin-image-preview/dist/filepond-plugin-image-preview.min.css";
 import { useMakeInputId } from "@/composables/useMakeInputId";
+import AudioRecorder from "../AudioRecorder/AudioRecorder.vue";
 
 const props = defineProps<{
   id: ContentBlock["id"];
