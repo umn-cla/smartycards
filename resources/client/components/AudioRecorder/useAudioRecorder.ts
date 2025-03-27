@@ -23,6 +23,7 @@ export function useAudioRecorder(options = { maxDuration: 15 }) {
   const recordingTime = ref(0);
   const audioBlob = ref<Blob | null>(null);
   const audioUrl = ref<string | null>(null);
+  const audioMimeType = ref<string | null>(null);
   const mediaRecorder = ref<MediaRecorder | null>(null);
   const audioChunks = ref<Blob[]>([]);
   const timerInterval = ref<number | null>(null);
@@ -44,13 +45,15 @@ export function useAudioRecorder(options = { maxDuration: 15 }) {
       });
 
       // detect supported mime type
-      const mimeType = getSupportedMimeType();
-      if (!mimeType) {
+      audioMimeType.value = getSupportedMimeType();
+      if (!audioMimeType.value) {
         throw new Error("No supported MIME type found for recording.");
       }
 
       // Create new MediaRecorder
-      mediaRecorder.value = new MediaRecorder(stream, { mimeType });
+      mediaRecorder.value = new MediaRecorder(stream, {
+        mimeType: audioMimeType.value,
+      });
 
       // while recording, add audio chunks to the audioChunks array
       mediaRecorder.value.ondataavailable = (event) => {
@@ -61,8 +64,12 @@ export function useAudioRecorder(options = { maxDuration: 15 }) {
 
       // When recording stops
       mediaRecorder.value.onstop = () => {
+        if (!audioMimeType.value) {
+          throw new Error("No supported MIME type found for recording.");
+        }
+
         // create a blob from the audio chunks
-        const blob = new Blob(audioChunks.value, { type: mimeType });
+        const blob = new Blob(audioChunks.value, { type: audioMimeType.value });
         audioBlob.value = blob;
 
         // Create URL for audio playback
@@ -139,6 +146,7 @@ export function useAudioRecorder(options = { maxDuration: 15 }) {
     recordingTime,
     audioBlob,
     audioUrl,
+    audioMimeType,
     startRecording,
     stopRecording,
     resetRecording,

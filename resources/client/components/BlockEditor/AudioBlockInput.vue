@@ -149,13 +149,26 @@ async function handleProcessAudio(
 
 const errorStore = useErrorStore();
 
-async function handleRecordingComplete(blob: Blob, url: string) {
+async function handleRecordingComplete({
+  blob,
+  url,
+  mimeType,
+}: {
+  blob: Blob;
+  url: string;
+  mimeType: string;
+}) {
   try {
     isUploading.value = true;
 
+    // determine the file extension based on the MIME type
+    const extension = mimeType.split("/")[1];
+
+    const filename = `recording-${Date.now()}.${extension}`;
+
     // Convert blob to File object
-    const file = new File([blob], `recording-${Date.now()}.webm`, {
-      type: "audio/webm",
+    const file = new File([blob], filename, {
+      type: mimeType,
     });
 
     // Upload the file to the server

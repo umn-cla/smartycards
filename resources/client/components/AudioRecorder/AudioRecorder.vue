@@ -37,7 +37,7 @@ import RecordButton from "./RecordButton.vue";
 import Button from "@/components/ui/button/Button.vue";
 
 const emit = defineEmits<{
-  save: [blob: Blob, url: string];
+  save: [{ blob: Blob; url: string; mimeType: string }];
 }>();
 
 const {
@@ -45,6 +45,7 @@ const {
   recordingTime,
   audioBlob,
   audioUrl,
+  audioMimeType,
   startRecording,
   stopRecording,
   resetRecording,
@@ -62,8 +63,12 @@ const toggleRecording = () => {
 };
 
 const emitSaveEvent = () => {
-  if (audioBlob.value && audioUrl.value) {
-    emit("save", audioBlob.value, audioUrl.value);
+  if (audioBlob.value && audioUrl.value && audioMimeType.value) {
+    emit("save", {
+      blob: audioBlob.value,
+      url: audioUrl.value,
+      mimeType: audioMimeType.value,
+    });
   }
 };
 </script>
