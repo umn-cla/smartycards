@@ -37,11 +37,13 @@
         </Button>
       </div>
 
-      <MatchingGame
-        :cards="deck.cards"
-        class="mx-auto max-h-[66vh] aspect-square"
-        @gameover="handleWin"
-      />
+      <DeckContextProvider :deck="deck">
+        <MatchingGame
+          :cards="deck.cards"
+          class="mx-auto max-h-[66vh] aspect-square"
+          @gameover="handleWin"
+        />
+      </DeckContextProvider>
     </div>
   </AuthenticatedLayout>
 </template>
@@ -56,6 +58,7 @@ import { useCreateDeckActivityEventMutation } from "@/queries/deckActivityEvents
 import LevelProgress from "@/components/LevelProgress.vue";
 import { useDeckStatsQuery } from "@/queries/decks/useDeckStatsQuery";
 import * as T from "@/types";
+import DeckContextProvider from "@/components/DeckContextProvider.vue";
 
 const props = defineProps<{
   deckId: number;
