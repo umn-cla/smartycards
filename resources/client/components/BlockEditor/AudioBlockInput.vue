@@ -44,10 +44,10 @@
     <div class="mb-2">
       <Label :for="makeInputId('image-url')" class="sr-only">Audio Url</Label>
       <Input
-        :id="makeInputId('image-url')"
+        :id="makeInputId('audio-url')"
         :modelValue="modelValue"
         @update:modelValue="$emit('update:modelValue', $event as string)"
-        placeholder="Image URL"
+        placeholder="Audio URL"
         class="bg-brand-maroon-800/5"
       />
     </div>
