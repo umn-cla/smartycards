@@ -1,4 +1,3 @@
-<!-- RecordButton.vue -->
 <template>
   <button
     @click="$emit('click')"
@@ -10,7 +9,6 @@
     "
     :title="isRecording ? 'Stop recording' : 'Start recording'"
   >
-    <!-- Microphone icon (when not recording) -->
     <IconMicrophone v-if="!isRecording" class="size-6" />
     <IconStop v-else class="size-6" />
   </button>

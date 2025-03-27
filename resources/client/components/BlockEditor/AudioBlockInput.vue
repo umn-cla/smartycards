@@ -163,7 +163,6 @@ async function handleRecordingComplete({
 
     // determine the file extension based on the MIME type
     const extension = mimeType.split("/")[1];
-
     const filename = `recording-${Date.now()}.${extension}`;
 
     // Convert blob to File object

@@ -1,4 +1,3 @@
-// useAudioRecorder.ts
 import { ref, onUnmounted } from "vue";
 
 function getSupportedMimeType() {
@@ -44,13 +43,13 @@ export function useAudioRecorder(options = { maxDuration: 15 }) {
         },
       });
 
-      // detect supported mime type
+      // detect supported MIME types. Safari, for instance,
+      // does not support webm, so we need to use mp4
       audioMimeType.value = getSupportedMimeType();
       if (!audioMimeType.value) {
         throw new Error("No supported MIME type found for recording.");
       }
 
-      // Create new MediaRecorder
       mediaRecorder.value = new MediaRecorder(stream, {
         mimeType: audioMimeType.value,
       });
@@ -87,7 +86,7 @@ export function useAudioRecorder(options = { maxDuration: 15 }) {
         isRecording.value = false;
       };
 
-      // Start recording
+      // now, after all this setup, we can actually start recording
       mediaRecorder.value.start();
       isRecording.value = true;
 
@@ -130,7 +129,7 @@ export function useAudioRecorder(options = { maxDuration: 15 }) {
     return `${minutes}:${seconds.toString().padStart(2, "0")}`;
   };
 
-  // Clean up on unmount
+  // Clean up
   onUnmounted(() => {
     if (timerInterval.value) {
       clearInterval(timerInterval.value);
