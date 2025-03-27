@@ -6,15 +6,16 @@
           v-if="isRecording"
           class="w-3 h-3 rounded-full mr-2 bg-red-500 animate-pulse"
         ></div>
-        <span class="text-sm font-medium text-neutral-600">
-          {{
-            isRecording
-              ? formatTime(recordingTime)
-              : audioBlob
-                ? "Recording complete"
-                : "Record audio (max 15s)"
-          }}
-        </span>
+        <div class="text-sm font-medium text-neutral-600">
+          <template v-if="isRecording">
+            {{ formatTime(recordingTime) }}
+          </template>
+          <template v-else-if="audioBlob"> Recording complete </template>
+          <template v-else>
+            <p>Record audio</p>
+            <small>max 15s</small>
+          </template>
+        </div>
       </div>
       <RecordButton :isRecording="isRecording" @click="toggleRecording" />
     </div>
