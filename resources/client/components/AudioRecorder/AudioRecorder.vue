@@ -22,19 +22,9 @@
       <audio controls :src="audioUrl ?? ''" class="w-full h-10"></audio>
 
       <div class="flex justify-end gap-2 mt-3">
-        <button
-          @click="resetRecording"
-          class="px-3 py-1.5 text-sm bg-gray-200 hover:bg-gray-300 text-gray-700 rounded focus:outline-none focus:ring-2 focus:ring-gray-400 transition-colors"
-        >
-          Discard
-        </button>
+        <Button variant="secondary" @click="resetRecording"> Discard </Button>
 
-        <button
-          @click="emitSaveEvent"
-          class="px-3 py-1.5 text-sm bg-blue-500 hover:bg-blue-600 text-white rounded focus:outline-none focus:ring-2 focus:ring-blue-400 transition-colors"
-        >
-          Use Recording
-        </button>
+        <Button @click="emitSaveEvent"> Use Recording </Button>
       </div>
     </div>
   </div>
@@ -43,6 +33,7 @@
 <script setup lang="ts">
 import { useAudioRecorder } from "./useAudioRecorder";
 import RecordButton from "./RecordButton.vue";
+import Button from "@/components/ui/button/Button.vue";
 
 const emit = defineEmits<{
   save: [blob: Blob, url: string];
