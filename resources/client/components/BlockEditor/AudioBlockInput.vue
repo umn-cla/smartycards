@@ -19,7 +19,7 @@
 
       <!-- Only show the audio recorder if no audio is set -->
       <div v-if="!isUploading">
-        <AudioRecorder @recording-complete="handleRecordingComplete" />
+        <AudioRecorder @save="handleRecordingComplete" />
       </div>
       <div
         v-else
@@ -107,6 +107,7 @@ import AudioRecorder from "../AudioRecorder/AudioRecorder.vue";
 import "filepond/dist/filepond.min.css";
 import "filepond-plugin-image-preview/dist/filepond-plugin-image-preview.min.css";
 import { useMakeInputId } from "@/composables/useMakeInputId";
+import { useErrorStore } from "@/stores/useErrorStore";
 
 const props = defineProps<{
   id: ContentBlock["id"];
@@ -146,7 +147,8 @@ async function handleProcessAudio(
   return { abort };
 }
 
-// Handle the recording complete event from the AudioRecorder
+const errorStore = useErrorStore();
+
 async function handleRecordingComplete(blob: Blob, url: string) {
   try {
     isUploading.value = true;
@@ -156,7 +158,7 @@ async function handleRecordingComplete(blob: Blob, url: string) {
       type: "audio/webm",
     });
 
-    // Upload the file using your existing API
+    // Upload the file to the server
     const fileInfo = await onFileChange(file);
 
     // Update the model value with the new URL
@@ -166,7 +168,7 @@ async function handleRecordingComplete(blob: Blob, url: string) {
     URL.revokeObjectURL(url);
   } catch (error) {
     console.error("Error uploading recording:", error);
-    alert("Failed to upload recording. Please try again.");
+    errorStore.setError(error as Error);
   } finally {
     isUploading.value = false;
   }

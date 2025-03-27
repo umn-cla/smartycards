@@ -1,9 +1,6 @@
-<!-- AudioRecorder.vue -->
 <template>
   <div class="p-3 rounded-lg bg-gray-100 shadow-sm">
-    <!-- Recording interface -->
     <div class="flex items-center justify-between">
-      <!-- Recording status and timer -->
       <div class="flex items-center">
         <div
           v-if="isRecording"
@@ -19,12 +16,8 @@
           }}
         </span>
       </div>
-
-      <!-- Record/stop button -->
       <RecordButton :isRecording="isRecording" @click="toggleRecording" />
     </div>
-
-    <!-- Audio preview and action buttons (after recording) -->
     <div v-if="audioBlob && !isRecording" class="mt-3">
       <audio controls :src="audioUrl ?? ''" class="w-full h-10"></audio>
 
@@ -51,12 +44,10 @@
 import { useAudioRecorder } from "./useAudioRecorder";
 import RecordButton from "./RecordButton.vue";
 
-// Define emits
 const emit = defineEmits<{
-  (e: "recording-complete", blob: Blob, url: string): void;
+  save: [blob: Blob, url: string];
 }>();
 
-// Use the audio recorder composable
 const {
   isRecording,
   recordingTime,
@@ -68,7 +59,6 @@ const {
   formatTime,
 } = useAudioRecorder();
 
-// Toggle recording
 const toggleRecording = () => {
   if (isRecording.value) {
     stopRecording();
@@ -79,10 +69,9 @@ const toggleRecording = () => {
   }
 };
 
-// Emit the save event with the recorded blob and URL
 const emitSaveEvent = () => {
   if (audioBlob.value && audioUrl.value) {
-    emit("recording-complete", audioBlob.value, audioUrl.value);
+    emit("save", audioBlob.value, audioUrl.value);
   }
 };
 </script>

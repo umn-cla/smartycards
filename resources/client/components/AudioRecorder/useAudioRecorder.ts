@@ -11,7 +11,6 @@ export function useAudioRecorder(options = { maxDuration: 15 }) {
   const timerInterval = ref<number | null>(null);
   const maxRecordingTime = options.maxDuration;
 
-  // Start recording function
   const startRecording = async () => {
     try {
       // Reset state
@@ -30,16 +29,16 @@ export function useAudioRecorder(options = { maxDuration: 15 }) {
       // Create new MediaRecorder
       mediaRecorder.value = new MediaRecorder(stream);
 
-      // Event handler for data available
+      // while recording, add audio chunks to the audioChunks array
       mediaRecorder.value.ondataavailable = (event) => {
         if (event.data.size > 0) {
           audioChunks.value.push(event.data);
         }
       };
 
-      // Event handler for when recording stops
+      // When recording stops
       mediaRecorder.value.onstop = () => {
-        // Create blob from recorded chunks
+        // create a blob from the audio chunks
         const blob = new Blob(audioChunks.value, { type: "audio/webm" });
         audioBlob.value = blob;
 
@@ -79,14 +78,12 @@ export function useAudioRecorder(options = { maxDuration: 15 }) {
     }
   };
 
-  // Stop recording function
   const stopRecording = () => {
     if (mediaRecorder.value && isRecording.value) {
       mediaRecorder.value.stop();
     }
   };
 
-  // Reset recording function
   const resetRecording = () => {
     if (audioUrl.value) {
       URL.revokeObjectURL(audioUrl.value);
@@ -97,7 +94,6 @@ export function useAudioRecorder(options = { maxDuration: 15 }) {
     recordingTime.value = 0;
   };
 
-  // Format time display
   const formatTime = (time: number): string => {
     const minutes = Math.floor(time / 60);
     const seconds = Math.floor(time % 60);
