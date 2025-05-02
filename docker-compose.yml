@@ -6,7 +6,7 @@ services:
             - "${SSL_PORT:-443}:443"
         environment:
             - SSL_PORT=${SSL_PORT:-443}
-            - APP_SERVICE=${APP_SERVICE:-laravel.test}
+            - APP_SERVICE=${APP_SERVICE:-app}
             - SERVER_NAME=${SERVER_NAME:-localhost}
             - SSL_DOMAIN=${SSL_DOMAIN:-localhost}
             - SSL_ALT_NAME=${SSL_ALT_NAME:-DNS:localhost}
@@ -15,10 +15,10 @@ services:
             - "./nginx/templates:/etc/nginx/templates"
             # - './vendor/ryoluo/sail-ssl/nginx/generate-ssl-cert.sh:/docker-entrypoint.d/99-generate-ssl-cert.sh'
         depends_on:
-            - ${APP_SERVICE:-laravel.test}
+            - ${APP_SERVICE:-app}
         networks:
             - sail
-    laravel.test:
+    app:
         build:
             context: ./docker/8.3
             dockerfile: Dockerfile
@@ -30,7 +30,8 @@ services:
         ports:
             - "${APP_PORT:-8000}:80"
         environment:
-            WWWUSER: "${WWWUSER}"
+            WWWUSER: "${WWWUSER:-1000}"
+            WWWGROUP: "${WWWGROUP:-1000}"
             LARAVEL_SAIL: 1
             XDEBUG_MODE: "${SAIL_XDEBUG_MODE:-off}"
             XDEBUG_CONFIG: "${SAIL_XDEBUG_CONFIG:-client_host=host.docker.internal}"
