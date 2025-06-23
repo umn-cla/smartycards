@@ -4,7 +4,9 @@ namespace Deployer;
 
 require 'recipe/laravel.php';
 require 'contrib/npm.php';
+require 'contrib/cachetool.php';
 
+set('cachetool_args', '--tmp-dir=/var/www/smartycards');
 // Config
 set('repository', 'git@github.com:umn-cla/smartycards-api.git');
 set('ssh_type', 'native');
@@ -49,3 +51,4 @@ task('assets:generate', function () {
 after('deploy:vendors', 'assets:generate');
 
 after('deploy:failed', 'deploy:unlock');
+after('deploy:symlink', 'cachetool:clear:opcache');
