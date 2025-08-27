@@ -13,12 +13,18 @@ use App\Http\Controllers\DeckReportController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TTSController;
 use App\Http\Controllers\UploadFileController;
+use App\Http\Controllers\LTI13Handler;
 use Illuminate\Support\Facades\Route;
 
 // homepage is public
 Route::get('/', function () {
     return view('app');
 });
+
+
+Route::post('lti13/login', [LTI13Handler::class, 'login']);
+Route::post('lti13/launch', [LTI13Handler::class, 'launch']);
+Route::get('lti13/config', [LTI13Handler::class, 'config']);
 
 // stateful api routes ()
 Route::middleware(['auth'])

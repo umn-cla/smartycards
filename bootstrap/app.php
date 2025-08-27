@@ -18,6 +18,7 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
         $middleware->validateCsrfTokens(except: [
             '/local-sp/ACS',
+            '/lti13/*'
         ]);
 
         // if in development environment, trust proxies since https terminates
