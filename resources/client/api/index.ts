@@ -250,7 +250,11 @@ export async function getDeckShareLink(
   return res.data.url;
 }
 
-export async function importDeckCards(deckId: number, file: File) {
+export async function importDeckCards(
+  deckId: number,
+  file: File,
+  customConfig: T.CustomAxiosRequestConfig = {},
+) {
   const formData = new FormData();
   formData.append("file", file);
 
@@ -261,6 +265,7 @@ export async function importDeckCards(deckId: number, file: File) {
       headers: {
         "Content-Type": "multipart/form-data",
       },
+      ...customConfig,
     },
   );
   return res.data.data;
