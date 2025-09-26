@@ -17,12 +17,22 @@
       <main>
         <section class="my-8">
           <p>
-            Import text cards into the <b>{{ deck.name }}</b> deck from a CSV
-            file in the following format:
+            Import text cards into the <b>{{ deck.name }}</b> deck from a
+            spreadsheet (CSV, XLSX) in the following format. The first row of
+            the CSV file <strong>MUST</strong> contain the column headers
+            <code>front</code> and <code>back</code>.
           </p>
 
-          <div class="font-mono border my-4 rounded-lg p-4">
-            <Table>
+          <div class="font-mono border border-black/25 my-4 rounded-lg p-4">
+            <Button
+              class="float-right"
+              variant="secondary"
+              as="a"
+              href="/examples/french-english.csv"
+              download
+              >Download Example</Button
+            >
+            <Table class="font-mono">
               <TableHeader>
                 <TableRow>
                   <TableHead>front</TableHead>
