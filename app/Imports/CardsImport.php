@@ -6,9 +6,10 @@ use App\Models\Card;
 use Maatwebsite\Excel\Concerns\SkipsEmptyRows;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
+use Maatwebsite\Excel\Concerns\WithValidation;
 use Str;
 
-class CardsImport implements SkipsEmptyRows, ToModel, WithHeadingRow
+class CardsImport implements SkipsEmptyRows, ToModel, WithHeadingRow, WithValidation
 {
     protected $deckId;
 
