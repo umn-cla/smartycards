@@ -6,6 +6,7 @@ use App\Models\Role;
 use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
+use Firebase\JWT\JWT;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -33,5 +34,7 @@ class AppServiceProvider extends ServiceProvider
             return $user->hasRole(Role::SUPER_ADMIN) ? true : null;
         });
 
+        // a leeway to account for clock drift
+        JWT::$leeway = 5; // in seconds
     }
 }
