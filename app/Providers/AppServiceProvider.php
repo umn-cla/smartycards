@@ -26,10 +26,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        ResetPassword::createUrlUsing(function (object $notifiable, string $token) {
-            return config('app.frontend_url')."/password-reset/$token?email={$notifiable->getEmailForPasswordReset()}";
-        });
-
         // Implicitly grant "Super Admin" role all permissions
         // This works in the app by using gate-related functions
         // like auth()->user->can() and @can()
