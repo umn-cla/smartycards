@@ -15,6 +15,9 @@ use App\Http\Controllers\TTSController;
 use App\Http\Controllers\UploadFileController;
 use Illuminate\Support\Facades\Route;
 
+require __DIR__ . '/shib.php';
+require __DIR__ . '/lti.php';
+
 // homepage is public
 Route::get('/', function () {
     return view('app');
@@ -72,8 +75,6 @@ Route::middleware(['auth'])
 
         Route::post('tts', TTSController::class);
     });
-
-require __DIR__.'/shib.php';
 
 Route::get('decks/{deck}/invite', DeckInviteController::class)
     ->name('decks.memberships.acceptInvite')
