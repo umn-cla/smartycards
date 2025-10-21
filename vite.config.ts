@@ -41,11 +41,16 @@ export default defineConfig(({ mode }) => {
       },
     },
     server: {
-      host: "127.0.0.1", // or "0.0.0.0"?
+      // host: "0.0.0.0", // or "0.0.0.0"?
+      host: new URL(env.VITE_CLIENT_BASE_URL).hostname,
       port: 5173,
       https: {
         cert: "./.cert/cert.pem",
         key: "./.cert/key.pem",
+      },
+      hmr: {
+        host: new URL(env.VITE_CLIENT_BASE_URL).hostname,
+        protocol: "wss",
       },
     },
   };
