@@ -19,6 +19,11 @@ class LtiDeepLinkController extends Controller
                 'settings' => $launch->getDeepLink()->settings()
             ]);
         } catch (\Exception $e) {
+            // just rethrow in debug mode for easier troubleshooting
+            if (config('app.debug')) {
+                throw $e;
+            }
+
             return redirect()->route('lti.error', [
                 'message' => $e->getMessage()
             ]);
@@ -38,6 +43,11 @@ class LtiDeepLinkController extends Controller
                 'return_url' => $response['return_url']
             ]);
         } catch (\Exception $e) {
+            // just rethrow in debug mode for easier troubleshooting
+            if (config('app.debug')) {
+                throw $e;
+            }
+
             return redirect()->route('lti.error', [
                 'message' => $e->getMessage()
             ]);
