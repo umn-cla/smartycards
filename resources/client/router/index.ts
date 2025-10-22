@@ -226,6 +226,15 @@ const router = createRouter({
       name: "admin",
       component: () => import("@/pages/AdminPage.vue"),
     },
+
+    // LTI Routes
+    {
+      path: "/lti/deep-link",
+      name: "lti.deep_link",
+      component: () => import("@/pages/Lti/LtiDeepLinkPage.vue"),
+      meta: { requireAuth: false },
+    },
+
     ...includeDevRoutesIfDev(),
 
     {

@@ -7,29 +7,57 @@
   <title>LTI Error - {{ config('app.name', 'SmartyCards') }}</title>
   <style>
     body {
-      font-family: sans-serif;
+      font-family: system-ui, -apple-system, sans-serif;
       display: flex;
       align-items: center;
       justify-content: center;
       min-height: 100vh;
       margin: 0;
-      background-color: #f7f7f7;
+      background-color: #f3f4f6;
     }
 
     .error-container {
       background-color: #fff;
       padding: 2rem;
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      border-radius: 0.5rem;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
       max-width: 640px;
+      border-top: 4px solid #ef4444;
+    }
+
+    h1 {
+      color: #dc2626;
+      font-size: 1.5rem;
+      margin: 0 0 1rem;
+      font-weight: 600;
+    }
+
+    .error-message {
+      color: #374151;
+      margin: 0 0 1.5rem;
+      line-height: 1.6;
+    }
+
+    .help-text {
+      color: #6b7280;
+      font-size: 0.875rem;
+      margin: 0;
+    }
+
+    a {
+      color: #7c3aed;
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
     }
   </style>
 </head>
 
 <body>
   <div class="error-container">
-    <h1>Canvas Launch Error</h1>
+    <h1>LTI Launch Error</h1>
     <p class="error-message">
       {{ $message }}
     </p>
