@@ -79,7 +79,7 @@ class LtiService
     /**
      * Generate Deep Linking response
      */
-    public function createDeepLinkResponse(string $launchId, array $resources = [])
+    public function createDeepLinkResponse(string $launchId, array $requestData = [])
     {
         $launch = $this->getLaunchFromCache($launchId);
 
@@ -89,18 +89,26 @@ class LtiService
 
         $deeplink = $launch->getDeepLink();
 
-        // Create resources if none provided
-        if (empty($resources)) {
-            $resources = [
-                Resource::new()
-                    ->setUrl(route('lti.launch'))
-                    ->setTitle('My Resource')
-                    ->setText('Resource description')
-            ];
+        // Extract deck selection data from request
+        $deckId = $requestData['deck_id'] ?? null;
+        $title = $requestData['title'] ?? 'SmartyCards Practice';
+        $description = $requestData['description'] ?? '';
+
+        if (!$deckId) {
+            throw new \InvalidArgumentException('Deck ID is required for deep link response');
         }
 
+        // Create the resource that will be inserted into the LMS
+        $resource = Resource::new()
+            ->setUrl(route('lti.launch'))
+            ->setTitle($title)
+            ->setText($description)
+            ->setCustomParams([
+                'deck_id' => $deckId,
+            ]);
+
         // Get JWT for the response
-        $jwt = $deeplink->getResponseJwt($resources);
+        $jwt = $deeplink->getResponseJwt([$resource]);
         $returnUrl = $deeplink->returnUrl();
 
         // return the necessary data to create an auto-posting form
