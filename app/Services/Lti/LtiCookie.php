@@ -20,19 +20,15 @@ class LtiCookie implements ICookie
 
     public function setCookie(string $name, string $value, int $exp = self::COOKIE_EXPIRY, array $options = []): void
     {
-        $minutes = $exp / 60; //Laravel uses minutes for cookie expiry
-
+        // LTI 1.3 requires SameSite=None and Secure=true for cross-domain cookie support
+        // These cookies are used during the OIDC flow between Canvas and our app
+        $minutes = $exp / 60;
+        $prefixedName = self::COOKIE_PREFIX . $name;
         Cookie::queue(
-            name: $name,
-            value: $value,
-            minutes: $minutes,
-            path: $options['path'] ?? '/',
-            domain: $options['domain'] ?? null,
-            secure: true, // must be secure for cross-site cookies
-            httpOnly: $options['httpOnly'] ?? true,
-            raw: $options['raw'] ?? false,
-            // cross-site cookies should specify SameSite=None and Secure
-            sameSite: $options['sameSite'] ?? 'None',
+            Cookie::make($prefixedName, $value, $minutes)
+                ->withSameSite('none')
+                ->withSecure(true)
+                ->withHttpOnly(true)
         );
     }
 }
