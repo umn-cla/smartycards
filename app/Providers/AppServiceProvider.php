@@ -63,5 +63,14 @@ class AppServiceProvider extends ServiceProvider
         // a leeway to account for clock drift (in seconds)
         // used in JWT validation with Packback LTI library
         JWT::$leeway = 5;
+
+        // LTI sevice connector debugging mode
+        // when debugging is enabled, all requests made
+        // through the service connector will be logged using PHP's
+        // error_log() function.
+        if (config('app.debug')) {
+            $serviceConnector = app(ILtiServiceConnector::class);
+            $serviceConnector->setDebuggingMode(true);
+        }
     }
 }
