@@ -1,5 +1,7 @@
 <?php
 
+namespace App\Services\Lti;
+
 use Packback\Lti1p3\DeepLinkResources\Resource;
 use Packback\Lti1p3\Interfaces\IDatabase;
 use Packback\Lti1p3\Interfaces\ICache;
@@ -7,6 +9,7 @@ use Packback\Lti1p3\Interfaces\ICookie;
 use Packback\Lti1p3\Interfaces\ILtiServiceConnector;
 use Packback\Lti1p3\JwksEndpoint;
 use Packback\Lti1p3\LtiException;
+use Packback\Lti1p3\LtiGrade;
 use Packback\Lti1p3\LtiMessageLaunch;
 use Packback\Lti1p3\LtiOidcLogin;
 
@@ -42,7 +45,6 @@ class LtiService
     /**
      * Handle and validate the LTI message launch
      */
-
     public function validateLaunch(array $request)
     {
         $launch = LtiMessageLaunch::new(
@@ -114,7 +116,92 @@ class LtiService
      */
     public function getPublicJwks()
     {
-        return JwksEndpoint::fromIssuer($this->database, url('/'))
+        $privateKey = config('lti.private_key');
+        $kid = config('lti.kid');
+
+        if (!$privateKey || !$kid) {
+            throw new \RuntimeException('LTI private key and KID must be configured');
+        }
+
+        return JwksEndpoint::new([$kid => $privateKey])
             ->getPublicJwks();
+    }
+
+    /**
+     * Retrieve members via NRPS service
+     * (Name Role Provisioning Service)
+     */
+    public function getMembers(LtiMessageLaunch $launch)
+    {
+        if (!$launch->hasNrps()) {
+            return []; // Service not available
+        }
+
+        $nrps = $launch->getNrps();
+        return $nrps->getMembers();
+    }
+
+    /**
+     * Submit a grade via AGS service
+     * (Assignments and Grades Service)
+     */
+    public function submitGrade(LtiMessageLaunch $launch, float $score, string $userId)
+    {
+        if (!$launch->hasAgs()) {
+            throw new \Exception('Assignments and Grades service not available');
+        }
+
+        $ags = $launch->getAgs();
+
+        $grade = LtiGrade::new()
+            ->setScoreGiven($score)
+            ->setScoreMaximum(100)
+            ->setUserId($userId)
+            ->setTimestamp(date('c'))
+            ->setActivityProgress('Completed')
+            ->setGradingProgress('FullyGraded');
+
+        return $ags->putGrade($grade);
+    }
+
+
+    /**
+     * Retrieve grades via AGS service
+     * (Assignments and Grades Service)
+     */
+    public function getGrades(LtiMessageLaunch $launch, ?string $userId)
+    {
+        if (!$launch->hasAgs()) {
+            throw new \Exception('Assignments and Grades service not available');
+        }
+
+        $ags = $launch->getAgs();
+        return $ags->getGrades(null, $userId);
+    }
+
+    /**
+     * Retrieve groups via Groups service
+     */
+    public function getGroups(LtiMessageLaunch $launch)
+    {
+        if (!$launch->hasGs()) {
+            return []; // Service not available
+        }
+
+        $gs = $launch->getGs();
+        return $gs->getGroups();
+    }
+
+    /**
+     * Retrieve groups by set via Groups service
+     */
+    public function getGroupsBySet(LtiMessageLaunch $launch)
+    {
+        if (!$launch->hasGs()) {
+            return []; // Service not available
+        }
+
+        $gs = $launch->getGs();
+        return $gs->getGroupsBySet();
     }
 }
