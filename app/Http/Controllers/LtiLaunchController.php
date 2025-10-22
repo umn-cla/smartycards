@@ -28,10 +28,13 @@ class LtiLaunchController extends Controller
                 return redirect()->route('lti.submission_review');
             }
 
-            return redirect()->route('lti.error', [
-                'message' => 'Unknown launch type'
-            ]);
+            throw new LtiException('Unknown launch type');
         } catch (LtiException $e) {
+            // just rethrow in debug mode for easier troubleshooting
+            if (config('app.debug')) {
+                throw $e;
+            }
+
             return redirect()->route('lti.error', [
                 'message' => $e->getMessage()
             ]);
