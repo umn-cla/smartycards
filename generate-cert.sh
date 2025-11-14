@@ -34,11 +34,16 @@ else
 fi
 
 # Generate certificates with mkcert
+# Include default hosts plus any additional hosts passed as arguments
 mkcert -key-file ./.cert/key.pem -cert-file ./.cert/cert.pem \
     'localhost' \
     127.0.0.1 \
     ::1 \
-    "$LOCAL_IP"
+    "$LOCAL_IP" \
+    "$@"
 
 echo "✓ SSL certificates generated in .cert/"
 echo "  Local IP: $LOCAL_IP"
+if [ $# -gt 0 ]; then
+    echo "  Additional hosts: $*"
+fi
