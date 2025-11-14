@@ -182,6 +182,13 @@ const submitSelection = async () => {
       form.appendChild(csrfInput);
     }
 
+    // Add launch ID
+    const launchIdInput = document.createElement('input');
+    launchIdInput.type = 'hidden';
+    launchIdInput.name = 'launch_id';
+    launchIdInput.value = ltiData.launchId;
+    form.appendChild(launchIdInput);
+
     // Add deck selection data
     const deckIdInput = document.createElement('input');
     deckIdInput.type = 'hidden';

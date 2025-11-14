@@ -17,7 +17,7 @@
   <script>
     // Make launch data available to Vue app
     window.ltiDeepLink = {
-      launchId: '{{ session('lti_launch_id') }}',
+      launchId: '{{ $launch_id }}',
       settings: @json($settings)
     };
   </script>
