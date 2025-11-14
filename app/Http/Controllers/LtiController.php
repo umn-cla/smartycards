@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Services\Lti\LtiService;
+use Barryvdh\Debugbar\Facades\Debugbar;
 use Illuminate\Http\Request;
 use Packback\Lti1p3\LtiException;
 
@@ -13,6 +14,10 @@ class LtiController extends Controller
      */
     public function login(Request $request, LtiService $ltiService)
     {
+        info('LTI Login', [
+            'request' => $request->all()
+        ]);
+
         return $ltiService->login(
             $request->all(),
             route('lti.launch')
@@ -24,22 +29,33 @@ class LtiController extends Controller
      */
     public function launch(Request $request, LtiService $ltiService)
     {
+        info('LTI Login', [
+            'request' => $request->all()
+        ]);
+
         try {
             $launch = $ltiService->validateLaunch($request->all());
 
-            // Store launch ID in session for subsequent requests
-            session(['lti_launch_id' => $launch->getLaunchId()]);
+
+            info('LTI launch', [
+                'request' => $request->all(),
+                'launch_id' => $launch->getLaunchId(),
+                'launch' => $launch->getLaunchData()
+            ]);
+
+            // Get launch ID to pass to subsequent requests
+            $launchId = $launch->getLaunchId();
 
             if ($launch->isDeepLinkLaunch()) {
-                return redirect()->route('lti.deep_link');
+                return redirect()->route('lti.deep_link', ['launch_id' => $launchId]);
             }
 
             if ($launch->isResourceLaunch()) {
-                return redirect()->route('lti.resource');
+                return redirect()->route('lti.resource', ['launch_id' => $launchId]);
             }
 
             if ($launch->isSubmissionReviewLaunch()) {
-                return redirect()->route('lti.submission_review');
+                return redirect()->route('lti.submission_review', ['launch_id' => $launchId]);
             }
 
             throw new LtiException('Unknown launch type');
@@ -58,15 +74,25 @@ class LtiController extends Controller
      * Show deep link selection interface
      * Instructors use this to select a deck and configure the assignment
      */
-    public function deepLink(LtiService $ltiService)
+    public function deepLink(Request $request, LtiService $ltiService)
     {
-        $launchId = session('lti_launch_id');
+        Debugbar::info('LTI deep link', ['request' => $request->all()]);
+
+        // Get launch ID from query parameter
+        $launchId = $request->query('launch_id');
+
+        if (!$launchId) {
+            return redirect()->route('lti.error', [
+                'message' => 'No launch ID found. Please try launching again from Canvas.'
+            ]);
+        }
 
         try {
             $launch = $ltiService->getLaunchFromCache($launchId);
 
             return view('lti.deep_link', [
                 'launch' => $launch,
+                'launch_id' => $launchId,
                 'settings' => $launch->getDeepLink()->settings()
             ]);
         } catch (\Exception $e) {
@@ -85,7 +111,14 @@ class LtiController extends Controller
      */
     public function deepLinkResponse(Request $request, LtiService $ltiService)
     {
-        $launchId = session('lti_launch_id');
+        // Get launch ID from request body
+        $launchId = $request->input('launch_id');
+
+        if (!$launchId) {
+            return redirect()->route('lti.error', [
+                'message' => 'No launch ID found. Please try launching again from Canvas.'
+            ]);
+        }
 
         try {
             $response = $ltiService->createDeepLinkResponse($launchId, $request->all());
@@ -109,9 +142,16 @@ class LtiController extends Controller
     /**
      * Handle resource launch (student clicks on assignment)
      */
-    public function resource(LtiService $ltiService)
+    public function resource(Request $request, LtiService $ltiService)
     {
-        $launchId = session('lti_launch_id');
+        // Get launch ID from query parameter
+        $launchId = $request->query('launch_id');
+
+        if (!$launchId) {
+            return redirect()->route('lti.error', [
+                'message' => 'No launch ID found. Please try launching again from Canvas.'
+            ]);
+        }
 
         try {
             $launch = $ltiService->getLaunchFromCache($launchId);
@@ -140,9 +180,16 @@ class LtiController extends Controller
     /**
      * Handle submission review launch (instructor reviews student work)
      */
-    public function submissionReview(LtiService $ltiService)
+    public function submissionReview(Request $request, LtiService $ltiService)
     {
-        $launchId = session('lti_launch_id');
+        // Get launch ID from query parameter
+        $launchId = $request->query('launch_id');
+
+        if (!$launchId) {
+            return redirect()->route('lti.error', [
+                'message' => 'No launch ID found. Please try launching again from Canvas.'
+            ]);
+        }
 
         try {
             $launch = $ltiService->getLaunchFromCache($launchId);
