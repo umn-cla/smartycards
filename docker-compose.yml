@@ -10,6 +10,7 @@ services:
             - SERVER_NAME=${SERVER_NAME:-localhost}
             - SSL_DOMAIN=${SSL_DOMAIN:-localhost}
             - SSL_ALT_NAME=${SSL_ALT_NAME:-DNS:localhost}
+            - VIRTUAL_HOST=${VIRTUAL_HOST:-smartycards.docker}
         volumes:
             - ".cert:/etc/nginx/certs"
             - "./nginx/templates:/etc/nginx/templates"
@@ -27,6 +28,8 @@ services:
         image: sail-8.3/app
         extra_hosts:
             - "host.docker.internal:host-gateway"
+            - "canvas.docker:host-gateway"
+            - "smartycards.docker:host-gateway"
         ports:
             - "${APP_PORT:-8000}:80"
         environment:
