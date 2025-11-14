@@ -38,10 +38,18 @@ class AppServiceProvider extends ServiceProvider
         // Bind service connector for LTI services (AGS, NRPS, Deep Linking)
         $this->app->singleton(ILtiServiceConnector::class, function ($app) {
             $cache = $app->make(ICache::class);
-            $httpClient = new Client([
+
+            $clientConfig = [
                 'timeout' => 30,
                 'connect_timeout' => 10,
-            ]);
+            ];
+
+            // Disable SSL verification in local environment for self-signed certificates
+            if ($app->environment('local')) {
+                $clientConfig['verify'] = false;
+            }
+
+            $httpClient = new Client($clientConfig);
 
             return (new LtiServiceConnector($cache, $httpClient))
                 ->setDebuggingMode(config('app.debug'));
