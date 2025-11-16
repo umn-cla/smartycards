@@ -21,6 +21,13 @@ axios.interceptors.response.use(undefined, async (err: AxiosError) => {
     // that falls out of the range of 2xx
 
     if (err.response.status === 401) {
+      // Don't auto-reload in LTI context - session can't be recovered without re-launch from Canvas
+      if (window.location.pathname.startsWith("/lti")) {
+        window.location.href =
+          "/lti/error?message=Session+expired.+Please+relaunch+from+Canvas.";
+        return;
+      }
+
       // reload page to retrigger server-side auth
       // if we do it server-side, we don't have to worry about the
       // redirect back to the intended page after login
