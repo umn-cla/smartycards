@@ -233,7 +233,8 @@ class LtiService
             'sub' => 'required|string',
             'email' => 'required|email',
             // sis id
-            LtiConstants::LIS . '.person_sourcedid' => 'required|string',
+            // Escape the dots in the URL with backslashes, then use dot notation for nesting
+            'https://purl\.imsglobal\.org/spec/lti/claim/lis.person_sourcedid' => 'required|string',
             'given_name' => 'sometimes|string',
             'family_name' => 'sometimes|string',
         ];
@@ -250,8 +251,8 @@ class LtiService
     {
         $launchData = $launch->getLaunchData();
 
-        $validated = $launchData;
-        // $validated = $this->validateLtiLaunchData($launchData);
+        // $validated = $launchData;
+        $validated = $this->validateLtiLaunchData($launchData);
 
         $ltiSubId = $validated['sub'];
         $ltiSisId = $validated[LtiConstants::LIS]['person_sourcedid'];
