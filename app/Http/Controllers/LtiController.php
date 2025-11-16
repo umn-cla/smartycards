@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\Lti\LtiAuthService;
 use App\Services\Lti\LtiService;
 use Barryvdh\Debugbar\Facades\Debugbar;
 use Illuminate\Http\Request;
@@ -27,7 +28,7 @@ class LtiController extends Controller
     /**
      * Handle LTI launch and route to appropriate handler
      */
-    public function launch(Request $request, LtiService $ltiService)
+    public function launch(Request $request, LtiService $ltiService, LtiAuthService $authService)
     {
         info('LTI Login', [
             'request' => $request->all()
@@ -41,6 +42,15 @@ class LtiController extends Controller
                 'request' => $request->all(),
                 'launch_id' => $launch->getLaunchId(),
                 'launch' => $launch->getLaunchData()
+            ]);
+
+            // Authenticate the user from the LTI launch
+            $user = $authService->authenticateFromLaunch($launch);
+
+            info('LTI user authenticated', [
+                'user_id' => $user->id,
+                'email' => $user->email,
+                'name' => $user->name,
             ]);
 
             // Get launch ID to pass to subsequent requests

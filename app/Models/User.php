@@ -29,6 +29,7 @@ class User extends Authenticatable implements AuditableContract
         'emplid',
         'first_name',
         'last_name',
+        'lti_user_id',
     ];
 
     /**
