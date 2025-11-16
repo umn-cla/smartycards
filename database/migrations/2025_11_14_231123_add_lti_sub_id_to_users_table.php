@@ -12,10 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            // Store LTI user ID (the 'sub' claim from LTI launch)
-            // This is unique per platform, so we'll index it but not make it globally unique
-            // since users could potentially come from multiple LMS platforms
-            $table->string('lti_user_id')->nullable()->index()->after('umndid');
+            // the 'sub' claim (subject) from LTI launch
+            // a stable uuid from Canvas for the user
+            $table->string('lti_sub_id')->nullable()->unique()->after('emplid');
         });
     }
 
@@ -25,7 +24,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('lti_user_id');
+            $table->dropColumn('lti_sub_id');
         });
     }
 };
