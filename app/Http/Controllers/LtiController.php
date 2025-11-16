@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Services\Lti\LtiAuthService;
 use App\Services\Lti\LtiService;
 use Barryvdh\Debugbar\Facades\Debugbar;
 use Illuminate\Http\Request;
@@ -15,7 +14,7 @@ class LtiController extends Controller
      */
     public function login(Request $request, LtiService $ltiService)
     {
-        info('LTI Login', [
+        debug('LTI Login', [
             'request' => $request->all()
         ]);
 
@@ -28,26 +27,24 @@ class LtiController extends Controller
     /**
      * Handle LTI launch and route to appropriate handler
      */
-    public function launch(Request $request, LtiService $ltiService, LtiAuthService $authService)
+    public function launch(Request $request, LtiService $ltiService)
     {
-        info('LTI Login', [
+        debug('LTI Login', [
             'request' => $request->all()
         ]);
 
         try {
             $launch = $ltiService->validateLaunch($request->all());
 
-
-            info('LTI launch', [
-                'request' => $request->all(),
+            debug('LTI launch', [
                 'launch_id' => $launch->getLaunchId(),
                 'launch' => $launch->getLaunchData()
             ]);
 
             // Authenticate the user from the LTI launch
-            $user = $authService->authenticateFromLaunch($launch);
+            $user = $ltiService->authenticateFromLaunch($launch);
 
-            info('LTI user authenticated', [
+            debug('LTI user authenticated', [
                 'user_id' => $user->id,
                 'email' => $user->email,
                 'name' => $user->name,
@@ -86,7 +83,7 @@ class LtiController extends Controller
      */
     public function deepLink(Request $request, LtiService $ltiService)
     {
-        Debugbar::info('LTI deep link', ['request' => $request->all()]);
+        debug('LTI deep link', ['request' => $request->all()]);
 
         // Get launch ID from query parameter
         $launchId = $request->query('launch_id');

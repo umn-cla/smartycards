@@ -2,6 +2,11 @@
 
 namespace App\Services\Lti;
 
+use App\Models\User;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Validator;
 use Packback\Lti1p3\DeepLinkResources\Resource;
 use Packback\Lti1p3\Interfaces\IDatabase;
 use Packback\Lti1p3\Interfaces\ICache;
@@ -12,6 +17,7 @@ use Packback\Lti1p3\LtiException;
 use Packback\Lti1p3\LtiGrade;
 use Packback\Lti1p3\LtiMessageLaunch;
 use Packback\Lti1p3\LtiOidcLogin;
+use Packback\Lti1p3\LtiConstants;
 
 class LtiService
 {
@@ -211,5 +217,87 @@ class LtiService
 
         $gs = $launch->getGs();
         return $gs->getGroupsBySet();
+    }
+
+    /**
+     * Validates that LTI Launch data contains everything
+     * we expect to create or authenticate a user
+     * @param array $launchData
+     * @return array - validated data
+     * @throws \Illuminate\Validation\ValidationException
+     */
+    private function validateLtiLaunchData(array $launchData): array
+    {
+        // Basic validation rules for LTI launch
+        $rules = [
+            'sub' => 'required|string',
+            'email' => 'required|email',
+            // sis id
+            LtiConstants::LIS . '.person_sourcedid' => 'required|string',
+            'given_name' => 'sometimes|string',
+            'family_name' => 'sometimes|string',
+        ];
+
+        // Laravel will throw if invalid
+        return Validator::make($launchData, $rules)->validate();
+    }
+
+    /**
+     * Authenticate a user from an LTI launch
+     * Creates a new user if one doesn't exist
+     */
+    public function authenticateFromLaunch(LtiMessageLaunch $launch): User
+    {
+        $launchData = $launch->getLaunchData();
+
+        $validated = $launchData;
+        // $validated = $this->validateLtiLaunchData($launchData);
+
+        $ltiSubId = $validated['sub'];
+        $ltiSisId = $validated[LtiConstants::LIS]['person_sourcedid'];
+        $ltiEmail = $validated['email'];
+        $ltiFirstName = $validated['given_name'] ?? '';
+        $ltiLastName = $validated['family_name'] ?? '';
+
+        // CASE 1: User has launched before.
+        // - they exist in the db
+        // - they have a subject id associated with their user
+        $user = User::where('lti_sub_id', $ltiSubId)->first();
+
+        // CASE 2: User has an account, but hasn't launched before.
+        // - they exist in the db
+        // - they do NOT have a subject id associated with their user
+        if (!$user) {
+            $user = User::where('emplid', $ltiSisId)->first();
+        }
+
+        // CASE 3: User does not exist at all.
+        if (!$user) {
+            // create new user
+            $user = User::create([
+                'lti_sub_id' => $ltiSubId,
+                'emplid' => $ltiSisId,
+                'umndid' => explode('@', $ltiEmail)[0],
+                'email' => $ltiEmail,
+                'first_name' => $ltiFirstName,
+                'last_name' => $ltiLastName,
+                // TODO: remove distinct name field
+                'name'  => trim($ltiFirstName . ' ' . $ltiLastName),
+                'password' => Hash::make(Str::random(32)), // random password
+            ]);
+        } else {
+            // and update user info if any fields are null
+            $user->update([
+                'email' => $user->email ?? $ltiEmail,
+                'first_name' => $user->first_name ?? $ltiFirstName,
+                'last_name' => $user->last_name ?? $ltiLastName,
+                'emplid' => $user->emplid ?? $ltiSisId,
+                'lti_sub_id' => $user->lti_sub_id ?? $ltiSubId,
+            ]);
+        }
+
+        // Log the user in
+        Auth::login($user);
+        return $user;
     }
 }
