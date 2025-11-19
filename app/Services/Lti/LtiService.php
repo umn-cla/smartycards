@@ -51,7 +51,7 @@ class LtiService
     /**
      * Handle and validate the LTI message launch
      */
-    public function validateLaunch(array $request)
+    public function validateAndCacheLaunch(array $request)
     {
         $launch = LtiMessageLaunch::new(
             $this->database,
@@ -61,6 +61,7 @@ class LtiService
         );
 
         try {
+            // initialize will validate and cache the launch
             return $launch->initialize($request);
         } catch (LtiException $e) {
             // something?
