@@ -22,6 +22,6 @@ server {
         proxy_set_header X-Forwarded-Proto $scheme;
         proxy_set_header X-Forwarded-Host $host;
         proxy_set_header X-Forwarded-Port $server_port;
-        proxy_pass	http://${APP_SERVICE};
+        proxy_pass	http://app;
     }
 }
