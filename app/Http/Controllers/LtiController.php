@@ -34,7 +34,7 @@ class LtiController extends Controller
         ]);
 
         try {
-            $launch = $ltiService->validateLaunch($request->all());
+            $launch = $ltiService->validateAndCacheLaunch($request->all());
 
             debug('LTI launch', [
                 'launch_id' => $launch->getLaunchId(),
