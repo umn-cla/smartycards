@@ -21,7 +21,7 @@ return [
     ],
     'register_routes' => true,
     'authenticated' => env('SHIB_REDIRECT_URI', '/dashboard'),
-    'authfield' => 'umndid',
+    'authfield' => env('SHIB_AUTH_FIELD', 'emplid'),
     /*
     |--------------------------------------------------------------------------
     | Emulate an IdP
