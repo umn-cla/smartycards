@@ -278,7 +278,7 @@ class LtiService
             $user = User::create([
                 'lti_sub_id' => $ltiSubId,
                 'emplid' => $ltiSisId,
-                'umndid' => explode('@', $ltiEmail)[0],
+                // umndid is nullable - not available from LMS
                 'email' => $ltiEmail,
                 'first_name' => $ltiFirstName,
                 'last_name' => $ltiLastName,
