@@ -16,7 +16,8 @@
 
   <script>
     // Make launch data available to Vue app
-    window.ltiDeepLink = {
+    window.SmartyCards = window.SmartyCards || {};
+    window.SmartyCards.ltiDeepLink = {
       launchId: '{{ $launch_id }}',
       settings: @json($settings)
     };

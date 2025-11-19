@@ -7,6 +7,12 @@ import type { RouteLocationRaw } from "vue-router";
 declare global {
   interface Window {
     katex: unknown;
+    SmartyCards: {
+      ltiDeepLink?: {
+        launchId: string;
+        settings?: Record<string, unknown>;
+      };
+    };
   }
 }
 
