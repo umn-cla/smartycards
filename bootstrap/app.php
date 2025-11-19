@@ -4,6 +4,7 @@ use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Sentry\Laravel\Integration;
+use Illuminate\Http\Request;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -24,7 +25,11 @@ return Application::configure(basePath: dirname(__DIR__))
         // if in development environment, trust proxies since https terminates
         // at nginx in sail
         if (env('APP_ENV') === 'local') {
-            $middleware->trustProxies(at: '*');
+            $middleware->trustProxies(at: '*', headers: Request::HEADER_X_FORWARDED_FOR |
+                Request::HEADER_X_FORWARDED_HOST |
+                Request::HEADER_X_FORWARDED_PORT |
+                Request::HEADER_X_FORWARDED_PROTO |
+                Request::HEADER_X_FORWARDED_AWS_ELB);
         }
     })
     ->withExceptions(function (Exceptions $exceptions) {
