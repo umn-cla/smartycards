@@ -37,7 +37,10 @@
             {{ deck.name }} ({{ deck.cards_count }} cards)
           </SelectOption>
         </SimpleSelect>
-        <p v-if="!decks || decks.length === 0" class="text-sm text-gray-500 mt-1">
+        <p
+          v-if="!decks || decks.length === 0"
+          class="text-sm text-gray-500 mt-1"
+        >
           No decks available. Create a deck first.
         </p>
       </div>
@@ -73,7 +76,7 @@
           <button
             @click="submitSelection"
             :disabled="isSubmitting"
-            class="flex-1 bg-brand-teal-600 text-white py-2 px-4 rounded-md text-sm font-semibold hover:bg-brand-teal-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            class="flex-1 bg-brand-teal-600 text-white py-2 px-4 rounded-md text-sm font-semibold bg-brand-teal-700 hover:bg-brand-teal-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             {{ isSubmitting ? "Creating..." : "Create Assignment" }}
           </button>
