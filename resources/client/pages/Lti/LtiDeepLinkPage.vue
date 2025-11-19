@@ -1,171 +1,139 @@
 <template>
-  <div class="min-h-screen bg-gray-50">
-    <div class="max-w-4xl mx-auto py-8 px-4">
-      <header class="mb-8">
-        <h1 class="text-3xl font-bold text-brand-maroon-800 mb-2">
-          Select a Deck for Your Assignment
-        </h1>
-        <p class="text-gray-600">
-          Choose a deck that students will practice. You can configure
-          additional settings after selecting a deck.
-        </p>
-      </header>
+  <div class="p-4 max-w-2xl mx-auto">
+    <h1 class="text-xl font-bold text-brand-maroon-800 mb-4">
+      Create Assignment
+    </h1>
 
-      <div v-if="isLoadingDecks" class="text-center py-12">
-        <div
-          class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-brand-maroon-800"
-        ></div>
-        <p class="mt-4 text-gray-600">Loading your decks...</p>
-      </div>
-
+    <div v-if="isLoadingDecks" class="text-center py-6">
       <div
-        v-else-if="error"
-        class="bg-red-50 border border-red-200 rounded-lg p-4"
-      >
-        <p class="text-red-800">Error loading decks: {{ error }}</p>
+        class="inline-block animate-spin rounded-full h-6 w-6 border-b-2 border-brand-maroon-800"
+      ></div>
+      <p class="mt-2 text-sm text-gray-600">Loading decks...</p>
+    </div>
+
+    <div
+      v-else-if="error"
+      class="bg-red-50 border border-red-200 rounded-lg p-3 mb-4"
+    >
+      <p class="text-sm text-red-800">Error loading decks: {{ error }}</p>
+    </div>
+
+    <div v-else class="space-y-4">
+      <!-- Deck Selection -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">
+          Select Deck
+        </label>
+        <SimpleSelect
+          v-model="selectedDeckId"
+          placeholder="Choose a deck"
+          class="!w-full"
+        >
+          <SelectOption
+            v-for="deck in decks"
+            :key="deck.id"
+            :value="deck.id.toString()"
+          >
+            {{ deck.name }} ({{ deck.cards_count }} cards)
+          </SelectOption>
+        </SimpleSelect>
+        <p v-if="!decks || decks.length === 0" class="text-sm text-gray-500 mt-1">
+          No decks available. Create a deck first.
+        </p>
       </div>
 
-      <div v-else>
-        <!-- Search/Filter -->
-        <div class="mb-6">
+      <!-- Configuration (only shown when deck selected) -->
+      <template v-if="selectedDeckId">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">
+            Assignment Title
+          </label>
           <input
-            v-model="searchQuery"
+            v-model="config.title"
             type="text"
-            placeholder="Search decks..."
-            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-teal-500 focus:border-transparent"
+            class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-brand-teal-500 focus:border-transparent"
+            placeholder="e.g., Week 1 Vocabulary Practice"
           />
         </div>
 
-        <!-- Deck List -->
-        <div
-          v-if="filteredDecks.length === 0"
-          class="text-center py-12 bg-white rounded-lg border border-gray-200"
-        >
-          <p class="text-gray-600">
-            No decks found. Create a deck first before setting up an LTI
-            assignment.
-          </p>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">
+            Description (optional)
+          </label>
+          <textarea
+            v-model="config.description"
+            rows="2"
+            class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-brand-teal-500 focus:border-transparent"
+            placeholder="Brief description"
+          ></textarea>
         </div>
 
-        <div v-else class="space-y-3">
-          <button
-            v-for="deck in filteredDecks"
-            :key="deck.id"
-            @click="selectDeck(deck)"
-            :class="[
-              'w-full text-left p-4 rounded-lg border-2 transition-all',
-              selectedDeck?.id === deck.id
-                ? 'border-brand-teal-500 bg-brand-teal-50'
-                : 'border-gray-200 bg-white hover:border-brand-teal-300 hover:bg-gray-50',
-            ]"
-          >
-            <div class="flex items-start justify-between">
-              <div class="flex-1">
-                <h3 class="font-semibold text-lg text-gray-900">
-                  {{ deck.name }}
-                </h3>
-                <p v-if="deck.description" class="text-gray-600 text-sm mt-1">
-                  {{ deck.description }}
-                </p>
-                <div class="flex gap-4 mt-2 text-sm text-gray-500">
-                  <span>{{ deck.cards_count }} cards</span>
-                  <span
-                    v-if="deck.current_user_role === T.MembershipRole.EDITOR"
-                    class="text-brand-teal-600"
-                    >Shared with you</span
-                  >
-                </div>
-              </div>
-              <div
-                v-if="selectedDeck?.id === deck.id"
-                class="ml-4 flex-shrink-0"
-              >
-                <svg
-                  class="w-6 h-6 text-brand-teal-600"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path
-                    fill-rule="evenodd"
-                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                    clip-rule="evenodd"
-                  />
-                </svg>
-              </div>
-            </div>
-          </button>
-        </div>
-
-        <!-- Configuration Options -->
-        <div
-          v-if="selectedDeck"
-          class="mt-8 bg-white rounded-lg border border-gray-200 p-6"
-        >
-          <h2 class="text-xl font-semibold text-gray-900 mb-4">
-            Assignment Configuration
-          </h2>
-
-          <div class="space-y-4">
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-2">
-                Assignment Title
-              </label>
-              <input
-                v-model="config.title"
-                type="text"
-                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-teal-500 focus:border-transparent"
-                placeholder="e.g., Week 1 Vocabulary Practice"
-              />
-            </div>
-
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-2">
-                Description (optional)
-              </label>
-              <textarea
-                v-model="config.description"
-                rows="3"
-                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-teal-500 focus:border-transparent"
-                placeholder="Brief description of what students should focus on"
-              ></textarea>
-            </div>
-          </div>
-        </div>
-
-        <!-- Submit Button -->
-        <div v-if="selectedDeck" class="mt-6 flex gap-3">
+        <!-- Action Buttons -->
+        <div class="flex gap-2 pt-2">
           <button
             @click="submitSelection"
             :disabled="isSubmitting"
-            class="flex-1 bg-brand-teal-600 text-white py-3 px-6 rounded-lg font-semibold bg-brand-teal-700 hover:bg-brand-teal-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            class="flex-1 bg-brand-teal-600 text-white py-2 px-4 rounded-md text-sm font-semibold hover:bg-brand-teal-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
-            {{ isSubmitting ? "Creating Assignment..." : "Create Assignment" }}
+            {{ isSubmitting ? "Creating..." : "Create Assignment" }}
           </button>
           <button
             @click="cancel"
             :disabled="isSubmitting"
-            class="px-6 py-3 border border-gray-300 rounded-lg font-semibold hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            class="px-4 py-2 border border-gray-300 rounded-md text-sm font-semibold hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             Cancel
           </button>
         </div>
-      </div>
+      </template>
     </div>
+
+    <!-- Hidden form for LTI deep link submission -->
+    <!-- This form is used to POST the deck selection back to Canvas via the LTI Deep Linking protocol.
+         The backend will generate a signed JWT and auto-submit it back to the LMS. -->
+    <form
+      ref="ltiFormRef"
+      method="POST"
+      action="/lti/deep-link/response"
+      style="display: none"
+    >
+      <input type="hidden" name="_token" :value="csrfToken" />
+      <input type="hidden" name="launch_id" :value="ltiData.launchId" />
+      <input
+        type="hidden"
+        name="deck_id"
+        :value="selectedDeck?.id.toString()"
+      />
+      <input
+        type="hidden"
+        name="title"
+        :value="config.title || `Practice: ${selectedDeck?.name}`"
+      />
+      <input
+        v-if="config.description"
+        type="hidden"
+        name="description"
+        :value="config.description"
+      />
+    </form>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from "vue";
+import { ref, computed, watch } from "vue";
 import { useAllDecksQuery } from "@/queries/decks";
-import * as T from "@/types";
+import { SimpleSelect, SelectOption } from "@/components/SimpleSelect";
 
 // Get LTI launch data from window
-const ltiData = (window as any).ltiDeepLink;
+const ltiData = window.SmartyCards.ltiDeepLink;
+
+if (!ltiData) {
+  throw new Error("LTI deep link data not found");
+}
 
 const { data: decks, isLoading: isLoadingDecks, error } = useAllDecksQuery();
 
-const searchQuery = ref("");
-const selectedDeck = ref<T.Deck | null>(null);
+const selectedDeckId = ref<string | null>(null);
 const isSubmitting = ref(false);
 
 const config = ref({
@@ -173,88 +141,32 @@ const config = ref({
   description: "",
 });
 
-const filteredDecks = computed(() => {
-  if (!decks.value) return [];
-
-  const query = searchQuery.value.toLowerCase();
-  if (!query) return decks.value;
-
-  return decks.value.filter(
-    (deck) =>
-      deck.name.toLowerCase().includes(query) ||
-      deck.description?.toLowerCase().includes(query),
+const selectedDeck = computed(() => {
+  if (!selectedDeckId.value || !decks.value) return null;
+  return (
+    decks.value.find((d) => d.id.toString() === selectedDeckId.value) || null
   );
 });
 
-const selectDeck = (deck: T.Deck) => {
-  selectedDeck.value = deck;
-
-  // Set default title if not already set
-  if (!config.value.title) {
+// Set default title when deck is selected
+watch(selectedDeck, (deck) => {
+  if (deck && !config.value.title) {
     config.value.title = `Practice: ${deck.name}`;
   }
-};
+});
 
-const submitSelection = async () => {
-  if (!selectedDeck.value) return;
+const ltiFormRef = ref<HTMLFormElement | null>(null);
+const csrfToken =
+  document.querySelector('meta[name="csrf-token"]')?.getAttribute("content") ||
+  "";
+
+const submitSelection = () => {
+  if (!selectedDeck.value || !ltiFormRef.value) return;
 
   isSubmitting.value = true;
-
-  try {
-    // Create a form and submit to the deep link response endpoint
-    const form = document.createElement("form");
-    form.method = "POST";
-    form.action = "/lti/deep-link/response";
-
-    // Add CSRF token
-    const csrfToken = document
-      .querySelector('meta[name="csrf-token"]')
-      ?.getAttribute("content");
-    if (csrfToken) {
-      const csrfInput = document.createElement("input");
-      csrfInput.type = "hidden";
-      csrfInput.name = "_token";
-      csrfInput.value = csrfToken;
-      form.appendChild(csrfInput);
-    }
-
-    // Add launch ID
-    const launchIdInput = document.createElement("input");
-    launchIdInput.type = "hidden";
-    launchIdInput.name = "launch_id";
-    launchIdInput.value = ltiData.launchId;
-    form.appendChild(launchIdInput);
-
-    // Add deck selection data
-    const deckIdInput = document.createElement("input");
-    deckIdInput.type = "hidden";
-    deckIdInput.name = "deck_id";
-    deckIdInput.value = selectedDeck.value.id.toString();
-    form.appendChild(deckIdInput);
-
-    // Add configuration
-    const titleInput = document.createElement("input");
-    titleInput.type = "hidden";
-    titleInput.name = "title";
-    titleInput.value =
-      config.value.title || `Practice: ${selectedDeck.value.name}`;
-    form.appendChild(titleInput);
-
-    if (config.value.description) {
-      const descInput = document.createElement("input");
-      descInput.type = "hidden";
-      descInput.name = "description";
-      descInput.value = config.value.description;
-      form.appendChild(descInput);
-    }
-
-    document.body.appendChild(form);
-    form.submit();
-  } catch (err) {
-    console.error("Error submitting selection:", err);
-    alert("An error occurred. Please try again.");
-    isSubmitting.value = false;
-  }
+  // Submit the hidden form - this performs a full page POST to the backend
+  // which generates a signed JWT for the LTI Deep Linking response
+  ltiFormRef.value.submit();
 };
 
 const cancel = () => {
