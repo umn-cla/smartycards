@@ -2,13 +2,22 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Deck;
+use App\Models\DeckMembership;
 use App\Services\Lti\LtiService;
 use Barryvdh\Debugbar\Facades\Debugbar;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Packback\Lti1p3\LtiException;
+use Packback\Lti1p3\LtiConstants;
+use Packback\Lti1p3\LtiMessageLaunch;
 
 class LtiController extends Controller
 {
+    const DECK_PRACTICE_ACTIVITY = 'practice';
+    const DECk_QUIZ_ACTIVITY = 'quiz';
+    const DECK_MATCHING_ACTIVITY = 'matching';
+
     /**
      * Handle OIDC login initiation from LMS
      */
@@ -53,10 +62,12 @@ class LtiController extends Controller
             // Get launch ID to pass to subsequent requests
             $launchId = $launch->getLaunchId();
 
+            // faculty set up assignment
             if ($launch->isDeepLinkLaunch()) {
                 return redirect()->route('lti.deep_link', ['launch_id' => $launchId]);
             }
 
+            // student (or faculty) launches assignment
             if ($launch->isResourceLaunch()) {
                 return redirect()->route('lti.resource', ['launch_id' => $launchId]);
             }
@@ -147,13 +158,41 @@ class LtiController extends Controller
     }
 
     /**
+     * Gets a list of user roles from LTI launch
+     *
+     * @param mixed $launch The LTI launch object
+     * @return array List of roles (URIs) like
+     * "http://purl.imsglobal.org/vocab/lis/v2/membership#Instructor"
+     */
+    private function getRolesFromLaunch(LtiMessageLaunch $launch): array
+    {
+        $launchData = $launch->getLaunchData();
+        return $launchData[LtiConstants::ROLES] ?? [];
+    }
+
+    private function doesLaunchUserHaveStaffRole(LtiMessageLaunch $launch)
+    {
+        $editorRoles = [
+            LtiConstants::INSTITUTION_ADMINISTRATOR,
+            LtiConstants::MEMBERSHIP_INSTRUCTOR,
+            LtiConstants::MEMBERSHIP_TA,
+            LtiConstants::MEMBERSHIP_CONTENTDEVELOPER,
+        ];
+
+        $roles = $this->getRolesFromLaunch($launch);
+
+        return !empty(array_intersect($roles, $editorRoles));
+    }
+
+    /**
      * Handle resource launch (student clicks on assignment)
      */
     public function resource(Request $request, LtiService $ltiService)
     {
+        $user = Auth::user();
+
         // Get launch ID from query parameter
         $launchId = $request->query('launch_id');
-
         if (!$launchId) {
             return redirect()->route('lti.error', [
                 'message' => 'No launch ID found. Please try launching again from Canvas.'
@@ -162,17 +201,21 @@ class LtiController extends Controller
 
         try {
             $launch = $ltiService->getLaunchFromCache($launchId);
+            $launchData = $launch->getLaunchData();
 
             // Get the custom parameters set during deep linking
-            $customParams = $launch->getLaunchData()['https://purl.imsglobal.org/spec/lti/claim/custom'] ?? [];
+            $customParams = $launchData[LtiConstants::CUSTOM] ?? [];
             $deckId = $customParams['deck_id'] ?? null;
+            $deckActivity = $customParams['deck_activity'] ?? self::DECK_PRACTICE_ACTIVITY;
 
-            if (!$deckId) {
-                throw new \Exception('No deck configured for this assignment');
-            }
+            $deck = Deck::findOrFail($deckId);
+            $membershipRole = $this->doesLaunchUserHaveStaffRole($launch)
+                ? DeckMembership::ROLE_EDITOR
+                : DeckMembership::ROLE_VIEWER;
 
-            // Redirect to the Vue app with the deck
-            return redirect("/practice/{$deckId}?lti_launch_id={$launchId}");
+            $deck->addOrPromoteUserToRole($user, $membershipRole);
+
+            return redirect("/decks/{$deckId}/activities/{$deckActivity}/embed?lti_launch_id={$launchId}");
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 throw $e;

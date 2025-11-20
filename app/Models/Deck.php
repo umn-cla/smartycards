@@ -223,4 +223,28 @@ class Deck extends Model implements AuditableContract
             'current_user_xp' => $this->userXP(Auth::user()),
         ];
     }
+
+    public function addOrPromoteUserToRole(User $user, string $membershipRole): void
+    {
+        if (!DeckMembership::isValidRole($membershipRole)) {
+            throw new \InvalidArgumentException("Invalid membership role: {$membershipRole}");
+        }
+
+        $membership = $this->memberships()->firstOrNew(
+            ['user_id' => $user->id]
+        );
+
+        $isNew = !$membership->exists;
+
+        if ($isNew) {
+            $membership->role = $membershipRole;
+            $membership->save();
+            return;
+        }
+
+        if ($membership->isRoleAPromotion($membershipRole)) {
+            $membership->role = $membershipRole;
+            $membership->save();
+        }
+    }
 }

@@ -30,6 +30,15 @@ class DeckMembership extends Model implements AuditableContract
         'has_matching_activity' => 'boolean',
     ];
 
+    public static function isValidRole($role)
+    {
+        return in_array($role, [
+            self::ROLE_OWNER,
+            self::ROLE_EDITOR,
+            self::ROLE_VIEWER,
+        ]);
+    }
+
     public function deck()
     {
         return $this->belongsTo(Deck::class);
