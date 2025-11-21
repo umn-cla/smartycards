@@ -217,23 +217,15 @@ class LtiService
             throw new \Exception('Missing required LTI claims for grade submission');
         }
 
-        $platform = LtiPlatform::findByIssuer($issuer);
-        if (!$platform) {
-            throw new \Exception("Platform not found for issuer: {$issuer}");
-        }
+        $platform = LtiPlatform::where('issuer', $issuer)->firstOrFail();
 
-        $deployment = $platform->deployments()->where('deployment_id', $deploymentId)->first();
-        if (!$deployment) {
-            throw new \Exception("Deployment not found: {$deploymentId}");
-        }
+        $deployment = $platform->deployments()
+            ->where('deployment_id', $deploymentId)
+            ->firstOrFail();
 
         $resourceLink = LtiResourceLink::where('lti_deployment_id', $deployment->id)
             ->where('resource_link_id', $resourceLinkId)
-            ->first();
-
-        if (!$resourceLink) {
-            throw new \Exception("Resource link not found: {$resourceLinkId}");
-        }
+            ->firstOrFail();
 
         // Prepare grade object.
         $grade = LtiGrade::new()
@@ -391,18 +383,11 @@ class LtiService
         }
 
         // Find the deployment
-        $platform = \App\Models\LtiPlatform::findByIssuer($issuer);
-        if (!$platform) {
-            throw new LtiException("Platform not found for issuer: {$issuer}");
-        }
+        $platform = LtiPlatform::where('issuer', $issuer)->firstOrFail();
 
         $deployment = $platform->deployments()
             ->where('deployment_id', $deploymentId)
-            ->first();
-
-        if (!$deployment) {
-            throw new LtiException("Deployment not found: {$deploymentId}");
-        }
+            ->firstOrFail();
 
         // Get resource link ID
         $resourceLinkClaim = $launchData[LtiConstants::RESOURCE_LINK] ?? [];

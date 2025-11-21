@@ -5,7 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Deck;
 use App\Models\DeckMembership;
 use App\Services\Lti\LtiService;
-use Barryvdh\Debugbar\Facades\Debugbar;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Packback\Lti1p3\LtiException;
@@ -18,10 +19,23 @@ class LtiController extends Controller
     const DECk_QUIZ_ACTIVITY = 'quiz';
     const DECK_MATCHING_ACTIVITY = 'matching';
 
+    const MISSING_LAUNCH_ID_MESSAGE = 'No launch ID found. Please try launching again from Canvas.';
+
+    private function handleException(\Exception $e): RedirectResponse
+    {
+        if (config('app.debug')) {
+            throw $e;
+        }
+
+        return redirect()->route('lti.error', [
+            'message' => $e->getMessage()
+        ]);
+    }
+
     /**
      * Handle OIDC login initiation from LMS
      */
-    public function login(Request $request, LtiService $ltiService)
+    public function login(Request $request, LtiService $ltiService): RedirectResponse
     {
         debug('LTI Login', [
             'request' => $request->all()
@@ -36,7 +50,7 @@ class LtiController extends Controller
     /**
      * Handle LTI launch and route to appropriate handler
      */
-    public function launch(Request $request, LtiService $ltiService)
+    public function launch(Request $request, LtiService $ltiService): RedirectResponse
     {
         debug('LTI Login', [
             'request' => $request->all()
@@ -78,13 +92,7 @@ class LtiController extends Controller
 
             throw new LtiException('Unknown launch type');
         } catch (LtiException $e) {
-            if (config('app.debug')) {
-                throw $e;
-            }
-
-            return redirect()->route('lti.error', [
-                'message' => $e->getMessage()
-            ]);
+            return $this->handleException($e);
         }
     }
 
@@ -92,17 +100,13 @@ class LtiController extends Controller
      * Show deep link selection interface
      * Instructors use this to select a deck and configure the assignment
      */
-    public function deepLink(Request $request, LtiService $ltiService)
+    public function deepLink(Request $request, LtiService $ltiService): View|RedirectResponse
     {
         debug('LTI deep link', ['request' => $request->all()]);
 
-        // Get launch ID from query parameter
         $launchId = $request->query('launch_id');
-
         if (!$launchId) {
-            return redirect()->route('lti.error', [
-                'message' => 'No launch ID found. Please try launching again from Canvas.'
-            ]);
+            return $this->handleException(new LtiException(self::MISSING_LAUNCH_ID_MESSAGE));
         }
 
         try {
@@ -114,28 +118,18 @@ class LtiController extends Controller
                 'settings' => $launch->getDeepLink()->settings()
             ]);
         } catch (\Exception $e) {
-            if (config('app.debug')) {
-                throw $e;
-            }
-
-            return redirect()->route('lti.error', [
-                'message' => $e->getMessage()
-            ]);
+            return $this->handleException($e);
         }
     }
 
     /**
      * Handle deep link selection submission and return to LMS
      */
-    public function deepLinkResponse(Request $request, LtiService $ltiService)
+    public function deepLinkResponse(Request $request, LtiService $ltiService): View|RedirectResponse
     {
-        // Get launch ID from request body
         $launchId = $request->input('launch_id');
-
         if (!$launchId) {
-            return redirect()->route('lti.error', [
-                'message' => 'No launch ID found. Please try launching again from Canvas.'
-            ]);
+            return $this->handleException(new LtiException(self::MISSING_LAUNCH_ID_MESSAGE));
         }
 
         try {
@@ -147,13 +141,7 @@ class LtiController extends Controller
                 'return_url' => $response['return_url']
             ]);
         } catch (\Exception $e) {
-            if (config('app.debug')) {
-                throw $e;
-            }
-
-            return redirect()->route('lti.error', [
-                'message' => $e->getMessage()
-            ]);
+            return $this->handleException($e);
         }
     }
 
@@ -170,7 +158,7 @@ class LtiController extends Controller
         return $launchData[LtiConstants::ROLES] ?? [];
     }
 
-    private function doesLaunchUserHaveStaffRole(LtiMessageLaunch $launch)
+    private function doesLaunchUserHaveStaffRole(LtiMessageLaunch $launch): bool
     {
         $editorRoles = [
             LtiConstants::INSTITUTION_ADMINISTRATOR,
@@ -187,19 +175,15 @@ class LtiController extends Controller
     /**
      * Handle resource launch (student clicks on assignment)
      */
-    public function resource(Request $request, LtiService $ltiService)
+    public function resource(Request $request, LtiService $ltiService): RedirectResponse
     {
-        $user = Auth::user();
-
-        // Get launch ID from query parameter
         $launchId = $request->query('launch_id');
         if (!$launchId) {
-            return redirect()->route('lti.error', [
-                'message' => 'No launch ID found. Please try launching again from Canvas.'
-            ]);
+            return $this->handleException(new LtiException(self::MISSING_LAUNCH_ID_MESSAGE));
         }
 
         try {
+            $user = Auth::user();
             $launch = $ltiService->getLaunchFromCache($launchId);
             $launchData = $launch->getLaunchData();
 
@@ -220,28 +204,18 @@ class LtiController extends Controller
 
             return redirect("/decks/{$deckId}/activities/{$deckActivity}/embed?lti_launch_id={$launchId}");
         } catch (\Exception $e) {
-            if (config('app.debug')) {
-                throw $e;
-            }
-
-            return redirect()->route('lti.error', [
-                'message' => $e->getMessage()
-            ]);
+            return $this->handleException($e);
         }
     }
 
     /**
      * Handle submission review launch (instructor reviews student work)
      */
-    public function submissionReview(Request $request, LtiService $ltiService)
+    public function submissionReview(Request $request, LtiService $ltiService): View|RedirectResponse
     {
-        // Get launch ID from query parameter
         $launchId = $request->query('launch_id');
-
         if (!$launchId) {
-            return redirect()->route('lti.error', [
-                'message' => 'No launch ID found. Please try launching again from Canvas.'
-            ]);
+            return $this->handleException(new LtiException(self::MISSING_LAUNCH_ID_MESSAGE));
         }
 
         try {
@@ -250,26 +224,19 @@ class LtiController extends Controller
             // Get user ID being reviewed
             $forUser = $launch->getLaunchData()['https://purl.imsglobal.org/spec/lti/claim/for_user'] ?? null;
 
-            // Redirect to appropriate review interface
             return view('lti.submission_review', [
                 'launch' => $launch,
                 'for_user' => $forUser
             ]);
         } catch (\Exception $e) {
-            if (config('app.debug')) {
-                throw $e;
-            }
-
-            return redirect()->route('lti.error', [
-                'message' => $e->getMessage()
-            ]);
+            return $this->handleException($e);
         }
     }
 
     /**
      * Display LTI error page
      */
-    public function error(Request $request)
+    public function error(Request $request): View
     {
         $message = $request->input('message', 'An error occurred during LTI authentication');
 
