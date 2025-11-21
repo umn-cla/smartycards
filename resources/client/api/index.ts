@@ -369,11 +369,13 @@ export async function createDeckActivityEvent({
   activityType,
   correctCount,
   totalCount,
+  ltiLaunchId,
 }: {
   deckId: T.Deck["id"];
   activityType: T.ActivityTypeName;
   correctCount: number;
   totalCount: number;
+  ltiLaunchId?: string | null;
 }) {
   const res = await axios.post<T.ActivityEvent>(
     `/decks/${deckId}/activity-events`,
@@ -381,6 +383,7 @@ export async function createDeckActivityEvent({
       activity_type_name: activityType,
       correct_count: correctCount,
       total_count: totalCount,
+      lti_launch_id: ltiLaunchId,
     },
   );
   return res.data;
