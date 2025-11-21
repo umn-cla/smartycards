@@ -215,6 +215,9 @@ class LtiController extends Controller
 
             $deck->addOrPromoteUserToRole($user, $membershipRole);
 
+            // Create or update the LTI resource link with AGS endpoints
+            $ltiService->createOrUpdateResourceLink($launch, $deckId);
+
             return redirect("/decks/{$deckId}/activities/{$deckActivity}/embed?lti_launch_id={$launchId}");
         } catch (\Exception $e) {
             if (config('app.debug')) {

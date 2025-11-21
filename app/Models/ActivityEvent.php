@@ -14,6 +14,7 @@ class ActivityEvent extends Model
         'activity_type_id',
         'user_id',
         'deck_id',
+        'lti_resource_link_id',
         'xp',
     ];
 
@@ -30,6 +31,24 @@ class ActivityEvent extends Model
     public function activityType()
     {
         return $this->belongsTo(ActivityType::class);
+    }
+
+    public function ltiResourceLink()
+    {
+        return $this->belongsTo(LtiResourceLink::class);
+    }
+
+    public function gradeSubmissions()
+    {
+        return $this->hasMany(LtiGradeSubmission::class);
+    }
+
+    /**
+     * Check if this activity was launched from an LTI context
+     */
+    public function isLtiContext(): bool
+    {
+        return $this->lti_resource_link_id !== null;
     }
 
     public static function awardXP(int $userId, int $deckId, ActivityTypeEnum $activityType, ?int $xp = null): ActivityEvent

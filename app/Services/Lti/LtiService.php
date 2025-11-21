@@ -3,6 +3,11 @@
 namespace App\Services\Lti;
 
 use App\Models\User;
+use App\Models\LtiPlatform;
+use App\Models\LtiResourceLink;
+use App\Models\LtiGradeSubmission;
+use App\Enums\LtiActivityProgress;
+use App\Enums\LtiGradingProgress;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -111,6 +116,8 @@ class LtiService
             ->setTitle($title)
             ->setText($description)
             ->setCustomParams([
+                // setting the deck as a custom param should let us
+                // link back to the deck when course is cloned
                 'deck_id' => $deckId,
             ]);
 
@@ -173,10 +180,133 @@ class LtiService
             ->setScoreMaximum(100)
             ->setUserId($userId)
             ->setTimestamp(date('c'))
-            ->setActivityProgress('Completed')
-            ->setGradingProgress('FullyGraded');
+            ->setActivityProgress(LtiActivityProgress::Completed)
+            ->setGradingProgress(LtiGradingProgress::FullyGraded);
 
         return $ags->putGrade($grade);
+    }
+
+    /**
+     * Submit a grade using launch ID to Canvas using Assignment
+     * and Grade Services (AGS). Create audit record in DB.
+     */
+    public function submitGradeFromLaunchId(
+        string $launchId,
+        int $userId,
+        ?int $activityEventId = null,
+        float $scoreGiven = 100.0,
+        float $scoreMaximum = 100.0
+    ): \App\Models\LtiGradeSubmission {
+        // Get the launch from cache
+        $launch = $this->getLaunchFromCache($launchId);
+        $launchData = $launch->getLaunchData();
+
+        // Get the LTI user ID (sub claim)
+        $ltiUserId = $launchData['sub'] ?? null;
+        if (!$ltiUserId) {
+            throw new \Exception('LTI user ID not found in launch data');
+        }
+
+        // Find the resource link
+        $deploymentId = $launchData[LtiConstants::DEPLOYMENT_ID] ?? null;
+        $issuer = $launchData['iss'] ?? null;
+        $resourceLinkClaim = $launchData[LtiConstants::RESOURCE_LINK] ?? [];
+        $resourceLinkId = $resourceLinkClaim['id'] ?? null;
+
+        if (!$deploymentId || !$issuer || !$resourceLinkId) {
+            throw new \Exception('Missing required LTI claims for grade submission');
+        }
+
+        $platform = LtiPlatform::findByIssuer($issuer);
+        if (!$platform) {
+            throw new \Exception("Platform not found for issuer: {$issuer}");
+        }
+
+        $deployment = $platform->deployments()->where('deployment_id', $deploymentId)->first();
+        if (!$deployment) {
+            throw new \Exception("Deployment not found: {$deploymentId}");
+        }
+
+        $resourceLink = LtiResourceLink::where('lti_deployment_id', $deployment->id)
+            ->where('resource_link_id', $resourceLinkId)
+            ->first();
+
+        if (!$resourceLink) {
+            throw new \Exception("Resource link not found: {$resourceLinkId}");
+        }
+
+        // Prepare grade object.
+        $grade = LtiGrade::new()
+            ->setScoreGiven($scoreGiven)
+            ->setScoreMaximum($scoreMaximum)
+            ->setUserId($ltiUserId)
+            ->setTimestamp(date('c'))
+            ->setActivityProgress(LtiActivityProgress::Completed)
+            ->setGradingProgress(LtiGradingProgress::FullyGraded);
+
+        // Build request payload
+        $requestPayload = [
+            'scoreGiven' => $scoreGiven,
+            'scoreMaximum' => $scoreMaximum,
+            // must be the LTI subject ID, not LMS or smartycards user id
+            'userId' => $ltiUserId,
+            'timestamp' => date('c'),
+            // see: https://www.imsglobal.org/node/161981#activityprogress
+            'activityProgress' => LtiActivityProgress::Completed,
+            // see: https://www.imsglobal.org/node/161981#gradingprogress
+            'gradingProgress' => LtiGradingProgress::FullyGraded,
+        ];
+
+        // Create the grade submission record
+        $submission = LtiGradeSubmission::create([
+            'lti_resource_link_id' => $resourceLink->id,
+            'user_id' => $userId,
+            'activity_event_id' => $activityEventId,
+            'score_given' => $scoreGiven,
+            'score_maximum' => $scoreMaximum,
+            'activity_progress' => LtiActivityProgress::Completed,
+            'grading_progress' => LtiGradingProgress::FullyGraded,
+            'lti_user_id' => $ltiUserId,
+            'launch_id' => $launchId,
+            'submitted_at' => now(),
+            'success' => false, // Will update after submission
+            'request_payload' => $requestPayload,
+        ]);
+
+        // Try to submit the grade
+        try {
+            if (!$launch->hasAgs()) {
+                throw new \Exception('AGS service not available for this launch');
+            }
+
+            $ags = $launch->getAgs();
+            $response = $ags->putGrade($grade);
+
+            // Mark as successful
+            $submission->update([
+                'success' => true,
+                'response_data' => [
+                    'status' => 'success',
+                    'submitted_at' => now()->toIso8601String(),
+                ],
+            ]);
+        } catch (\Exception $e) {
+            // Record the error
+            $submission->update([
+                'success' => false,
+                'error_message' => $e->getMessage(),
+                'response_data' => [
+                    'status' => 'error',
+                    'error' => $e->getMessage(),
+                    'trace' => config('app.debug') ? $e->getTraceAsString() : null,
+                ],
+            ]);
+
+            // Re-throw the exception
+            throw $e;
+        }
+
+        return $submission;
     }
 
 
@@ -242,6 +372,86 @@ class LtiService
 
         // Laravel will throw if invalid
         return Validator::make($launchData, $rules)->validate();
+    }
+
+    /**
+     * Create or update LTI resource link from launch data
+     * Caches AGS endpoints and context information
+     */
+    public function createOrUpdateResourceLink(LtiMessageLaunch $launch, ?int $deckId = null): \App\Models\LtiResourceLink
+    {
+        $launchData = $launch->getLaunchData();
+
+        // Get deployment info
+        $deploymentId = $launchData[LtiConstants::DEPLOYMENT_ID] ?? null;
+        $issuer = $launchData['iss'] ?? null;
+
+        if (!$deploymentId || !$issuer) {
+            throw new LtiException('Launch missing deployment ID or issuer');
+        }
+
+        // Find the deployment
+        $platform = \App\Models\LtiPlatform::findByIssuer($issuer);
+        if (!$platform) {
+            throw new LtiException("Platform not found for issuer: {$issuer}");
+        }
+
+        $deployment = $platform->deployments()
+            ->where('deployment_id', $deploymentId)
+            ->first();
+
+        if (!$deployment) {
+            throw new LtiException("Deployment not found: {$deploymentId}");
+        }
+
+        // Get resource link ID
+        $resourceLinkClaim = $launchData[LtiConstants::RESOURCE_LINK] ?? [];
+        $resourceLinkId = $resourceLinkClaim['id'] ?? null;
+
+        if (!$resourceLinkId) {
+            throw new LtiException('Launch missing resource link ID');
+        }
+
+        // Get context (course) information
+        $contextClaim = $launchData[LtiConstants::CONTEXT] ?? [];
+        $contextId = $contextClaim['id'] ?? null;
+        $contextLabel = $contextClaim['label'] ?? null;
+        $contextTitle = $contextClaim['title'] ?? null;
+
+        // Get AGS endpoints if available
+        $agsClaim = $launchData[LtiConstants::AGS_CLAIM_ENDPOINT] ?? [];
+        $lineitemUrl = $agsClaim['lineitem'] ?? null;
+        $lineitemsUrl = $agsClaim['lineitems'] ?? null;
+        $agsScopes = $agsClaim['scope'] ?? [];
+
+        // Get resource link title and description
+        $resourceTitle = $resourceLinkClaim['title'] ?? null;
+        $resourceDescription = $resourceLinkClaim['description'] ?? null;
+
+        // Get custom params
+        $customParams = $launchData[LtiConstants::CUSTOM] ?? [];
+
+        // Create or update the resource link
+        $resourceLink = \App\Models\LtiResourceLink::updateOrCreate(
+            [
+                'lti_deployment_id' => $deployment->id,
+                'resource_link_id' => $resourceLinkId,
+            ],
+            [
+                'title' => $resourceTitle,
+                'description' => $resourceDescription,
+                'context_id' => $contextId,
+                'context_label' => $contextLabel,
+                'context_title' => $contextTitle,
+                'deck_id' => $deckId,
+                'custom_params' => $customParams,
+                'lineitem_url' => $lineitemUrl,
+                'lineitems_url' => $lineitemsUrl,
+                'ags_scopes' => $agsScopes,
+            ]
+        );
+
+        return $resourceLink;
     }
 
     /**
