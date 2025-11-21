@@ -18,12 +18,15 @@ class LtiResourceLink extends Model
         'deck_id',
         'settings', // JSON field for additional settings
         'custom_params', // JSON field for custom params from LTI launch
-        // helpful for tracking assignments after courses have been copied
+        'lineitem_url', // AGS endpoint for this assignment's gradebook column
+        'lineitems_url', // AGS endpoint for all lineitems in this context
+        'ags_scopes', // AGS operations allowed
     ];
 
     protected $casts = [
         'settings' => 'array',
         'custom_params' => 'array',
+        'ags_scopes' => 'array',
     ];
 
     public function deployment(): BelongsTo
@@ -54,5 +57,29 @@ class LtiResourceLink extends Model
     public function getDeckId(): ?int
     {
         return $this->deck_id;
+    }
+
+    /**
+     * Get all grade submissions for this resource link
+     */
+    public function gradeSubmissions()
+    {
+        return $this->hasMany(LtiGradeSubmission::class);
+    }
+
+    /**
+     * Get all activity events associated with this resource link
+     */
+    public function activityEvents()
+    {
+        return $this->hasMany(ActivityEvent::class);
+    }
+
+    /**
+     * Check if this resource link has AGS (Assignment and Grade Services) enabled
+     */
+    public function hasAgs(): bool
+    {
+        return !empty($this->lineitem_url) || !empty($this->lineitems_url);
     }
 }
