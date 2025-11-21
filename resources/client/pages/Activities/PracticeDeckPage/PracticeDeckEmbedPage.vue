@@ -41,6 +41,7 @@
 </template>
 <script setup lang="ts">
 import { computed, reactive } from "vue";
+import { useRoute } from "vue-router";
 import EmbedLayout from "@/layouts/EmbedLayout.vue";
 import { useDeckByIdQuery } from "@/queries/decks";
 import * as T from "@/types";
@@ -58,6 +59,8 @@ const props = defineProps<{
   deckId: number;
 }>();
 
+const route = useRoute();
+
 const state = reactive({
   initialSideName: "front" as T.CardSideName | "random",
 });
@@ -70,12 +73,19 @@ const { data: deckStats } = useDeckStatsQuery(deckIdRef);
 
 const { mutate: createActivityEvent } = useCreateDeckActivityEventMutation();
 
+// Extract LTI launch ID from URL if present
+const ltiLaunchId = computed(() => {
+  const launchId = route.query.lti_launch_id;
+  return typeof launchId === "string" ? launchId : null;
+});
+
 async function handlePracticeComplete(cardCount: number) {
   await createActivityEvent({
     deckId: deck.value?.id ?? 0,
     activityType: T.ActivityTypeName.PRACTICE_ALL_CARDS,
     correctCount: cardCount,
     totalCount: cardCount,
+    ltiLaunchId: ltiLaunchId.value,
   });
 }
 </script>

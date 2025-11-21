@@ -34,6 +34,7 @@
 import EmbedLayout from "@/layouts/EmbedLayout.vue";
 import { Button } from "@/components/ui/button";
 import { computed } from "vue";
+import { useRoute } from "vue-router";
 import { useDeckByIdQuery } from "@/queries/decks";
 import MatchingGame from "./MatchingGame.vue";
 import { useCreateDeckActivityEventMutation } from "@/queries/deckActivityEvents/useCreateDeckActivityEventMutation";
@@ -47,12 +48,20 @@ const props = defineProps<{
   deckId: number;
 }>();
 
+const route = useRoute();
+
 const deckIdRef = computed(() => props.deckId);
 
 const { data: deck } = useDeckByIdQuery(deckIdRef);
 const { data: deckStats } = useDeckStatsQuery(deckIdRef);
 
 const { mutate: createActivityEvent } = useCreateDeckActivityEventMutation();
+
+// Extract LTI launch ID from URL if present
+const ltiLaunchId = computed(() => {
+  const launchId = route.query.lti_launch_id;
+  return typeof launchId === "string" ? launchId : null;
+});
 
 async function handleWin(matchedPairs: number) {
   if (!deck.value) {
@@ -64,6 +73,7 @@ async function handleWin(matchedPairs: number) {
     activityType: T.ActivityTypeName.MATCHING,
     correctCount: matchedPairs,
     totalCount: matchedPairs,
+    ltiLaunchId: ltiLaunchId.value,
   });
 }
 </script>
