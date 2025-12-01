@@ -72,11 +72,18 @@ class QuizMaker
 
     private function normalizeTextBlock(string $text)
     {
-        // remove any base64 images that may be embedded in the text
-        $text = preg_replace('/!\[.*?\]\(data:image\/.*?;base64,.*?\)/s', '[Image]', $text);
-
-        // strip any remaining HTML tags
-        $text = strip_tags($text);
+        // replace base64 embedded images with placeholder text
+        $text = preg_replace_callback(
+            '/<img[^>]*src=["\']data:image\/[^"\']*["\'][^>]*>/i',
+            function ($matches) {
+                // extract alt text if present
+                if (preg_match('/alt=["\']([^"\']*)["\']/', $matches[0], $altMatch)) {
+                    return "[Image: {$altMatch[1]}]";
+                }
+                return '[Image]';
+            },
+            $text
+        );
 
         return trim($text);
     }
