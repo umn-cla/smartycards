@@ -97,7 +97,7 @@ const props = defineProps<{
   quiz: T.Quiz;
 }>();
 
-const emit = defineEmits<{
+defineEmits<{
   (
     eventName: "end-quiz",
     payload: {

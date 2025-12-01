@@ -2,12 +2,11 @@
   <div class="relative" data-cy="text-block-input-container">
     <label :for="makeInputId('text-block')" class="sr-only">Text Block</label>
     <QuillEditor
-      ref="editor"
       :id="makeInputId('text-block')"
       :modelValue="modelValue"
       @update:modelValue="$emit('update:modelValue', $event)"
       class="bg-brand-maroon-800/5 rounded-sm focus-within:ring-2 focus-within:ring-offset-1 focus-within:ring-blue-600"
-      :imageUploadUrl="`files`"
+      imageUploadUrl="files"
       data-cy="text-block-input"
     />
 
@@ -73,8 +72,6 @@ defineEmits<{
   (event: "update:modelValue", value: string): void;
   (event: "update:meta", value: TextContentBlock["meta"]): void;
 }>();
-
-let editor = ref<InstanceType<typeof QuillEditor> | null>(null);
 
 const { makeInputId } = useMakeInputId("text-block-input", props.id);
 
