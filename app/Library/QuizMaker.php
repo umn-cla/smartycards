@@ -31,7 +31,7 @@ class QuizMaker
     {
         $challengeLevel = $this->options['challenge_level'];
         $systemText =
-"You generate high quality multiple choice quizzes from a set of json flash card data at the {$challengeLevel} level. Include challenging distractors that are not part of the flash card data set. The prompt and choices should be in proper markdown. LaTeX math expressions should be wrapped with $ or $$. For example, output `\\frac{1}{2}` as `$ \\frac{1}{2} $`.";
+            "You generate high quality multiple choice quizzes from a set of json flash card data at the {$challengeLevel} level. Include challenging distractors that are not part of the flash card data set. Never include the answer or distractor in the question prompt. The prompt and choices should be in proper markdown. LaTeX math expressions should be wrapped with $ or $$. For example, output `\\frac{1}{2}` as `$ \\frac{1}{2} $`. In your data, we've removed media content like images and replaced with placeholder data like `[Image: description]`. However, when displayed, the user will see the media with the prompt. If the data does not include a meaningful media description, do your best to use contextual clues from the flash card deck name, description, and other flash cards. Infer the difficulty of the quiz from the data, and match distractors to the inferred difficulty.";
 
         return $systemText;
     }
@@ -70,6 +70,17 @@ class QuizMaker
         ];
     }
 
+    private function normalizeTextBlock(string $text)
+    {
+        // remove any base64 images that may be embedded in the text
+        $text = preg_replace('/!\[.*?\]\(data:image\/.*?;base64,.*?\)/s', '[Image]', $text);
+
+        // strip any remaining HTML tags
+        $text = strip_tags($text);
+
+        return trim($text);
+    }
+
     /**
      * converts a card side to a string by only
      * considering text content blocks, and then joining them
@@ -83,20 +94,19 @@ class QuizMaker
 
         return collect($contentBlocks)
             ->map(function ($block) {
-                if (collect(['text', 'math'])->contains($block['type'])) {
-                    return $block['content'];
+                switch ($block['type']) {
+                    case 'math':
+                        return $block['content'];
+                    case 'text':
+                        return $this->normalizeTextBlock($block['content']);
+                    case 'image':
+                        $alt = $block['meta']['alt'] ?? 'Unknown';
+                        return "[Image: {$alt}]";
+                    default:
+                        return "[{$block['type']}]";
                 }
-
-                if ($block['type'] === 'image') {
-                    $alt = $block['meta']['alt'] ?? 'Unknown';
-
-                    return "[Image: {$alt}]";
-                }
-
-                return "[{$block['type']}]";
-
             })
-            ->join('');
+            ->join(' ');
     }
 
     /**
