@@ -90,6 +90,8 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Button } from "@/components/ui/button";
 import CardSideView from "@/components/CardSideView/CardSideView.vue";
 import Markdown from "@/components/Markdown.vue";
+import { makeContentBlock } from "@/lib/makeContentBlock";
+import { isMathBlock, isTextBlock } from "@/lib/isBlockOfType";
 
 const props = defineProps<{
   quiz: T.Quiz;
@@ -119,15 +121,39 @@ const activeQuestion = computed(
   () => props.quiz.questions[state.activeQuestionIndex],
 );
 
+function createImageBlocksFromTextBlock(text: string): T.ImageContentBlock[] {
+  // parseHTML for image tags
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(text, "text/html");
+  const imgElements = doc.getElementsByTagName("img");
+  return [...imgElements].map((imgEl) => {
+    const block = makeContentBlock("image") as T.ImageContentBlock;
+    block.content = imgEl.src;
+    block.meta = { alt: imgEl.alt || "" };
+    return block;
+  });
+}
+
 const activeQuestionPromptMedia = computed((): T.ContentBlock[] => {
   const card = activeQuestion.value.sourceCard;
   const side = activeQuestion.value.sourceCardSide;
   const contentBlocks = card[side];
-  const nonMarkdownableBlocks = contentBlocks.filter(
-    (block) => !["text", "math"].includes(block.type),
-  );
+  return contentBlocks.reduce((acc: T.ContentBlock[], block) => {
+    // skip math blocks
+    if (isMathBlock(block)) {
+      return acc;
+    }
 
-  return nonMarkdownableBlocks;
+    // extract images from text block and
+    // add them as separate image blocks
+    if (isTextBlock(block)) {
+      const imageBlocks = createImageBlocksFromTextBlock(block.content);
+      return [...acc, ...imageBlocks];
+    }
+
+    // otherwise just add the block as is
+    return [...acc, block];
+  }, []);
 });
 function isChoiceIndexCorrect(choiceIndex?: number): boolean {
   return activeQuestion.value.correctChoiceIndex === choiceIndex;
