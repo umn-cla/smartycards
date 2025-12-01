@@ -31,7 +31,7 @@ class QuizMaker
     {
         $challengeLevel = $this->options['challenge_level'];
         $systemText =
-"You generate high quality multiple choice quizzes from a set of json flash card data at the {$challengeLevel} level. Include challenging distractors that are not part of the flash card data set. The prompt and choices should be in proper markdown. LaTeX math expressions should be wrapped with $ or $$. For example, output `\\frac{1}{2}` as `$ \\frac{1}{2} $`.";
+            "You generate high quality multiple choice quizzes from a set of json flash card data at the {$challengeLevel} level. Include challenging distractors that are not part of the flash card data set. Never include the answer or distractor in the question prompt. The prompt and choices should be in proper markdown. LaTeX math expressions should be wrapped with $ or $$. For example, output `\\frac{1}{2}` as `$ \\frac{1}{2} $`. In your data, we've removed media content like images and replaced with placeholder data like `[Image: description]`. However, when displayed, the user will see the media with the prompt. If the data does not include a meaningful media description, do your best to use contextual clues from the flash card deck name, description, and other flash cards. Infer the difficulty of the quiz from the data, and match distractors to the inferred difficulty.";
 
         return $systemText;
     }
@@ -70,6 +70,24 @@ class QuizMaker
         ];
     }
 
+    private function normalizeTextBlock(string $text)
+    {
+        // replace base64 embedded images with placeholder text
+        $text = preg_replace_callback(
+            '/<img[^>]*src=["\']data:image\/[^"\']*["\'][^>]*>/i',
+            function ($matches) {
+                // extract alt text if present
+                if (preg_match('/alt=["\']([^"\']*)["\']/', $matches[0], $altMatch)) {
+                    return "[Image: {$altMatch[1]}]";
+                }
+                return '[Image]';
+            },
+            $text
+        );
+
+        return trim($text);
+    }
+
     /**
      * converts a card side to a string by only
      * considering text content blocks, and then joining them
@@ -83,20 +101,19 @@ class QuizMaker
 
         return collect($contentBlocks)
             ->map(function ($block) {
-                if (collect(['text', 'math'])->contains($block['type'])) {
-                    return $block['content'];
+                switch ($block['type']) {
+                    case 'math':
+                        return $block['content'];
+                    case 'text':
+                        return $this->normalizeTextBlock($block['content']);
+                    case 'image':
+                        $alt = $block['meta']['alt'] ?? 'Unknown';
+                        return "[Image: {$alt}]";
+                    default:
+                        return "[{$block['type']}]";
                 }
-
-                if ($block['type'] === 'image') {
-                    $alt = $block['meta']['alt'] ?? 'Unknown';
-
-                    return "[Image: {$alt}]";
-                }
-
-                return "[{$block['type']}]";
-
             })
-            ->join('');
+            ->join(' ');
     }
 
     /**
@@ -125,7 +142,7 @@ class QuizMaker
             ->inRandomOrder()
             ->limit($numberOfQuestions)
             ->get()
-            ->map(fn ($card) => $this->normalizeCard($card));
+            ->map(fn($card) => $this->normalizeCard($card));
     }
 
     public function getPrompt($level = 'easy')
@@ -135,7 +152,7 @@ class QuizMaker
         $cardSide = $this->options['cardSide'];
 
         $prompts = [
-            'easy' => "Generate a quiz of {$numberOfQuestions} questions from the following flash cards. Use the {$cardSide} side of the card as the basis for a question prompt. Include only the required information in the prompt. If the question has mathematical content, the question should require the user to apply the mathematical concept to solve a problem and not use the exact same numbers.",
+            'easy' => "Generate a quiz of {$numberOfQuestions} questions from the following flash cards. Use the {$cardSide} side of the card as the basis for a question prompt. Include only the required information in the prompt. If the question has mathematical content, the question should require the user to apply the mathematical concept to solve a problem and not use the exact same numbers. No single flash card's content should be over-represented in the quiz.",
             'medium' => "Generate a quiz of {$numberOfQuestions} questions from the following flash cards, testing both front to back and back to front knowledge. The questions should be at a higher level of Bloom's Taxonomy, requiring application, analysis, or synthesis of multiple cards to answer.",
         ];
 
@@ -190,7 +207,7 @@ class QuizMaker
 
         $quiz = json_decode($response, true);
 
-        $sourceCardIds = collect($quiz['questions'])->map(fn ($question) => $question['sourceCardId']);
+        $sourceCardIds = collect($quiz['questions'])->map(fn($question) => $question['sourceCardId']);
 
         // get cards the quiz questions are based on
         $cards = $this->deck->cards()->whereIn('id', $sourceCardIds)->get();

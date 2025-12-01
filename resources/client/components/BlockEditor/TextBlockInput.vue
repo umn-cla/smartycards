@@ -1,12 +1,12 @@
 <template>
   <div class="relative" data-cy="text-block-input-container">
     <label :for="makeInputId('text-block')" class="sr-only">Text Block</label>
-    <QuillyEditor
-      ref="editor"
+    <QuillEditor
+      :id="makeInputId('text-block')"
       :modelValue="modelValue"
       @update:modelValue="$emit('update:modelValue', $event)"
-      :options="options"
       class="bg-brand-maroon-800/5 rounded-sm focus-within:ring-2 focus-within:ring-offset-1 focus-within:ring-blue-600"
+      imageUploadUrl="files"
       data-cy="text-block-input"
     />
 
@@ -51,13 +51,9 @@
   </div>
 </template>
 <script setup lang="ts">
-import { QuillyEditor } from "vue-quilly";
-import Quill from "quill/quill";
-import { ref, onMounted, computed, watch } from "vue";
-import SelectLanguage from "../SelectLanguage.vue";
-import "quill-paste-smart";
-import "quill/dist/quill.core.css";
-import "quill/dist/quill.snow.css";
+import QuillEditor from "@/components/QuillEditor.vue";
+import { ref, computed, watch } from "vue";
+import SelectLanguage from "@/components/SelectLanguage.vue";
 import { TextContentBlock } from "@/types";
 import { MAX_TTS_CHARS } from "@/constants";
 import { useMakeInputId } from "@/composables/useMakeInputId";
@@ -77,9 +73,6 @@ defineEmits<{
   (event: "update:meta", value: TextContentBlock["meta"]): void;
 }>();
 
-const editor = ref<InstanceType<typeof QuillyEditor>>();
-let quill: Quill | null = null;
-
 const { makeInputId } = useMakeInputId("text-block-input", props.id);
 
 const selectedLanguage = ref(props.meta?.lang ?? "auto");
@@ -90,47 +83,6 @@ const ttsLanguage = computed(() => {
   // use the selected language if it's set, otherwise use the default language
   return selectedLanguage.value || defaultLanguageOption.value.locale || "auto";
 });
-
-const options = computed(() => ({
-  theme: "snow",
-  // bounds: editor.value ? editor.value.$el : null,
-  modules: {
-    toolbar: [
-      [
-        "bold",
-        "italic",
-        { list: "ordered" },
-        { list: "bullet" },
-        "link",
-        "code-block",
-        "formula",
-        { direction: "rtl" }, // text direction
-        "clean",
-      ],
-    ],
-    keyboard: {
-      bindings: {
-        // disable tab key
-        tab: {
-          key: "Tab",
-          handler: () => true,
-        },
-        clearFormatting: {
-          key: "\\",
-          shortKey: true,
-          handler(range, context) {
-            if (!quill) {
-              return;
-            }
-            quill.removeFormat(range.index, range.length, Quill.sources.USER);
-          },
-        },
-      },
-    },
-  },
-  placeholder: "Write something...",
-  readOnly: false,
-}));
 
 const { isTTSEnabled, defaultLanguageOption } = useTTSContext();
 
@@ -150,30 +102,6 @@ watch(
   },
   { immediate: true },
 );
-
-onMounted(() => {
-  if (!editor.value) {
-    throw new Error("Editor element not found");
-  }
-
-  quill = editor.value.initialize(Quill);
-
-  // some attrs to help with accessibility of the contenteditable area
-  const contentEditableAttrs = {
-    id: makeInputId("text-block"),
-    role: "textbox",
-    "aria-multiline": "true",
-  };
-
-  Object.entries(contentEditableAttrs).forEach(([key, value]) => {
-    if (!quill?.root || !quill.root.contentEditable) {
-      console.error("Can't set attrs for Quilly Editor. Quill root not found.");
-      return;
-    }
-
-    quill.root.setAttribute(key, value);
-  });
-});
 </script>
 <style scoped></style>
 <style type="postcss">
