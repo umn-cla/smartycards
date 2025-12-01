@@ -135,7 +135,7 @@ class QuizMaker
             ->inRandomOrder()
             ->limit($numberOfQuestions)
             ->get()
-            ->map(fn ($card) => $this->normalizeCard($card));
+            ->map(fn($card) => $this->normalizeCard($card));
     }
 
     public function getPrompt($level = 'easy')
@@ -145,7 +145,7 @@ class QuizMaker
         $cardSide = $this->options['cardSide'];
 
         $prompts = [
-            'easy' => "Generate a quiz of {$numberOfQuestions} questions from the following flash cards. Use the {$cardSide} side of the card as the basis for a question prompt. Include only the required information in the prompt. If the question has mathematical content, the question should require the user to apply the mathematical concept to solve a problem and not use the exact same numbers.",
+            'easy' => "Generate a quiz of {$numberOfQuestions} questions from the following flash cards. Use the {$cardSide} side of the card as the basis for a question prompt. Include only the required information in the prompt. If the question has mathematical content, the question should require the user to apply the mathematical concept to solve a problem and not use the exact same numbers. No single flash card's content should be over-represented in the quiz.",
             'medium' => "Generate a quiz of {$numberOfQuestions} questions from the following flash cards, testing both front to back and back to front knowledge. The questions should be at a higher level of Bloom's Taxonomy, requiring application, analysis, or synthesis of multiple cards to answer.",
         ];
 
@@ -200,7 +200,7 @@ class QuizMaker
 
         $quiz = json_decode($response, true);
 
-        $sourceCardIds = collect($quiz['questions'])->map(fn ($question) => $question['sourceCardId']);
+        $sourceCardIds = collect($quiz['questions'])->map(fn($question) => $question['sourceCardId']);
 
         // get cards the quiz questions are based on
         $cards = $this->deck->cards()->whereIn('id', $sourceCardIds)->get();
