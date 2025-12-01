@@ -126,12 +126,16 @@ function createImageBlocksFromTextBlock(text: string): T.ImageContentBlock[] {
   const parser = new DOMParser();
   const doc = parser.parseFromString(text, "text/html");
   const imgElements = doc.getElementsByTagName("img");
-  return [...imgElements].map((imgEl) => {
-    const block = makeContentBlock("image") as T.ImageContentBlock;
-    block.content = imgEl.src;
-    block.meta = { alt: imgEl.alt || "" };
-    return block;
-  });
+  return [...imgElements]
+    .map((imgEl) => {
+      // Only allow http, https, or relative paths for src
+      if (!/^(https?:\/\/|\/)/i.test(imgEl.src)) return null;
+      const block = makeContentBlock("image") as T.ImageContentBlock;
+      block.content = imgEl.src;
+      block.meta = { alt: imgEl.alt || "" };
+      return block;
+    })
+    .filter((block): block is T.ImageContentBlock => block !== null);
 }
 
 const activeQuestionPromptMedia = computed((): T.ContentBlock[] => {
