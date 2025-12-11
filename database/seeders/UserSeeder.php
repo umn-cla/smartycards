@@ -19,7 +19,7 @@ class UserSeeder extends Seeder
         $admin = User::create([
             'name' => 'SmartyCards Admin',
             'email' => 'latistecharch@umn.edu',
-            'emplid' => '1111111',
+            'emplid' => '111',
             'umndid' => 'admin',
             'password' => bcrypt(Str::random(10)),
         ]);
