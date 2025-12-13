@@ -64,12 +64,13 @@ class ActivityEventController extends Controller
             'xp' => $xp,
         ]);
 
-        // Submit grade to Canvas if this is an LTI context
+        // Queue grade submission to Canvas if this is an LTI context
         $gradeSubmission = null;
         if (!empty($validated['lti_launch_id'])) {
             try {
                 // For v1: Always award full credit (100/100) on completion
-                $gradeSubmission = $ltiService->submitGradeFromLaunchId(
+                // This creates the submission record and queues the job
+                $gradeSubmission = $ltiService->queueGradeSubmissionFromLaunchId(
                     launchId: $validated['lti_launch_id'],
                     userId: Auth::id(),
                     activityEventId: $event->id,
@@ -77,14 +78,14 @@ class ActivityEventController extends Controller
                     scoreMaximum: 100.0
                 );
 
-                \Log::info('Grade submitted to Canvas via LTI', [
+                \Log::info('Grade submission queued for Canvas via LTI', [
                     'activity_event_id' => $event->id,
                     'grade_submission_id' => $gradeSubmission->id,
-                    'success' => $gradeSubmission->success,
                 ]);
             } catch (\Exception $e) {
                 // Log the error but don't fail the activity event creation
-                \Log::error('Failed to submit grade to Canvas', [
+                // This could happen if launch data is invalid or missing
+                \Log::error('Failed to queue grade submission to Canvas', [
                     'error' => $e->getMessage(),
                     'activity_event_id' => $event->id,
                     'launch_id' => $validated['lti_launch_id'],
@@ -96,7 +97,7 @@ class ActivityEventController extends Controller
             'activity_event' => $event,
             'grade_submission' => $gradeSubmission ? [
                 'id' => $gradeSubmission->id,
-                'success' => $gradeSubmission->success,
+                'status' => 'queued',
                 'score_given' => $gradeSubmission->score_given,
                 'score_maximum' => $gradeSubmission->score_maximum,
             ] : null,

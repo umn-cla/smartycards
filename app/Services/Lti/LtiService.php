@@ -8,6 +8,7 @@ use App\Models\LtiResourceLink;
 use App\Models\LtiGradeSubmission;
 use App\Enums\LtiActivityProgress;
 use App\Enums\LtiGradingProgress;
+use App\Jobs\SubmitLtiGrade;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -164,40 +165,20 @@ class LtiService
     }
 
     /**
-     * Submit a grade via AGS service
-     * (Assignments and Grades Service)
+     * Create a grade submission record and queue a job to submit it to Canvas
+     * using Assignment and Grade Services (AGS)
+     *
+     * This method does NOT submit the grade synchronously - it queues a background job.
+     * The actual submission happens asynchronously with automatic retries.
      */
-    public function submitGrade(LtiMessageLaunch $launch, float $score, string $userId)
-    {
-        if (!$launch->hasAgs()) {
-            throw new \Exception('Assignments and Grades service not available');
-        }
-
-        $ags = $launch->getAgs();
-
-        $grade = LtiGrade::new()
-            ->setScoreGiven($score)
-            ->setScoreMaximum(100)
-            ->setUserId($userId)
-            ->setTimestamp(date('c'))
-            ->setActivityProgress(LtiActivityProgress::Completed)
-            ->setGradingProgress(LtiGradingProgress::FullyGraded);
-
-        return $ags->putGrade($grade);
-    }
-
-    /**
-     * Submit a grade using launch ID to Canvas using Assignment
-     * and Grade Services (AGS). Create audit record in DB.
-     */
-    public function submitGradeFromLaunchId(
+    public function queueGradeSubmissionFromLaunchId(
         string $launchId,
         int $userId,
         ?int $activityEventId = null,
         float $scoreGiven = 100.0,
         float $scoreMaximum = 100.0
-    ): \App\Models\LtiGradeSubmission {
-        // Get the launch from cache
+    ): LtiGradeSubmission {
+        // Get the launch from cache to extract required data
         $launch = $this->getLaunchFromCache($launchId);
         $launchData = $launch->getLaunchData();
 
@@ -227,26 +208,14 @@ class LtiService
             ->where('resource_link_id', $resourceLinkId)
             ->firstOrFail();
 
-        // Prepare grade object.
-        $grade = LtiGrade::new()
-            ->setScoreGiven($scoreGiven)
-            ->setScoreMaximum($scoreMaximum)
-            ->setUserId($ltiUserId)
-            ->setTimestamp(date('c'))
-            ->setActivityProgress(LtiActivityProgress::Completed)
-            ->setGradingProgress(LtiGradingProgress::FullyGraded);
-
-        // Build request payload
+        // Build request payload for audit trail
         $requestPayload = [
             'scoreGiven' => $scoreGiven,
             'scoreMaximum' => $scoreMaximum,
-            // must be the LTI subject ID, not LMS or smartycards user id
             'userId' => $ltiUserId,
             'timestamp' => date('c'),
-            // see: https://www.imsglobal.org/node/161981#activityprogress
-            'activityProgress' => LtiActivityProgress::Completed,
-            // see: https://www.imsglobal.org/node/161981#gradingprogress
-            'gradingProgress' => LtiGradingProgress::FullyGraded,
+            'activityProgress' => LtiActivityProgress::Completed->value,
+            'gradingProgress' => LtiGradingProgress::FullyGraded->value,
         ];
 
         // Create the grade submission record
@@ -261,59 +230,58 @@ class LtiService
             'lti_user_id' => $ltiUserId,
             'launch_id' => $launchId,
             'submitted_at' => now(),
-            'success' => false, // Will update after submission
+            'success' => false, // Will be updated by the job
             'request_payload' => $requestPayload,
         ]);
 
-        // Try to submit the grade
-        try {
-            if (!$launch->hasAgs()) {
-                throw new \Exception('AGS service not available for this launch');
-            }
-
-            $ags = $launch->getAgs();
-            $response = $ags->putGrade($grade);
-
-            // Mark as successful
-            $submission->update([
-                'success' => true,
-                'response_data' => [
-                    'status' => 'success',
-                    'submitted_at' => now()->toIso8601String(),
-                ],
-            ]);
-        } catch (\Exception $e) {
-            // Record the error
-            $submission->update([
-                'success' => false,
-                'error_message' => $e->getMessage(),
-                'response_data' => [
-                    'status' => 'error',
-                    'error' => $e->getMessage(),
-                    'trace' => config('app.debug') ? $e->getTraceAsString() : null,
-                ],
-            ]);
-
-            // Re-throw the exception
-            throw $e;
-        }
+        // Dispatch the job to submit the grade asynchronously
+        SubmitLtiGrade::dispatch($submission);
 
         return $submission;
     }
 
 
     /**
-     * Retrieve grades via AGS service
-     * (Assignments and Grades Service)
+     * Submit a grade using an existing grade submission record
+     * This method can be called by the queued job and doesn't depend on current request context
      */
-    public function getGrades(LtiMessageLaunch $launch, ?string $userId)
+    public function submitGradeFromSubmission(LtiGradeSubmission $submission)
     {
-        if (!$launch->hasAgs()) {
-            throw new \Exception('Assignments and Grades service not available');
+        // Verify we have required data
+        if (!$submission->resourceLink) {
+            throw new \Exception('Resource link not found for grade submission');
         }
 
+        if (!$submission->resourceLink->lineitem_url) {
+            throw new \Exception('Lineitem URL not available for this resource link');
+        }
+
+        // Try to get the launch from cache
+        // Note: This depends on the launch still being cached
+        // If launch expires, this will throw an exception and the job will retry
+        try {
+            $launch = $this->getLaunchFromCache($submission->launch_id);
+        } catch (\Exception $e) {
+            throw new \Exception("Launch not found in cache (may have expired): {$e->getMessage()}");
+        }
+
+        // Verify AGS is available
+        if (!$launch->hasAgs()) {
+            throw new \Exception('AGS service not available for this launch');
+        }
+
+        // Prepare the grade object
+        $grade = LtiGrade::new()
+            ->setScoreGiven($submission->score_given)
+            ->setScoreMaximum($submission->score_maximum)
+            ->setUserId($submission->lti_user_id)
+            ->setTimestamp(date('c'))
+            ->setActivityProgress($submission->activity_progress)
+            ->setGradingProgress($submission->grading_progress);
+
+        // Submit the grade
         $ags = $launch->getAgs();
-        return $ags->getGrades(null, $userId);
+        return $ags->putGrade($grade);
     }
 
     /**

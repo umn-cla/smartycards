@@ -1,0 +1,166 @@
+{
+  "users": [
+    {
+      "username": "admin",
+      "umndid": "admin",
+      "emplid": "1001",
+      "first_name": "Admin",
+      "last_name": "User",
+      "email": "latistecharch+admin@umn.edu",
+      "role": "admin"
+    },
+    {
+      "username": "ainstructor",
+      "umndid": "ainstructor",
+      "emplid": "2001",
+      "first_name": "Albert",
+      "last_name": "Instructor",
+      "email": "latistecharch+ainstructor@umn.edu",
+      "role": "instructor"
+    },
+    {
+      "username": "binstructor",
+      "umndid": "binstructor",
+      "emplid": "2002",
+      "first_name": "Betty",
+      "last_name": "Instructor",
+      "email": "latistecharch+binstructor@umn.edu",
+      "role": "instructor"
+    },
+    {
+      "username": "cinstructor",
+      "umndid": "cinstructor",
+      "emplid": "2003",
+      "first_name": "Charlie",
+      "last_name": "Instructor",
+      "email": "latistecharch+cinstructor@umn.edu",
+      "role": "instructor"
+    },
+    {
+      "username": "ata",
+      "umndid": "ata",
+      "emplid": "3001",
+      "first_name": "Alice",
+      "last_name": "TA",
+      "email": "latistecharch+ata@umn.edu",
+      "role": "ta"
+    },
+    {
+      "username": "bta",
+      "umndid": "bta",
+      "emplid": "3002",
+      "first_name": "Bob",
+      "last_name": "TA",
+      "email": "latistecharch+bta@umn.edu",
+      "role": "ta"
+    },
+    {
+      "username": "cta",
+      "umndid": "cta",
+      "emplid": "3003",
+      "first_name": "Carol",
+      "last_name": "TA",
+      "email": "latistecharch+cta@umn.edu",
+      "role": "ta"
+    },
+    {
+      "username": "dta",
+      "umndid": "dta",
+      "emplid": "3004",
+      "first_name": "David",
+      "last_name": "TA",
+      "email": "latistecharch+dta@umn.edu",
+      "role": "ta"
+    },
+    {
+      "username": "astudent",
+      "umndid": "astudent",
+      "emplid": "4001",
+      "first_name": "Amy",
+      "last_name": "Student",
+      "email": "latistecharch+astudent@umn.edu",
+      "role": "student"
+    },
+    {
+      "username": "bstudent",
+      "umndid": "bstudent",
+      "emplid": "4002",
+      "first_name": "Ben",
+      "last_name": "Student",
+      "email": "latistecharch+bstudent@umn.edu",
+      "role": "student"
+    },
+    {
+      "username": "cstudent",
+      "umndid": "cstudent",
+      "emplid": "4003",
+      "first_name": "Claire",
+      "last_name": "Student",
+      "email": "latistecharch+cstudent@umn.edu",
+      "role": "student"
+    },
+    {
+      "username": "dstudent",
+      "umndid": "dstudent",
+      "emplid": "4004",
+      "first_name": "Dan",
+      "last_name": "Student",
+      "email": "latistecharch+dstudent@umn.edu",
+      "role": "student"
+    },
+    {
+      "username": "estudent",
+      "umndid": "estudent",
+      "emplid": "4005",
+      "first_name": "Emma",
+      "last_name": "Student",
+      "email": "latistecharch+estudent@umn.edu",
+      "role": "student"
+    },
+    {
+      "username": "fstudent",
+      "umndid": "fstudent",
+      "emplid": "4006",
+      "first_name": "Frank",
+      "last_name": "Student",
+      "email": "latistecharch+fstudent@umn.edu",
+      "role": "student"
+    },
+    {
+      "username": "gstudent",
+      "umndid": "gstudent",
+      "emplid": "4007",
+      "first_name": "Grace",
+      "last_name": "Student",
+      "email": "latistecharch+gstudent@umn.edu",
+      "role": "student"
+    },
+    {
+      "username": "hstudent",
+      "umndid": "hstudent",
+      "emplid": "4008",
+      "first_name": "Henry",
+      "last_name": "Student",
+      "email": "latistecharch+hstudent@umn.edu",
+      "role": "student"
+    },
+    {
+      "username": "istudent",
+      "umndid": "istudent",
+      "emplid": "4009",
+      "first_name": "Iris",
+      "last_name": "Student",
+      "email": "latistecharch+istudent@umn.edu",
+      "role": "student"
+    },
+    {
+      "username": "jstudent",
+      "umndid": "jstudent",
+      "emplid": "4010",
+      "first_name": "Jack",
+      "last_name": "Student",
+      "email": "latistecharch+jstudent@umn.edu",
+      "role": "student"
+    }
+  ]
+}

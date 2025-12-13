@@ -22,19 +22,15 @@ class LtiGradeSubmission extends Model
         'error_message',
         'request_payload',
         'response_data',
-        'retry_count',
-        'last_retry_at',
     ];
 
     protected $casts = [
         'score_given' => 'decimal:2',
         'score_maximum' => 'decimal:2',
         'submitted_at' => 'datetime',
-        'last_retry_at' => 'datetime',
         'success' => 'boolean',
         'request_payload' => 'array',
         'response_data' => 'array',
-        'retry_count' => 'integer',
     ];
 
     /**

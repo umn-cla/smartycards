@@ -255,3 +255,235 @@ docker compose up --no-start web
 docker compose run --rm web bundle exec rake db:create db:initial_setup
 docker compose run --rm web bundle exec rake db:migrate RAILS_ENV=test
 ```
+
+## Setting Up LTI 1.3 Integration
+
+### Canvas Configuration
+
+SmartyCards includes an LTI configuration endpoint at `/lti/config.json` that Canvas can use to auto-populate all settings.
+
+Since local Canvas uses self-signed certificates, the "Paste JSON" method is most reliable:
+
+1. Visit https://smartycards.docker/lti/config.json in your browser and copy the JSON
+
+2. Log into Canvas as Site Admin
+
+3. Go to `Admin > Site Admin > Developer Keys`
+
+4. Click `+ Developer Key > + LTI Key`
+
+5. Select **"Paste JSON"**
+
+6. Paste the JSON from step 1
+
+7. **IMPORTANT: Set Privacy Level**
+   - Scroll down to **"LTI Advantage Services"** section
+   - Under **"Privacy Level"**, select **"Public"**
+   - **Why this is required:** SmartyCards validates that Canvas sends user email and SIS ID during LTI authentication
+   - Canvas privacy levels:
+     - `Anonymous` - No user info sent (will fail)
+     - `Name Only` - Only name sent (will fail - missing email)
+     - `Email Only` - Only email sent (will fail - missing SIS ID)
+     - `Public` - Full user info including email, name, and SIS ID (required ✓)
+   - Without "Public", you'll get validation errors about missing required information
+
+8. Review the auto-filled settings and click **"Save"**
+
+9. **Enable the key** (toggle switch)
+
+10. Copy the **Client ID** (you'll need this later)
+
+11. Go to `Admin > UMN > Settings > Apps`
+
+12. Click `+ App`
+
+13. For Configuration Type, select **"By Client ID"**
+
+14. Enter the Client ID from step 10
+
+15. Save
+
+16. Click the cog (⚙️ settings icon) next to the app, choose **"Deployment Id"**
+
+17. Copy the **Deployment ID** (you'll need this for SmartyCards configuration)
+
+### SmartyCards Configuration
+
+Using the `Client ID` and `Deployment ID` from Canvas, configure SmartyCards via Laravel Nova:
+
+1. Go to `https://smartycards.docker/admin` and log in
+
+2. **Create an LTI Platform:**
+   - Click on **"Lti Platforms"** in the sidebar
+   - Click **"Create Lti Platform"**
+   - Fill in the Canvas platform details:
+     - **Name:** `Canvas Local Dev` (or any descriptive name)
+     - **Issuer:** `https://canvas.instructure.com` (always, regardless of Canvas host url)
+     - **Auth Login URL:** `https://canvas.docker/api/lti/authorize_redirect`
+     - **Auth Token URL:** `https://canvas.docker/login/oauth2/token`
+     - **Key Set URL:** `https://canvas.docker/api/lti/security/jwks`
+   - Click **"Create Lti Platform"**
+
+3. **Create an LTI Deployment:**
+   - Click on **"Lti Deployments"** in the sidebar
+   - Click **"Create Lti Deployment"**
+   - Fill in:
+     - **Platform:** Select the platform you just created
+     - **Deployment ID:** Paste the Deployment ID from Canvas (step 15 of Canvas Configuration)
+     - **Client ID:** Paste the Client ID from Canvas (step 8 of Canvas Configuration)
+   - Click **"Create Lti Deployment"**
+
+4. **Test the Integration:**
+   - In Canvas, go to your test course
+   - Add a new assignment or module item
+   - Choose "External Tool"
+   - Select SmartyCards from the list
+   - Configure the assignment and save
+   - Launch the tool to verify the LTI connection works
+
+The Nova admin interface will automatically track:
+- **LTI Resource Links** - Created automatically when instructors add SmartyCards to their Canvas course
+- **LTI Grade Submissions** - Logged when grades are sent back to Canvas via Assignment and Grade Services (AGS)
+
+
+## Seeding Canvas with Test Data
+
+We have scripts to seed Canvas with realistic test data for LTI development. See `scripts/canvas/README.md` for full details.
+
+### Quick Start
+
+1. Generate a Canvas API access token:
+   - Log into Canvas at <https://canvas.docker>
+   - Go to Account → Settings → Approved Integrations
+   - Click "+ New Access Token"
+   - Give it a purpose (e.g., "Local Development")
+   - Copy the generated token
+
+2. Seed Canvas with test data:
+
+```bash
+CANVAS_ACCESS_TOKEN=your_token npm run canvas:seed
+```
+
+This creates:
+- 1 course: MLSP 5211 (001) Fundamentals in Hematology and Hemostasis (Fall 2024)
+- 2 sections (including a cross-listed section)
+- 2 instructors
+- 2 TAs
+- 10 students (5 per section)
+
+3. When done testing, reset Canvas:
+
+```bash
+CANVAS_ACCESS_TOKEN=your_token npm run canvas:reset
+```
+
+### Scripts Location
+
+All Canvas seeding scripts are in `scripts/canvas/`:
+- `seed.ts` - Seed Canvas with test data
+- `reset.ts` - Remove seeded data
+- `lib/canvas-api.ts` - Canvas API utilities
+- `lib/data.ts` - Data generation with UMN naming conventions
+- `config.ts` - Configuration management
+
+## Troubleshooting
+
+### "Session expired" or Validation Errors During Deep Linking
+
+**Symptoms:**
+- When trying to add an assignment external tool in Canvas, you see a "Session expired" error
+- Canvas shows its own dashboard instead of the SmartyCards deep link page
+- Logs show validation errors about missing `email` or `lis.person_sourcedid` fields
+
+**Root Cause:**
+Canvas users created via the API need to have email addresses and LIS (Learning Information Services) data for LTI authentication to work properly. SmartyCards validates these fields when authenticating users from LTI launches.
+
+**Solution:**
+
+1. **Check if Canvas users have emails:**
+   - Connect to Canvas's Postgres database (see "Connecting to Canvas' Postgres Database" above)
+   - Query to see if users have communication channels:
+     ```sql
+     SELECT u.id, u.name, cc.path as email
+     FROM users u
+     LEFT JOIN communication_channels cc ON u.id = cc.user_id AND cc.path_type = 'email'
+     WHERE u.workflow_state = 'available'
+     ORDER BY u.id;
+     ```
+
+2. **If users are missing emails, re-seed Canvas:**
+   ```bash
+   # Reset Canvas and remove all test data
+   CANVAS_ACCESS_TOKEN=your_token npm run canvas:reset
+
+   # Re-seed with users that have proper email addresses
+   CANVAS_ACCESS_TOKEN=your_token npm run canvas:seed
+   ```
+
+3. **Verify Canvas Developer Key privacy settings:**
+   - In Canvas Admin → Developer Keys
+   - Edit your SmartyCards LTI key
+   - Under "LTI Advantage Services" → "Privacy Level", ensure it's set to **"Public"**
+   - See the Canvas Configuration section above for why this is required
+   - Any other privacy level will cause validation errors
+
+**Prevention:**
+The Canvas seeding scripts now include `communication_channel` data when creating users, so this issue shouldn't occur with newly seeded users.
+
+### Deep Link Page Not Loading in Canvas
+
+**Symptoms:**
+- Canvas shows a blank page or its own dashboard when trying to configure a SmartyCards assignment
+- Browser console shows errors about blocked third-party cookies
+
+**Solution:**
+
+Check your session cookie settings in `.env`:
+
+```bash
+SESSION_SAME_SITE=none
+SESSION_SECURE_COOKIE=true
+SESSION_PARTITIONED_COOKIE=true
+```
+
+These settings are required for LTI to work in Canvas iframes:
+- `SESSION_SAME_SITE=none` - Allows cookies to work in cross-site contexts (Canvas → SmartyCards)
+- `SESSION_SECURE_COOKIE=true` - Required when SameSite=none (cookies must be sent over HTTPS)
+- `SESSION_PARTITIONED_COOKIE=true` - Better privacy in modern browsers for cross-site contexts
+
+### Checking LTI Errors
+
+**Enable Debug Mode:**
+In `.env`, ensure:
+```bash
+APP_DEBUG=true
+```
+
+With debug enabled, LTI errors will be displayed with full stack traces instead of generic error messages.
+
+**Check Application Logs:**
+```bash
+tail -f storage/logs/laravel.log
+```
+
+All LTI errors are logged with the tag "LTI Error" including:
+- Exception class name
+- Error message
+- Stack trace
+
+**Use Laravel Telescope:**
+Visit `https://smartycards.docker/telescope/requests` to see all incoming LTI requests and their responses in real-time.
+
+### Canvas Configuration Issues
+
+**Verify Configuration Endpoint:**
+Visit `https://smartycards.docker/lti/config.json` to ensure the configuration is correct. All placements should use:
+- `target_link_uri`: `https://smartycards.docker/lti/launch` (NOT `/lti/deep-link`)
+- Deep linking placements should have `message_type`: `LtiDeepLinkingRequest`
+
+**Common Canvas Setup Mistakes:**
+- Using wrong Issuer (must be `https://canvas.instructure.com` even for local Canvas)
+- Not copying the Deployment ID correctly from Canvas
+- Having the Developer Key disabled in Canvas
+- Not installing the app at the account level (Admin → UMN → Settings → Apps)

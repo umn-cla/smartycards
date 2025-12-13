@@ -21,14 +21,22 @@ class LtiController extends Controller
 
     const MISSING_LAUNCH_ID_MESSAGE = 'No launch ID found. Please try launching again from Canvas.';
 
-    private function handleException(\Exception $e): RedirectResponse
+    private function handleException(\Exception $e, ?string $userMessage = null): RedirectResponse
     {
+        // In development, always throw exceptions for full debugging
         if (config('app.debug')) {
             throw $e;
         }
 
+        // In production, log the exception for debugging
+        \Log::error('LTI Error', [
+            'exception' => get_class($e),
+            'message' => $e->getMessage(),
+            'trace' => $e->getTraceAsString(),
+        ]);
+
         return redirect()->route('lti.error', [
-            'message' => $e->getMessage()
+            'message' => $userMessage ?? $e->getMessage()
         ]);
     }
 
@@ -37,10 +45,6 @@ class LtiController extends Controller
      */
     public function login(Request $request, LtiService $ltiService): RedirectResponse
     {
-        debug('LTI Login', [
-            'request' => $request->all()
-        ]);
-
         return $ltiService->login(
             $request->all(),
             route('lti.launch')
@@ -52,26 +56,11 @@ class LtiController extends Controller
      */
     public function launch(Request $request, LtiService $ltiService): RedirectResponse
     {
-        debug('LTI Login', [
-            'request' => $request->all()
-        ]);
-
         try {
             $launch = $ltiService->validateAndCacheLaunch($request->all());
 
-            debug('LTI launch', [
-                'launch_id' => $launch->getLaunchId(),
-                'launch' => $launch->getLaunchData()
-            ]);
-
             // Authenticate the user from the LTI launch
-            $user = $ltiService->authenticateFromLaunch($launch);
-
-            debug('LTI user authenticated', [
-                'user_id' => $user->id,
-                'email' => $user->email,
-                'name' => $user->name,
-            ]);
+            $ltiService->authenticateFromLaunch($launch);
 
             // Get launch ID to pass to subsequent requests
             $launchId = $launch->getLaunchId();
@@ -91,7 +80,18 @@ class LtiController extends Controller
             }
 
             throw new LtiException('Unknown launch type');
-        } catch (LtiException $e) {
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            // Log the validation errors with structured data
+            \Log::error('LTI Validation Error', [
+                'validation_errors' => $e->errors(),
+                'message' => $e->getMessage(),
+            ]);
+
+            return $this->handleException(
+                $e,
+                'Your Canvas user account is missing required information (email or student ID). Please contact your Canvas administrator.'
+            );
+        } catch (\Exception $e) {
             return $this->handleException($e);
         }
     }
@@ -102,8 +102,6 @@ class LtiController extends Controller
      */
     public function deepLink(Request $request, LtiService $ltiService): View|RedirectResponse
     {
-        debug('LTI deep link', ['request' => $request->all()]);
-
         $launchId = $request->query('launch_id');
         if (!$launchId) {
             return $this->handleException(new LtiException(self::MISSING_LAUNCH_ID_MESSAGE));
@@ -243,5 +241,72 @@ class LtiController extends Controller
         return view('lti.error', [
             'message' => $message,
         ]);
+    }
+
+    /**
+     * Return LTI 1.3 configuration JSON for Canvas auto-configuration
+     *
+     * Canvas can fetch this URL when creating a Developer Key to auto-populate all settings.
+     * Usage: Admin → Developer Keys → "+ LTI Key" → "Enter URL" → paste this endpoint's URL
+     */
+    public function config(): \Illuminate\Http\JsonResponse
+    {
+        $appUrl = config('app.url');
+
+        $configuration = [
+            'title' => 'SmartyCards',
+            'description' => 'Collaborative flashcard studying platform for higher education',
+            'oidc_initiation_url' => route('lti.login'),
+            'target_link_uri' => route('lti.launch'),
+            'scopes' => [
+                'https://purl.imsglobal.org/spec/lti-ags/scope/lineitem',
+                'https://purl.imsglobal.org/spec/lti-ags/scope/lineitem.readonly',
+                'https://purl.imsglobal.org/spec/lti-ags/scope/result.readonly',
+                'https://purl.imsglobal.org/spec/lti-ags/scope/score',
+                'https://purl.imsglobal.org/spec/lti-nrps/scope/contextmembership.readonly',
+            ],
+            'extensions' => [
+                [
+                    'platform' => 'canvas.instructure.com',
+                    'settings' => [
+                        'platform' => 'canvas.instructure.com',
+                        'placements' => [
+                            [
+                                'placement' => 'course_navigation',
+                                'message_type' => 'LtiResourceLinkRequest',
+                                'target_link_uri' => route('lti.launch'),
+                                'text' => 'SmartyCards',
+                                'icon_url' => "{$appUrl}/favicon.ico",
+                                'enabled' => true,
+                                'windowTarget' => '_self',
+                            ],
+                            [
+                                'placement' => 'link_selection',
+                                'message_type' => 'LtiDeepLinkingRequest',
+                                'target_link_uri' => route('lti.launch'),
+                                'text' => 'Add SmartyCards Content',
+                                'icon_url' => "{$appUrl}/favicon.ico",
+                                'enabled' => true,
+                            ],
+                            [
+                                'placement' => 'assignment_selection',
+                                'message_type' => 'LtiDeepLinkingRequest',
+                                'target_link_uri' => route('lti.launch'),
+                                'text' => 'SmartyCards Activity',
+                                'icon_url' => "{$appUrl}/favicon.ico",
+                                'enabled' => true,
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+            'public_jwk_url' => route('lti.keys'),
+            'custom_fields' => [],
+        ];
+
+        return response()->json($configuration)
+            ->header('Access-Control-Allow-Origin', '*')
+            ->header('Access-Control-Allow-Methods', 'GET, OPTIONS')
+            ->header('Access-Control-Allow-Headers', 'Content-Type');
     }
 }

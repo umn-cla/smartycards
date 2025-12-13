@@ -23,3 +23,6 @@ Route::get('/lti/error', [LtiController::class, 'error'])->name('lti.error');
 
 // JWKS endpoint for LTI authentication
 Route::get('/.well-known/jwks.json', [JwksController::class, 'keys'])->name('lti.keys');
+
+// LTI 1.3 configuration endpoint for Canvas auto-configuration
+Route::get('/lti/config.json', [LtiController::class, 'config'])->name('lti.config');

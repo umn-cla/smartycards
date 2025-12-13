@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 class LtiPlatform extends Model
 {
     protected $fillable = [
-        'issuer', // https://canvas.umn.edu
+        'issuer', // https://canvas.instructure.com
         'name', // "UMN Canvas - Prod"
         'auth_login_url', // "https://.../api/lti/authorize_redirect",
         'auth_token_url', // "https://.../login/oauth2/token",
@@ -23,8 +23,8 @@ class LtiPlatform extends Model
 
     public function resourceLinks(): HasManyThrough
     {
-        return $this->through(LtiDeployment::class)
-            ->hasMany(LtiResourceLink::class);
+        return $this->through('deployments')
+            ->has('resourceLinks');
     }
 
     public static function findByIssuer(string $issuer): ?static

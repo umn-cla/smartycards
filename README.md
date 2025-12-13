@@ -72,10 +72,15 @@ sail artisan config:clear
 # install npm dependencies
 npm install
 
-## start vite
-npm run dev
+# Start queue worker (in a separate terminal), if using LTI Grades
+sail artisan queue:work --verbose
 
+# start vite
+npm run dev
 ```
+
+**Related Documentation:**
+- [LTI Grade Submission Queue](docs/lti-grade-submission-queue.md) - Architecture and monitoring
 
 ## Deploying
 
