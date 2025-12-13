@@ -41,12 +41,12 @@ Details below.
 
 ### Expose Canvas `web` service on port `9080`
 
-Edit `docker-compose.override.{username}.yml` to expose the `web` service http port of canvas, and (optionally) the postgres db port. (The db port is optional, but helpful if you want to inspect what Canvas is saving internally with the LTI)
+Edit `docker-compose.override.yml` to expose the `web` service http port of canvas, and (optionally) the postgres db port. (The db port is optional, but helpful if you want to inspect what Canvas is saving internally with the LTI)
 
 In the Canvas LMS codebase:
 ```yml
 # 
-# canvas-lms/docker-compose.override.{username}.yml (abridged)
+# canvas-lms/docker-compose.override.yml (abridged)
 services:
   web:
     <<: *BASE
@@ -223,4 +223,35 @@ Verify sites work as expected:
 
 Canvas (at least at the local dev level) has two accounts:
 - Site Admin (root)
-	- TEST
+	- UMN
+
+## Connecting to Canvas' Postgres Database
+
+Be sure the postgres port is expose in `docker-compose.override.yml`:
+
+```yml
+  postgres:
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+```
+
+Connect with:
+
+```
+PORT: 5432
+USER: postgres
+PASSWORD: sekret
+DATABASE: canvas_development
+```
+
+### Resetting the Canvas DB
+
+```
+docker compose down
+docker volume rm canvas-lms_pg_data
+docker compose up --no-start web
+docker compose run --rm web bundle exec rake db:create db:initial_setup
+docker compose run --rm web bundle exec rake db:migrate RAILS_ENV=test
+```
