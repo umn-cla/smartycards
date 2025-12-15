@@ -45,6 +45,17 @@
         </p>
       </div>
 
+      <!-- Create New Deck Button -->
+      <div class="text-center">
+        <button
+          @click="createNewDeck"
+          type="button"
+          class="text-sm text-brand-teal-600 hover:text-brand-teal-700 font-medium hover:underline"
+        >
+          + Create New Deck
+        </button>
+      </div>
+
       <!-- Configuration (only shown when deck selected) -->
       <template v-if="selectedDeckId">
         <div>
@@ -123,7 +134,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch } from "vue";
+import { ref, computed, watch, onMounted } from "vue";
+import { useRouter, useRoute } from "vue-router";
 import { useAllDecksQuery } from "@/queries/decks";
 import { SimpleSelect, SelectOption } from "@/components/SimpleSelect";
 
@@ -133,6 +145,9 @@ const ltiData = window.SmartyCards.ltiDeepLink;
 if (!ltiData) {
   throw new Error("LTI deep link data not found");
 }
+
+const router = useRouter();
+const route = useRoute();
 
 const { data: decks, isLoading: isLoadingDecks, error } = useAllDecksQuery();
 
@@ -171,6 +186,20 @@ const submitSelection = () => {
   // which generates a signed JWT for the LTI Deep Linking response
   ltiFormRef.value.submit();
 };
+
+const createNewDeck = () => {
+  router.push({
+    name: "decks.create",
+    query: { fromLti: "true", launchId: ltiData.launchId },
+  });
+};
+
+// Check if returning from deck creation with a new deck
+onMounted(() => {
+  if (route.query.newDeckId) {
+    selectedDeckId.value = String(route.query.newDeckId);
+  }
+});
 
 const cancel = () => {
   // In a real LTI implementation, this would navigate back to the LMS
