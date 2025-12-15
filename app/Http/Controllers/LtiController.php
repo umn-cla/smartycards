@@ -268,6 +268,7 @@ class LtiController extends Controller
             'extensions' => [
                 [
                     'platform' => 'canvas.instructure.com',
+                    'privacy_level' => 'public',
                     'settings' => [
                         'platform' => 'canvas.instructure.com',
                         'placements' => [

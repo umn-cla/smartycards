@@ -36,7 +36,7 @@ return [
      */
 
     'emulate_idp' => env('SHIB_EMULATE', false),
-    'emulate_idp_users' => (function() {
+    'emulate_idp_users' => (function () {
         $fixturesPath = base_path('database/fixtures/users.json');
         if (!file_exists($fixturesPath)) {
             return [];
