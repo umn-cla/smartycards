@@ -30,7 +30,8 @@ class LtiDeployment extends Resource
      * @var array
      */
     public static $search = [
-        'deployment_id', 'client_id',
+        'deployment_id',
+        'client_id',
     ];
 
     /**
@@ -48,15 +49,15 @@ class LtiDeployment extends Resource
                 ->rules('required')
                 ->help('Select the LTI platform this deployment belongs to'),
 
-            Text::make('Deployment ID')
-                ->sortable()
-                ->rules('required')
-                ->help('The Deployment ID from Canvas (found in Admin > Settings > Apps > [App] > Deployment Id)'),
-
             Text::make('Client ID')
                 ->sortable()
                 ->rules('required')
                 ->help('The Client ID from Canvas (found in Admin > Developer Keys after creating the LTI key)'),
+
+            Text::make('Deployment ID')
+                ->sortable()
+                ->rules('required')
+                ->help('The Deployment ID from Canvas (found in Admin > Settings > Apps > [App] > Deployment Id)'),
 
             Text::make('Resource Links Count', function () {
                 return $this->resourceLinks->count();
