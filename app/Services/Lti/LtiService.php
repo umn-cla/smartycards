@@ -342,8 +342,31 @@ class LtiService
             'family_name' => 'sometimes|string',
         ];
 
-        // Laravel will throw if invalid
-        return Validator::make($launchData, $rules)->validate();
+        $validated = Validator::make($launchData, $rules)->validate();
+
+        // Normalize test SIS IDs in non-production environments
+        if (!app()->isProduction()) {
+            $validated[LtiConstants::LIS]['person_sourcedid'] = $this->normalizeDevSisId(
+                $validated[LtiConstants::LIS]['person_sourcedid']
+            );
+        }
+
+        return $validated;
+    }
+
+    /**
+     * Maps test placeholders in Canvas dev instance to real emplids
+     * like `mungeLisData()` in ChimeIn
+     */
+    private function normalizeDevSisId(string $sisId): string
+    {
+        return match ($sisId) {
+            'SISIDformcfa0086' => '2328381',
+            'SISID4elevator', 'Dx7a7sg9zz' => '1111111', // elevator internetID
+            'D95saru5c2' => '1111113', // latistecharch internetID
+            'emplidFORjohnsojr' => '1111112',
+            default => $sisId,
+        };
     }
 
     /**
