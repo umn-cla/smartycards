@@ -45,13 +45,8 @@ class LtiService
             $this->cookie,
         );
 
-        try {
-            $redirectUrl = $login->getRedirectUrl($launchUrl, $request);
-            return redirect($redirectUrl);
-        } catch (LtiException $e) {
-            // something?
-            throw $e;
-        }
+        $redirectUrl = $login->getRedirectUrl($launchUrl, $request);
+        return redirect($redirectUrl);
     }
 
     /**
@@ -66,13 +61,7 @@ class LtiService
             $this->connector,
         );
 
-        try {
-            // initialize will validate and cache the launch
-            return $launch->initialize($request);
-        } catch (LtiException $e) {
-            // something?
-            throw $e;
-        }
+        return $launch->initialize($request);
     }
 
     /**
@@ -87,6 +76,24 @@ class LtiService
             $this->cookie,
             $this->connector,
         );
+    }
+
+    /**
+     * Check if the user has a staff role (instructor, TA, admin, etc.)
+     */
+    public function hasStaffRole(LtiMessageLaunch $launch): bool
+    {
+        $staffRoles = [
+            LtiConstants::INSTITUTION_ADMINISTRATOR,
+            LtiConstants::MEMBERSHIP_INSTRUCTOR,
+            LtiConstants::MEMBERSHIP_TA,
+            LtiConstants::MEMBERSHIP_CONTENTDEVELOPER,
+        ];
+
+        $launchData = $launch->getLaunchData();
+        $userRoles = $launchData[LtiConstants::ROLES] ?? [];
+
+        return !empty(array_intersect($userRoles, $staffRoles));
     }
 
     /**
@@ -182,27 +189,15 @@ class LtiService
         $launch = $this->getLaunchFromCache($launchId);
         $launchData = $launch->getLaunchData();
 
+        // Don't create grade submissions for staff (instructors/TAs)
+        if ($this->hasStaffRole($launch)) {
+            return null;
+        }
+
         // Get the LTI user ID (sub claim)
         $ltiUserId = $launchData['sub'] ?? null;
         if (!$ltiUserId) {
             throw new \Exception('LTI user ID not found in launch data');
-        }
-
-        // Get LTI roles for this user
-        $ltiRoles = $launchData[LtiConstants::ROLES] ?? [];
-
-        // Check if user has a staff role - don't submit grades for staff
-        $staffRoles = [
-            LtiConstants::INSTITUTION_ADMINISTRATOR,
-            LtiConstants::MEMBERSHIP_INSTRUCTOR,
-            LtiConstants::MEMBERSHIP_TA,
-            LtiConstants::MEMBERSHIP_CONTENTDEVELOPER,
-        ];
-
-        $isStaff = !empty(array_intersect($ltiRoles, $staffRoles));
-        if ($isStaff) {
-            // Don't create grade submissions for instructors/TAs
-            return null;
         }
 
         // Find the resource link
@@ -260,7 +255,7 @@ class LtiService
 
     /**
      * Submit a grade using an existing grade submission record
-     * This method can be called by the queued job and doesn't depend on current request context
+     * Requires the launch to still be cached (1hr TTL)
      */
     public function submitGradeFromSubmission(LtiGradeSubmission $submission)
     {
@@ -431,54 +426,47 @@ class LtiService
     public function authenticateFromLaunch(LtiMessageLaunch $launch): User
     {
         $launchData = $launch->getLaunchData();
-
-        // $validated = $launchData;
         $validated = $this->validateLtiLaunchData($launchData);
 
-        $ltiSubId = $validated['sub'];
-        $ltiSisId = $validated[LtiConstants::LIS]['person_sourcedid'];
-        $ltiEmail = $validated['email'];
-        $ltiFirstName = $validated['given_name'] ?? '';
-        $ltiLastName = $validated['family_name'] ?? '';
+        $ltiUserId = $validated['sub'];  // Canvas internal user ID
+        $studentSisId = $validated[LtiConstants::LIS]['person_sourcedid'];  // emplid
+        $email = $validated['email'];
+        $firstName = $validated['given_name'] ?? '';
+        $lastName = $validated['family_name'] ?? '';
 
-        // CASE 1: User has launched before.
-        // - they exist in the db
-        // - they have a subject id associated with their user
-        $user = User::where('lti_sub_id', $ltiSubId)->first();
+        // Try finding by LTI user ID first (returning user)
+        $user = User::where('lti_sub_id', $ltiUserId)->first();
 
-        // CASE 2: User has an account, but hasn't launched before.
-        // - they exist in the db
-        // - they do NOT have a subject id associated with their user
+        // Then by emplid (user exists but hasn't used LTI before)
         if (!$user) {
-            $user = User::where('emplid', $ltiSisId)->first();
+            $user = User::where('emplid', $studentSisId)->first();
         }
 
-        // CASE 3: User does not exist at all.
+        // Create new user if not found
         if (!$user) {
-            // create new user
             $user = User::create([
-                'lti_sub_id' => $ltiSubId,
-                'emplid' => $ltiSisId,
-                // umndid is nullable - not available from LMS
-                'email' => $ltiEmail,
-                'first_name' => $ltiFirstName,
-                'last_name' => $ltiLastName,
-                // TODO: remove distinct name field
-                'name'  => trim($ltiFirstName . ' ' . $ltiLastName),
-                'password' => Hash::make(Str::random(32)), // random password
+                'lti_sub_id' => $ltiUserId,
+                'emplid' => $studentSisId,
+                'email' => $email,
+                'first_name' => $firstName,
+                'last_name' => $lastName,
+                'name' => trim($firstName . ' ' . $lastName),
+                'password' => Hash::make(Str::random(32)),
             ]);
-        } else {
-            // and update user info if any fields are null
-            $user->update([
-                'email' => $user->email ?? $ltiEmail,
-                'first_name' => $user->first_name ?? $ltiFirstName,
-                'last_name' => $user->last_name ?? $ltiLastName,
-                'emplid' => $user->emplid ?? $ltiSisId,
-                'lti_sub_id' => $user->lti_sub_id ?? $ltiSubId,
-            ]);
+
+            Auth::login($user);
+            return $user;
         }
 
-        // Log the user in
+        // Update existing user with any missing fields
+        $user->update([
+            'email' => $user->email ?? $email,
+            'first_name' => $user->first_name ?? $firstName,
+            'last_name' => $user->last_name ?? $lastName,
+            'emplid' => $user->emplid ?? $studentSisId,
+            'lti_sub_id' => $user->lti_sub_id ?? $ltiUserId,
+        ]);
+
         Auth::login($user);
         return $user;
     }

@@ -102,9 +102,8 @@
       </template>
     </div>
 
-    <!-- Hidden form for LTI deep link submission -->
-    <!-- This form is used to POST the deck selection back to Canvas via the LTI Deep Linking protocol.
-         The backend will generate a signed JWT and auto-submit it back to the LMS. -->
+    <!-- Hidden form for LTI deep link submission.
+         Posts to backend which returns an auto-submit form with signed JWT. -->
     <form
       ref="ltiFormRef"
       method="POST"
@@ -159,12 +158,9 @@ const config = ref({
   description: "",
 });
 
-const selectedDeck = computed(() => {
-  if (!selectedDeckId.value || !decks.value) return null;
-  return (
-    decks.value.find((d) => d.id.toString() === selectedDeckId.value) || null
-  );
-});
+const selectedDeck = computed(() =>
+  decks.value?.find((d) => d.id.toString() === selectedDeckId.value) ?? null
+);
 
 // Set default title when deck is selected
 watch(selectedDeck, (deck) => {

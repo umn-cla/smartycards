@@ -80,14 +80,6 @@ class LtiGradeSubmission extends Model
     }
 
     /**
-     * Check if this submission was successful
-     */
-    public function wasSuccessful(): bool
-    {
-        return $this->success;
-    }
-
-    /**
      * Get the percentage score
      */
     public function getScorePercentage(): float

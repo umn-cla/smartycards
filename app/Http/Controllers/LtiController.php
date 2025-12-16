@@ -16,7 +16,7 @@ use Packback\Lti1p3\LtiMessageLaunch;
 class LtiController extends Controller
 {
     const DECK_PRACTICE_ACTIVITY = 'practice';
-    const DECk_QUIZ_ACTIVITY = 'quiz';
+    const DECK_QUIZ_ACTIVITY = 'quiz';
     const DECK_MATCHING_ACTIVITY = 'matching';
 
     const MISSING_LAUNCH_ID_MESSAGE = 'No launch ID found. Please try launching again from Canvas.';
@@ -143,32 +143,6 @@ class LtiController extends Controller
         }
     }
 
-    /**
-     * Gets a list of user roles from LTI launch
-     *
-     * @param mixed $launch The LTI launch object
-     * @return array List of roles (URIs) like
-     * "http://purl.imsglobal.org/vocab/lis/v2/membership#Instructor"
-     */
-    private function getRolesFromLaunch(LtiMessageLaunch $launch): array
-    {
-        $launchData = $launch->getLaunchData();
-        return $launchData[LtiConstants::ROLES] ?? [];
-    }
-
-    private function doesLaunchUserHaveStaffRole(LtiMessageLaunch $launch): bool
-    {
-        $editorRoles = [
-            LtiConstants::INSTITUTION_ADMINISTRATOR,
-            LtiConstants::MEMBERSHIP_INSTRUCTOR,
-            LtiConstants::MEMBERSHIP_TA,
-            LtiConstants::MEMBERSHIP_CONTENTDEVELOPER,
-        ];
-
-        $roles = $this->getRolesFromLaunch($launch);
-
-        return !empty(array_intersect($roles, $editorRoles));
-    }
 
     /**
      * Handle resource launch (student clicks on assignment)
@@ -191,7 +165,7 @@ class LtiController extends Controller
             $deckActivity = $customParams['deck_activity'] ?? self::DECK_PRACTICE_ACTIVITY;
 
             $deck = Deck::findOrFail($deckId);
-            $membershipRole = $this->doesLaunchUserHaveStaffRole($launch)
+            $membershipRole = $ltiService->hasStaffRole($launch)
                 ? DeckMembership::ROLE_EDITOR
                 : DeckMembership::ROLE_VIEWER;
 

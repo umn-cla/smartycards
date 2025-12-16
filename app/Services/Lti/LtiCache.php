@@ -11,6 +11,11 @@ class LtiCache implements ICache
     const NONCE_PREFIX = 'lti_nonce_';
     const ACCESS_TOKEN_PREFIX = 'lti_access_token_';
 
+    // Cache TTL constants (in seconds)
+    private const LAUNCH_TTL = 3600;      // 1 hour
+    private const NONCE_TTL = 300;        // 5 minutes
+    private const TOKEN_TTL = 3500;       // ~1 hour minus buffer for clock drift
+
     /**
      * Get cached launch data (the decoded JWT body)
      */
@@ -26,7 +31,7 @@ class LtiCache implements ICache
      */
     public function cacheLaunchData(string $key, array $jwtBody): void
     {
-        Cache::put(self::LAUNCH_PREFIX . $key, $jwtBody, 3600); // 1hr
+        Cache::put(self::LAUNCH_PREFIX . $key, $jwtBody, self::LAUNCH_TTL);
     }
 
     /**
@@ -34,7 +39,7 @@ class LtiCache implements ICache
      */
     public function cacheNonce(string $nonce, string $state): void
     {
-        Cache::put(self::NONCE_PREFIX . $nonce, $state, 300); // 5min
+        Cache::put(self::NONCE_PREFIX . $nonce, $state, self::NONCE_TTL);
     }
 
     /**
@@ -69,10 +74,7 @@ class LtiCache implements ICache
      */
     public function cacheAccessToken(string $key, string $accessToken): void
     {
-        // Canvas tokens are valid for 1hr, so
-        // let's expire with 100s left to account
-        // for clock drift and network delays
-        Cache::put(self::ACCESS_TOKEN_PREFIX . $key, $accessToken, 3500);
+        Cache::put(self::ACCESS_TOKEN_PREFIX . $key, $accessToken, self::TOKEN_TTL);
     }
 
     /**

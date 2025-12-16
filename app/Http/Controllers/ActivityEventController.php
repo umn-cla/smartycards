@@ -40,15 +40,16 @@ class ActivityEventController extends Controller
             totalCount: $validated['total_count']
         );
 
-        // Determine resource link ID if this is an LTI context
+        // Handle LTI context: link activity to resource and queue grade submission
         $ltiResourceLinkId = null;
+        $gradeSubmission = null;
+
         if (!empty($validated['lti_launch_id'])) {
             try {
                 $launch = $ltiService->getLaunchFromCache($validated['lti_launch_id']);
                 $resourceLink = $ltiService->createOrUpdateResourceLink($launch, $deck->id);
                 $ltiResourceLinkId = $resourceLink->id;
             } catch (\Exception $e) {
-                // Log but don't fail - gracefully degrade to non-LTI mode
                 \Log::warning('Failed to get LTI resource link for activity event', [
                     'error' => $e->getMessage(),
                     'launch_id' => $validated['lti_launch_id'],
@@ -64,12 +65,9 @@ class ActivityEventController extends Controller
             'xp' => $xp,
         ]);
 
-        // Queue grade submission to Canvas if this is an LTI context
-        $gradeSubmission = null;
+        // Queue grade submission to Canvas if LTI context
         if (!empty($validated['lti_launch_id'])) {
             try {
-                // For v1: Always award full credit (100/100) on completion
-                // This creates the submission record and queues the job
                 $gradeSubmission = $ltiService->queueGradeSubmissionFromLaunchId(
                     launchId: $validated['lti_launch_id'],
                     userId: Auth::id(),
@@ -83,8 +81,6 @@ class ActivityEventController extends Controller
                     'grade_submission_id' => $gradeSubmission->id,
                 ]);
             } catch (\Exception $e) {
-                // Log the error but don't fail the activity event creation
-                // This could happen if launch data is invalid or missing
                 \Log::error('Failed to queue grade submission to Canvas', [
                     'error' => $e->getMessage(),
                     'activity_event_id' => $event->id,
