@@ -40,9 +40,11 @@ class DeckReportController extends Controller
         $resourceLinkIds = $resourceLinks->pluck('id');
 
         // Get all latest submissions for all resource links in a single query
+        // Only include student submissions (exclude instructors/TAs)
         $submissions = LtiGradeSubmission::query()
             ->whereIn('lti_grade_submissions.lti_resource_link_id', $resourceLinkIds)
             ->latestPerUser()
+            ->studentsOnly()
             ->with(['user', 'resourceLink'])
             ->orderBy('lti_grade_submissions.submitted_at', 'desc')
             ->get();
