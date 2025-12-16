@@ -177,7 +177,7 @@ class LtiService
         ?int $activityEventId = null,
         float $scoreGiven = 100.0,
         float $scoreMaximum = 100.0
-    ): LtiGradeSubmission {
+    ): ?LtiGradeSubmission {
         // Get the launch from cache to extract required data
         $launch = $this->getLaunchFromCache($launchId);
         $launchData = $launch->getLaunchData();
@@ -186,6 +186,23 @@ class LtiService
         $ltiUserId = $launchData['sub'] ?? null;
         if (!$ltiUserId) {
             throw new \Exception('LTI user ID not found in launch data');
+        }
+
+        // Get LTI roles for this user
+        $ltiRoles = $launchData[LtiConstants::ROLES] ?? [];
+
+        // Check if user has a staff role - don't submit grades for staff
+        $staffRoles = [
+            LtiConstants::INSTITUTION_ADMINISTRATOR,
+            LtiConstants::MEMBERSHIP_INSTRUCTOR,
+            LtiConstants::MEMBERSHIP_TA,
+            LtiConstants::MEMBERSHIP_CONTENTDEVELOPER,
+        ];
+
+        $isStaff = !empty(array_intersect($ltiRoles, $staffRoles));
+        if ($isStaff) {
+            // Don't create grade submissions for instructors/TAs
+            return null;
         }
 
         // Find the resource link
