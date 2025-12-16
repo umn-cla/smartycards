@@ -37,4 +37,16 @@ return [
     |
     */
     'kid' => env('LTI_KID', 'smartycards-2025-01'),
+
+    /*
+    | Maps placeholder SIS IDs from Canvas dev instance to real emplids.
+    | Only used in non-production environments.
+    */
+    'dev_sis_mappings' => [
+        'SISIDformcfa0086' => env('DEV_EMPLID_MCFA0086'),
+        'SISID4elevator' => env('DEV_EMPLID_ELEVATOR'),
+        'Dx7a7sg9zz' => env('DEV_EMPLID_ELEVATOR'), // same user as elevator
+        'D95saru5c2' => env('DEV_EMPLID_LATISTECHARCH'),
+        'emplidFORjohnsojr' => env('DEV_EMPLID_JOHNSOJR'),
+    ],
 ];

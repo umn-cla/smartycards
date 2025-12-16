@@ -356,17 +356,12 @@ class LtiService
 
     /**
      * Maps test placeholders in Canvas dev instance to real emplids
-     * like `mungeLisData()` in ChimeIn
+     * Actual emplid values are set in .env file
      */
     private function normalizeDevSisId(string $sisId): string
     {
-        return match ($sisId) {
-            'SISIDformcfa0086' => '2328381',
-            'SISID4elevator', 'Dx7a7sg9zz' => '1111111', // elevator internetID
-            'D95saru5c2' => '1111113', // latistecharch internetID
-            'emplidFORjohnsojr' => '1111112',
-            default => $sisId,
-        };
+        $mappings = config('lti.dev_sis_mappings', []);
+        return $mappings[$sisId] ?? $sisId;
     }
 
     /**
