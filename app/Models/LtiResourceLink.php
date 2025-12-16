@@ -64,7 +64,15 @@ class LtiResourceLink extends Model
      */
     public function gradeSubmissions()
     {
-        return $this->hasMany(LtiGradeSubmission::class);
+        return $this->hasMany(LtiGradeSubmission::class, 'lti_resource_link_id');
+    }
+
+    /**
+     * Get only the latest submission per user for this resource link
+     */
+    public function latestGradeSubmissions()
+    {
+        return $this->gradeSubmissions()->latestPerUser();
     }
 
     /**

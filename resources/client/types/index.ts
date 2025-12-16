@@ -305,3 +305,35 @@ export interface LanguageOption {
   name: string;
   locale: string;
 }
+
+export interface LtiResourceLink {
+  id: number;
+  resource_link_id: string;
+  title: string;
+  context_title: string;
+  context_label: string;
+}
+
+export interface LtiGradeSubmission {
+  id: number;
+  user: User;
+  score_given: number;
+  score_maximum: number;
+  score_percentage: number;
+  success: boolean;
+  error_message: string | null;
+  submitted_at: ISODateTime;
+  activity_progress: string;
+  grading_progress: string;
+  can_retry: boolean;
+}
+
+export interface ResourceLinkWithSubmissions {
+  resource_link: LtiResourceLink;
+  submissions: LtiGradeSubmission[];
+}
+
+export interface GradesReport {
+  has_lti_context: boolean;
+  resource_links: ResourceLinkWithSubmissions[];
+}

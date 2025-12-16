@@ -58,6 +58,28 @@ class LtiGradeSubmission extends Model
     }
 
     /**
+     * Scope to get only the latest submission per user
+     * Uses a subquery to find the maximum submitted_at per user, then joins to get those records
+     */
+    public function scopeLatestPerUser($query)
+    {
+        $latestSubmissions = static::query()
+            ->selectRaw('user_id, lti_resource_link_id, MAX(submitted_at) as max_submitted_at')
+            ->groupBy('user_id', 'lti_resource_link_id');
+
+        return $query
+            ->joinSub(
+                $latestSubmissions,
+                'latest',
+                function ($join) {
+                    $join->on('lti_grade_submissions.user_id', '=', 'latest.user_id')
+                        ->on('lti_grade_submissions.lti_resource_link_id', '=', 'latest.lti_resource_link_id')
+                        ->on('lti_grade_submissions.submitted_at', '=', 'latest.max_submitted_at');
+                }
+            );
+    }
+
+    /**
      * Check if this submission was successful
      */
     public function wasSuccessful(): bool

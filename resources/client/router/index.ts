@@ -89,6 +89,17 @@ const router = createRouter({
       }),
     },
     {
+      path: "/decks/:deckId/reports/grades",
+      name: "decks.reports.grades",
+      component: () =>
+        import(
+          "../pages/Decks/DeckGradesReportPage/DeckGradesReportPage.vue"
+        ),
+      props: (route) => ({
+        deckId: Number(route.params.deckId),
+      }),
+    },
+    {
       path: "/decks/create",
       name: "decks.create",
       component: () => import("../pages/Decks/CreateOrEditDeckPage.vue"),

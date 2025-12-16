@@ -364,6 +364,20 @@ export async function getDeckSummaryReport(deckId: number) {
   return res.data;
 }
 
+export async function getDeckGradesReport(deckId: number) {
+  const res = await axios.get<T.GradesReport>(
+    `/decks/${deckId}/reports/grades`,
+  );
+  return res.data;
+}
+
+export async function retryGradeSubmission(submissionId: number) {
+  const res = await axios.post<{ message: string; submission_id: number }>(
+    `/lti-grade-submissions/${submissionId}/retry`,
+  );
+  return res.data;
+}
+
 export async function createDeckActivityEvent({
   deckId,
   activityType,
