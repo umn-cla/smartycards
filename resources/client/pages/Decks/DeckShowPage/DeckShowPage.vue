@@ -11,7 +11,7 @@
         <MoreDeckActions :deck="deck" />
         <Button asChild variant="outline">
           <RouterLink
-            v-if="deck.capabilities.canViewReports"
+            v-if="deck.capabilities.canViewReports && report?.has_lti_context"
             :to="{ name: 'decks.reports.grades', params: { deckId } }"
           >
             Grades
@@ -151,6 +151,7 @@ import MoreCardActions from "./MoreCardActions.vue";
 import { ref } from "vue";
 import LevelProgress from "@/components/LevelProgress.vue";
 import { useActivityTypesQuery } from "@/queries/activityTypes/useActivityTypesQuery";
+import { useDeckGradesReportQuery } from "@/queries/decks/useDeckGradesReportQuery";
 import { Input } from "@/components/ui/input";
 import { IconSearch } from "@/components/icons";
 
@@ -164,6 +165,7 @@ const deckIdRef = computed(() => props.deckId);
 const { data: deck } = useDeckByIdQuery(deckIdRef);
 const { mutate: deleteCard } = useDeleteCardMutation();
 const { data: activityTypes } = useActivityTypesQuery();
+const { data: report } = useDeckGradesReportQuery(deckIdRef);
 
 const xpByActivityTypeName = computed(() => {
   return activityTypes.value?.reduce(
