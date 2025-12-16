@@ -27,93 +27,98 @@
           </p>
         </div>
 
-        <!-- Grades Tables - Grouped by Assignment -->
+        <!-- Grades Tables - Grouped by Course -->
         <div v-if="report?.has_lti_context">
           <div
-            v-for="resourceLinkGroup in report.resource_links"
-            :key="resourceLinkGroup.resource_link.id"
+            v-for="course in groupedByCourse"
+            :key="course.courseName"
             class="mb-12"
           >
-            <div class="mb-4">
-              <h2 class="text-brand-maroon-900/70 text-2xl font-bold">
-                {{ resourceLinkGroup.resource_link.context_title }}
-              </h2>
-              <div class="my-4">
+            <h2 class="text-brand-maroon-900/70 text-2xl font-bold mb-6">
+              {{ course.courseName }}
+            </h2>
+
+            <div
+              v-for="assignment in course.assignments"
+              :key="assignment.resource_link.id"
+              class="mb-8 ml-4"
+            >
+              <div class="mb-4">
                 <b class="text-xs uppercase text-brand-maroon-900/50"
                   >Assignment</b
                 >
-                <p>{{ resourceLinkGroup.resource_link.title }}</p>
+                <p class="text-lg">{{ assignment.resource_link.title }}</p>
               </div>
-            </div>
 
-            <p
-              v-if="resourceLinkGroup.submissions.length === 0"
-              class="text-center"
-            >
-              No grade submissions yet for this assignment.
-            </p>
+              <p
+                v-if="assignment.submissions.length === 0"
+                class="text-center text-brand-maroon-900/50"
+              >
+                No grade submissions yet for this assignment.
+              </p>
 
-            <div v-else class="bg-brand-oatmeal-50 px-4 py-2 rounded-md">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Student</TableHead>
-                    <TableHead class="text-center">Score</TableHead>
-                    <TableHead class="text-center">Status</TableHead>
-                    <TableHead class="text-center">Submitted</TableHead>
-                    <TableHead class="text-center">Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  <TableRow
-                    v-for="submission in resourceLinkGroup.submissions"
-                    :key="submission.id"
-                  >
-                    <TableCell>
-                      <p class="font-medium">{{ submission.user.name }}</p>
-                      <p class="text-brand-maroon-900/50 text-sm">
-                        {{ submission.user.email }}
-                      </p>
-                    </TableCell>
-                    <TableCell class="text-center">
-                      {{ submission.score_percentage.toFixed(0) }}%
-                    </TableCell>
-                    <TableCell class="text-center">
-                      <Badge
-                        :class="{
-                          'bg-green-100 text-green-700 border-green-200':
-                            submission.success,
-                          'bg-red-100 text-red-700 border-red-200':
-                            !submission.success,
-                        }"
-                      >
-                        {{ submission.success ? "Success" : "Failed" }}
-                      </Badge>
-                      <p
-                        v-if="submission.error_message"
-                        class="text-xs text-red-600 mt-1"
-                        :title="submission.error_message"
-                      >
-                        {{ truncateError(submission.error_message) }}
-                      </p>
-                    </TableCell>
-                    <TableCell class="text-center text-sm">
-                      {{ formatDate(submission.submitted_at) }}
-                    </TableCell>
-                    <TableCell class="text-center">
-                      <Button
-                        v-if="submission.can_retry"
-                        @click="handleRetry(submission.id)"
-                        variant="outline"
-                        size="sm"
-                        :disabled="isRetrying"
-                      >
-                        Retry
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                </TableBody>
-              </Table>
+              <div v-else class="bg-brand-oatmeal-50 px-4 py-2 rounded-md">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Student</TableHead>
+                      <TableHead class="text-center">Score</TableHead>
+                      <TableHead class="text-center">Status</TableHead>
+                      <TableHead class="text-center">Submitted</TableHead>
+                      <TableHead class="text-center">Actions</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    <TableRow
+                      v-for="submission in assignment.submissions"
+                      :key="submission.id"
+                    >
+                      <TableCell>
+                        <p class="font-medium">{{ submission.user.name }}</p>
+                        <p class="text-brand-maroon-900/50 text-sm">
+                          {{ submission.user.email }}
+                        </p>
+                      </TableCell>
+                      <TableCell class="text-center">
+                        {{ submission.score_percentage.toFixed(0) }}%
+                      </TableCell>
+                      <TableCell class="text-center">
+                        <Badge
+                          :class="{
+                            'bg-green-100 text-green-700 border-green-200':
+                              submission.success,
+                            'bg-red-100 text-red-700 border-red-200':
+                              !submission.success,
+                          }"
+                        >
+                          {{ submission.success ? "Success" : "Failed" }}
+                        </Badge>
+                        <p
+                          v-if="submission.error_message"
+                          class="text-xs text-red-600 mt-1"
+                          :title="submission.error_message"
+                        >
+                          {{ truncateError(submission.error_message) }}
+                        </p>
+                      </TableCell>
+                      <TableCell class="text-center text-sm">
+                        {{ formatDate(submission.submitted_at) }}
+                      </TableCell>
+                      <TableCell class="text-center">
+                        <Button
+                          v-if="submission.can_retry"
+                          @click="handleRetry(submission.id)"
+                          variant="outline"
+                          size="sm"
+                          :disabled="isRetrying"
+                        >
+                          Retry
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  </TableBody>
+                </Table>
+              </div>
             </div>
           </div>
         </div>
@@ -152,6 +157,28 @@ const { data: deck } = useDeckByIdQuery(deckIdRef);
 const { data: report } = useDeckGradesReportQuery(deckIdRef);
 const { mutate: retrySubmission, isPending: isRetrying } =
   useRetryGradeSubmissionMutation(props.deckId);
+
+// Group assignments by course
+const groupedByCourse = computed(() => {
+  if (!report.value?.resource_links) return [];
+
+  const courseMap = new Map<
+    string,
+    { courseName: string; assignments: T.ResourceLinkWithSubmissions[] }
+  >();
+
+  report.value.resource_links.forEach((resourceLink) => {
+    const courseName = resourceLink.resource_link.context_title;
+
+    if (!courseMap.has(courseName)) {
+      courseMap.set(courseName, { courseName, assignments: [] });
+    }
+
+    courseMap.get(courseName)!.assignments.push(resourceLink);
+  });
+
+  return Array.from(courseMap.values());
+});
 
 function handleRetry(submissionId: number) {
   retrySubmission(submissionId);
