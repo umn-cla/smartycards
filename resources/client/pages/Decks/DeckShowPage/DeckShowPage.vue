@@ -7,7 +7,16 @@
       :backLabel="`Decks`"
       :backTo="{ name: 'decks.index' }"
     >
-      <div class="flex gap-2">
+      <template #title-append>
+        <Badge
+          v-if="deck.has_lti_context"
+          variant="secondary"
+          class="text-xs border border-brand-maroon-900/10"
+        >
+          Canvas
+        </Badge>
+      </template>
+      <div class="flex gap-2 items-center">
         <MoreDeckActions :deck="deck" />
         <Button asChild variant="outline">
           <RouterLink
@@ -142,6 +151,7 @@ import * as T from "@/types";
 import { RouterLink } from "vue-router";
 import { computed } from "vue";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import MoreDeckActions from "@/pages/Decks/DeckIndexPage/MoreDeckActions.vue";
 import PageHeader from "@/components/PageHeader.vue";
 import FlippableCard from "@/components/FlippableCard.vue";
