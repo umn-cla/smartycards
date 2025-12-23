@@ -84,7 +84,6 @@ class LtiService
     public function hasStaffRole(LtiMessageLaunch $launch): bool
     {
         $staffRoles = [
-            LtiConstants::INSTITUTION_ADMINISTRATOR,
             LtiConstants::MEMBERSHIP_INSTRUCTOR,
             LtiConstants::MEMBERSHIP_TA,
             LtiConstants::MEMBERSHIP_CONTENTDEVELOPER,
