@@ -1,116 +1,65 @@
 # Canvas Seeding Scripts
 
-Scripts to seed and reset Canvas with test data for LTI development.
+Seed Canvas with test data for LTI development via SIS Import.
 
 ## Setup
 
-1. Generate a Canvas API access token:
-   - Log into your Canvas instance (e.g., https://canvas.docker)
-   - Go to Account → Settings → Approved Integrations
-   - Click "+ New Access Token"
-   - Give it a purpose (e.g., "Local Development") and optionally set an expiration
-   - Copy the generated token
+1. Generate Canvas API access token:
+   - Log into Canvas (e.g., https://canvas.docker)
+   - Account → Settings → Approved Integrations → "+ New Access Token"
+   - Copy the token
 
-2. Create a `.env` file in the `scripts/canvas` directory:
+2. Create `.env` file:
 
 ```bash
 cd scripts/canvas
 cp .env.example .env
-# Edit .env and add your token
+# Add your token to .env
 ```
 
-The `.env.example` file includes `NODE_TLS_REJECT_UNAUTHORIZED=0` which disables SSL certificate validation for local development with self-signed certificates (mkcert). This is safe for local development but should never be used in production.
+Note: `.env.example` includes `NODE_TLS_REJECT_UNAUTHORIZED=0` for self-signed certs (dev only).
 
-## Usage
-
-### Test the connection
-
-First, verify your Canvas connection is working:
+## Commands
 
 ```bash
-npm run canvas:test
+npm run canvas:test   # Test API connection
+npm run canvas:seed   # Seed Canvas with test data
 ```
 
-This will:
-- Verify your configuration
-- Test the API connection
-- List existing courses in Canvas
+## Seeded Data
 
-### Seed Canvas with test data
+`npm run canvas:seed` creates:
 
-If using `.env` file:
+- **Course**: SPAN 1234 Spanish 1234 -- Sect. 001 (Fall 2025)
+- **Sections**:
+  - SPAN 1234 001 (Fall 2025)
+  - SPAN 2234 001 (Fall 2025)
+- **Users**:
+  - 1 admin: `adminuser`
+  - 2 instructors: `ainstructor`, `binstructor`
+  - 2 assistants: `aassistant`, `bassistant`
+  - 10 students: `astudent`, `bstudent`, `cstudent`, `dstudent`, `estudent`, `fstudent`, `gstudent`, `hstudent`, `istudent`, `jstudent`
 
-```bash
-npm run canvas:seed
-```
+All users are enrolled in both sections. Password matches login_id (e.g., `astudent` / `astudent`, `aassistant` / `aassistant`).
 
-This creates:
-- 1 course: MLSP 5211 (001) Fundamentals in Hematology and Hemostasis (Fall 2024)
-- 2 sections:
-  - 001 UMNTC MLSP 5211 (Fall 2024)
-  - 001 UMNTC MLSP 6211 (Fall 2024) [cross-listed]
-- 2 instructors (enrolled in both sections)
-- 2 TAs (enrolled in both sections)
-- 10 students (5 in each section)
+## Reset Canvas
 
-**All users are created with password: `password`**
-
-After seeding, the script will display all login IDs. You can log in as any user with their login ID (not email) and password `password`.
-
-### Reset Canvas
+To reset Canvas database:
 
 ```bash
-# navigate to `canvas-lms` code folder
 cd ../canvas-lms
-
-# Run the Canvas Dev Setup script
-# (probably, keep existing config files when prompted but DROP db)
-./script/docker_dev_setup.sh
-
+./script/docker_dev_setup.sh  # Keep config files, DROP database
 ```
+
+Warning: Destroys all data including LTI configuration.
 
 ## Configuration
 
-You can customize the Canvas instance and account ID using environment variables:
+Environment variables:
 
 ```bash
 CANVAS_BASE_URL=https://canvas.docker
 CANVAS_ACCESS_TOKEN=your_token_here
 CANVAS_ACCOUNT_ID=1
-NODE_TLS_REJECT_UNAUTHORIZED=0  # For self-signed certs (dev only)
+NODE_TLS_REJECT_UNAUTHORIZED=0  # Dev only
 ```
-
-## Troubleshooting
-
-### "SIS ID already in use" errors
-
-We use timestamps in SIS IDs to avoid conflicts. If you encounter this error:
-1. Run `npm run canvas:reset` to completely reset the database
-2. Re-configure LTI
-3. Run `npm run canvas:seed` again
-
-Note: The reset command destroys all Canvas data, so you'll lose your LTI configuration.
-
-### Logging in as seeded users
-
-All seeded users are created with the password `password`. After seeding, the script will display ALL login IDs organized by role.
-
-**To log in**:
-1. Go to `https://canvas.docker`
-2. Use the **login ID** (e.g., `albert.instructor`, `anna.student`), **not** the email address
-3. Password: `password`
-
-**User naming convention**:
-- Instructors: Albert Instructor, Betty Instructor
-- TAs: Kevin TA, Laura TA
-- Students: Patricia Student, Quincy Student, Rachel Student, etc.
-- Login IDs: `{firstname}.{role}` (e.g., `albert.instructor`, `kevin.ta`, `patricia.student`)
-
-Each role uses distinct first names for easy identification.
-
-**Note**: `force_self_registration` makes users immediately active without email confirmation, perfect for testing.
-
-**Alternative**: Use Canvas admin masquerade feature:
-1. Log in as admin (`canvas@example.com` / `canvas`)
-2. Go to Account → Settings → Users
-3. Find the user and click "Act as User"

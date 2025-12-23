@@ -16,22 +16,22 @@ SPAN-1234-001-FA25,SPAN-1234-001-FA25,"SPAN 1234 001 (Fall 2025)",active
 SPAN-2234-001-FA25,SPAN-1234-001-FA25,"SPAN 2234 001 (Fall 2025)",active
 `;
 
-const USERS_CSV = `user_id,login_id,first_name,last_name,email,status
-1001,admin,Admin,User,latistecharch+admin@umn.edu,active
-2001,ainstructor,Albert,Instructor,latistecharch+ainstructor@umn.edu,active
-2002,binstructor,Betty,Instructor,latistecharch+binstructor@umn.edu,active
-3001,ata,Alice,TA,latistecharch+ata@umn.edu,active
-3002,bta,Bob,TA,latistecharch+bta@umn.edu,active
-4001,astudent,Amy,Student,latistecharch+astudent@umn.edu,active
-4002,bstudent,Ben,Student,latistecharch+bstudent@umn.edu,active
-4003,cstudent,Claire,Student,latistecharch+cstudent@umn.edu,active
-4004,dstudent,Dan,Student,latistecharch+dstudent@umn.edu,active
-4005,estudent,Emma,Student,latistecharch+estudent@umn.edu,active
-4006,fstudent,Frank,Student,latistecharch+fstudent@umn.edu,active
-4007,gstudent,Grace,Student,latistecharch+gstudent@umn.edu,active
-4008,hstudent,Henry,Student,latistecharch+hstudent@umn.edu,active
-4009,istudent,Iris,Student,latistecharch+istudent@umn.edu,active
-4010,jstudent,Jack,Student,latistecharch+jstudent@umn.edu,active
+const USERS_CSV = `user_id,login_id,first_name,last_name,email,status,password
+1001,adminuser,Admin,User,latistecharch+adminuser@umn.edu,active,adminuser
+2001,ainstructor,Albert,Instructor,latistecharch+ainstructor@umn.edu,active,ainstructor
+2002,binstructor,Betty,Instructor,latistecharch+binstructor@umn.edu,active,binstructor
+3001,aassistant,Alice,Assistant,latistecharch+aassistant@umn.edu,active,aassistant
+3002,bassistant,Bob,Assistant,latistecharch+bassistant@umn.edu,active,bassistant
+4001,astudent,Amy,Student,latistecharch+astudent@umn.edu,active,astudent
+4002,bstudent,Ben,Student,latistecharch+bstudent@umn.edu,active,bstudent
+4003,cstudent,Claire,Student,latistecharch+cstudent@umn.edu,active,cstudent
+4004,dstudent,Dan,Student,latistecharch+dstudent@umn.edu,active,dstudent
+4005,estudent,Emma,Student,latistecharch+estudent@umn.edu,active,estudent
+4006,fstudent,Frank,Student,latistecharch+fstudent@umn.edu,active,fstudent
+4007,gstudent,Grace,Student,latistecharch+gstudent@umn.edu,active,gstudent
+4008,hstudent,Henry,Student,latistecharch+hstudent@umn.edu,active,hstudent
+4009,istudent,Iris,Student,latistecharch+istudent@umn.edu,active,istudent
+4010,jstudent,Jack,Student,latistecharch+jstudent@umn.edu,active,jstudent
 `;
 
 const ENROLLMENTS_CSV = `section_id,user_id,role,status
@@ -123,7 +123,7 @@ const main = async () => {
     console.log(` ✓`);
   }
 
-  console.log('\n✨ Done! Login with username (password = "password")\n');
+  console.log('\n✨ Done! Login with username (password = username)\n');
 };
 
 main().catch((error) => {
