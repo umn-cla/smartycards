@@ -40,6 +40,8 @@ class DeckResource extends JsonResource
             // TODO: use current_user_details.role instead
             'current_user_role' => $this->current_user_role,
 
+            'has_lti_context' => $this->ltiResourceLinks()->exists(),
+
             'capabilities' => [
                 'canUpdate' => $request->user()->can('update', $this->resource),
                 'canDelete' => $request->user()->can('delete', $this->resource),
