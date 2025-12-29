@@ -11,7 +11,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Packback\Lti1p3\LtiException;
 use Packback\Lti1p3\LtiConstants;
-use Packback\Lti1p3\LtiMessageLaunch;
 
 class LtiController extends Controller
 {
@@ -78,13 +77,6 @@ class LtiController extends Controller
                 return redirect()->route('lti.resource', [
                     'launch_id' => $launchId,
                     'launch_type' => 'resource'
-                ]);
-            }
-
-            if ($launch->isSubmissionReviewLaunch()) {
-                return redirect()->route('lti.submission_review', [
-                    'launch_id' => $launchId,
-                    'launch_type' => 'submission_review'
                 ]);
             }
 
@@ -184,31 +176,6 @@ class LtiController extends Controller
             $ltiService->createOrUpdateResourceLink($launch, $deckId);
 
             return redirect("/decks/{$deckId}/activities/{$deckActivity}/embed?launch_id={$launchId}&launch_type=resource");
-        } catch (\Exception $e) {
-            return $this->handleException($e);
-        }
-    }
-
-    /**
-     * Handle submission review launch (instructor reviews student work)
-     */
-    public function submissionReview(Request $request, LtiService $ltiService): View|RedirectResponse
-    {
-        $launchId = $request->query('launch_id');
-        if (!$launchId) {
-            return $this->handleException(new LtiException(self::MISSING_LAUNCH_ID_MESSAGE));
-        }
-
-        try {
-            $launch = $ltiService->getLaunchFromCache($launchId);
-
-            // Get user ID being reviewed
-            $forUser = $launch->getLaunchData()['https://purl.imsglobal.org/spec/lti/claim/for_user'] ?? null;
-
-            return view('lti.submission_review', [
-                'launch' => $launch,
-                'for_user' => $forUser
-            ]);
         } catch (\Exception $e) {
             return $this->handleException($e);
         }

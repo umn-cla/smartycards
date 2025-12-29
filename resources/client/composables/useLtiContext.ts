@@ -1,10 +1,10 @@
 import { computed } from "vue";
 import { useRoute } from "vue-router";
 
-export type LaunchType = "deep_link" | "resource" | "submission_review";
+export type LaunchType = "deep_link" | "resource";
 
 /**
- * for detecting and working with LTI launch contexts
+ * Composable for detecting and working with LTI launch context
  */
 export function useLtiContext() {
   const route = useRoute();
@@ -18,36 +18,37 @@ export function useLtiContext() {
   });
 
   /**
-   * The type of LTI launch (deep_link, resource, or submission_review)
+   * The type of LTI launch (deep_link or resource)
    * Returns null if not in an LTI context
    */
   const launchType = computed((): LaunchType | null => {
     const type = route.query.launch_type;
-    if (
-      type === "deep_link" ||
-      type === "resource" ||
-      type === "submission_review"
-    ) {
+    if (type === "deep_link" || type === "resource") {
       return type;
     }
     return null;
   });
 
+  /**
+   * Whether the current page is in any LTI launch context
+   */
   const isLtiLaunch = computed(() => !!launchId.value);
 
+  /**
+   * Whether we're in a deep link launch (instructor selecting/configuring content)
+   */
   const isDeepLinkLaunch = computed(() => launchType.value === "deep_link");
 
+  /**
+   * Whether we're in a resource launch (student/instructor accessing configured assignment)
+   */
   const isResourceLaunch = computed(() => launchType.value === "resource");
-
-  const isSubmissionReviewLaunch = computed(
-    () => launchType.value === "submission_review",
-  );
 
   return {
     /** The LTI launch ID for the current session */
     launchId,
 
-    /** The type of LTI launch ('deep_link' | 'resource' | 'submission_review' | null) */
+    /** The type of LTI launch ('deep_link' | 'resource' | null) */
     launchType,
 
     /** True if in any LTI launch context */
@@ -58,8 +59,5 @@ export function useLtiContext() {
 
     /** True if in resource launch (student/instructor in activity) */
     isResourceLaunch,
-
-    /** True if in submission review launch (instructor reviewing) */
-    isSubmissionReviewLaunch,
   };
 }
