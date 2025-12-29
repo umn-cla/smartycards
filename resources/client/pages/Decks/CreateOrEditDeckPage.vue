@@ -70,7 +70,7 @@ import {
   useUpdateDeckMutation,
   useDeckByIdQuery,
 } from "@/queries/decks";
-import { useRouter, useRoute } from "vue-router";
+import { useRouter } from "vue-router";
 import InputGroup from "@/components/InputGroup.vue";
 import PageHeader from "@/components/PageHeader.vue";
 import { Button } from "@/components/ui/button";
@@ -79,6 +79,7 @@ import HintTooltip from "@/components/HintTooltip.vue";
 import { Label } from "@/components/ui/label";
 import SelectLanguage from "@/components/SelectLanguage.vue";
 import * as T from "@/types";
+import { useLtiContext } from "@/composables/useLtiContext";
 
 const props = defineProps<{
   deckId: number | null;
@@ -94,12 +95,10 @@ const form = reactive({
 
 const isCreateMode = computed(() => props.deckId === null);
 const router = useRouter();
-const route = useRoute();
 const deckIdRef = computed(() => props.deckId);
 
 // LTI context detection
-const isFromLti = computed(() => route.query.fromLti === "true");
-const ltiLaunchId = computed(() => route.query.launchId as string | undefined);
+const { launchId, isDeepLinkLaunch, launchType } = useLtiContext();
 const { data: deck } = useDeckByIdQuery(deckIdRef);
 const { mutate: createDeck } = useCreateDeckMutation();
 const { mutate: updateDeck } = useUpdateDeckMutation();
@@ -119,10 +118,13 @@ watch(
 );
 
 const handleCancel = () => {
-  if (isFromLti.value && ltiLaunchId.value) {
+  if (isDeepLinkLaunch.value && launchId.value) {
     router.push({
       name: "lti.deep_link",
-      query: { launch_id: ltiLaunchId.value },
+      query: {
+        launch_id: launchId.value,
+        launch_type: launchType.value,
+      },
     });
   } else {
     router.push({ name: "decks.index" });
@@ -133,11 +135,12 @@ async function handleSubmit() {
   if (isCreateMode.value) {
     createDeck(form, {
       onSuccess: (newDeck) => {
-        if (isFromLti.value && ltiLaunchId.value) {
+        if (isDeepLinkLaunch.value && launchId.value) {
           router.push({
             name: "lti.deep_link",
             query: {
-              launch_id: ltiLaunchId.value,
+              launch_id: launchId.value,
+              launch_type: launchType.value,
               newDeckId: newDeck.id,
             },
           });

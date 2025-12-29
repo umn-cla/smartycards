@@ -34,7 +34,9 @@ class LtiGradeSubmission extends Resource
      * @var array
      */
     public static $search = [
-        'id', 'lti_user_id', 'launch_id',
+        'id',
+        'lti_user_id',
+        'launch_id',
     ];
 
     /**
@@ -78,7 +80,7 @@ class LtiGradeSubmission extends Resource
                 ->readonly(),
 
             Text::make('Score %', function () {
-                return number_format($this->getScorePercentage(), 2).'%';
+                return number_format($this->getScorePercentage(), 2) . '%';
             })->onlyOnIndex(),
 
             Text::make('Activity Progress')

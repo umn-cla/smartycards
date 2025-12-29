@@ -67,16 +67,25 @@ class LtiController extends Controller
 
             // faculty set up assignment
             if ($launch->isDeepLinkLaunch()) {
-                return redirect()->route('lti.deep_link', ['launch_id' => $launchId]);
+                return redirect()->route('lti.deep_link', [
+                    'launch_id' => $launchId,
+                    'launch_type' => 'deep_link'
+                ]);
             }
 
             // student (or faculty) launches assignment
             if ($launch->isResourceLaunch()) {
-                return redirect()->route('lti.resource', ['launch_id' => $launchId]);
+                return redirect()->route('lti.resource', [
+                    'launch_id' => $launchId,
+                    'launch_type' => 'resource'
+                ]);
             }
 
             if ($launch->isSubmissionReviewLaunch()) {
-                return redirect()->route('lti.submission_review', ['launch_id' => $launchId]);
+                return redirect()->route('lti.submission_review', [
+                    'launch_id' => $launchId,
+                    'launch_type' => 'submission_review'
+                ]);
             }
 
             throw new LtiException('Unknown launch type');
@@ -174,7 +183,7 @@ class LtiController extends Controller
             // Create or update the LTI resource link with AGS endpoints
             $ltiService->createOrUpdateResourceLink($launch, $deckId);
 
-            return redirect("/decks/{$deckId}/activities/{$deckActivity}/embed?lti_launch_id={$launchId}");
+            return redirect("/decks/{$deckId}/activities/{$deckActivity}/embed?launch_id={$launchId}&launch_type=resource");
         } catch (\Exception $e) {
             return $this->handleException($e);
         }

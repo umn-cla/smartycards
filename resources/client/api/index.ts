@@ -397,7 +397,7 @@ export async function createDeckActivityEvent({
       activity_type_name: activityType,
       correct_count: correctCount,
       total_count: totalCount,
-      lti_launch_id: ltiLaunchId,
+      launch_id: ltiLaunchId,
     },
   );
   return res.data;

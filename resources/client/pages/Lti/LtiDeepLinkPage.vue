@@ -117,8 +117,9 @@ const { data: decks, isLoading: isLoadingDecks, error } = useAllDecksQuery();
 const selectedDeckId = ref<string | null>(null);
 const isSubmitting = ref(false);
 
-const selectedDeck = computed(() =>
-  decks.value?.find((d) => d.id.toString() === selectedDeckId.value) ?? null
+const selectedDeck = computed(
+  () =>
+    decks.value?.find((d) => d.id.toString() === selectedDeckId.value) ?? null,
 );
 
 const ltiFormRef = ref<HTMLFormElement | null>(null);
@@ -138,7 +139,7 @@ const submitSelection = () => {
 const createNewDeck = () => {
   router.push({
     name: "decks.create",
-    query: { fromLti: "true", launchId: ltiData.launchId },
+    query: { launch_id: ltiData.launchId, launch_type: "deep_link" },
   });
 };
 
@@ -150,8 +151,7 @@ onMounted(() => {
 });
 
 const cancel = () => {
-  // In a real LTI implementation, this would navigate back to the LMS
-  // For now, just show an alert
+  // TODO: Navigate back to LMS if possible
   if (
     confirm(
       "Are you sure you want to cancel? This will close the assignment setup.",

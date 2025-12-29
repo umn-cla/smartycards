@@ -30,7 +30,7 @@ class ActivityEventController extends Controller
             ],
             'correct_count' => ['integer', 'nullable'],
             'total_count' => ['integer', 'nullable'],
-            'lti_launch_id' => ['string', 'nullable'],
+            'launch_id' => ['string', 'nullable'],
         ]);
 
         $activityType = ActivityType::where('name', $validated['activity_type_name'])->first();
@@ -44,15 +44,15 @@ class ActivityEventController extends Controller
         $ltiResourceLinkId = null;
         $gradeSubmission = null;
 
-        if (!empty($validated['lti_launch_id'])) {
+        if (!empty($validated['launch_id'])) {
             try {
-                $launch = $ltiService->getLaunchFromCache($validated['lti_launch_id']);
+                $launch = $ltiService->getLaunchFromCache($validated['launch_id']);
                 $resourceLink = $ltiService->createOrUpdateResourceLink($launch, $deck->id);
                 $ltiResourceLinkId = $resourceLink->id;
             } catch (\Exception $e) {
                 \Log::warning('Failed to get LTI resource link for activity event', [
                     'error' => $e->getMessage(),
-                    'launch_id' => $validated['lti_launch_id'],
+                    'launch_id' => $validated['launch_id'],
                 ]);
             }
         }
@@ -66,10 +66,10 @@ class ActivityEventController extends Controller
         ]);
 
         // Queue grade submission to Canvas if LTI context
-        if (!empty($validated['lti_launch_id'])) {
+        if (!empty($validated['launch_id'])) {
             try {
                 $gradeSubmission = $ltiService->queueGradeSubmissionFromLaunchId(
-                    launchId: $validated['lti_launch_id'],
+                    launchId: $validated['launch_id'],
                     userId: Auth::id(),
                     activityEventId: $event->id,
                     scoreGiven: 100.0,
@@ -84,7 +84,7 @@ class ActivityEventController extends Controller
                 \Log::error('Failed to queue grade submission to Canvas', [
                     'error' => $e->getMessage(),
                     'activity_event_id' => $event->id,
-                    'launch_id' => $validated['lti_launch_id'],
+                    'launch_id' => $validated['launch_id'],
                 ]);
             }
         }

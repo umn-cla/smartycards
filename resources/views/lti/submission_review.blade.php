@@ -12,15 +12,13 @@
 </head>
 
 <body class="font-sans antialiased">
-  <div id="lti-submission-review"
-       data-launch-id="{{ session('lti_launch_id') }}"
-       data-for-user="{{ json_encode($for_user) }}">
+  <div id="lti-submission-review" data-launch-id="{{ session('launch_id') }}" data-for-user="{{ json_encode($for_user) }}">
   </div>
 
   <script>
     // Make launch data available to Vue app
     window.ltiSubmissionReview = {
-      launchId: '{{ session('lti_launch_id') }}',
+      launchId: '{{ session('launch_id') }}',
       forUser: @json($for_user)
     };
   </script>
