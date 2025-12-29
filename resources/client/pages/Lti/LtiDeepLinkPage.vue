@@ -56,33 +56,8 @@
         </button>
       </div>
 
-      <!-- Configuration (only shown when deck selected) -->
+      <!-- Action Buttons -->
       <template v-if="selectedDeckId">
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">
-            Assignment Title
-          </label>
-          <input
-            v-model="config.title"
-            type="text"
-            class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-brand-teal-500 focus:border-transparent"
-            placeholder="e.g., Week 1 Vocabulary Practice"
-          />
-        </div>
-
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">
-            Description (optional)
-          </label>
-          <textarea
-            v-model="config.description"
-            rows="2"
-            class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-brand-teal-500 focus:border-transparent"
-            placeholder="Brief description"
-          ></textarea>
-        </div>
-
-        <!-- Action Buttons -->
         <div class="flex gap-2 pt-2">
           <button
             @click="submitSelection"
@@ -117,17 +92,6 @@
         name="deck_id"
         :value="selectedDeck?.id.toString()"
       />
-      <input
-        type="hidden"
-        name="title"
-        :value="config.title || `Practice: ${selectedDeck?.name}`"
-      />
-      <input
-        v-if="config.description"
-        type="hidden"
-        name="description"
-        :value="config.description"
-      />
     </form>
   </div>
 </template>
@@ -153,21 +117,9 @@ const { data: decks, isLoading: isLoadingDecks, error } = useAllDecksQuery();
 const selectedDeckId = ref<string | null>(null);
 const isSubmitting = ref(false);
 
-const config = ref({
-  title: "",
-  description: "",
-});
-
 const selectedDeck = computed(() =>
   decks.value?.find((d) => d.id.toString() === selectedDeckId.value) ?? null
 );
-
-// Set default title when deck is selected
-watch(selectedDeck, (deck) => {
-  if (deck && !config.value.title) {
-    config.value.title = `Practice: ${deck.name}`;
-  }
-});
 
 const ltiFormRef = ref<HTMLFormElement | null>(null);
 const csrfToken =

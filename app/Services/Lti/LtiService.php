@@ -110,8 +110,6 @@ class LtiService
 
         // Extract deck selection data from request
         $deckId = $requestData['deck_id'] ?? null;
-        $title = $requestData['title'] ?? 'SmartyCards Practice';
-        $description = $requestData['description'] ?? '';
 
         if (!$deckId) {
             throw new \InvalidArgumentException('Deck ID is required for deep link response');
@@ -120,8 +118,6 @@ class LtiService
         // Create the resource that will be inserted into the LMS
         $resource = Resource::new()
             ->setUrl(route('lti.launch'))
-            ->setTitle($title)
-            ->setText($description)
             ->setCustomParams([
                 // setting the deck as a custom param should let us
                 // link back to the deck when course is cloned
