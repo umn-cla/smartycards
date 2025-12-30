@@ -96,6 +96,7 @@ export interface Deck {
     canLeave: boolean;
     canJoinAsViewer: boolean; // can join if not already a member, and deck is public
     canViewReports: boolean;
+    canViewGrades: boolean;
     canCreateCards: boolean;
   };
   created_at: ISODateTime;
