@@ -205,7 +205,7 @@ class LtiController extends Controller
 
         $configuration = [
             'title' => 'SmartyCards',
-            'description' => 'Collaborative flashcard studying platform for higher education',
+            'description' => 'Collaborative flashcards',
             'oidc_initiation_url' => route('lti.login'),
             'target_link_uri' => route('lti.launch'),
             'scopes' => [
@@ -223,27 +223,10 @@ class LtiController extends Controller
                         'platform' => 'canvas.instructure.com',
                         'placements' => [
                             [
-                                'placement' => 'course_navigation',
-                                'message_type' => 'LtiResourceLinkRequest',
-                                'target_link_uri' => route('lti.launch'),
-                                'text' => 'SmartyCards',
-                                'icon_url' => "{$appUrl}/favicon.ico",
-                                'enabled' => true,
-                                'windowTarget' => '_self',
-                            ],
-                            [
-                                'placement' => 'link_selection',
-                                'message_type' => 'LtiDeepLinkingRequest',
-                                'target_link_uri' => route('lti.launch'),
-                                'text' => 'Add SmartyCards Content',
-                                'icon_url' => "{$appUrl}/favicon.ico",
-                                'enabled' => true,
-                            ],
-                            [
                                 'placement' => 'assignment_selection',
                                 'message_type' => 'LtiDeepLinkingRequest',
                                 'target_link_uri' => route('lti.launch'),
-                                'text' => 'SmartyCards Activity',
+                                'text' => 'SmartyCards',
                                 'icon_url' => "{$appUrl}/favicon.ico",
                                 'enabled' => true,
                             ],
