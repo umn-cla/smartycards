@@ -108,4 +108,32 @@ class User extends Authenticatable implements AuditableContract
             ->whereIn('role', $roleArray)
             ->exists();
     }
+
+    /**
+     * Get all LTI resource link memberships for this user
+     */
+    public function ltiResourceLinkMemberships()
+    {
+        return $this->hasMany(LtiResourceLinkMembership::class);
+    }
+
+    /**
+     * Get only staff memberships (where user is instructor/TA)
+     */
+    public function staffResourceLinkMemberships()
+    {
+        return $this->ltiResourceLinkMemberships()->where('is_staff', true);
+    }
+
+    /**
+     * Check if user has staff role in any resource link for a given deck
+     */
+    public function hasStaffRoleInDeck(Deck $deck): bool
+    {
+        return $this->staffResourceLinkMemberships()
+            ->whereHas('resourceLink', function ($query) use ($deck) {
+                $query->where('deck_id', $deck->id);
+            })
+            ->exists();
+    }
 }

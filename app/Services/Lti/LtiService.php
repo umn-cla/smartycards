@@ -483,4 +483,30 @@ class LtiService
         Auth::login($user);
         return $user;
     }
+
+    /**
+     * Create or update LTI resource link membership for a user
+     * Tracks which users have what roles in which Canvas courses
+     */
+    public function createOrUpdateMembership(
+        LtiMessageLaunch $launch,
+        User $user,
+        \App\Models\LtiResourceLink $resourceLink
+    ): \App\Models\LtiResourceLinkMembership {
+        $launchData = $launch->getLaunchData();
+        $roles = $launchData[LtiConstants::ROLES] ?? [];
+        $isStaff = $this->hasStaffRole($launch);
+
+        return \App\Models\LtiResourceLinkMembership::updateOrCreate(
+            [
+                'user_id' => $user->id,
+                'lti_resource_link_id' => $resourceLink->id,
+            ],
+            [
+                'roles' => $roles,
+                'is_staff' => $isStaff,
+                'last_launch_at' => now(),
+            ]
+        );
+    }
 }

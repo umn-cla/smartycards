@@ -90,4 +90,30 @@ class LtiResourceLink extends Model
     {
         return !empty($this->lineitem_url) || !empty($this->lineitems_url);
     }
+
+    /**
+     * Get all memberships for this resource link
+     */
+    public function memberships()
+    {
+        return $this->hasMany(LtiResourceLinkMembership::class, 'lti_resource_link_id');
+    }
+
+    /**
+     * Get only staff memberships (instructors, TAs, etc.)
+     */
+    public function staffMemberships()
+    {
+        return $this->memberships()->where('is_staff', true);
+    }
+
+    /**
+     * Check if a user has staff role in this resource link
+     */
+    public function userHasStaffRole(User $user): bool
+    {
+        return $this->staffMemberships()
+            ->where('user_id', $user->id)
+            ->exists();
+    }
 }

@@ -173,7 +173,10 @@ class LtiController extends Controller
             $deck->addOrPromoteUserToRole($user, $membershipRole);
 
             // Create or update the LTI resource link with AGS endpoints
-            $ltiService->createOrUpdateResourceLink($launch, $deckId);
+            $resourceLink = $ltiService->createOrUpdateResourceLink($launch, $deckId);
+
+            // Track user's role in this Canvas course for grade report authorization
+            $ltiService->createOrUpdateMembership($launch, $user, $resourceLink);
 
             return redirect("/decks/{$deckId}/activities/{$deckActivity}/embed?launch_id={$launchId}&launch_type=resource");
         } catch (\Exception $e) {

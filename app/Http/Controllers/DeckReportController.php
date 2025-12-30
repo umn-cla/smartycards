@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Deck;
 use App\Models\LtiGradeSubmission;
 use Gate;
+use Auth;
 
 class DeckReportController extends Controller
 {
@@ -26,14 +27,22 @@ class DeckReportController extends Controller
 
     public function grades(Deck $deck)
     {
-        Gate::authorize('viewReports', [Deck::class, $deck]);
+        Gate::authorize('viewGrades', [Deck::class, $deck]);
 
-        $resourceLinks = $deck->ltiResourceLinks;
+        // Filter to only Canvas courses where user has staff role
+        // (Policy ensures user has staff role in at least one course)
+        $resourceLinks = $deck->ltiResourceLinks()
+            ->whereHas('memberships', function ($query) {
+                $query->where('user_id', Auth::id())
+                    ->where('is_staff', true);
+            })
+            ->get();
 
         if ($resourceLinks->isEmpty()) {
             return response()->json([
                 'has_lti_context' => false,
                 'resource_links' => [],
+                'message' => 'No Canvas courses found where you have instructor access',
             ]);
         }
 

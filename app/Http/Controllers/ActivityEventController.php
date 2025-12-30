@@ -49,6 +49,9 @@ class ActivityEventController extends Controller
                 $launch = $ltiService->getLaunchFromCache($validated['launch_id']);
                 $resourceLink = $ltiService->createOrUpdateResourceLink($launch, $deck->id);
                 $ltiResourceLinkId = $resourceLink->id;
+
+                // Track user's role in this Canvas course for grade report authorization
+                $ltiService->createOrUpdateMembership($launch, Auth::user(), $resourceLink);
             } catch (\Exception $e) {
                 \Log::warning('Failed to get LTI resource link for activity event', [
                     'error' => $e->getMessage(),
