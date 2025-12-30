@@ -63,7 +63,6 @@
                     <TableRow>
                       <TableHead>Student</TableHead>
                       <TableHead class="text-center">Score</TableHead>
-                      <TableHead class="text-center">Status</TableHead>
                       <TableHead class="text-center">Submitted</TableHead>
                       <TableHead class="text-center">Actions</TableHead>
                     </TableRow>
@@ -82,16 +81,15 @@
                       <TableCell class="text-center">
                         {{ submission.score_percentage.toFixed(0) }}%
                       </TableCell>
+                      <TableCell class="text-center text-sm">
+                        {{ formatDate(submission.submitted_at) }}
+                      </TableCell>
                       <TableCell class="text-center">
                         <Badge
-                          :class="{
-                            'bg-green-100 text-green-700 border-green-200':
-                              submission.success,
-                            'bg-red-100 text-red-700 border-red-200':
-                              !submission.success,
-                          }"
+                          v-if="!submission.success"
+                          class="bg-red-100 text-red-700 border-red-200"
                         >
-                          {{ submission.success ? "Success" : "Failed" }}
+                          Error
                         </Badge>
                         <p
                           v-if="submission.error_message"
@@ -100,20 +98,17 @@
                         >
                           {{ truncateError(submission.error_message) }}
                         </p>
-                      </TableCell>
-                      <TableCell class="text-center text-sm">
-                        {{ formatDate(submission.submitted_at) }}
-                      </TableCell>
-                      <TableCell class="text-center">
-                        <Button
-                          v-if="submission.can_retry"
-                          @click="handleRetry(submission.id)"
-                          variant="outline"
-                          size="sm"
-                          :disabled="isRetrying"
-                        >
-                          Retry
-                        </Button>
+                        <p>
+                          <Button
+                            v-if="submission.can_retry"
+                            @click="handleRetry(submission.id)"
+                            variant="outline"
+                            size="sm"
+                            :disabled="isRetrying"
+                          >
+                            Retry
+                          </Button>
+                        </p>
                       </TableCell>
                     </TableRow>
                   </TableBody>
