@@ -40,7 +40,6 @@ class DeckReportController extends Controller
 
         if ($resourceLinks->isEmpty()) {
             return response()->json([
-                'has_lti_context' => false,
                 'resource_links' => [],
                 'message' => 'No Canvas courses found where you have instructor access',
             ]);
@@ -92,7 +91,6 @@ class DeckReportController extends Controller
         });
 
         return response()->json([
-            'has_lti_context' => true,
             'resource_links' => $resourceLinksWithSubmissions,
         ]);
     }
