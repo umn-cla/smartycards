@@ -9,26 +9,25 @@
           :backTo="{ name: 'decks.show', params: { deckId } }"
           class="mb-8"
         >
-          <div v-if="report?.has_lti_context" class="flex justify-end gap-4">
+          <div v-if="hasAssignments" class="flex justify-end gap-4">
             <Tuple label="Canvas Assignments">
-              {{ report.resource_links.length }}
+              {{ assignmentCount }}
             </Tuple>
           </div>
         </PageHeader>
 
         <!-- No LTI Context Message -->
         <div
-          v-if="report && !report.has_lti_context"
+          v-if="report?.error_message"
           class="bg-amber-50 border border-amber-200 rounded-lg p-6 text-center"
         >
           <p class="text-amber-900">
-            This deck is not connected to a Canvas assignment. Grade submissions
-            are only available for decks launched via LTI.
+            {{ report.error_message }}
           </p>
         </div>
 
         <!-- Grades Tables - Grouped by Course -->
-        <div v-if="report?.has_lti_context">
+        <section v-if="hasAssignments" class="mb-12">
           <div
             v-for="course in groupedByCourse"
             :key="course.courseName"
@@ -116,7 +115,7 @@
               </div>
             </div>
           </div>
-        </div>
+        </section>
       </DeckContextProvider>
     </div>
   </AuthenticatedLayout>
@@ -152,6 +151,14 @@ const { data: deck } = useDeckByIdQuery(deckIdRef);
 const { data: report } = useDeckGradesReportQuery(deckIdRef);
 const { mutate: retrySubmission, isPending: isRetrying } =
   useRetryGradeSubmissionMutation(props.deckId);
+
+const assignmentCount = computed(() => {
+  return report.value?.resource_links.length ?? 0;
+});
+
+const hasAssignments = computed(() => {
+  return assignmentCount.value > 0;
+});
 
 // Group assignments by course
 const groupedByCourse = computed(() => {

@@ -74,7 +74,7 @@ export interface Deck {
   tts_locale_back: string; //  "es-MX", "auto"
   tts_locale_front: string;
   current_user_role: MembershipRole | null; // could be null if public deck
-  has_lti_context: boolean;
+  has_lti_resource_links: number;
 
   current_user_details: {
     user_id: User["id"];
@@ -336,6 +336,6 @@ export interface ResourceLinkWithSubmissions {
 }
 
 export interface GradesReport {
-  has_lti_context: boolean;
   resource_links: ResourceLinkWithSubmissions[];
+  error_message?: string;
 }

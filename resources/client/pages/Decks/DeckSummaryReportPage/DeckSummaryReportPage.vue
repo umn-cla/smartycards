@@ -129,7 +129,7 @@
 import PageHeader from "@/components/PageHeader.vue";
 import AuthenticatedLayout from "@/layouts/AuthenticatedLayout/AuthenticatedLayout.vue";
 import { useDeckByIdQuery } from "@/queries/decks";
-import { computed, ref } from "vue";
+import { computed } from "vue";
 import {
   Table,
   TableBody,

@@ -12,7 +12,7 @@
   >
     <aside class="flex justify-between items-center gap-1">
       <Badge
-        v-if="deck.has_lti_context"
+        v-if="deck.has_lti_resource_links"
         variant="secondary"
         class="text-[0.6rem]"
       >

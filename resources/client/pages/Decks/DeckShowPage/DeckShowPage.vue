@@ -9,7 +9,7 @@
     >
       <template #title-append>
         <Badge
-          v-if="deck.has_lti_context"
+          v-if="deck.has_lti_resource_links"
           variant="secondary"
           class="text-xs border border-brand-maroon-900/10"
         >

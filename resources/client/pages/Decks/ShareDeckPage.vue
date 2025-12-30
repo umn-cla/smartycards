@@ -41,17 +41,39 @@
           />
         </section>
 
-        <!-- Embed links -->
+        <!-- Embed links
+          only show if no Canvas assignments exist to prevent users
+          from adding an LTI AND using embed code
+          -->
         <section
           class="bg-brand-oatmeal-50 p-4 rounded-md border border-brand-maroon-900/10"
         >
           <h3 class="text-xl font-bold mb-4">Embed Deck</h3>
-          <p class="mb-4">
-            Copy the following code to embed this deck on your website. Viewers
-            will automatically be added with `view` permissions.
-          </p>
+          <div v-if="deck.has_lti_resource_links">
+            <p class="mb-4">
+              This deck is linked to Canvas. To embed in your course:
+            </p>
 
-          <EmbedDeckSection :deck="deck" />
+            <ol class="list-decimal pl-6">
+              <li>Go to your Canvas course.</li>
+              <li>Create a <b>new assignment</b> or edit an existing one.</li>
+              <li>Select <b>External Tool</b> as the submission type.</li>
+              <li>
+                Choose <b>SmartyCards</b> from the list of external tools.
+              </li>
+              <li>Select the deck you wish to embed.</li>
+            </ol>
+            <!-- TODO: link to help docs -->
+          </div>
+
+          <div v-else>
+            <p class="mb-4">
+              Copy the following code to embed this deck on your website.
+              Viewers will automatically be added with `view` permissions.
+            </p>
+
+            <EmbedDeckSection :deck="deck" />
+          </div>
         </section>
 
         <section
