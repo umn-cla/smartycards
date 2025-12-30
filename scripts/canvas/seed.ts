@@ -7,55 +7,72 @@
 import JSZip from "jszip";
 import { canvasConfig, accountId, validateConfig } from "./config.js";
 
-const COURSES_CSV = `course_id,short_name,long_name,status
-SPAN-1234-001-FA25,SPAN-1234-001-FA25,"SPAN 1234 Spanish 1234 -- Sect. 001 (Fall 2025)",active
+// Blueprint Course Scenario:
+// - PSY-1001-BLUEPRINT: Blueprint course (template) - created FIRST
+// - PSY-1001-001: Child course (Section 001) - ainstructor only
+// - PSY-1001-002: Child course (Section 002) - binstructor only
+// Non-Blueprint Course:
+// - SPAN-1001: Regular course - both ainstructor and binstructor co-teaching
+
+// Step 1: Create blueprint course first
+const BLUEPRINT_COURSES_CSV = `course_id,short_name,long_name,status
+PSY-1001-BLUEPRINT,PSY 1001 Blueprint,"Introduction to Psychology - Blueprint",active
+`;
+
+// Step 2: Create child and regular courses (can reference blueprint now)
+const COURSES_CSV = `course_id,short_name,long_name,status,blueprint_course_id
+PSY-1001-001-FA25,PSY 1001-001,"Introduction to Psychology - Section 001 (Fall 2025)",active,PSY-1001-BLUEPRINT
+PSY-1001-002-FA25,PSY 1001-002,"Introduction to Psychology - Section 002 (Fall 2025)",active,PSY-1001-BLUEPRINT
+SPAN-1001-FA25,SPAN 1001,"Elementary Spanish I (Fall 2025)",active,
 `;
 
 const SECTIONS_CSV = `section_id,course_id,name,status
-SPAN-1234-001-FA25,SPAN-1234-001-FA25,"SPAN 1234 001 (Fall 2025)",active
-SPAN-2234-001-FA25,SPAN-1234-001-FA25,"SPAN 2234 001 (Fall 2025)",active
+PSY-1001-BLUEPRINT-SEC,PSY-1001-BLUEPRINT,"Blueprint Section",active
+PSY-1001-001-SEC,PSY-1001-001-FA25,"Section 001",active
+PSY-1001-002-SEC,PSY-1001-002-FA25,"Section 002",active
+SPAN-1001-SEC,SPAN-1001-FA25,"Elementary Spanish I",active
 `;
 
 const USERS_CSV = `user_id,login_id,first_name,last_name,email,status,password
 1001,adminuser,Admin,User,latistecharch+adminuser@umn.edu,active,adminuser
-2001,ainstructor,Albert,Instructor,latistecharch+ainstructor@umn.edu,active,ainstructor
-2002,binstructor,Betty,Instructor,latistecharch+binstructor@umn.edu,active,binstructor
-3001,aassistant,Alice,Assistant,latistecharch+aassistant@umn.edu,active,aassistant
-3002,bassistant,Bob,Assistant,latistecharch+bassistant@umn.edu,active,bassistant
-4001,astudent,Amy,Student,latistecharch+astudent@umn.edu,active,astudent
-4002,bstudent,Ben,Student,latistecharch+bstudent@umn.edu,active,bstudent
-4003,cstudent,Claire,Student,latistecharch+cstudent@umn.edu,active,cstudent
-4004,dstudent,Dan,Student,latistecharch+dstudent@umn.edu,active,dstudent
-4005,estudent,Emma,Student,latistecharch+estudent@umn.edu,active,estudent
-4006,fstudent,Frank,Student,latistecharch+fstudent@umn.edu,active,fstudent
-4007,gstudent,Grace,Student,latistecharch+gstudent@umn.edu,active,gstudent
-4008,hstudent,Henry,Student,latistecharch+hstudent@umn.edu,active,hstudent
-4009,istudent,Iris,Student,latistecharch+istudent@umn.edu,active,istudent
-4010,jstudent,Jack,Student,latistecharch+jstudent@umn.edu,active,jstudent
+2001,ainstructor,Instructor,A,latistecharch+ainstructor@umn.edu,active,ainstructor
+2002,binstructor,Instructor,B,latistecharch+binstructor@umn.edu,active,binstructor
+3001,astudent1,Student,A1,latistecharch+astudent1@umn.edu,active,astudent1
+3002,astudent2,Student,A2,latistecharch+astudent2@umn.edu,active,astudent2
+3003,astudent3,Student,A3,latistecharch+astudent3@umn.edu,active,astudent3
+4001,bstudent1,Student,B1,latistecharch+bstudent1@umn.edu,active,bstudent1
+4002,bstudent2,Student,B2,latistecharch+bstudent2@umn.edu,active,bstudent2
+4003,bstudent3,Student,B3,latistecharch+bstudent3@umn.edu,active,bstudent3
 `;
 
+// Enrollments:
+// Blueprint courses:
+// - ainstructor teaches PSY Section 001 only
+// - binstructor teaches PSY Section 002 only
+// - astudent1-3 enrolled in PSY Section 001
+// - bstudent1-3 enrolled in PSY Section 002
+// Non-blueprint course:
+// - BOTH ainstructor and binstructor co-teach Spanish
+// - Mix of students from both groups in Spanish
 const ENROLLMENTS_CSV = `section_id,user_id,role,status
-SPAN-1234-001-FA25,2001,teacher,active
-SPAN-2234-001-FA25,2001,teacher,active
-SPAN-1234-001-FA25,2002,teacher,active
-SPAN-2234-001-FA25,2002,teacher,active
-SPAN-1234-001-FA25,3001,ta,active
-SPAN-2234-001-FA25,3001,ta,active
-SPAN-1234-001-FA25,3002,ta,active
-SPAN-2234-001-FA25,3002,ta,active
-SPAN-1234-001-FA25,4001,student,active
-SPAN-1234-001-FA25,4002,student,active
-SPAN-1234-001-FA25,4003,student,active
-SPAN-1234-001-FA25,4004,student,active
-SPAN-1234-001-FA25,4005,student,active
-SPAN-2234-001-FA25,4006,student,active
-SPAN-2234-001-FA25,4007,student,active
-SPAN-2234-001-FA25,4008,student,active
-SPAN-2234-001-FA25,4009,student,active
-SPAN-2234-001-FA25,4010,student,active
+PSY-1001-001-SEC,2001,teacher,active
+PSY-1001-002-SEC,2002,teacher,active
+PSY-1001-001-SEC,3001,student,active
+PSY-1001-001-SEC,3002,student,active
+PSY-1001-001-SEC,3003,student,active
+PSY-1001-002-SEC,4001,student,active
+PSY-1001-002-SEC,4002,student,active
+PSY-1001-002-SEC,4003,student,active
+SPAN-1001-SEC,2001,teacher,active
+SPAN-1001-SEC,2002,teacher,active
+SPAN-1001-SEC,3001,student,active
+SPAN-1001-SEC,3002,student,active
+SPAN-1001-SEC,4001,student,active
+SPAN-1001-SEC,4002,student,active
 `;
 
 const IMPORTS = [
+  { name: "blueprint_courses.csv", content: BLUEPRINT_COURSES_CSV },
   { name: "courses.csv", content: COURSES_CSV },
   { name: "sections.csv", content: SECTIONS_CSV },
   { name: "users.csv", content: USERS_CSV },
@@ -73,6 +90,22 @@ const apiCall = async (endpoint: string, options: RequestInit = {}) => {
   if (!response.ok)
     throw new Error(`API error (${response.status}): ${await response.text()}`);
   return response.json();
+};
+
+const enableBlueprintMode = async (sisCourseId: string) => {
+  // Get course by SIS ID
+  const course = await apiCall(`/api/v1/courses/sis_course_id:${sisCourseId}`);
+
+  // Enable blueprint mode
+  const formData = new FormData();
+  formData.append("course[blueprint]", "true");
+
+  await apiCall(`/api/v1/courses/${course.id}`, {
+    method: "PUT",
+    body: formData,
+  });
+
+  return course;
 };
 
 const uploadCsv = async (name: string, content: string) => {
@@ -94,7 +127,7 @@ const pollImport = async (importId: number) => {
     const status = await apiCall(
       `/api/v1/accounts/${accountId}/sis_imports/${importId}`,
     );
-
+    console.log(status);
     if (status.workflow_state === "imported") return status;
 
     if (
@@ -121,9 +154,23 @@ const main = async () => {
     const result = await uploadCsv(name, content);
     await pollImport(result.id);
     console.log(` ✓`);
+
+    // After importing blueprint courses, enable blueprint mode
+    if (name === "blueprint_courses.csv") {
+      process.stdout.write(`→ Enabling blueprint mode...`);
+      await enableBlueprintMode("PSY-1001-BLUEPRINT");
+      console.log(` ✓`);
+    }
   }
 
-  console.log('\n✨ Done! Login with username (password = username)\n');
+  console.log("\n✨ Done! Login with username (password = username)\n");
+  console.log("Blueprint Course Scenario:");
+  console.log("  📘 PSY 1001 Blueprint (template course)");
+  console.log("  📗 PSY 1001-001 (ainstructor + astudent1-3)");
+  console.log("  📙 PSY 1001-002 (binstructor + bstudent1-3)");
+  console.log("");
+  console.log("Non-Blueprint Course:");
+  console.log("  📕 SPAN 1001 (BOTH instructors + astudent1-2, bstudent1-2)\n");
 };
 
 main().catch((error) => {
