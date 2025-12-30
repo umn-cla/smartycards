@@ -51,7 +51,6 @@ import { useCreateDeckActivityEventMutation } from "@/queries/deckActivityEvents
 import LevelProgress from "@/components/LevelProgress.vue";
 import { useDeckStatsQuery } from "@/queries/decks/useDeckStatsQuery";
 import PracticeDeck from "./PracticeDeck.vue";
-import { IS_DECK_TTS_ENABLED_INJECTION_KEY } from "@/constants";
 import ActivityPageHeader from "../ActivityPageHeader.vue";
 import { useLtiContext } from "@/composables/useLtiContext";
 
