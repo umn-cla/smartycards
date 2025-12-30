@@ -10,11 +10,11 @@
     },
     {
       "username": "adminuser",
-      "umndid": "admin",
+      "umndid": "adminuser",
       "emplid": "1002",
       "first_name": "Admin",
       "last_name": "User",
-      "email": "latistecharch+admin@umn.edu"
+      "email": "latistecharch+adminuser@umn.edu"
     },
     {
       "username": "ainstructor",
