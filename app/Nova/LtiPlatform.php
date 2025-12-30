@@ -46,6 +46,7 @@ class LtiPlatform extends Resource
             Text::make('Name')
                 ->sortable()
                 ->rules('required')
+                ->default('Canvas Local Dev')
                 ->help('A descriptive name for this LTI platform (e.g., "Canvas Production", "Canvas Local Dev")'),
 
             Text::make('Issuer')
@@ -56,14 +57,17 @@ class LtiPlatform extends Resource
 
             Text::make('Auth Login URL')
                 ->rules('required', 'url')
+                ->default('https://canvas.docker/api/lti/authorize_redirect')
                 ->help('Canvas: https://[host]/api/lti/authorize_redirect'),
 
             Text::make('Auth Token URL')
                 ->rules('required', 'url')
+                ->default('https://canvas.docker/login/oauth2/token')
                 ->help('Canvas: https://[host]/login/oauth2/token'),
 
             Text::make('Key Set URL')
                 ->rules('required', 'url')
+                ->default('https://canvas.docker/api/lti/security/jwks')
                 ->help('Canvas: https://[host]/api/lti/security/jwks'),
 
             Text::make('Deployments Count', function () {
