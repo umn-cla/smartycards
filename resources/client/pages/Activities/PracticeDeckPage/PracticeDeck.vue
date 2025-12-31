@@ -19,19 +19,11 @@
           'opacity-100': !state.isTransitiongToNext,
         }"
       />
-
       <CardStackVisualization
         :total-cards="cardsRemaining + (state.activeCard ? 1 : 0)"
         :animation-state="state.stackAnimationState"
         :reinsertion-index="state.lastReinsertionIndex"
-        class="my-4"
       />
-
-      <!-- Keep simple counter for mobile -->
-      <p class="sm:hidden text-xs text-center text-brand-maroon-900/40 my-2">
-        {{ cardsRemaining + (state.activeCard ? 1 : 0) }} cards left
-      </p>
-
       <div class="my-4 sm:my-8">
         <CardAttemptChoices
           :disabled="state.stackAnimationState !== 'idle'"

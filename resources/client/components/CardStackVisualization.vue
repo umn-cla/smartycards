@@ -1,7 +1,9 @@
 <template>
-  <div class="hidden sm:flex items-center gap-3 justify-center my-4">
+  <div class="flex items-center gap-3 justify-center">
     <!-- Counter -->
-    <div class="text-sm font-medium text-brand-maroon-900/70 min-w-[5rem] text-right">
+    <div
+      class="text-sm font-medium text-brand-maroon-900/70 min-w-[5rem] text-right"
+    >
       {{ totalCards }} left
     </div>
 
@@ -13,8 +15,10 @@
         :key="cardData.key"
         class="stack-card absolute rounded border"
         :class="{
-          'bg-brand-oatmeal-50 border-brand-maroon-800 shadow-sm': index === 0 && animationState !== 'reinserting',
-          'bg-brand-oatmeal-50/70 border-brand-maroon-800/30': index > 0 || animationState === 'reinserting',
+          'bg-brand-oatmeal-50 border-brand-maroon-800 shadow-sm':
+            index === 0 && animationState !== 'reinserting',
+          'bg-brand-oatmeal-300/50 border-brand-maroon-800/30':
+            index > 0 || animationState === 'reinserting',
           'animate-puff-out': animationState === 'removing' && index === 0,
           'animate-shuffle-card': animationState === 'reinserting',
         }"
@@ -67,16 +71,17 @@ const overflowIndicatorLeft = computed(() => {
 
 function getCardStyle(index: number) {
   // Create varied shuffle offsets for each card
-  const shuffleOffset = (index % 3) === 0 ? -12 : (index % 3) === 1 ? 8 : -4;
-  const shuffleRotate = (index % 4) === 0 ? -3 : (index % 4) === 1 ? 3 : (index % 4) === 2 ? -2 : 2;
+  const shuffleOffset = index % 3 === 0 ? -12 : index % 3 === 1 ? 8 : -4;
+  const shuffleRotate =
+    index % 4 === 0 ? -3 : index % 4 === 1 ? 3 : index % 4 === 2 ? -2 : 2;
 
   return {
     width: `${CARD_WIDTH}px`,
     height: `${CARD_HEIGHT}px`,
     left: `${index * CARD_OFFSET_X}px`,
     zIndex: MAX_VISIBLE_CARDS - index,
-    '--shuffle-offset': `${shuffleOffset}px`,
-    '--shuffle-rotate': `${shuffleRotate}deg`,
+    "--shuffle-offset": `${shuffleOffset}px`,
+    "--shuffle-rotate": `${shuffleRotate}deg`,
   };
 }
 </script>

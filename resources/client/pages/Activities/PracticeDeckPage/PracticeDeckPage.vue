@@ -30,10 +30,10 @@
           </RouterLink>
         </Button>
       </div>
-      <LevelProgress
+      <!-- <LevelProgress
         :xp="deckStats?.current_user_xp ?? 0"
         class="w-full px-2"
-      />
+      /> -->
     </header>
 
     <div>
@@ -53,6 +53,10 @@
         @complete="handlePracticeComplete"
       />
     </div>
+    <LevelProgress
+      :xp="deckStats?.current_user_xp ?? 0"
+      class="w-full px-4 py-1 fixed bottom-0 left-0 right-0"
+    />
   </AuthenticatedLayout>
 </template>
 <script setup lang="ts">

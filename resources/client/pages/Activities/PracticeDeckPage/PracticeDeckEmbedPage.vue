@@ -6,7 +6,6 @@
       message="Practice Complete"
       class="max-w-screen-sm mx-auto mb-6"
     />
-
     <ActivityPageHeader title="Flashcards">
       <template #actions>
         <div class="flex gap-1 items-baseline">
@@ -21,10 +20,6 @@
           </SimpleSelect>
         </div>
       </template>
-      <LevelProgress
-        :xp="deckStats?.current_user_xp ?? 0"
-        class="w-full px-2"
-      />
     </ActivityPageHeader>
 
     <div>
@@ -45,6 +40,10 @@
         @complete="handlePracticeComplete"
       />
     </div>
+    <LevelProgress
+      :xp="deckStats?.current_user_xp ?? 0"
+      class="w-full px-2 py-4 fixed bottom-0 left-0 right-0 border-t"
+    />
   </EmbedLayout>
 </template>
 <script setup lang="ts">
