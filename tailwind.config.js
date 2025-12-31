@@ -183,12 +183,32 @@ const tailwindConfig = {
           from: { height: "var(--radix-collapsible-content-height)" },
           to: { height: 0 },
         },
+        "puff-out": {
+          "0%": {
+            transform: "scale(1)",
+            opacity: "1",
+          },
+          "100%": {
+            transform: "scale(2)",
+            opacity: "0",
+          },
+        },
+        "shuffle-card": {
+          "0%, 100%": {
+            transform: "translateY(0) rotate(0deg)",
+          },
+          "50%": {
+            transform: "translateY(var(--shuffle-offset, -8px)) rotate(var(--shuffle-rotate, 2deg))",
+          },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         "collapsible-down": "collapsible-down 0.2s ease-in-out",
         "collapsible-up": "collapsible-up 0.2s ease-in-out",
+        "puff-out": "puff-out 0.3s ease-out forwards",
+        "shuffle-card": "shuffle-card 0.4s ease-in-out",
       },
       screens: {
         xs: "480px",

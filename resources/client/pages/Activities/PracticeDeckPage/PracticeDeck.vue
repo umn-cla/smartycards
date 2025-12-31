@@ -20,11 +20,21 @@
         }"
       />
 
-      <p class="text-xs text-center text-brand-maroon-900/40 my-2">
-        {{ cardsRemaining }} cards left
+      <CardStackVisualization
+        :total-cards="cardsRemaining + (state.activeCard ? 1 : 0)"
+        :animation-state="state.stackAnimationState"
+        :reinsertion-index="state.lastReinsertionIndex"
+        class="my-4"
+      />
+
+      <!-- Keep simple counter for mobile -->
+      <p class="sm:hidden text-xs text-center text-brand-maroon-900/40 my-2">
+        {{ cardsRemaining + (state.activeCard ? 1 : 0) }} cards left
       </p>
+
       <div class="my-4 sm:my-8">
         <CardAttemptChoices
+          :disabled="state.stackAnimationState !== 'idle'"
           @answer="handleAnswer"
           :initialSideName="getInitialSideName(state.activeCard)"
           :card="state.activeCard"
@@ -37,6 +47,7 @@
 <script setup lang="ts">
 import * as T from "@/types";
 import CardAttemptChoices from "@/components/CardAttemptChoices.vue";
+import CardStackVisualization from "@/components/CardStackVisualization.vue";
 import FlippableCard from "@/components/FlippableCard.vue";
 import { Button } from "@/components/ui/button";
 import { reactive, watch, onMounted, computed } from "vue";
@@ -61,6 +72,10 @@ const state = reactive({
   // we want "sticky" random sides for each card
   // so that the user sees the same side when it comes up again
   randomSideMap: {} as Record<T.Card["id"], T.CardSideName>,
+
+  // Stack animation state
+  stackAnimationState: "idle" as "idle" | "removing" | "reinserting",
+  lastReinsertionIndex: null as number | null,
 });
 
 const cardsRemaining = computed(() => state.cardsToPractice.length);
@@ -112,18 +127,33 @@ function handleAnswer(score: number) {
     throw new Error("Cannot record score for a card that does not exist");
   }
 
+  // Capture the current card for use in setTimeout callbacks
+  const currentCard = state.activeCard;
+
   if (score === 3) {
-    // remove the card from the deck
-    state.cardsToPractice = state.cardsToPractice.filter(
-      (card) => card.id !== state.activeCard?.id,
-    );
+    // Trigger puff animation
+    state.stackAnimationState = "removing";
+
+    setTimeout(() => {
+      state.cardsToPractice = state.cardsToPractice.filter(
+        (card) => card.id !== currentCard.id,
+      );
+      state.stackAnimationState = "idle";
+    }, 300); // Match puff animation duration
   } else {
-    // probably should do something more sophisticated here
+    // Trigger shuffle animation
+    state.stackAnimationState = "reinserting";
+
     const reinsertIndex = getFuzzyReinsertIndex(
       score,
       state.cardsToPractice.length,
     );
-    state.cardsToPractice.splice(reinsertIndex, 0, state.activeCard);
+
+    state.cardsToPractice.splice(reinsertIndex, 0, currentCard);
+
+    setTimeout(() => {
+      state.stackAnimationState = "idle";
+    }, 400); // Match shuffle animation duration
   }
 
   // reset the side
