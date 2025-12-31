@@ -1,5 +1,12 @@
 <template>
   <EmbedLayout>
+    <Alert
+      v-if="isLtiLaunch && hasCompletedPractice"
+      type="success"
+      message="Practice Complete"
+      class="max-w-screen-sm mx-auto mb-6"
+    />
+
     <ActivityPageHeader title="Flashcards">
       <template #actions>
         <div class="flex gap-1 items-baseline">
@@ -34,13 +41,14 @@
         v-else-if="deck"
         :deck="deck"
         :initialSideName="state.initialSideName"
+        @init="handleResetPractice"
         @complete="handlePracticeComplete"
       />
     </div>
   </EmbedLayout>
 </template>
 <script setup lang="ts">
-import { computed, reactive } from "vue";
+import { computed, reactive, ref } from "vue";
 import EmbedLayout from "@/layouts/EmbedLayout.vue";
 import { useDeckByIdQuery } from "@/queries/decks";
 import * as T from "@/types";
@@ -53,6 +61,7 @@ import { useDeckStatsQuery } from "@/queries/decks/useDeckStatsQuery";
 import PracticeDeck from "./PracticeDeck.vue";
 import ActivityPageHeader from "../ActivityPageHeader.vue";
 import { useLtiContext } from "@/composables/useLtiContext";
+import Alert from "@/components/Alert.vue";
 
 const props = defineProps<{
   deckId: number;
@@ -71,7 +80,8 @@ const { data: deckStats } = useDeckStatsQuery(deckIdRef);
 const { mutate: createActivityEvent } = useCreateDeckActivityEventMutation();
 
 // Extract LTI launch ID from URL if present
-const { launchId } = useLtiContext();
+const { launchId, isLtiLaunch } = useLtiContext();
+const hasCompletedPractice = ref(false);
 
 async function handlePracticeComplete(cardCount: number) {
   await createActivityEvent({
@@ -81,6 +91,11 @@ async function handlePracticeComplete(cardCount: number) {
     totalCount: cardCount,
     ltiLaunchId: launchId.value,
   });
+  hasCompletedPractice.value = true;
+}
+
+function handleResetPractice() {
+  hasCompletedPractice.value = false;
 }
 </script>
 <style scoped>

@@ -50,6 +50,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   (eventName: "complete", cardCount: number): void;
+  (eventName: "init"): void;
 }>();
 
 const state = reactive({
@@ -179,6 +180,8 @@ function toPartitionedShuffle(cards: T.Card[]): T.Card[] {
 }
 
 function initPracticeSession() {
+  emit("init");
+
   state.isTransitiongToNext = true;
 
   state.cardsToPractice = toPartitionedShuffle(props.deck.cards);
