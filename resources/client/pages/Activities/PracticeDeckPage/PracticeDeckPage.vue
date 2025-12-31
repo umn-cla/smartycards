@@ -41,7 +41,7 @@
     </div>
     <LevelProgress
       :xp="deckStats?.current_user_xp ?? 0"
-      class="w-full px-4 py-1 fixed bottom-0 left-0 right-0"
+      class="w-full max-w-screen-sm mx-auto fixed bottom-0 left-0 lg:left-72 right-0 py-2 px-4"
     />
   </AuthenticatedLayout>
 </template>
@@ -60,8 +60,13 @@ const props = defineProps<{
 
 const deckIdRef = computed(() => props.deckId);
 
-const { initialSideName, deck, isDeckLoading, deckStats, handlePracticeComplete } =
-  usePracticeDeck({ deckId: deckIdRef });
+const {
+  initialSideName,
+  deck,
+  isDeckLoading,
+  deckStats,
+  handlePracticeComplete,
+} = usePracticeDeck({ deckId: deckIdRef });
 </script>
 <style scoped>
 button {

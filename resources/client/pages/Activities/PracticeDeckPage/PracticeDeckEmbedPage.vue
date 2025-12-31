@@ -6,7 +6,7 @@
       message="Practice Complete"
       class="max-w-screen-sm mx-auto mb-6"
     />
-    <ActivityPageHeader title="Flashcards">
+    <ActivityPageHeader :title="deck ? deck.name : 'Practice Deck'">
       <template #actions>
         <StartingSideSelect v-model="initialSideName" />
       </template>
@@ -32,7 +32,7 @@
     </div>
     <LevelProgress
       :xp="deckStats?.current_user_xp ?? 0"
-      class="w-full px-4 py-1 fixed bottom-0 left-0 right-0 max-w-screen-sm mx-auto"
+      class="w-full px-4 py-2 fixed bottom-0 left-0 right-0 max-w-screen-sm mx-auto"
     />
   </EmbedLayout>
 </template>
