@@ -12,7 +12,7 @@ class LtiGradeSubmissionController extends Controller
     public function retry(LtiGradeSubmission $submission)
     {
         $deck = $submission->resourceLink->deck;
-        Gate::authorize('viewReports', [Deck::class, $deck]);
+        Gate::authorize('viewGrades', [Deck::class, $deck]);
 
         // Create a new submission record to preserve audit trail
         $newSubmission = LtiGradeSubmission::create([
