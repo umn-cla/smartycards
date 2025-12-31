@@ -10,17 +10,7 @@
         {{ deck.name }}
       </h1>
       <div class="flex items-center justify-between w-full flex-wrap">
-        <div class="flex gap-1 items-baseline">
-          <Label for="starting-side-select" class="sr-only">Start Side</Label>
-          <SimpleSelect
-            v-model="state.initialSideName"
-            id="starting-side-select"
-          >
-            <SelectOption value="front">Front</SelectOption>
-            <SelectOption value="back">Back</SelectOption>
-            <SelectOption value="random">Random</SelectOption>
-          </SimpleSelect>
-        </div>
+        <StartingSideSelect v-model="initialSideName" />
         <Button asChild variant="secondary">
           <RouterLink
             :to="{ name: 'decks.show', params: { deckId: props.deckId } }"
@@ -45,7 +35,7 @@
       <PracticeDeck
         v-else-if="deck"
         :deck="deck"
-        :initialSideName="state.initialSideName"
+        :initialSideName="initialSideName"
         @complete="handlePracticeComplete"
       />
     </div>
@@ -56,42 +46,22 @@
   </AuthenticatedLayout>
 </template>
 <script setup lang="ts">
-import { computed, reactive } from "vue";
+import { computed } from "vue";
 import { AuthenticatedLayout } from "@/layouts/AuthenticatedLayout";
-import { useDeckByIdQuery } from "@/queries/decks";
-import * as T from "@/types";
 import { Button } from "@/components/ui/button";
-import { SimpleSelect, SelectOption } from "@/components/SimpleSelect";
-import { Label } from "@/components/ui/label";
-import { useCreateDeckActivityEventMutation } from "@/queries/deckActivityEvents/useCreateDeckActivityEventMutation";
 import LevelProgress from "@/components/LevelProgress.vue";
-import { useDeckStatsQuery } from "@/queries/decks/useDeckStatsQuery";
 import PracticeDeck from "./PracticeDeck.vue";
+import StartingSideSelect from "@/components/StartingSideSelect.vue";
+import { usePracticeDeck } from "@/composables/usePracticeDeck";
 
 const props = defineProps<{
   deckId: number;
 }>();
 
-const state = reactive({
-  initialSideName: "front" as T.CardSideName | "random",
-});
-
 const deckIdRef = computed(() => props.deckId);
 
-const { data: deck, isLoading: isDeckLoading } = useDeckByIdQuery(deckIdRef);
-
-const { data: deckStats } = useDeckStatsQuery(deckIdRef);
-
-const { mutate: createActivityEvent } = useCreateDeckActivityEventMutation();
-
-async function handlePracticeComplete(cardCount: number) {
-  await createActivityEvent({
-    deckId: deck.value?.id ?? 0,
-    activityType: T.ActivityTypeName.PRACTICE_ALL_CARDS,
-    correctCount: cardCount,
-    totalCount: cardCount,
-  });
-}
+const { initialSideName, deck, isDeckLoading, deckStats, handlePracticeComplete } =
+  usePracticeDeck({ deckId: deckIdRef });
 </script>
 <style scoped>
 button {
