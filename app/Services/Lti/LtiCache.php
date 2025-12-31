@@ -8,12 +8,16 @@ use Packback\Lti1p3\Interfaces\ICache;
 class LtiCache implements ICache
 {
     const LAUNCH_PREFIX = 'lti_launch_';
+
     const NONCE_PREFIX = 'lti_nonce_';
+
     const ACCESS_TOKEN_PREFIX = 'lti_access_token_';
 
     // Cache TTL constants (in seconds)
-    private const LAUNCH_TTL = 3600;      // 1 hour
+    private const LAUNCH_TTL = 7200;      // 2 hours
+
     private const NONCE_TTL = 300;        // 5 minutes
+
     private const TOKEN_TTL = 3500;       // ~1 hour minus buffer for clock drift
 
     /**
@@ -21,7 +25,7 @@ class LtiCache implements ICache
      */
     public function getLaunchData(string $key): ?array
     {
-        $data = Cache::get(self::LAUNCH_PREFIX . $key);
+        $data = Cache::get(self::LAUNCH_PREFIX.$key);
 
         return is_array($data) ? $data : null;
     }
@@ -31,7 +35,7 @@ class LtiCache implements ICache
      */
     public function cacheLaunchData(string $key, array $jwtBody): void
     {
-        Cache::put(self::LAUNCH_PREFIX . $key, $jwtBody, self::LAUNCH_TTL);
+        Cache::put(self::LAUNCH_PREFIX.$key, $jwtBody, self::LAUNCH_TTL);
     }
 
     /**
@@ -39,19 +43,19 @@ class LtiCache implements ICache
      */
     public function cacheNonce(string $nonce, string $state): void
     {
-        Cache::put(self::NONCE_PREFIX . $nonce, $state, self::NONCE_TTL);
+        Cache::put(self::NONCE_PREFIX.$nonce, $state, self::NONCE_TTL);
     }
 
     /**
      * Check if a nonce is valid (exists and matches state)
      *
-     * @param string $nonce The nonce to validate
-     * @param string $state The state to match against
+     * @param  string  $nonce  The nonce to validate
+     * @param  string  $state  The state to match against
      * @return bool True if nonce is valid and unused
      */
     public function checkNonceIsValid(string $nonce, string $state): bool
     {
-        $cachedState = Cache::get(self::NONCE_PREFIX . $nonce);
+        $cachedState = Cache::get(self::NONCE_PREFIX.$nonce);
 
         if ($cachedState === null) {
             // Nonce doesn't exist (already used or expired)
@@ -64,7 +68,7 @@ class LtiCache implements ICache
         }
 
         // Nonce is valid - delete it so it can't be reused (one-time use)
-        Cache::forget(self::NONCE_PREFIX . $nonce);
+        Cache::forget(self::NONCE_PREFIX.$nonce);
 
         return true;
     }
@@ -74,7 +78,7 @@ class LtiCache implements ICache
      */
     public function cacheAccessToken(string $key, string $accessToken): void
     {
-        Cache::put(self::ACCESS_TOKEN_PREFIX . $key, $accessToken, self::TOKEN_TTL);
+        Cache::put(self::ACCESS_TOKEN_PREFIX.$key, $accessToken, self::TOKEN_TTL);
     }
 
     /**
@@ -82,7 +86,7 @@ class LtiCache implements ICache
      */
     public function getAccessToken(string $key): ?string
     {
-        $token = Cache::get(self::ACCESS_TOKEN_PREFIX . $key);
+        $token = Cache::get(self::ACCESS_TOKEN_PREFIX.$key);
 
         return is_string($token) ? $token : null;
     }
@@ -92,6 +96,6 @@ class LtiCache implements ICache
      */
     public function clearAccessToken(string $key): void
     {
-        Cache::forget(self::ACCESS_TOKEN_PREFIX . $key);
+        Cache::forget(self::ACCESS_TOKEN_PREFIX.$key);
     }
 }

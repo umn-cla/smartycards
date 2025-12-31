@@ -18,7 +18,7 @@ class SubmitLtiGrade implements ShouldQueue
     /**
      * Maximum number of attempts
      */
-    public int $tries = 4;
+    public int $tries = 3;
 
     /**
      * Timeout in seconds
@@ -35,12 +35,12 @@ class SubmitLtiGrade implements ShouldQueue
     ) {}
 
     /**
-     * Backoff delays: 1min, 1hr, 1day
-     * Returns: [60, 3600, 86400] = [1min, 1hr, 1day]
+     * Backoff delays: 1min, 1hr
+     * Returns: [60, 3600] = [1min, 1hr]
      */
     public function backoff(): array
     {
-        return [60, 3600, 86400];
+        return [60, 3600];
     }
 
     /**
