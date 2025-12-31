@@ -20,7 +20,9 @@
         <MoreDeckActions :deck="deck" />
         <Button asChild variant="outline">
           <RouterLink
-            v-if="deck.capabilities.canViewGrades"
+            v-if="
+              deck.capabilities.canViewGrades && deck.has_lti_resource_links
+            "
             :to="{ name: 'decks.reports.grades', params: { deckId } }"
           >
             Grades
