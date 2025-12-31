@@ -30,10 +30,6 @@
           </RouterLink>
         </Button>
       </div>
-      <!-- <LevelProgress
-        :xp="deckStats?.current_user_xp ?? 0"
-        class="w-full px-2"
-      /> -->
     </header>
 
     <div>

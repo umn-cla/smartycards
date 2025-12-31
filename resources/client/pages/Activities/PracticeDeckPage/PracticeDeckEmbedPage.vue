@@ -42,7 +42,7 @@
     </div>
     <LevelProgress
       :xp="deckStats?.current_user_xp ?? 0"
-      class="w-full px-2 py-4 fixed bottom-0 left-0 right-0 border-t"
+      class="w-full px-4 py-1 fixed bottom-0 left-0 right-0 max-w-screen-sm mx-auto"
     />
   </EmbedLayout>
 </template>
