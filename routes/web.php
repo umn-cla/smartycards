@@ -10,10 +10,14 @@ use App\Http\Controllers\DeckInviteController;
 use App\Http\Controllers\DeckMembershipController;
 use App\Http\Controllers\DeckQuizController;
 use App\Http\Controllers\DeckReportController;
+use App\Http\Controllers\LtiGradeSubmissionController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TTSController;
 use App\Http\Controllers\UploadFileController;
 use Illuminate\Support\Facades\Route;
+
+require __DIR__ . '/shib.php';
+require __DIR__ . '/lti.php';
 
 // homepage is public
 Route::get('/', function () {
@@ -56,6 +60,9 @@ Route::middleware(['auth'])
         ]);
 
         Route::get('decks/{deck}/reports/summary', [DeckReportController::class, 'summary']);
+        Route::get('decks/{deck}/reports/grades', [DeckReportController::class, 'grades']);
+
+        Route::post('lti-grade-submissions/{submission}/retry', [LtiGradeSubmissionController::class, 'retry']);
 
         Route::resource('decks.activity-events', ActivityEventController::class);
 
@@ -72,8 +79,6 @@ Route::middleware(['auth'])
 
         Route::post('tts', TTSController::class);
     });
-
-require __DIR__.'/shib.php';
 
 Route::get('decks/{deck}/invite', DeckInviteController::class)
     ->name('decks.memberships.acceptInvite')

@@ -51,8 +51,8 @@
         </div>
 
         <div class="flex items-center justify-end py-4 gap-2">
-          <Button asChild variant="secondary">
-            <RouterLink :to="{ name: 'decks.index' }"> Cancel </RouterLink>
+          <Button @click="handleCancel" variant="secondary" type="button">
+            Cancel
           </Button>
           <Button type="submit" :disabled="!form.name">{{
             isCreateMode ? "Create Deck" : "Save"
@@ -79,6 +79,7 @@ import HintTooltip from "@/components/HintTooltip.vue";
 import { Label } from "@/components/ui/label";
 import SelectLanguage from "@/components/SelectLanguage.vue";
 import * as T from "@/types";
+import { useLtiContext } from "@/composables/useLtiContext";
 
 const props = defineProps<{
   deckId: number | null;
@@ -95,6 +96,9 @@ const form = reactive({
 const isCreateMode = computed(() => props.deckId === null);
 const router = useRouter();
 const deckIdRef = computed(() => props.deckId);
+
+// LTI context detection
+const { launchId, isDeepLinkLaunch, launchType } = useLtiContext();
 const { data: deck } = useDeckByIdQuery(deckIdRef);
 const { mutate: createDeck } = useCreateDeckMutation();
 const { mutate: updateDeck } = useUpdateDeckMutation();
@@ -113,11 +117,36 @@ watch(
   { immediate: true },
 );
 
+const handleCancel = () => {
+  if (isDeepLinkLaunch.value && launchId.value) {
+    router.push({
+      name: "lti.deep_link",
+      query: {
+        launch_id: launchId.value,
+        launch_type: launchType.value,
+      },
+    });
+  } else {
+    router.push({ name: "decks.index" });
+  }
+};
+
 async function handleSubmit() {
   if (isCreateMode.value) {
     createDeck(form, {
       onSuccess: (newDeck) => {
-        router.push({ name: "decks.show", params: { deckId: newDeck.id } });
+        if (isDeepLinkLaunch.value && launchId.value) {
+          router.push({
+            name: "lti.deep_link",
+            query: {
+              launch_id: launchId.value,
+              launch_type: launchType.value,
+              newDeckId: newDeck.id,
+            },
+          });
+        } else {
+          router.push({ name: "decks.show", params: { deckId: newDeck.id } });
+        }
       },
     });
     return;

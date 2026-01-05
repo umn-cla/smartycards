@@ -89,6 +89,17 @@ const router = createRouter({
       }),
     },
     {
+      path: "/decks/:deckId/reports/grades",
+      name: "decks.reports.grades",
+      component: () =>
+        import(
+          "../pages/Decks/DeckGradesReportPage/DeckGradesReportPage.vue"
+        ),
+      props: (route) => ({
+        deckId: Number(route.params.deckId),
+      }),
+    },
+    {
       path: "/decks/create",
       name: "decks.create",
       component: () => import("../pages/Decks/CreateOrEditDeckPage.vue"),
@@ -160,7 +171,8 @@ const router = createRouter({
       }),
     },
     {
-      path: "/decks/:deckId/practice",
+      path: "/decks/:deckId/activities/practice",
+      alias: "/decks/:deckId/practice",
       name: "decks.practice",
       component: () =>
         import("../pages/Activities/PracticeDeckPage/PracticeDeckPage.vue"),
@@ -169,7 +181,8 @@ const router = createRouter({
       }),
     },
     {
-      path: "/decks/:deckId/practice/embed",
+      path: "/decks/:deckId/activities/practice/embed",
+      alias: "/decks/:deckId/practice/embed",
       name: "decks.practice.embed",
       component: () =>
         import("@/pages/Activities/PracticeDeckPage/PracticeDeckEmbedPage.vue"),
@@ -178,7 +191,8 @@ const router = createRouter({
       }),
     },
     {
-      path: "/decks/:deckId/quiz",
+      path: "/decks/:deckId/activities/quiz",
+      alias: "/decks/:deckId/quiz",
       name: "decks.quiz",
       component: () =>
         import("@/pages/Activities/QuizDeckPage/QuizDeckPage.vue"),
@@ -187,7 +201,8 @@ const router = createRouter({
       }),
     },
     {
-      path: "/decks/:deckId/quiz/embed",
+      path: "/decks/:deckId/activities/quiz/embed",
+      alias: "/decks/:deckId/quiz/embed",
       name: "decks.quiz.embed",
       component: () =>
         import("@/pages/Activities/QuizDeckPage/QuizDeckEmbedPage.vue"),
@@ -196,7 +211,8 @@ const router = createRouter({
       }),
     },
     {
-      path: "/decks/:deckId/games/matching",
+      path: "/decks/:deckId/activities/matching",
+      alias: "/decks/:deckId/games/matching",
       name: "decks.games.matching",
       component: () =>
         import("@/pages/Activities/MatchingGamePage/MatchingGamePage.vue"),
@@ -205,7 +221,8 @@ const router = createRouter({
       }),
     },
     {
-      path: "/decks/:deckId/games/matching/embed",
+      path: "/decks/:deckId/activities/matching/embed",
+      alias: "/decks/:deckId/games/matching/embed",
       name: "decks.games.matching.embed",
       component: () =>
         import("@/pages/Activities/MatchingGamePage/MatchingGameEmbedPage.vue"),
@@ -214,7 +231,8 @@ const router = createRouter({
       }),
     },
     {
-      path: "/decks/:deckId/practice/summary",
+      path: "/decks/:deckId/activities/practice/summary",
+      alias: "/decks/:deckId/practice/summary",
       name: "decks.practice.summary",
       component: () => import("@/pages/Decks/PracticeSummaryPage.vue"),
       props: (route) => ({
@@ -226,6 +244,15 @@ const router = createRouter({
       name: "admin",
       component: () => import("@/pages/AdminPage.vue"),
     },
+
+    // LTI Routes
+    {
+      path: "/lti/deep-link",
+      name: "lti.deep_link",
+      component: () => import("@/pages/Lti/LtiDeepLinkPage.vue"),
+      meta: { requireAuth: false },
+    },
+
     ...includeDevRoutesIfDev(),
 
     {

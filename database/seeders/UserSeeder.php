@@ -18,8 +18,10 @@ class UserSeeder extends Seeder
         // it super admin privileges
         $admin = User::create([
             'name' => 'SmartyCards Admin',
-            'email' => 'latistecharch@umn.edu',
-            'emplid' => '1111111',
+            "first_name" => 'SmartyCards',
+            "last_name" => 'Admin',
+            'email' => 'latistecharch+admin@umn.edu',
+            'emplid' => '1001',
             'umndid' => 'admin',
             'password' => bcrypt(Str::random(10)),
         ]);

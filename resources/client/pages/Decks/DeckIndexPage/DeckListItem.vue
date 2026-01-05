@@ -10,7 +10,14 @@
       'shadow-solid-gold-3 -translate-y-3': 9 <= cardCount,
     }"
   >
-    <aside class="flex justify-end translate-x-2">
+    <aside class="flex justify-between items-center gap-1">
+      <Badge
+        v-if="deck.has_lti_resource_links"
+        variant="secondary"
+        class="text-[0.6rem]"
+      >
+        Canvas
+      </Badge>
       <MoreDeckActions :deck="deck" />
     </aside>
     <div
@@ -56,6 +63,7 @@ import { computed } from "vue";
 import { IconArrowRight } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
+import { Badge } from "@/components/ui/badge";
 import {
   getLevelFromTotalXP,
   getXPEarnedAtThisLevel,

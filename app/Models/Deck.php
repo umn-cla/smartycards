@@ -76,6 +76,21 @@ class Deck extends Model implements AuditableContract
         return $this->hasMany(ActivityEvent::class);
     }
 
+    public function ltiResourceLinks()
+    {
+        return $this->hasMany(LtiResourceLink::class);
+    }
+
+    public function ltiGradeSubmissions()
+    {
+        return $this->hasManyThrough(
+            LtiGradeSubmission::class,
+            LtiResourceLink::class,
+            'deck_id',
+            'lti_resource_link_id'
+        );
+    }
+
     public function userActvities($userId)
     {
         return $this->hasMany(ActivityEvent::class)->where('user_id', $userId);
@@ -222,5 +237,29 @@ class Deck extends Model implements AuditableContract
             'last_activity_at' => $lastActivityForUser?->updated_at ?? null,
             'current_user_xp' => $this->userXP(Auth::user()),
         ];
+    }
+
+    public function addOrPromoteUserToRole(User $user, string $membershipRole): void
+    {
+        if (!DeckMembership::isValidRole($membershipRole)) {
+            throw new \InvalidArgumentException("Invalid membership role: {$membershipRole}");
+        }
+
+        $membership = $this->memberships()->firstOrNew(
+            ['user_id' => $user->id]
+        );
+
+        $isNew = !$membership->exists;
+
+        if ($isNew) {
+            $membership->role = $membershipRole;
+            $membership->save();
+            return;
+        }
+
+        if ($membership->isRoleAPromotion($membershipRole)) {
+            $membership->role = $membershipRole;
+            $membership->save();
+        }
     }
 }

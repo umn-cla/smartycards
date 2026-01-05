@@ -26,6 +26,7 @@
     "maatwebsite/excel": "^3.1",
     "openai-php/client": "^0.10.1",
     "owen-it/laravel-auditing": "^13.6",
+    "packbackbooks/lti-1p3-tool": "^6.3",
     "razorbacks/laravel-shibboleth": "dev-umn#c30e9e9afbd7a67c909188408e2bd511c0f741cf",
     "sentry/sentry": "^4.9",
     "sentry/sentry-laravel": "^4.9",

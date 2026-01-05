@@ -150,6 +150,7 @@ import { useDeckStatsQuery } from "@/queries/decks/useDeckStatsQuery";
 import LevelProgress from "@/components/LevelProgress.vue";
 import { IconExclamationTriangle } from "@/components/icons";
 import ActivityPageHeader from "../ActivityPageHeader.vue";
+import { useLtiContext } from "@/composables/useLtiContext";
 
 const props = defineProps<{
   deckId: number;
@@ -172,7 +173,7 @@ const state = reactive({
 
 const deckIdRef = computed(() => props.deckId);
 
-const { data: deck, isLoading: isDeckLoading } = useDeckByIdQuery(deckIdRef);
+const { data: deck } = useDeckByIdQuery(deckIdRef);
 
 async function startQuiz() {
   state.quizState = "loading";
@@ -199,6 +200,9 @@ async function startQuiz() {
 const { data: deckStats } = useDeckStatsQuery(deckIdRef);
 const { mutate: createActivityEvent } = useCreateDeckActivityEventMutation();
 
+// Extract LTI launch ID from URL if present
+const { launchId } = useLtiContext();
+
 async function handleEndQuiz(payload: {
   correctCount: number;
   incorrectCount: number;
@@ -208,6 +212,7 @@ async function handleEndQuiz(payload: {
     activityType: T.ActivityTypeName.QUIZ,
     correctCount: payload.correctCount,
     totalCount: payload.correctCount + payload.incorrectCount,
+    ltiLaunchId: launchId.value,
   });
 
   state.quizState = "complete";

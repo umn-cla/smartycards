@@ -1,0 +1,84 @@
+{
+  "users": [
+    {
+      "username": "admin",
+      "umndid": "admin",
+      "emplid": "1001",
+      "first_name": "Admin",
+      "last_name": "User",
+      "email": "latistecharch+admin@umn.edu"
+    },
+    {
+      "username": "adminuser",
+      "umndid": "adminuser",
+      "emplid": "1002",
+      "first_name": "Admin",
+      "last_name": "User",
+      "email": "latistecharch+adminuser@umn.edu"
+    },
+    {
+      "username": "ainstructor",
+      "umndid": "ainstructor",
+      "emplid": "2001",
+      "first_name": "A",
+      "last_name": "Instructor",
+      "email": "latistecharch+ainstructor@umn.edu"
+    },
+    {
+      "username": "binstructor",
+      "umndid": "binstructor",
+      "emplid": "2002",
+      "first_name": "B",
+      "last_name": "Instructor",
+      "email": "latistecharch+binstructor@umn.edu"
+    },
+    {
+      "username": "astudent",
+      "umndid": "astudent",
+      "emplid": "4001",
+      "first_name": "A",
+      "last_name": "Student",
+      "email": "latistecharch+astudent@umn.edu"
+    },
+    {
+      "username": "bstudent",
+      "umndid": "bstudent",
+      "emplid": "4002",
+      "first_name": "B",
+      "last_name": "Student",
+      "email": "latistecharch+bstudent@umn.edu"
+    },
+    {
+      "username": "cstudent",
+      "umndid": "cstudent",
+      "emplid": "4003",
+      "first_name": "C",
+      "last_name": "Student",
+      "email": "latistecharch+cstudent@umn.edu"
+    },
+    {
+      "username": "dstudent",
+      "umndid": "dstudent",
+      "emplid": "4004",
+      "first_name": "D",
+      "last_name": "Student",
+      "email": "latistecharch+dstudent@umn.edu"
+    },
+    {
+      "username": "estudent",
+      "umndid": "estudent",
+      "emplid": "4005",
+      "first_name": "E",
+      "last_name": "Student",
+      "email": "latistecharch+estudent@umn.edu"
+    },
+    {
+      "username": "fstudent",
+      "umndid": "fstudent",
+      "emplid": "4006",
+      "first_name": "F",
+      "last_name": "Student",
+      "email": "latistecharch+fstudent@umn.edu"
+    }
+  ]
+}

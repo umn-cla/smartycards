@@ -21,7 +21,7 @@ return [
     ],
     'register_routes' => true,
     'authenticated' => env('SHIB_REDIRECT_URI', '/dashboard'),
-    'authfield' => 'umndid',
+    'authfield' => env('SHIB_AUTH_FIELD', 'emplid'),
     /*
     |--------------------------------------------------------------------------
     | Emulate an IdP
@@ -36,32 +36,28 @@ return [
      */
 
     'emulate_idp' => env('SHIB_EMULATE', false),
-    'emulate_idp_users' => [
-        'admin' => [
-            env("SHIB_DID", 'umnDID') => 'admin',
-            env('SHIB_EMPL_ID', 'umnEmplId') => '111',
-            env('SHIB_NAME_FIELD', 'displayName') => 'Admin User',
-            env('SHIB_FIRST_NAME', 'givenName') => 'Admin',
-            env('SHIB_LAST_NAME', 'sn') => 'User',
-            env('SHIB_EMAIL_FIELD', 'eppn') => 'latistecharch+admin@umn.edu',
-        ],
-        'staff' => [
-            env("SHIB_DID", 'umnDID') => 'staff',
-            env('SHIB_EMPL_ID', 'umnEmplId') => '222',
-            env('SHIB_NAME_FIELD', 'displayName') => 'Staff User',
-            env('SHIB_FIRST_NAME', 'givenName') => 'Staff',
-            env('SHIB_LAST_NAME', 'sn') => 'User',
-            env('SHIB_EMAIL_FIELD', 'eppn') => 'latistecharch+staff@umn.edu',
-        ],
-        'user' => [
-            env("SHIB_DID", 'umnDID') => 'user',
-            env('SHIB_EMPL_ID', 'umnEmplId') => '333',
-            env('SHIB_NAME_FIELD', 'displayName') => 'User User',
-            env('SHIB_FIRST_NAME', 'givenName') => 'User',
-            env('SHIB_LAST_NAME', 'sn') => 'User',
-            env('SHIB_EMAIL_FIELD', 'eppn') => 'latistecharch+userf@umn.edu',
-        ],
-    ],
+    'emulate_idp_users' => (function () {
+        $fixturesPath = base_path('database/fixtures/users.json');
+        if (!file_exists($fixturesPath)) {
+            return [];
+        }
+
+        $fixtures = json_decode(file_get_contents($fixturesPath), true);
+        $users = $fixtures['users'] ?? [];
+
+        return collect($users)
+            ->mapWithKeys(fn($user) => [
+                $user['username'] => [
+                    env("SHIB_DID", 'umnDID') => $user['umndid'],
+                    env('SHIB_EMPL_ID', 'umnEmplId') => $user['emplid'],
+                    env('SHIB_NAME_FIELD', 'displayName') => "{$user['first_name']} {$user['last_name']}",
+                    env('SHIB_FIRST_NAME', 'givenName') => $user['first_name'],
+                    env('SHIB_LAST_NAME', 'sn') => $user['last_name'],
+                    env('SHIB_EMAIL_FIELD', 'eppn') => $user['email'],
+                ]
+            ])
+            ->toArray();
+    })(),
 
     /*
     |--------------------------------------------------------------------------

@@ -6,16 +6,16 @@ services:
             - "${SSL_PORT:-443}:443"
         environment:
             - SSL_PORT=${SSL_PORT:-443}
-            - APP_SERVICE=${APP_SERVICE:-app}
             - SERVER_NAME=${SERVER_NAME:-localhost}
             - SSL_DOMAIN=${SSL_DOMAIN:-localhost}
             - SSL_ALT_NAME=${SSL_ALT_NAME:-DNS:localhost}
+            - VIRTUAL_HOST=${VIRTUAL_HOST:-smartycards.docker}
         volumes:
             - ".cert:/etc/nginx/certs"
             - "./nginx/templates:/etc/nginx/templates"
             # - './vendor/ryoluo/sail-ssl/nginx/generate-ssl-cert.sh:/docker-entrypoint.d/99-generate-ssl-cert.sh'
         depends_on:
-            - ${APP_SERVICE:-app}
+            - app
         networks:
             - sail
     app:
@@ -27,6 +27,8 @@ services:
         image: sail-8.3/app
         extra_hosts:
             - "host.docker.internal:host-gateway"
+            - "canvas.docker:host-gateway"
+            - "smartycards.docker:host-gateway"
         ports:
             - "${APP_PORT:-8000}:80"
         environment:

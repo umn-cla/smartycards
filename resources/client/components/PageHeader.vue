@@ -16,7 +16,10 @@
           'flex gap-2 items-baseline': size === 'xs',
         }"
       >
-        <PageTitle :size="size">{{ title }} </PageTitle>
+        <div class="flex gap-2 items-center flex-wrap">
+          <PageTitle :size="size">{{ title }} </PageTitle>
+          <slot name="title-append" />
+        </div>
 
         <PageSubtitle v-if="subtitle" :size="size" class="mt-1">{{
           subtitle

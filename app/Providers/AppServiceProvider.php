@@ -6,6 +6,16 @@ use App\Models\Role;
 use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
+use Firebase\JWT\JWT;
+use Packback\Lti1p3\Interfaces\ICache;
+use Packback\Lti1p3\Interfaces\ICookie;
+use Packback\Lti1p3\Interfaces\IDatabase;
+use Packback\Lti1p3\Interfaces\ILtiServiceConnector;
+use Packback\Lti1p3\LtiServiceConnector;
+use App\Services\Lti\LtiDatabase;
+use App\Services\Lti\LtiCache;
+use App\Services\Lti\LtiCookie;
+use GuzzleHttp\Client;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -19,6 +29,31 @@ class AppServiceProvider extends ServiceProvider
             $this->app->register(\Laravel\Telescope\TelescopeServiceProvider::class);
             $this->app->register(TelescopeServiceProvider::class);
         }
+
+        // Bind LTI interface implementations
+        $this->app->singleton(IDatabase::class, LtiDatabase::class);
+        $this->app->singleton(ICache::class, LtiCache::class);
+        $this->app->singleton(ICookie::class, LtiCookie::class);
+
+        // Bind service connector for LTI services (AGS, NRPS, Deep Linking)
+        $this->app->singleton(ILtiServiceConnector::class, function ($app) {
+            $cache = $app->make(ICache::class);
+
+            $clientConfig = [
+                'timeout' => 30,
+                'connect_timeout' => 10,
+            ];
+
+            // Disable SSL verification in local environment for self-signed certificates
+            if ($app->environment('local')) {
+                $clientConfig['verify'] = false;
+            }
+
+            $httpClient = new Client($clientConfig);
+
+            return (new LtiServiceConnector($cache, $httpClient))
+                ->setDebuggingMode(config('app.debug'));
+        });
     }
 
     /**
@@ -26,10 +61,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        ResetPassword::createUrlUsing(function (object $notifiable, string $token) {
-            return config('app.frontend_url')."/password-reset/$token?email={$notifiable->getEmailForPasswordReset()}";
-        });
-
         // Implicitly grant "Super Admin" role all permissions
         // This works in the app by using gate-related functions
         // like auth()->user->can() and @can()
@@ -37,5 +68,17 @@ class AppServiceProvider extends ServiceProvider
             return $user->hasRole(Role::SUPER_ADMIN) ? true : null;
         });
 
+        // a leeway to account for clock drift (in seconds)
+        // used in JWT validation with Packback LTI library
+        JWT::$leeway = 5;
+
+        // LTI sevice connector debugging mode
+        // when debugging is enabled, all requests made
+        // through the service connector will be logged using PHP's
+        // error_log() function.
+        if (config('app.debug')) {
+            $serviceConnector = app(ILtiServiceConnector::class);
+            $serviceConnector->setDebuggingMode(true);
+        }
     }
 }

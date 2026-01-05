@@ -95,6 +95,23 @@ class DeckPolicy
         return $user->isOwnerOfDeck($deck);
     }
 
+    public function viewGrades(User $user, Deck $deck): bool
+    {
+        if (!$user->isOwnerOfDeck($deck)) {
+            return false;
+        }
+
+        // For Canvas grade reports, user must have staff role
+        // in at least one linked Canvas course.
+        // This prevents deck owners from seeing grades for courses they don't teach.
+        if ($deck->ltiResourceLinks()->exists()) {
+            return $user->hasStaffRoleInDeck($deck);
+        }
+
+        // No LTI resource links: no grades to view
+        return false;
+    }
+
     public function leave(User $user, Deck $deck): bool
     {
         $deckMembership = $user->memberships()->where('deck_id', $deck->id)->first();
