@@ -14,7 +14,9 @@ class LtiResourceLinkResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        $membership = $this->ltiResourceLinkMemberships->first();
+        $membership = $this->relationLoaded('ltiResourceLinkMemberships')
+            ? $this->ltiResourceLinkMemberships->first()
+            : null;
 
         return [
             'id' => $this->id,
