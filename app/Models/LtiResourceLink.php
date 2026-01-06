@@ -126,4 +126,26 @@ class LtiResourceLink extends Model
             $q->where('user_id', $user->id);
         });
     }
+
+    /**
+     * Get the Canvas URL for this assignment
+     */
+    public function getCanvasUrl(): ?string
+    {
+        if (! $this->lineitem_url) {
+            return null;
+        }
+
+        // Parse the lineitem URL to extract base URL, course ID, and assignment ID
+        // Typical format: https://canvas.domain.com/api/lti/courses/{course_id}/line_items/{line_item_id}
+        if (preg_match('#^(https?://[^/]+)/api/lti/courses/(\d+)/line_items/(\d+)#', $this->lineitem_url, $matches)) {
+            $baseUrl = $matches[1];
+            $courseId = $matches[2];
+            $lineItemId = $matches[3];
+
+            return "{$baseUrl}/courses/{$courseId}/assignments/{$lineItemId}";
+        }
+
+        return null;
+    }
 }

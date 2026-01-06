@@ -20,12 +20,10 @@
         <MoreDeckActions :deck="deck" />
         <Button asChild variant="outline">
           <RouterLink
-            v-if="
-              deck.capabilities.canViewGrades && deck.current_user_details.lti_resource_links.length
-            "
-            :to="{ name: 'decks.reports.grades', params: { deckId } }"
+            v-if="deck.current_user_details.lti_resource_links.length"
+            :to="{ name: 'decks.assignments', params: { deckId } }"
           >
-            Grades
+            Assignments
           </RouterLink>
         </Button>
         <Button asChild variant="outline">

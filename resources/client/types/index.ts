@@ -348,3 +348,26 @@ export interface GradesReport {
   resource_links: ResourceLinkWithSubmissions[];
   error_message?: string;
 }
+
+export interface UserAssignmentScore {
+  score_given: number;
+  score_maximum: number;
+  score_percentage: number;
+  submitted_at: ISODateTime;
+}
+
+export interface UserAssignment {
+  id: number;
+  title: string;
+  description: string | null;
+  context_id: string;
+  context_title: string;
+  context_label: string;
+  canvas_url: string | null;
+  is_staff: boolean;
+  score: UserAssignmentScore | null;
+}
+
+export interface UserAssignmentsResponse {
+  assignments: UserAssignment[];
+}

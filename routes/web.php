@@ -11,6 +11,7 @@ use App\Http\Controllers\DeckMembershipController;
 use App\Http\Controllers\DeckQuizController;
 use App\Http\Controllers\DeckReportController;
 use App\Http\Controllers\LtiGradeSubmissionController;
+use App\Http\Controllers\LtiResourceLinkController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TTSController;
 use App\Http\Controllers\UploadFileController;
@@ -61,6 +62,8 @@ Route::middleware(['auth'])
 
         Route::get('decks/{deck}/reports/summary', [DeckReportController::class, 'summary']);
         Route::get('decks/{deck}/reports/grades', [DeckReportController::class, 'grades']);
+
+        Route::get('decks/{deck}/assignments', [LtiResourceLinkController::class, 'userAssignments']);
 
         Route::post('lti-grade-submissions/{submission}/retry', [LtiGradeSubmissionController::class, 'retry']);
 
