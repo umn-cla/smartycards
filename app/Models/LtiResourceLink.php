@@ -88,13 +88,13 @@ class LtiResourceLink extends Model
      */
     public function hasAgs(): bool
     {
-        return !empty($this->lineitem_url) || !empty($this->lineitems_url);
+        return ! empty($this->lineitem_url) || ! empty($this->lineitems_url);
     }
 
     /**
      * Get all memberships for this resource link
      */
-    public function memberships()
+    public function ltiResourceLinkMemberships()
     {
         return $this->hasMany(LtiResourceLinkMembership::class, 'lti_resource_link_id');
     }
@@ -102,9 +102,9 @@ class LtiResourceLink extends Model
     /**
      * Get only staff memberships (instructors, TAs, etc.)
      */
-    public function staffMemberships()
+    public function staffLtiResourceLinkMemberships()
     {
-        return $this->memberships()->where('is_staff', true);
+        return $this->ltiResourceLinkMemberships()->where('is_staff', true);
     }
 
     /**
@@ -112,8 +112,18 @@ class LtiResourceLink extends Model
      */
     public function userHasStaffRole(User $user): bool
     {
-        return $this->staffMemberships()
+        return $this->staffLtiResourceLinkMemberships()
             ->where('user_id', $user->id)
             ->exists();
+    }
+
+    /**
+     * Scope to only include resource links where the user has a membership
+     */
+    public function scopeForUser($query, User $user)
+    {
+        return $query->whereHas('ltiResourceLinkMemberships', function ($q) use ($user) {
+            $q->where('user_id', $user->id);
+        });
     }
 }

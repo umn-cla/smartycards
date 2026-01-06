@@ -9,7 +9,7 @@
     >
       <template #title-append>
         <Badge
-          v-if="deck.has_lti_resource_links"
+          v-if="deck.current_user_details.lti_resource_links.length"
           variant="secondary"
           class="text-xs border border-brand-maroon-900/10"
         >
@@ -21,7 +21,7 @@
         <Button asChild variant="outline">
           <RouterLink
             v-if="
-              deck.capabilities.canViewGrades && deck.has_lti_resource_links
+              deck.capabilities.canViewGrades && deck.current_user_details.lti_resource_links.length
             "
             :to="{ name: 'decks.reports.grades', params: { deckId } }"
           >

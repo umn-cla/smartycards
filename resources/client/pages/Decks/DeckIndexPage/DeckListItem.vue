@@ -12,7 +12,7 @@
   >
     <aside class="flex justify-between items-center gap-1">
       <Badge
-        v-if="deck.has_lti_resource_links"
+        v-if="deck.current_user_details.lti_resource_links.length"
         variant="secondary"
         class="text-[0.6rem]"
       >
@@ -75,12 +75,6 @@ const props = defineProps<{
 }>();
 
 const cardCount = computed(() => props.deck.cards_count ?? 0);
-
-// const randInt = (min: number, max: number) =>
-//   Math.floor(Math.random() * (max - min + 1) + min);
-
-// const randomPercent = randInt(1, 100);
-// const randomLevel = randInt(1, 10);
 
 const totalXP = computed(() => props.deck.current_user_details.xp);
 

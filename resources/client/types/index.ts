@@ -74,13 +74,22 @@ export interface Deck {
   tts_locale_back: string; //  "es-MX", "auto"
   tts_locale_front: string;
   current_user_role: MembershipRole | null; // could be null if public deck
-  has_lti_resource_links: number;
-
   current_user_details: {
     user_id: User["id"];
     role: MembershipRole | null; // could be null if viewing public deck
     xp: number;
     last_activity_at: ISODateTime | null;
+    lti_resource_links: Array<{
+      id: number;
+      resource_link_id: string;
+      title: string;
+      context_id: string; // canvas course id
+      context_label: string; // canvas course code
+      context_title: string; // canvas course name
+      current_user_role: "student" | "staff";
+      created_at: ISODateTime;
+      updated_at: ISODateTime;
+    }>;
   };
 
   current_user_last_activity_at: ISODateTime; //current user's last activity

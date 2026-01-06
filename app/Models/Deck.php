@@ -81,6 +81,16 @@ class Deck extends Model implements AuditableContract
         return $this->hasMany(LtiResourceLink::class);
     }
 
+    public function ltiResourceLinkMemberships()
+    {
+        return $this->hasManyThrough(
+            LtiResourceLinkMembership::class,
+            LtiResourceLink::class,
+            'deck_id',
+            'lti_resource_link_id'
+        );
+    }
+
     public function ltiGradeSubmissions()
     {
         return $this->hasManyThrough(
@@ -241,7 +251,7 @@ class Deck extends Model implements AuditableContract
 
     public function addOrPromoteUserToRole(User $user, string $membershipRole): void
     {
-        if (!DeckMembership::isValidRole($membershipRole)) {
+        if (! DeckMembership::isValidRole($membershipRole)) {
             throw new \InvalidArgumentException("Invalid membership role: {$membershipRole}");
         }
 
@@ -249,11 +259,12 @@ class Deck extends Model implements AuditableContract
             ['user_id' => $user->id]
         );
 
-        $isNew = !$membership->exists;
+        $isNew = ! $membership->exists;
 
         if ($isNew) {
             $membership->role = $membershipRole;
             $membership->save();
+
             return;
         }
 

@@ -32,7 +32,7 @@ class DeckReportController extends Controller
         // Filter to only Canvas courses where user has staff role
         // (Policy ensures user has staff role in at least one course)
         $resourceLinks = $deck->ltiResourceLinks()
-            ->whereHas('memberships', function ($query) {
+            ->whereHas('ltiResourceLinkMemberships', function ($query) {
                 $query->where('user_id', Auth::id())
                     ->where('is_staff', true);
             })
