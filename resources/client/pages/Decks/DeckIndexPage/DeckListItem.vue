@@ -12,7 +12,7 @@
   >
     <aside class="flex justify-between items-center gap-1">
       <Badge
-        v-if="hasLtiResourceLinksForCurrentUser"
+        v-if="deck.current_user_details.lti_resource_links.length"
         variant="secondary"
         class="text-[0.6rem]"
       >
@@ -88,9 +88,5 @@ const xpEarnedForCurrentLevel = computed(() =>
 
 const percentToNextLevel = computed(() => {
   return (xpEarnedForCurrentLevel.value / xpNeeded.value) * 100;
-});
-
-const hasLtiResourceLinksForCurrentUser = computed(() => {
-  return props.deck.current_user_details.lti_resource_links.length > 0;
 });
 </script>
