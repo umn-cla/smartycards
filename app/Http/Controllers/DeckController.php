@@ -18,7 +18,21 @@ class DeckController extends Controller
     {
         Gate::authorize('viewOwn', Deck::class);
 
-        $decks = $request->user()->decks()->withUserDetails()->get();
+        $decks = $request
+            ->user()
+            ->decks()
+            ->withUserDetails()
+            // include lti resource links for the user
+            // and membership informatino
+            ->with([
+                'ltiResourceLinks' => function ($query) use ($request) {
+                    $query->forUser($request->user())
+                        ->with(['ltiResourceLinkMemberships' => function ($q) use ($request) {
+                            $q->where('user_id', $request->user()->id);
+                        }]);
+                },
+            ])
+            ->get();
 
         return DeckResource::collection($decks);
     }
@@ -68,6 +82,12 @@ class DeckController extends Controller
             ->with([
                 'cards' => function ($query) use ($user) {
                     $query->withUserStats($user);
+                },
+                'ltiResourceLinks' => function ($query) use ($user) {
+                    $query->forUser($user)
+                        ->with(['ltiResourceLinkMemberships' => function ($q) use ($user) {
+                            $q->where('user_id', $user->id);
+                        }]);
                 },
             ])
             ->findOrFail($deckId);

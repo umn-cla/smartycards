@@ -31,6 +31,7 @@ class DeckResource extends JsonResource
                 'role' => $this->current_user_role ?? null,
                 'xp' => $this->current_user_xp ?? 0,
                 'last_activity_at' => $this->last_activity_at ?? null,
+                'lti_resource_links' => LtiResourceLinkResource::collection($this->whenLoaded('ltiResourceLinks')),
             ],
 
             'cards' => CardResource::collection($this->whenLoaded('cards')),
@@ -39,8 +40,6 @@ class DeckResource extends JsonResource
 
             // TODO: use current_user_details.role instead
             'current_user_role' => $this->current_user_role,
-
-            'has_lti_resource_links' => $this->ltiResourceLinks()->exists(),
 
             'capabilities' => [
                 'canUpdate' => $request->user()->can('update', $this->resource),

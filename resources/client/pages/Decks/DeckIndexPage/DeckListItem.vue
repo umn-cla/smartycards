@@ -12,7 +12,7 @@
   >
     <aside class="flex justify-between items-center gap-1">
       <Badge
-        v-if="deck.has_lti_resource_links"
+        v-if="hasLtiResourceLinksForCurrentUser"
         variant="secondary"
         class="text-[0.6rem]"
       >
@@ -76,12 +76,6 @@ const props = defineProps<{
 
 const cardCount = computed(() => props.deck.cards_count ?? 0);
 
-// const randInt = (min: number, max: number) =>
-//   Math.floor(Math.random() * (max - min + 1) + min);
-
-// const randomPercent = randInt(1, 100);
-// const randomLevel = randInt(1, 10);
-
 const totalXP = computed(() => props.deck.current_user_details.xp);
 
 const currentLevel = computed(() => getLevelFromTotalXP(totalXP.value));
@@ -94,5 +88,9 @@ const xpEarnedForCurrentLevel = computed(() =>
 
 const percentToNextLevel = computed(() => {
   return (xpEarnedForCurrentLevel.value / xpNeeded.value) * 100;
+});
+
+const hasLtiResourceLinksForCurrentUser = computed(() => {
+  return props.deck.current_user_details.lti_resource_links.length > 0;
 });
 </script>

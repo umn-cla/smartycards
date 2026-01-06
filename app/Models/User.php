@@ -117,6 +117,18 @@ class User extends Authenticatable implements AuditableContract
         return $this->hasMany(LtiResourceLinkMembership::class);
     }
 
+    public function ltiResourceLinks()
+    {
+        return $this->hasManyThrough(
+            LtiResourceLink::class,
+            LtiResourceLinkMembership::class,
+            'user_id',
+            'id',
+            'id',
+            'lti_resource_link_id'
+        );
+    }
+
     /**
      * Get only staff memberships (where user is instructor/TA)
      */

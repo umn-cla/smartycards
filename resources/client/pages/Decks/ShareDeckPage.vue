@@ -49,7 +49,7 @@
           class="bg-brand-oatmeal-50 p-4 rounded-md border border-brand-maroon-900/10"
         >
           <h3 class="text-xl font-bold mb-4">Embed Deck</h3>
-          <div v-if="deck.has_lti_resource_links">
+          <div v-if="deck.current_user_details.lti_resource_links.length">
             <p class="mb-4">
               This deck is linked to Canvas. To embed in your course:
             </p>
