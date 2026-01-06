@@ -52,36 +52,32 @@
                       {{ assignment.context_label }}
                     </p>
 
-                    <div v-if="assignment.is_staff" class="mt-3">
-                      <p class="text-sm text-brand-maroon-900/50">
-                        Staff role - no score recorded
-                      </p>
-                    </div>
-
-                    <div v-else-if="assignment.score" class="mt-3">
-                      <div class="flex items-baseline gap-2">
-                        <span class="text-sm text-brand-maroon-900/70"
-                          >Your Score:</span
-                        >
-                        <span class="text-2xl font-bold">
-                          {{ assignment.score.score_percentage.toFixed(0) }}%
-                        </span>
-                        <span class="text-sm text-brand-maroon-900/50">
-                          ({{ assignment.score.score_given }} /
-                          {{ assignment.score.score_maximum }})
-                        </span>
+                    <template v-if="!assignment.is_staff">
+                      <div v-if="assignment.score" class="mt-3">
+                        <div class="flex items-baseline gap-2">
+                          <span class="text-sm text-brand-maroon-900/70"
+                            >Your Score:</span
+                          >
+                          <span class="text-2xl font-bold">
+                            {{ assignment.score.score_percentage.toFixed(0) }}%
+                          </span>
+                          <span class="text-sm text-brand-maroon-900/50">
+                            ({{ assignment.score.score_given }} /
+                            {{ assignment.score.score_maximum }})
+                          </span>
+                        </div>
+                        <p class="text-xs text-brand-maroon-900/50 mt-1">
+                          Submitted
+                          {{ formatDate(assignment.score.submitted_at) }}
+                        </p>
                       </div>
-                      <p class="text-xs text-brand-maroon-900/50 mt-1">
-                        Submitted
-                        {{ formatDate(assignment.score.submitted_at) }}
-                      </p>
-                    </div>
 
-                    <div v-else class="mt-3">
-                      <p class="text-sm text-brand-maroon-900/50">
-                        No score yet
-                      </p>
-                    </div>
+                      <div v-else class="mt-3">
+                        <p class="text-sm text-brand-maroon-900/50">
+                          No score yet
+                        </p>
+                      </div>
+                    </template>
                   </div>
 
                   <div v-if="assignment.canvas_url">
@@ -92,20 +88,7 @@
                       class="inline-flex items-center gap-2 px-4 py-2 bg-white border border-brand-maroon-200 rounded-md text-brand-maroon-700 hover:bg-brand-maroon-50 transition-colors"
                     >
                       View in Canvas
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        class="h-4 w-4"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          stroke-width="2"
-                          d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-                        />
-                      </svg>
+                      <ExternalLinkIcon class="w-4 h-4" />
                     </a>
                   </div>
                 </div>
@@ -127,6 +110,7 @@ import { computed } from "vue";
 import Tuple from "@/components/Tuple.vue";
 import DeckContextProvider from "@/components/DeckContextProvider.vue";
 import type * as T from "@/types";
+import { ExternalLinkIcon } from "@radix-icons/vue";
 
 const props = defineProps<{
   deckId: number;
