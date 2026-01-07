@@ -75,7 +75,7 @@ class LtiResourceLinkEntry extends Model
         return $query->where('is_staff', false);
     }
 
-    public function scopeUncompleted($query)
+    public function scopePending($query)
     {
         return $query->whereNull('score');
     }

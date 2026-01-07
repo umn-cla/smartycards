@@ -45,13 +45,13 @@ class ActivityEventController extends Controller
 
         // Users can have more than one assignment for a deck.
         // We want the ones that haven't been completed yet (score is null)
-        // If there are multiple uncompleted entries, pick the most recent one
-        $uncompletedEntry = $entries
+        // If there are multiple incomplete entries, pick the most recent one
+        $pendingEntry = $entries
             ->filter(fn ($entry) => !$entry->isCompleted())
             ->sortByDesc('updated_at')
             ->first();
 
-        $ltiResourceLinkId = $uncompletedEntry?->lti_resource_link_id;
+        $ltiResourceLinkId = $pendingEntry?->lti_resource_link_id;
 
         // record the event with the LTI resource link if we have one
         $event = ActivityEvent::create([
@@ -62,13 +62,13 @@ class ActivityEventController extends Controller
             'xp' => $xp,
         ]);
 
-        // Queue score submission if we have an uncompleted entry
+        // Queue score submission if we have an incomplete entry
         $updatedEntry = null;
 
-        if ($uncompletedEntry !== null) {
+        if ($pendingEntry !== null) {
             try {
                 $updatedEntry = $ltiService->queueScoreSubmission(
-                    entry: $uncompletedEntry,
+                    entry: $pendingEntry,
                     userId: Auth::id(),
                     activityEventId: $event->id,
                     score: 100.0,
