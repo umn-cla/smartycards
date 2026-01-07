@@ -56,8 +56,12 @@ class SubmitLtiGrade implements ShouldQueue
         ]);
 
         try {
-            // Submit using stored submission data (doesn't rely on cached launch)
-            $response = $ltiService->submitGradeFromSubmission($this->submission);
+            // Check if this is a deferred submission (no cached launch)
+            if ($this->submission->launch_id === 'deferred') {
+                $response = $ltiService->submitGradeFromMembershipData($this->submission);
+            } else {
+                $response = $ltiService->submitGradeFromSubmission($this->submission);
+            }
 
             // Mark as successful
             $this->submission->update([

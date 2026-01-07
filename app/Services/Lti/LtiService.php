@@ -2,28 +2,28 @@
 
 namespace App\Services\Lti;
 
-use App\Models\User;
-use App\Models\LtiPlatform;
-use App\Models\LtiResourceLink;
-use App\Models\LtiGradeSubmission;
 use App\Enums\LtiActivityProgress;
 use App\Enums\LtiGradingProgress;
 use App\Jobs\SubmitLtiGrade;
+use App\Models\LtiGradeSubmission;
+use App\Models\LtiPlatform;
+use App\Models\LtiResourceLink;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 use Packback\Lti1p3\DeepLinkResources\Resource;
-use Packback\Lti1p3\Interfaces\IDatabase;
 use Packback\Lti1p3\Interfaces\ICache;
 use Packback\Lti1p3\Interfaces\ICookie;
+use Packback\Lti1p3\Interfaces\IDatabase;
 use Packback\Lti1p3\Interfaces\ILtiServiceConnector;
 use Packback\Lti1p3\JwksEndpoint;
+use Packback\Lti1p3\LtiConstants;
 use Packback\Lti1p3\LtiException;
 use Packback\Lti1p3\LtiGrade;
 use Packback\Lti1p3\LtiMessageLaunch;
 use Packback\Lti1p3\LtiOidcLogin;
-use Packback\Lti1p3\LtiConstants;
 
 class LtiService
 {
@@ -46,6 +46,7 @@ class LtiService
         );
 
         $redirectUrl = $login->getRedirectUrl($launchUrl, $request);
+
         return redirect($redirectUrl);
     }
 
@@ -135,7 +136,6 @@ class LtiService
         ];
     }
 
-
     /**
      * Provide a JWKS endpoint for platforms to verify our signatures
      */
@@ -163,6 +163,7 @@ class LtiService
         }
 
         $nrps = $launch->getNrps();
+
         return $nrps->getMembers();
     }
 
@@ -247,6 +248,58 @@ class LtiService
         return $submission;
     }
 
+    /**
+     * Queue a grade submission using membership data (no cache dependency)
+     * Used when a user completes an assignment outside of Canvas (deferred completion)
+     */
+    public function queueGradeSubmissionFromMembership(
+        \App\Models\LtiResourceLinkMembership $membership,
+        ?int $activityEventId = null,
+        float $scoreGiven = 100.0,
+        float $scoreMaximum = 100.0
+    ): ?LtiGradeSubmission {
+        $resourceLink = $membership->resourceLink;
+
+        if (!$resourceLink) {
+            throw new \Exception('Resource link not found for membership');
+        }
+
+        if (!$membership->lti_user_id) {
+            throw new \Exception('LTI user ID not found in membership (legacy data)');
+        }
+
+        if (!$resourceLink->lineitem_url) {
+            throw new \Exception('Lineitem URL not available for this resource link');
+        }
+
+        $requestPayload = [
+            'scoreGiven' => $scoreGiven,
+            'scoreMaximum' => $scoreMaximum,
+            'userId' => $membership->lti_user_id,
+            'timestamp' => date('c'),
+            'activityProgress' => LtiActivityProgress::Completed->value,
+            'gradingProgress' => LtiGradingProgress::FullyGraded->value,
+        ];
+
+        $submission = LtiGradeSubmission::create([
+            'lti_resource_link_id' => $resourceLink->id,
+            'user_id' => $membership->user_id,
+            'activity_event_id' => $activityEventId,
+            'score_given' => $scoreGiven,
+            'score_maximum' => $scoreMaximum,
+            'activity_progress' => LtiActivityProgress::Completed,
+            'grading_progress' => LtiGradingProgress::FullyGraded,
+            'lti_user_id' => $membership->lti_user_id,
+            'launch_id' => 'deferred',
+            'submitted_at' => now(),
+            'success' => false,
+            'request_payload' => $requestPayload,
+        ]);
+
+        SubmitLtiGrade::dispatch($submission);
+
+        return $submission;
+    }
 
     /**
      * Submit a grade using an existing grade submission record
@@ -288,7 +341,110 @@ class LtiService
 
         // Submit the grade
         $ags = $launch->getAgs();
+
         return $ags->putGrade($grade);
+    }
+
+    /**
+     * Submit a grade without using cached launch data
+     * Manually constructs OAuth token request and AGS submission
+     * Used for deferred grade submissions
+     */
+    public function submitGradeFromMembershipData(LtiGradeSubmission $submission): array
+    {
+        $resourceLink = $submission->resourceLink()->with('deployment.platform')->first();
+
+        if (!$resourceLink) {
+            throw new \Exception('Resource link not found for submission');
+        }
+
+        if (!$resourceLink->lineitem_url) {
+            throw new \Exception('Lineitem URL not available');
+        }
+
+        $deployment = $resourceLink->deployment;
+        $platform = $deployment->platform;
+
+        if (!$platform->auth_token_url) {
+            throw new \Exception('Platform auth token URL not configured');
+        }
+
+        if (!$deployment->client_id) {
+            throw new \Exception('Deployment client ID not configured');
+        }
+
+        $accessToken = $this->getAccessToken(
+            $platform->auth_token_url,
+            $deployment->client_id,
+            $resourceLink->ags_scopes ?? []
+        );
+
+        $gradeData = [
+            'userId' => $submission->lti_user_id,
+            'scoreGiven' => $submission->score_given,
+            'scoreMaximum' => $submission->score_maximum,
+            'timestamp' => date('c'),
+            'activityProgress' => $submission->activity_progress->value,
+            'gradingProgress' => $submission->grading_progress->value,
+        ];
+
+        $response = $this->connector->makeServiceRequest(
+            $resourceLink->ags_scopes ?? [],
+            $resourceLink->lineitem_url.'/scores',
+            false,
+            'POST',
+            $gradeData,
+            $accessToken,
+            'application/vnd.ims.lis.v1.score+json'
+        );
+
+        return $response;
+    }
+
+    /**
+     * Get an OAuth access token for LTI service requests
+     */
+    private function getAccessToken(string $authTokenUrl, string $clientId, array $scopes): string
+    {
+        $scopeString = implode(' ', $scopes);
+
+        $response = $this->connector->makeRequest([
+            'grant_type' => 'client_credentials',
+            'client_assertion_type' => 'urn:ietf:params:oauth:client-assertion-type:jwt-bearer',
+            'client_assertion' => $this->generateClientAssertion($authTokenUrl, $clientId),
+            'scope' => $scopeString,
+        ], $authTokenUrl);
+
+        $responseData = json_decode($response['body'], true);
+
+        if (!isset($responseData['access_token'])) {
+            throw new \Exception('Failed to obtain access token from platform');
+        }
+
+        return $responseData['access_token'];
+    }
+
+    /**
+     * Generate a JWT client assertion for OAuth token requests
+     */
+    private function generateClientAssertion(string $authTokenUrl, string $clientId): string
+    {
+        $registration = $this->database->findRegistrationByIssuer($clientId);
+
+        if (!$registration) {
+            throw new \Exception("Registration not found for client ID: {$clientId}");
+        }
+
+        $messageJwt = [
+            'iss' => $clientId,
+            'sub' => $clientId,
+            'aud' => $authTokenUrl,
+            'iat' => time(),
+            'exp' => time() + 60,
+            'jti' => 'lti-service-token-'.uniqid(),
+        ];
+
+        return $registration->signJwt($messageJwt);
     }
 
     /**
@@ -301,6 +457,7 @@ class LtiService
         }
 
         $gs = $launch->getGs();
+
         return $gs->getGroups();
     }
 
@@ -314,14 +471,16 @@ class LtiService
         }
 
         $gs = $launch->getGs();
+
         return $gs->getGroupsBySet();
     }
 
     /**
      * Validates that LTI Launch data contains everything
      * we expect to create or authenticate a user
-     * @param array $launchData
+     *
      * @return array - validated data
+     *
      * @throws \Illuminate\Validation\ValidationException
      */
     private function validateLtiLaunchData(array $launchData): array
@@ -356,6 +515,7 @@ class LtiService
     private function normalizeDevSisId(string $sisId): string
     {
         $mappings = config('lti.dev_sis_mappings', []);
+
         return $mappings[$sisId] ?? $sisId;
     }
 
@@ -463,11 +623,12 @@ class LtiService
                 'email' => $email,
                 'first_name' => $firstName,
                 'last_name' => $lastName,
-                'name' => trim($firstName . ' ' . $lastName),
+                'name' => trim($firstName.' '.$lastName),
                 'password' => Hash::make(Str::random(32)),
             ]);
 
             Auth::login($user);
+
             return $user;
         }
 
@@ -481,6 +642,7 @@ class LtiService
         ]);
 
         Auth::login($user);
+
         return $user;
     }
 
@@ -496,6 +658,7 @@ class LtiService
         $launchData = $launch->getLaunchData();
         $roles = $launchData[LtiConstants::ROLES] ?? [];
         $isStaff = $this->hasStaffRole($launch);
+        $ltiUserId = $launchData['sub'] ?? null;
 
         return \App\Models\LtiResourceLinkMembership::updateOrCreate(
             [
@@ -506,6 +669,7 @@ class LtiService
                 'roles' => $roles,
                 'is_staff' => $isStaff,
                 'last_launch_at' => now(),
+                'lti_user_id' => $ltiUserId,
             ]
         );
     }

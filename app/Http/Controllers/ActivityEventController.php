@@ -6,6 +6,7 @@ use App\Enums\ActivityTypeEnum;
 use App\Models\ActivityEvent;
 use App\Models\ActivityType;
 use App\Models\Deck;
+use App\Models\LtiResourceLinkMembership;
 use App\Services\Lti\LtiService;
 use Auth;
 use Illuminate\Http\Request;
@@ -21,8 +22,6 @@ class ActivityEventController extends Controller
     {
         Gate::authorize('create', [ActivityEvent::class, $deck]);
 
-        // TODO: maybe we should rate limit or check some
-        // sort of token to avoid potential spamming
         $validated = $request->validate([
             'activity_type_name' => [
                 'required',
@@ -88,6 +87,32 @@ class ActivityEventController extends Controller
                     'error' => $e->getMessage(),
                     'activity_event_id' => $event->id,
                     'launch_id' => $validated['launch_id'],
+                ]);
+            }
+        } else {
+            // No launch_id: check for most recent uncompleted LTI assignment for this deck
+            try {
+                $membership = LtiResourceLinkMembership::ungradedForDeck($deck->id, Auth::id())->first();
+
+                if ($membership) {
+                    $gradeSubmission = $ltiService->queueGradeSubmissionFromMembership(
+                        membership: $membership,
+                        activityEventId: $event->id,
+                        scoreGiven: 100.0,
+                        scoreMaximum: 100.0
+                    );
+
+                    \Log::info('Deferred grade submission queued for Canvas', [
+                        'activity_event_id' => $event->id,
+                        'grade_submission_id' => $gradeSubmission->id,
+                        'membership_id' => $membership->id,
+                    ]);
+                }
+            } catch (\Exception $e) {
+                \Log::error('Failed to queue deferred grade submission to Canvas', [
+                    'error' => $e->getMessage(),
+                    'activity_event_id' => $event->id,
+                    'deck_id' => $deck->id,
                 ]);
             }
         }
