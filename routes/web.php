@@ -61,7 +61,6 @@ Route::middleware(['auth'])
         ]);
 
         Route::get('decks/{deck}/reports/summary', [DeckReportController::class, 'summary']);
-        // Route::get('decks/{deck}/reports/grades', [DeckReportController::class, 'grades']);
 
         Route::get('decks/{deck}/assignments', [LtiResourceLinkController::class, 'userAssignments']);
 
