@@ -6,7 +6,6 @@ use App\Enums\ActivityTypeEnum;
 use App\Models\ActivityEvent;
 use App\Models\ActivityType;
 use App\Models\Deck;
-use App\Models\LtiResourceLinkMembership;
 use App\Services\Lti\LtiService;
 use Auth;
 use Illuminate\Http\Request;
@@ -39,26 +38,23 @@ class ActivityEventController extends Controller
             totalCount: $validated['total_count']
         );
 
-        // Handle LTI context: link activity to resource and queue grade submission
-        $ltiResourceLinkId = null;
-        $gradeSubmission = null;
+        // Get user's LTI assignments for this deck (if any)
+        $assignments = $ltiService->getAssignmentsForUserAndDeck(
+            userId: Auth::id(),
+            deckId: $deck->id
+        );
 
-        if (!empty($validated['launch_id'])) {
-            try {
-                $launch = $ltiService->getLaunchFromCache($validated['launch_id']);
-                $resourceLink = $ltiService->createOrUpdateResourceLink($launch, $deck->id);
-                $ltiResourceLinkId = $resourceLink->id;
+        // users can have more than one assignment for a deck.
+        // we want the ones that don't have score submissions yet
+        // and if there are multiple assignments without score submissions
+        // pick the one with the most recent launch
+        $gradeableAssignment = $assignments?->filter(function ($assignment) {
+            return is_null($assignment->submission_id);
+        })->sortByDesc('last_launch_at')->first();
 
-                // Track user's role in this Canvas course for grade report authorization
-                $ltiService->createOrUpdateMembership($launch, Auth::user(), $resourceLink);
-            } catch (\Exception $e) {
-                \Log::warning('Failed to get LTI resource link for activity event', [
-                    'error' => $e->getMessage(),
-                    'launch_id' => $validated['launch_id'],
-                ]);
-            }
-        }
+        $ltiResourceLinkId = $gradeableAssignment?->lti_resource_link_id ?? null;
 
+        // record the event with the LTI resource link if we have one
         $event = ActivityEvent::create([
             'deck_id' => $deck->id,
             'activity_type_id' => $activityType->id,
@@ -67,11 +63,14 @@ class ActivityEventController extends Controller
             'xp' => $xp,
         ]);
 
-        // Queue grade submission to Canvas if LTI context
-        if (!empty($validated['launch_id'])) {
+        // Queue grade submission if we have a gradeable assignment
+        $gradeSubmission = null;
+
+        if ($gradeableAssignment !== null) {
             try {
-                $gradeSubmission = $ltiService->queueGradeSubmissionFromLaunchId(
-                    launchId: $validated['launch_id'],
+                $gradeSubmission = $ltiService->queueGradeSubmission(
+                    assignment: $gradeableAssignment,
+                    launchId: $validated['launch_id'] ?? 'deferred',
                     userId: Auth::id(),
                     activityEventId: $event->id,
                     scoreGiven: 100.0,
@@ -80,39 +79,13 @@ class ActivityEventController extends Controller
 
                 \Log::info('Grade submission queued for Canvas via LTI', [
                     'activity_event_id' => $event->id,
-                    'grade_submission_id' => $gradeSubmission->id,
+                    'grade_submission_id' => $gradeSubmission?->id,
                 ]);
             } catch (\Exception $e) {
                 \Log::error('Failed to queue grade submission to Canvas', [
                     'error' => $e->getMessage(),
                     'activity_event_id' => $event->id,
-                    'launch_id' => $validated['launch_id'],
-                ]);
-            }
-        } else {
-            // No launch_id: check for most recent uncompleted LTI assignment for this deck
-            try {
-                $membership = LtiResourceLinkMembership::ungradedForDeck($deck->id, Auth::id())->first();
-
-                if ($membership) {
-                    $gradeSubmission = $ltiService->queueGradeSubmissionFromMembership(
-                        membership: $membership,
-                        activityEventId: $event->id,
-                        scoreGiven: 100.0,
-                        scoreMaximum: 100.0
-                    );
-
-                    \Log::info('Deferred grade submission queued for Canvas', [
-                        'activity_event_id' => $event->id,
-                        'grade_submission_id' => $gradeSubmission->id,
-                        'membership_id' => $membership->id,
-                    ]);
-                }
-            } catch (\Exception $e) {
-                \Log::error('Failed to queue deferred grade submission to Canvas', [
-                    'error' => $e->getMessage(),
-                    'activity_event_id' => $event->id,
-                    'deck_id' => $deck->id,
+                    'lti_resource_link_id' => $ltiResourceLinkId,
                 ]);
             }
         }
