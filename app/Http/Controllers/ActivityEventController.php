@@ -37,21 +37,21 @@ class ActivityEventController extends Controller
             totalCount: $validated['total_count']
         );
 
-        // Get user's LTI assignment scores for this deck (if any)
-        $assignmentScores = $ltiService->getAssignmentScoresForUserAndDeck(
+        // Get user's LTI entries for this deck (if any)
+        $entries = $ltiService->getEntriesForUserAndDeck(
             userId: Auth::id(),
             deckId: $deck->id
         );
 
         // Users can have more than one assignment for a deck.
         // We want the ones that haven't been completed yet (score is null)
-        // If there are multiple uncompleted assignments, pick the most recent one
-        $gradeableAssignment = $assignmentScores
-            ->filter(fn ($score) => $score->score === null)
+        // If there are multiple uncompleted entries, pick the most recent one
+        $uncompletedEntry = $entries
+            ->filter(fn ($entry) => !$entry->isCompleted())
             ->sortByDesc('updated_at')
             ->first();
 
-        $ltiResourceLinkId = $gradeableAssignment?->lti_resource_link_id;
+        $ltiResourceLinkId = $uncompletedEntry?->lti_resource_link_id;
 
         // record the event with the LTI resource link if we have one
         $event = ActivityEvent::create([
@@ -62,25 +62,25 @@ class ActivityEventController extends Controller
             'xp' => $xp,
         ]);
 
-        // Queue grade submission if we have a gradeable assignment
-        $updatedAssignmentScore = null;
+        // Queue score submission if we have an uncompleted entry
+        $updatedEntry = null;
 
-        if ($gradeableAssignment !== null) {
+        if ($uncompletedEntry !== null) {
             try {
-                $updatedAssignmentScore = $ltiService->queueGradeSubmission(
-                    assignmentScore: $gradeableAssignment,
+                $updatedEntry = $ltiService->queueScoreSubmission(
+                    entry: $uncompletedEntry,
                     userId: Auth::id(),
                     activityEventId: $event->id,
-                    scoreGiven: 100.0,
+                    score: 100.0,
                     scoreMaximum: 100.0
                 );
 
-                \Log::info('Grade submission queued for Canvas via LTI', [
+                \Log::info('Score submission queued for Canvas via LTI', [
                     'activity_event_id' => $event->id,
-                    'assignment_score_id' => $updatedAssignmentScore->id,
+                    'entry_id' => $updatedEntry->id,
                 ]);
             } catch (\Exception $e) {
-                \Log::error('Failed to queue grade submission to Canvas', [
+                \Log::error('Failed to queue score submission to Canvas', [
                     'error' => $e->getMessage(),
                     'activity_event_id' => $event->id,
                     'lti_resource_link_id' => $ltiResourceLinkId,
@@ -90,11 +90,11 @@ class ActivityEventController extends Controller
 
         return response()->json([
             'activity_event' => $event,
-            'assignment_score' => $updatedAssignmentScore ? [
-                'id' => $updatedAssignmentScore->id,
+            'score' => $updatedEntry ? [
+                'id' => $updatedEntry->id,
                 'status' => 'queued',
-                'score' => $updatedAssignmentScore->score,
-                'score_maximum' => $updatedAssignmentScore->score_maximum,
+                'score' => $updatedEntry->score,
+                'score_maximum' => $updatedEntry->score_maximum,
             ] : null,
         ], 201);
     }

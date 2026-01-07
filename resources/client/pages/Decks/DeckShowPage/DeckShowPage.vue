@@ -18,7 +18,7 @@
       </template>
       <div class="flex gap-2 items-center">
         <MoreDeckActions :deck="deck" />
-        <Button asChild variant="outline">
+        <Button asChild variant="secondary">
           <RouterLink
             v-if="deck.current_user_details.lti_resource_links.length"
             :to="{ name: 'decks.assignments', params: { deckId } }"

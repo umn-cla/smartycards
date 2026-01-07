@@ -14,7 +14,7 @@
       <Badge
         v-if="deck.current_user_details.lti_resource_links.length"
         variant="secondary"
-        class="text-[0.6rem]"
+        class="text-[0.6rem] shadow"
       >
         Canvas
       </Badge>

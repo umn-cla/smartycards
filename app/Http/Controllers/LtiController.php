@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Deck;
 use App\Models\DeckMembership;
-use App\Models\LtiAssignmentScore;
 use App\Services\Lti\LtiService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
@@ -173,24 +172,8 @@ class LtiController extends Controller
             // Create or update the LTI resource link with AGS endpoints
             $resourceLink = $ltiService->createOrUpdateResourceLink($launch, $deckId);
 
-            // Track user's role in this Canvas course for grade report authorization
-            $membership = $ltiService->createOrUpdateMembership($launch, $user, $resourceLink);
-
-            // Create assignment score record for students (not staff)
-            // This allows deferred grade submission even if user completes later
-            if (!$membership->is_staff) {
-                LtiAssignmentScore::updateOrCreate(
-                    [
-                        'user_id' => $user->id,
-                        'lti_resource_link_id' => $resourceLink->id,
-                    ],
-                    [
-                        'lti_user_id' => $launchData['sub'],
-                        'score_maximum' => 100.0,
-                        // score and completed_at remain null until user completes
-                    ]
-                );
-            }
+            // Create or update entry to track user's role and score for this Canvas assignment
+            $entry = $ltiService->createOrUpdateEntry($launch, $user, $resourceLink);
 
             return redirect("/decks/{$deckId}/activities/{$deckActivity}/embed?lti_launch=true");
         } catch (\Exception $e) {

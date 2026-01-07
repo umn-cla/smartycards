@@ -2,7 +2,7 @@
 
 namespace App\Jobs;
 
-use App\Models\LtiAssignmentScore;
+use App\Models\LtiResourceLinkEntry;
 use App\Services\Lti\LtiService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -11,7 +11,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
 
-class SubmitLtiGrade implements ShouldQueue
+class SubmitLtiScore implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -31,7 +31,7 @@ class SubmitLtiGrade implements ShouldQueue
     public bool $deleteWhenMissingModels = true;
 
     public function __construct(
-        public LtiAssignmentScore $assignmentScore
+        public LtiResourceLinkEntry $entry
     ) {}
 
     /**
@@ -48,33 +48,33 @@ class SubmitLtiGrade implements ShouldQueue
      */
     public function handle(LtiService $ltiService): void
     {
-        Log::info('Attempting LTI grade submission', [
-            'assignment_score_id' => $this->assignmentScore->id,
-            'user_id' => $this->assignmentScore->user_id,
+        Log::info('Attempting LTI score submission', [
+            'entry_id' => $this->entry->id,
+            'user_id' => $this->entry->user_id,
             'attempt' => $this->attempts(),
             'max_tries' => $this->tries,
         ]);
 
         try {
-            // Submit grade to Canvas using database-stored configuration
-            $response = $ltiService->submitGrade($this->assignmentScore);
+            // Submit score to Canvas using database-stored configuration
+            $response = $ltiService->submitScore($this->entry);
 
             // Mark as successfully submitted
-            $this->assignmentScore->update([
+            $this->entry->update([
                 'submission_success' => true,
                 'submitted_at' => now(),
                 'submission_error' => null,
             ]);
 
-            Log::info('LTI grade submitted successfully', [
-                'assignment_score_id' => $this->assignmentScore->id,
-                'user_id' => $this->assignmentScore->user_id,
-                'score' => "{$this->assignmentScore->score}/{$this->assignmentScore->score_maximum}",
+            Log::info('LTI score submitted successfully', [
+                'entry_id' => $this->entry->id,
+                'user_id' => $this->entry->user_id,
+                'score' => "{$this->entry->score}/{$this->entry->score_maximum}",
                 'attempts' => $this->attempts(),
             ]);
         } catch (\Exception $e) {
-            Log::warning('LTI grade submission failed', [
-                'assignment_score_id' => $this->assignmentScore->id,
+            Log::warning('LTI score submission failed', [
+                'entry_id' => $this->entry->id,
                 'attempt' => $this->attempts(),
                 'max_tries' => $this->tries,
                 'error' => $e->getMessage(),
@@ -91,16 +91,16 @@ class SubmitLtiGrade implements ShouldQueue
      */
     public function failed(\Throwable $exception): void
     {
-        $errorMessage = "LTI Grade Submit job failed after {$this->tries} attempts. Last error: {$exception->getMessage()}";
+        $errorMessage = "LTI Score Submit job failed after {$this->tries} attempts. Last error: {$exception->getMessage()}";
 
         Log::error($errorMessage, [
-            'assignment_score_id' => $this->assignmentScore->id,
-            'user_id' => $this->assignmentScore->user_id,
-            'resource_link_id' => $this->assignmentScore->lti_resource_link_id,
+            'entry_id' => $this->entry->id,
+            'user_id' => $this->entry->user_id,
+            'resource_link_id' => $this->entry->lti_resource_link_id,
         ]);
 
-        // Update the assignment score to reflect permanent failure
-        $this->assignmentScore->update([
+        // Update the entry to reflect permanent failure
+        $this->entry->update([
             'submission_success' => false,
             'submission_error' => $errorMessage,
         ]);

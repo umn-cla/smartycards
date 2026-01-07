@@ -4,9 +4,9 @@ namespace App\Services\Lti;
 
 use App\Enums\LtiActivityProgress;
 use App\Enums\LtiGradingProgress;
-use App\Jobs\SubmitLtiGrade;
-use App\Models\LtiAssignmentScore;
+use App\Jobs\SubmitLtiScore;
 use App\Models\LtiPlatform;
+use App\Models\LtiResourceLinkEntry;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -168,13 +168,13 @@ class LtiService
     }
 
     /**
-     * Get all assignment scores for a user and deck
+     * Get all entries for a user and deck
      *
-     * @return \Illuminate\Support\Collection Collection of LtiAssignmentScore objects
+     * @return \Illuminate\Support\Collection Collection of LtiResourceLinkEntry objects
      */
-    public function getAssignmentScoresForUserAndDeck(int $userId, int $deckId)
+    public function getEntriesForUserAndDeck(int $userId, int $deckId)
     {
-        return LtiAssignmentScore::query()
+        return LtiResourceLinkEntry::query()
             ->whereHas('resourceLink', function ($query) use ($deckId) {
                 $query->where('deck_id', $deckId);
             })
@@ -184,50 +184,50 @@ class LtiService
     }
 
     /**
-     * Queue a grade submission for an assignment score
+     * Queue a score submission for an entry
      * Updates the score and queues it for submission to Canvas
      */
-    public function queueGradeSubmission(
-        LtiAssignmentScore $assignmentScore,
+    public function queueScoreSubmission(
+        LtiResourceLinkEntry $entry,
         int $userId,
         ?int $activityEventId = null,
-        float $scoreGiven = 100.0,
+        float $score = 100.0,
         float $scoreMaximum = 100.0
-    ): LtiAssignmentScore {
-        if (!$assignmentScore->lti_user_id) {
-            throw new \Exception('LTI user ID not found in assignment score (legacy data)');
+    ): LtiResourceLinkEntry {
+        if (!$entry->lti_user_id) {
+            throw new \Exception('LTI user ID not found in entry (legacy data)');
         }
 
-        $resourceLink = $assignmentScore->resourceLink;
+        $resourceLink = $entry->resourceLink;
 
         if (!$resourceLink->lineitem_url) {
             throw new \Exception('Lineitem URL not available for this resource link');
         }
 
-        // Update the assignment score with completion data
-        $assignmentScore->update([
-            'score' => $scoreGiven,
+        // Update the entry with completion data
+        $entry->update([
+            'score' => $score,
             'score_maximum' => $scoreMaximum,
             'activity_event_id' => $activityEventId,
             'completed_at' => now(),
         ]);
 
-        // Dispatch job to submit grade to Canvas
-        SubmitLtiGrade::dispatch($assignmentScore);
+        // Dispatch job to submit score to Canvas
+        SubmitLtiScore::dispatch($entry);
 
-        return $assignmentScore;
+        return $entry;
     }
 
     /**
-     * Submit a grade to Canvas using database-stored LTI configuration
+     * Submit a score to Canvas using database-stored LTI configuration
      * Uses the Packback library's AGS service which handles OAuth tokens automatically
      */
-    public function submitGrade(LtiAssignmentScore $assignmentScore): array
+    public function submitScore(LtiResourceLinkEntry $entry): array
     {
-        $resourceLink = $assignmentScore->resourceLink()->with('deployment.platform')->first();
+        $resourceLink = $entry->resourceLink()->with('deployment.platform')->first();
 
         if (!$resourceLink) {
-            throw new \Exception('Resource link not found for assignment score');
+            throw new \Exception('Resource link not found for entry');
         }
 
         if (!$resourceLink->lineitem_url) {
@@ -263,14 +263,14 @@ class LtiService
 
         // Prepare the grade object
         $grade = LtiGrade::new()
-            ->setScoreGiven($assignmentScore->score)
-            ->setScoreMaximum($assignmentScore->score_maximum)
-            ->setUserId($assignmentScore->lti_user_id)
+            ->setScoreGiven($entry->score)
+            ->setScoreMaximum($entry->score_maximum)
+            ->setUserId($entry->lti_user_id)
             ->setTimestamp(date('c'))
             ->setActivityProgress(LtiActivityProgress::Completed->value)
             ->setGradingProgress(LtiGradingProgress::FullyGraded->value);
 
-        // Submit the grade - library handles OAuth token acquisition
+        // Submit the score - library handles OAuth token acquisition
         return $ags->putGrade($grade);
     }
 
@@ -474,29 +474,30 @@ class LtiService
     }
 
     /**
-     * Create or update LTI resource link membership for a user
+     * Create or update LTI resource link entry for a user
      * Tracks which users have what roles in which Canvas courses
      */
-    public function createOrUpdateMembership(
+    public function createOrUpdateEntry(
         LtiMessageLaunch $launch,
         User $user,
         \App\Models\LtiResourceLink $resourceLink
-    ): \App\Models\LtiResourceLinkMembership {
+    ): LtiResourceLinkEntry {
         $launchData = $launch->getLaunchData();
         $roles = $launchData[LtiConstants::ROLES] ?? [];
         $isStaff = $this->hasStaffRole($launch);
         $ltiUserId = $launchData['sub'] ?? null;
 
-        return \App\Models\LtiResourceLinkMembership::updateOrCreate(
+        return LtiResourceLinkEntry::updateOrCreate(
             [
                 'user_id' => $user->id,
                 'lti_resource_link_id' => $resourceLink->id,
             ],
             [
+                'lti_user_id' => $ltiUserId,
                 'roles' => $roles,
                 'is_staff' => $isStaff,
                 'last_launch_at' => now(),
-                'lti_user_id' => $ltiUserId,
+                'score_maximum' => 100.00,
             ]
         );
     }

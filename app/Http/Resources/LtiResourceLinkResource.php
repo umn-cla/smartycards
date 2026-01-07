@@ -14,8 +14,8 @@ class LtiResourceLinkResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        $membership = $this->relationLoaded('ltiResourceLinkMemberships')
-            ? $this->ltiResourceLinkMemberships->first()
+        $entry = $this->relationLoaded('entries')
+            ? $this->entries->first()
             : null;
 
         return [
@@ -25,7 +25,7 @@ class LtiResourceLinkResource extends JsonResource
             'context_id' => $this->context_id,
             'context_title' => $this->context_title,
             'context_label' => $this->context_label,
-            'current_user_role' => $membership?->is_staff
+            'current_user_role' => $entry?->is_staff
                 ? 'staff'
                 : 'student',
             'created_at' => $this->created_at,

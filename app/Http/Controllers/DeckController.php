@@ -23,11 +23,11 @@ class DeckController extends Controller
             ->decks()
             ->withUserDetails()
             // include lti resource links for the user
-            // and membership information
+            // and entry information
             ->with([
                 'ltiResourceLinks' => function ($query) use ($request) {
                     $query->forUser($request->user())
-                        ->with(['ltiResourceLinkMemberships' => function ($q) use ($request) {
+                        ->with(['entries' => function ($q) use ($request) {
                             $q->where('user_id', $request->user()->id);
                         }]);
                 },
@@ -85,7 +85,7 @@ class DeckController extends Controller
                 },
                 'ltiResourceLinks' => function ($query) use ($user) {
                     $query->forUser($user)
-                        ->with(['ltiResourceLinkMemberships' => function ($q) use ($user) {
+                        ->with(['entries' => function ($q) use ($user) {
                             $q->where('user_id', $user->id);
                         }]);
                 },

@@ -364,24 +364,8 @@ export async function getDeckSummaryReport(deckId: number) {
   return res.data;
 }
 
-export async function getDeckGradesReport(deckId: number) {
-  const res = await axios.get<T.GradesReport>(
-    `/decks/${deckId}/reports/grades`,
-  );
-  return res.data;
-}
-
-export async function getUserAssignments(deckId: number) {
-  const res = await axios.get<T.UserAssignmentsResponse>(
-    `/decks/${deckId}/assignments`,
-  );
-  return res.data;
-}
-
-export async function retryGradeSubmission(submissionId: number) {
-  const res = await axios.post<{ message: string; submission_id: number }>(
-    `/lti-grade-submissions/${submissionId}/retry`,
-  );
+export async function getDeckScores(deckId: number) {
+  const res = await axios.get<T.DeckScoresResponse>(`/decks/${deckId}/scores`);
   return res.data;
 }
 

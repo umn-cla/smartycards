@@ -60,22 +60,6 @@ class LtiResourceLink extends Model
     }
 
     /**
-     * Get all grade submissions for this resource link
-     */
-    public function gradeSubmissions()
-    {
-        return $this->hasMany(LtiGradeSubmission::class, 'lti_resource_link_id');
-    }
-
-    /**
-     * Get only the latest submission per user for this resource link
-     */
-    public function latestGradeSubmissions()
-    {
-        return $this->gradeSubmissions()->latestPerUser();
-    }
-
-    /**
      * Get all activity events associated with this resource link
      */
     public function activityEvents()
@@ -88,23 +72,31 @@ class LtiResourceLink extends Model
      */
     public function hasAgs(): bool
     {
-        return ! empty($this->lineitem_url) || ! empty($this->lineitems_url);
+        return !empty($this->lineitem_url) || !empty($this->lineitems_url);
     }
 
     /**
-     * Get all memberships for this resource link
+     * Get all entries for this resource link
      */
-    public function ltiResourceLinkMemberships()
+    public function entries()
     {
-        return $this->hasMany(LtiResourceLinkMembership::class, 'lti_resource_link_id');
+        return $this->hasMany(LtiResourceLinkEntry::class, 'lti_resource_link_id');
     }
 
     /**
-     * Get only staff memberships (instructors, TAs, etc.)
+     * Get only student entries
      */
-    public function staffLtiResourceLinkMemberships()
+    public function studentEntries()
     {
-        return $this->ltiResourceLinkMemberships()->where('is_staff', true);
+        return $this->entries()->students();
+    }
+
+    /**
+     * Get only staff entries
+     */
+    public function staffEntries()
+    {
+        return $this->entries()->staff();
     }
 
     /**
@@ -112,17 +104,17 @@ class LtiResourceLink extends Model
      */
     public function userHasStaffRole(User $user): bool
     {
-        return $this->staffLtiResourceLinkMemberships()
+        return $this->staffEntries()
             ->where('user_id', $user->id)
             ->exists();
     }
 
     /**
-     * Scope to only include resource links where the user has a membership
+     * Scope to only include resource links where the user has an entry
      */
     public function scopeForUser($query, User $user)
     {
-        return $query->whereHas('ltiResourceLinkMemberships', function ($q) use ($user) {
+        return $query->whereHas('entries', function ($q) use ($user) {
             $q->where('user_id', $user->id);
         });
     }
@@ -132,7 +124,7 @@ class LtiResourceLink extends Model
      */
     public function getCanvasUrl(): ?string
     {
-        if (! $this->lineitem_url) {
+        if (!$this->lineitem_url) {
             return null;
         }
 

@@ -325,49 +325,35 @@ export interface LtiResourceLink {
   context_label: string;
 }
 
-export interface LtiGradeSubmission {
-  id: number;
-  user: User;
-  score_given: number;
+export interface DeckScoreInfo {
+  score: number;
   score_maximum: number;
   score_percentage: number;
-  success: boolean;
-  error_message: string | null;
-  submitted_at: ISODateTime;
-  activity_progress: string;
-  grading_progress: string;
-  can_retry: boolean;
+  completed_at: ISODateTime;
+  submitted_at: ISODateTime | null;
+  submission_success: boolean | null;
+  submission_error: string | null;
 }
 
-export interface ResourceLinkWithSubmissions {
-  resource_link: LtiResourceLink;
-  submissions: LtiGradeSubmission[];
-}
-
-export interface GradesReport {
-  resource_links: ResourceLinkWithSubmissions[];
-  error_message?: string;
-}
-
-export interface UserAssignmentScore {
-  score_given: number;
-  score_maximum: number;
-  score_percentage: number;
-  submitted_at: ISODateTime;
-}
-
-export interface UserAssignment {
+export interface DeckScoreEntry {
   id: number;
-  title: string;
-  description: string | null;
-  context_id: string;
-  context_title: string;
-  context_label: string;
-  canvas_url: string | null;
+  resource_link: {
+    id: number;
+    title: string;
+    context_title: string;
+    context_label: string;
+    canvas_url: string | null;
+  };
   is_staff: boolean;
-  score: UserAssignmentScore | null;
+  user: {
+    id: number;
+    name: string;
+    email: string;
+  } | null;
+  score: DeckScoreInfo | null;
 }
 
-export interface UserAssignmentsResponse {
-  assignments: UserAssignment[];
+export interface DeckScoresResponse {
+  user_role: 'student' | 'staff';
+  entries: DeckScoreEntry[];
 }

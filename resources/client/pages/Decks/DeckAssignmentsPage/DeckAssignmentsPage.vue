@@ -9,16 +9,16 @@
           :backTo="{ name: 'decks.show', params: { deckId } }"
           class="mb-8"
         >
-          <div v-if="hasAssignments" class="flex justify-end gap-4">
+          <div v-if="hasEntries" class="flex justify-end gap-4">
             <Tuple label="Canvas Assignments">
-              {{ assignmentCount }}
+              {{ entryCount }}
             </Tuple>
           </div>
         </PageHeader>
 
-        <!-- No Assignments Message -->
+        <!-- No Entries Message -->
         <div
-          v-if="!hasAssignments"
+          v-if="!hasEntries"
           class="bg-amber-50 border border-amber-200 rounded-lg p-6 text-center"
         >
           <p class="text-amber-900">
@@ -26,8 +26,8 @@
           </p>
         </div>
 
-        <!-- Assignments List - Grouped by Course -->
-        <section v-if="hasAssignments" class="mb-12">
+        <!-- Entries List - Grouped by Course -->
+        <section v-if="hasEntries" class="mb-12">
           <div
             v-for="course in groupedByCourse"
             :key="course.courseName"
@@ -38,8 +38,8 @@
             </h2>
 
             <ul
-              v-for="assignment in course.assignments"
-              :key="assignment.id"
+              v-for="entry in course.entries"
+              :key="entry.id"
               class="space-y-4"
             >
               <li class="bg-brand-oatmeal-50 p-4 rounded-md shadow-sm">
@@ -47,28 +47,34 @@
                   <!-- col 1 -->
                   <div class="flex-1">
                     <h3 class="text-lg">
-                      {{ assignment.title }}
+                      {{ entry.resource_link.title }}
                     </h3>
                     <p class="text-sm text-brand-maroon-900/50">
-                      {{ assignment.context_label }}
+                      {{ entry.resource_link.context_label }}
+                    </p>
+                    <p
+                      v-if="entry.user"
+                      class="text-sm text-brand-maroon-900/70 mt-1"
+                    >
+                      {{ entry.user.name }}
                     </p>
                   </div>
                   <!-- col 2 -->
-                  <div v-if="!assignment.is_staff" class="text-right">
-                    <template v-if="assignment.score">
+                  <div v-if="!entry.is_staff" class="text-right">
+                    <template v-if="entry.score">
                       <p class="text-lg">
-                        {{ assignment.score?.score_percentage.toFixed(0) }}%
+                        {{ entry.score?.score_percentage.toFixed(0) }}%
                       </p>
                       <p class="text-xs text-brand-maroon-900/50">
-                        {{ formatDate(assignment.score.submitted_at) }}
+                        {{ formatDate(entry.score.completed_at) }}
                       </p>
                     </template>
                     <p v-else class="text-sm text-brand-maroon-900/50">-</p>
                   </div>
                   <!-- col 3 -->
-                  <div v-if="assignment.canvas_url">
+                  <div v-if="entry.resource_link.canvas_url">
                     <a
-                      :href="assignment.canvas_url"
+                      :href="entry.resource_link.canvas_url"
                       target="_blank"
                       rel="noopener noreferrer"
                       class="inline-flex items-center gap-2 px-4 py-2 text-brand-maroon-700 bg-brand-maroon-900/5 hover:bg-brand-maroon-900/10 rounded transition-colors text-xs uppercase"
@@ -91,7 +97,7 @@
 import PageHeader from "@/components/PageHeader.vue";
 import AuthenticatedLayout from "@/layouts/AuthenticatedLayout/AuthenticatedLayout.vue";
 import { useDeckByIdQuery } from "@/queries/decks";
-import { useUserAssignmentsQuery } from "@/queries/decks/useUserAssignmentsQuery";
+import { useDeckScoresQuery } from "@/queries/decks/useDeckScoresQuery";
 import { computed } from "vue";
 import Tuple from "@/components/Tuple.vue";
 import DeckContextProvider from "@/components/DeckContextProvider.vue";
@@ -104,30 +110,30 @@ const props = defineProps<{
 
 const deckIdRef = computed(() => props.deckId);
 const { data: deck } = useDeckByIdQuery(deckIdRef);
-const { data: assignmentsData } = useUserAssignmentsQuery(deckIdRef);
+const { data: scoresData } = useDeckScoresQuery(deckIdRef);
 
-const assignments = computed(() => assignmentsData.value?.assignments ?? []);
+const entries = computed(() => scoresData.value?.entries ?? []);
 
-const assignmentCount = computed(() => assignments.value.length);
+const entryCount = computed(() => entries.value.length);
 
-const hasAssignments = computed(() => assignmentCount.value > 0);
+const hasEntries = computed(() => entryCount.value > 0);
 
 const groupedByCourse = computed(() => {
-  if (!assignments.value) return [];
+  if (!entries.value) return [];
 
   const courseMap = new Map<
     string,
-    { courseName: string; assignments: T.UserAssignment[] }
+    { courseName: string; entries: T.DeckScoreEntry[] }
   >();
 
-  assignments.value.forEach((assignment) => {
-    const courseName = assignment.context_title;
+  entries.value.forEach((entry) => {
+    const courseName = entry.resource_link.context_title;
 
     if (!courseMap.has(courseName)) {
-      courseMap.set(courseName, { courseName, assignments: [] });
+      courseMap.set(courseName, { courseName, entries: [] });
     }
 
-    courseMap.get(courseName)!.assignments.push(assignment);
+    courseMap.get(courseName)!.entries.push(entry);
   });
 
   return Array.from(courseMap.values());

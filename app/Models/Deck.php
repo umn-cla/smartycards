@@ -81,24 +81,19 @@ class Deck extends Model implements AuditableContract
         return $this->hasMany(LtiResourceLink::class);
     }
 
-    public function ltiResourceLinkMemberships()
+    public function ltiResourceLinkEntries()
     {
         return $this->hasManyThrough(
-            LtiResourceLinkMembership::class,
+            LtiResourceLinkEntry::class,
             LtiResourceLink::class,
             'deck_id',
             'lti_resource_link_id'
         );
     }
 
-    public function ltiGradeSubmissions()
+    public function hasLtiResourceLinks(): bool
     {
-        return $this->hasManyThrough(
-            LtiGradeSubmission::class,
-            LtiResourceLink::class,
-            'deck_id',
-            'lti_resource_link_id'
-        );
+        return $this->ltiResourceLinks()->exists();
     }
 
     public function userActvities($userId)
