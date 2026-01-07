@@ -371,6 +371,13 @@ export async function getDeckGradesReport(deckId: number) {
   return res.data;
 }
 
+export async function getUserAssignments(deckId: number) {
+  const res = await axios.get<T.UserAssignmentsResponse>(
+    `/decks/${deckId}/assignments`,
+  );
+  return res.data;
+}
+
 export async function retryGradeSubmission(submissionId: number) {
   const res = await axios.post<{ message: string; submission_id: number }>(
     `/lti-grade-submissions/${submissionId}/retry`,

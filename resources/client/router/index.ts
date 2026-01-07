@@ -89,12 +89,10 @@ const router = createRouter({
       }),
     },
     {
-      path: "/decks/:deckId/reports/grades",
-      name: "decks.reports.grades",
+      path: "/decks/:deckId/assignments",
+      name: "decks.assignments",
       component: () =>
-        import(
-          "../pages/Decks/DeckGradesReportPage/DeckGradesReportPage.vue"
-        ),
+        import("../pages/Decks/DeckAssignmentsPage/DeckAssignmentsPage.vue"),
       props: (route) => ({
         deckId: Number(route.params.deckId),
       }),
