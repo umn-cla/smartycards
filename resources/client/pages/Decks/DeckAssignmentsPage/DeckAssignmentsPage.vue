@@ -37,48 +37,49 @@
               {{ course.courseName }}
             </h2>
 
-            <div
+            <ul
               v-for="assignment in course.assignments"
               :key="assignment.id"
-              class="mb-6 ml-4"
+              class="space-y-4"
             >
-              <div class="bg-brand-oatmeal-50 px-6 py-4 rounded-md">
-                <div class="flex items-start justify-between gap-4">
+              <li class="bg-brand-oatmeal-50 p-4 rounded-md shadow-sm">
+                <div class="flex items-center justify-between gap-6 flex-wrap">
+                  <!-- col 1 -->
                   <div class="flex-1">
-                    <h3 class="text-lg font-medium mb-1">
+                    <h3 class="text-lg">
                       {{ assignment.title }}
                     </h3>
-                    <p class="text-sm text-brand-maroon-900/50 mb-2">
+                    <p class="text-sm text-brand-maroon-900/50">
                       {{ assignment.context_label }}
                     </p>
-                    <div v-if="assignment.canvas_url">
-                      <a
-                        :href="assignment.canvas_url"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        class="inline-flex items-center gap-2 px-4 py-2 text-brand-maroon-700 bg-brand-maroon-900/5 hover:bg-brand-maroon-900/10 rounded transition-colors text-xs uppercase"
-                      >
-                        View in Canvas
-                        <ExternalLinkIcon class="w-3 h-3" />
-                      </a>
-                    </div>
                   </div>
-                  <template v-if="!assignment.is_staff">
-                    <div class="flex flex-col items-end">
-                      <template v-if="assignment.score">
-                        <p>
-                          {{ assignment.score.score_percentage.toFixed(0) }}%
-                        </p>
-                        <p class="text-xs text-brand-maroon-900/50 mt-1">
-                          {{ formatDate(assignment.score.submitted_at) }}
-                        </p>
-                      </template>
-                      <p v-else class="text-sm text-brand-maroon-900/50">-</p>
-                    </div>
-                  </template>
+                  <!-- col 2 -->
+                  <div v-if="!assignment.is_staff" class="text-right">
+                    <template v-if="assignment.score">
+                      <p class="text-lg">
+                        {{ assignment.score?.score_percentage.toFixed(0) }}%
+                      </p>
+                      <p class="text-xs text-brand-maroon-900/50">
+                        {{ formatDate(assignment.score.submitted_at) }}
+                      </p>
+                    </template>
+                    <p v-else class="text-sm text-brand-maroon-900/50">-</p>
+                  </div>
+                  <!-- col 3 -->
+                  <div v-if="assignment.canvas_url">
+                    <a
+                      :href="assignment.canvas_url"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="inline-flex items-center gap-2 px-4 py-2 text-brand-maroon-700 bg-brand-maroon-900/5 hover:bg-brand-maroon-900/10 rounded transition-colors text-xs uppercase"
+                    >
+                      View in Canvas
+                      <ExternalLinkIcon class="w-3 h-3" />
+                    </a>
+                  </div>
                 </div>
-              </div>
-            </div>
+              </li>
+            </ul>
           </div>
         </section>
       </DeckContextProvider>
