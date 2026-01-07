@@ -63,7 +63,7 @@ const {
   hasCompletedPractice,
   handlePracticeComplete,
   handleResetPractice,
-} = usePracticeDeck({ deckId: deckIdRef, ltiLaunchId: launchId });
+} = usePracticeDeck({ deckId: deckIdRef, isLtiContext: isLtiLaunch });
 </script>
 <style scoped>
 button {

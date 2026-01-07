@@ -4,18 +4,21 @@ namespace App\Http\Controllers;
 
 use App\Models\Deck;
 use App\Models\DeckMembership;
+use App\Models\LtiAssignmentScore;
 use App\Services\Lti\LtiService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Packback\Lti1p3\LtiException;
 use Packback\Lti1p3\LtiConstants;
+use Packback\Lti1p3\LtiException;
 
 class LtiController extends Controller
 {
     const DECK_PRACTICE_ACTIVITY = 'practice';
+
     const DECK_QUIZ_ACTIVITY = 'quiz';
+
     const DECK_MATCHING_ACTIVITY = 'matching';
 
     const MISSING_LAUNCH_ID_MESSAGE = 'No launch ID found. Please try launching again from Canvas.';
@@ -35,7 +38,7 @@ class LtiController extends Controller
         ]);
 
         return redirect()->route('lti.error', [
-            'message' => $userMessage ?? $e->getMessage()
+            'message' => $userMessage ?? $e->getMessage(),
         ]);
     }
 
@@ -68,7 +71,7 @@ class LtiController extends Controller
             if ($launch->isDeepLinkLaunch()) {
                 return redirect()->route('lti.deep_link', [
                     'launch_id' => $launchId,
-                    'launch_type' => 'deep_link'
+                    'launch_type' => 'deep_link',
                 ]);
             }
 
@@ -76,7 +79,6 @@ class LtiController extends Controller
             if ($launch->isResourceLaunch()) {
                 return redirect()->route('lti.resource', [
                     'launch_id' => $launchId,
-                    'launch_type' => 'resource'
                 ]);
             }
 
@@ -114,7 +116,7 @@ class LtiController extends Controller
             return view('lti.deep_link', [
                 'launch' => $launch,
                 'launch_id' => $launchId,
-                'settings' => $launch->getDeepLink()->settings()
+                'settings' => $launch->getDeepLink()->settings(),
             ]);
         } catch (\Exception $e) {
             return $this->handleException($e);
@@ -127,9 +129,6 @@ class LtiController extends Controller
     public function deepLinkResponse(Request $request, LtiService $ltiService): View|RedirectResponse
     {
         $launchId = $request->input('launch_id');
-        if (!$launchId) {
-            return $this->handleException(new LtiException(self::MISSING_LAUNCH_ID_MESSAGE));
-        }
 
         try {
             $response = $ltiService->createDeepLinkResponse($launchId, $request->all());
@@ -137,13 +136,12 @@ class LtiController extends Controller
             // Return auto-submit form that posts back to LMS
             return view('lti.auto_submit', [
                 'jwt' => $response['jwt'],
-                'return_url' => $response['return_url']
+                'return_url' => $response['return_url'],
             ]);
         } catch (\Exception $e) {
             return $this->handleException($e);
         }
     }
-
 
     /**
      * Handle resource launch (student clicks on assignment)
@@ -176,9 +174,25 @@ class LtiController extends Controller
             $resourceLink = $ltiService->createOrUpdateResourceLink($launch, $deckId);
 
             // Track user's role in this Canvas course for grade report authorization
-            $ltiService->createOrUpdateMembership($launch, $user, $resourceLink);
+            $membership = $ltiService->createOrUpdateMembership($launch, $user, $resourceLink);
 
-            return redirect("/decks/{$deckId}/activities/{$deckActivity}/embed?launch_id={$launchId}&launch_type=resource");
+            // Create assignment score record for students (not staff)
+            // This allows deferred grade submission even if user completes later
+            if (!$membership->is_staff) {
+                LtiAssignmentScore::updateOrCreate(
+                    [
+                        'user_id' => $user->id,
+                        'lti_resource_link_id' => $resourceLink->id,
+                    ],
+                    [
+                        'lti_user_id' => $launchData['sub'],
+                        'score_maximum' => 100.0,
+                        // score and completed_at remain null until user completes
+                    ]
+                );
+            }
+
+            return redirect("/decks/{$deckId}/activities/{$deckActivity}/embed?lti_launch=true");
         } catch (\Exception $e) {
             return $this->handleException($e);
         }

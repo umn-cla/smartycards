@@ -212,7 +212,6 @@ async function handleEndQuiz(payload: {
     activityType: T.ActivityTypeName.QUIZ,
     correctCount: payload.correctCount,
     totalCount: payload.correctCount + payload.incorrectCount,
-    ltiLaunchId: launchId.value,
   });
 
   state.quizState = "complete";

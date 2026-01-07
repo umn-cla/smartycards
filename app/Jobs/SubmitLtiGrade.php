@@ -2,7 +2,7 @@
 
 namespace App\Jobs;
 
-use App\Models\LtiGradeSubmission;
+use App\Models\LtiAssignmentScore;
 use App\Services\Lti\LtiService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -31,7 +31,7 @@ class SubmitLtiGrade implements ShouldQueue
     public bool $deleteWhenMissingModels = true;
 
     public function __construct(
-        public LtiGradeSubmission $submission
+        public LtiAssignmentScore $assignmentScore
     ) {}
 
     /**
@@ -49,40 +49,32 @@ class SubmitLtiGrade implements ShouldQueue
     public function handle(LtiService $ltiService): void
     {
         Log::info('Attempting LTI grade submission', [
-            'submission_id' => $this->submission->id,
-            'user_id' => $this->submission->user_id,
+            'assignment_score_id' => $this->assignmentScore->id,
+            'user_id' => $this->assignmentScore->user_id,
             'attempt' => $this->attempts(),
             'max_tries' => $this->tries,
         ]);
 
         try {
-            // Check if this is a deferred submission (no cached launch)
-            if ($this->submission->launch_id === 'deferred') {
-                $response = $ltiService->submitGradeFromMembershipData($this->submission);
-            } else {
-                $response = $ltiService->submitGradeFromSubmission($this->submission);
-            }
+            // Submit grade to Canvas using database-stored configuration
+            $response = $ltiService->submitGrade($this->assignmentScore);
 
-            // Mark as successful
-            $this->submission->update([
-                'success' => true,
-                'error_message' => null,
-                'response_data' => [
-                    'status' => 'success',
-                    'submitted_at' => now()->toIso8601String(),
-                    'response' => $response ?? null,
-                ],
+            // Mark as successfully submitted
+            $this->assignmentScore->update([
+                'submission_success' => true,
+                'submitted_at' => now(),
+                'submission_error' => null,
             ]);
 
             Log::info('LTI grade submitted successfully', [
-                'submission_id' => $this->submission->id,
-                'user_id' => $this->submission->user_id,
-                'score' => "{$this->submission->score_given}/{$this->submission->score_maximum}",
+                'assignment_score_id' => $this->assignmentScore->id,
+                'user_id' => $this->assignmentScore->user_id,
+                'score' => "{$this->assignmentScore->score}/{$this->assignmentScore->score_maximum}",
                 'attempts' => $this->attempts(),
             ]);
         } catch (\Exception $e) {
             Log::warning('LTI grade submission failed', [
-                'submission_id' => $this->submission->id,
+                'assignment_score_id' => $this->assignmentScore->id,
                 'attempt' => $this->attempts(),
                 'max_tries' => $this->tries,
                 'error' => $e->getMessage(),
@@ -102,15 +94,15 @@ class SubmitLtiGrade implements ShouldQueue
         $errorMessage = "LTI Grade Submit job failed after {$this->tries} attempts. Last error: {$exception->getMessage()}";
 
         Log::error($errorMessage, [
-            'submission_id' => $this->submission->id,
-            'user_id' => $this->submission->user_id,
-            'resource_link_id' => $this->submission->lti_resource_link_id,
+            'assignment_score_id' => $this->assignmentScore->id,
+            'user_id' => $this->assignmentScore->user_id,
+            'resource_link_id' => $this->assignmentScore->lti_resource_link_id,
         ]);
 
-        // Update the submission to reflect permanent failure
-        $this->submission->update([
-            'success' => false,
-            'error_message' => $errorMessage,
+        // Update the assignment score to reflect permanent failure
+        $this->assignmentScore->update([
+            'submission_success' => false,
+            'submission_error' => $errorMessage,
         ]);
 
         // This will be captured by Sentry and sent to Slack

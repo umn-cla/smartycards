@@ -68,7 +68,6 @@ async function handleWin(matchedPairs: number) {
     activityType: T.ActivityTypeName.MATCHING,
     correctCount: matchedPairs,
     totalCount: matchedPairs,
-    ltiLaunchId: launchId.value,
   });
 }
 </script>

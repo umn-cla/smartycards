@@ -6,14 +6,14 @@ import * as T from "@/types";
 
 interface UsePracticeDeckOptions {
   deckId: ComputedRef<number>;
-  ltiLaunchId?: ComputedRef<string | null>;
+  isLtiContext?: ComputedRef<boolean>;
 }
 
 /**
  * Composable for managing practice deck state and actions
  */
 export function usePracticeDeck(options: UsePracticeDeckOptions) {
-  const { deckId, ltiLaunchId } = options;
+  const { deckId, isLtiContext } = options;
 
   const initialSideName = ref<T.CardSideName | "random">("front");
   const hasCompletedPractice = ref(false);
@@ -28,10 +28,9 @@ export function usePracticeDeck(options: UsePracticeDeckOptions) {
       activityType: T.ActivityTypeName.PRACTICE_ALL_CARDS,
       correctCount: cardCount,
       totalCount: cardCount,
-      ...(ltiLaunchId?.value && { ltiLaunchId: ltiLaunchId.value }),
     });
 
-    if (ltiLaunchId?.value) {
+    if (isLtiContext?.value) {
       hasCompletedPractice.value = true;
     }
   }
