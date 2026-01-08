@@ -4,13 +4,13 @@ use App\Http\Controllers\ActivityEventController;
 use App\Http\Controllers\ActivityTypeController;
 use App\Http\Controllers\CardAttemptController;
 use App\Http\Controllers\CardStatsController;
+use App\Http\Controllers\DeckAssignmentController;
 use App\Http\Controllers\DeckCardController;
 use App\Http\Controllers\DeckController;
 use App\Http\Controllers\DeckInviteController;
 use App\Http\Controllers\DeckMembershipController;
 use App\Http\Controllers\DeckQuizController;
 use App\Http\Controllers\DeckReportController;
-use App\Http\Controllers\DeckScoreController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TTSController;
 use App\Http\Controllers\UploadFileController;
@@ -61,7 +61,7 @@ Route::middleware(['auth'])
 
         Route::get('decks/{deck}/reports/summary', [DeckReportController::class, 'summary']);
 
-        Route::get('decks/{deck}/scores', [DeckScoreController::class, 'index']);
+        Route::get('decks/{deck}/assignments', [DeckAssignmentController::class, 'index']);
 
         Route::resource('decks.activity-events', ActivityEventController::class);
 

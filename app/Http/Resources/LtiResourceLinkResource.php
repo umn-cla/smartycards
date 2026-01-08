@@ -28,6 +28,7 @@ class LtiResourceLinkResource extends JsonResource
             'lineitem_url' => $this->lineitem_url,
             'lineitems_url' => $this->lineitems_url,
             'ags_scopes' => $this->ags_scopes,
+            'canvas_url' => $this->getCanvasUrl(),
             'entries' => LtiResourceLinkEntryResource::collection($this->whenLoaded('entries')),
             'settings' => $this->settings,
             'deck_id' => $this->deck_id,

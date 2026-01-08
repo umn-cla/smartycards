@@ -19,7 +19,7 @@
         <!-- No Entries Message -->
         <div
           v-if="!hasEntries"
-          class="bg-amber-50 border border-amber-200 rounded-lg p-6 text-center"
+          class="bg-amber-50 shadow-sm rounded-lg p-6 text-center"
         >
           <p class="text-amber-900">
             No Canvas assignments found for this deck.
@@ -47,16 +47,10 @@
                   <!-- col 1 -->
                   <div class="flex-1">
                     <h3 class="text-lg">
-                      {{ entry.resource_link.title }}
+                      {{ entry.resource_link?.title ?? "Unknown Assignment" }}
                     </h3>
                     <p class="text-sm text-brand-maroon-900/50">
-                      {{ entry.resource_link.context_label }}
-                    </p>
-                    <p
-                      v-if="entry.user"
-                      class="text-sm text-brand-maroon-900/70 mt-1"
-                    >
-                      {{ entry.user.name }}
+                      {{ entry.resource_link?.context_label }}
                     </p>
                   </div>
                   <!-- col 2 -->
@@ -75,7 +69,7 @@
                     <p v-else class="text-sm text-brand-maroon-900/50">-</p>
                   </div>
                   <!-- col 3 -->
-                  <div v-if="entry.resource_link.canvas_url">
+                  <div v-if="entry.resource_link?.canvas_url">
                     <a
                       :href="entry.resource_link.canvas_url"
                       target="_blank"
@@ -100,7 +94,7 @@
 import PageHeader from "@/components/PageHeader.vue";
 import AuthenticatedLayout from "@/layouts/AuthenticatedLayout/AuthenticatedLayout.vue";
 import { useDeckByIdQuery } from "@/queries/decks";
-import { useDeckScoresQuery } from "@/queries/decks/useDeckScoresQuery";
+import { useDeckAssignmentsQuery } from "@/queries/decks/useDeckAssignmentsQuery";
 import { computed } from "vue";
 import Tuple from "@/components/Tuple.vue";
 import DeckContextProvider from "@/components/DeckContextProvider.vue";
@@ -113,11 +107,9 @@ const props = defineProps<{
 
 const deckIdRef = computed(() => props.deckId);
 const { data: deck } = useDeckByIdQuery(deckIdRef);
-const { data: scoresData } = useDeckScoresQuery(deckIdRef);
+const { data: entries } = useDeckAssignmentsQuery(deckIdRef);
 
-const entries = computed(() => scoresData.value?.entries ?? []);
-
-const entryCount = computed(() => entries.value.length);
+const entryCount = computed(() => entries.value?.length ?? 0);
 
 const hasEntries = computed(() => entryCount.value > 0);
 
@@ -126,11 +118,11 @@ const groupedByCourse = computed(() => {
 
   const courseMap = new Map<
     string,
-    { courseName: string; entries: T.DeckScoreEntry[] }
+    { courseName: string; entries: T.LtiResourceLinkEntry[] }
   >();
 
   entries.value.forEach((entry) => {
-    const courseName = entry.resource_link.context_title;
+    const courseName = entry.resource_link?.context_title ?? "Unknown Course";
 
     if (!courseMap.has(courseName)) {
       courseMap.set(courseName, { courseName, entries: [] });

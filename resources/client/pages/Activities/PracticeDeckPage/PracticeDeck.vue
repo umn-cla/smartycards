@@ -1,9 +1,20 @@
 <template>
   <div>
-    <div v-if="!state.activeCard" class="text-center">
+    <div
+      v-if="!state.activeCard"
+      class="flex flex-col items-center justify-center py-12 bg-brand-oatmeal-50 rounded-md shadow-sm"
+    >
       <p>You have completed this practice session.</p>
       <Button @click="initPracticeSession" class="my-4">
         Practice Again
+      </Button>
+      <Button asChild variant="secondary">
+        <RouterLink
+          :to="{ name: 'decks.show', params: { deckId: props.deck.id } }"
+          class="flex gap-2 items-center"
+        >
+          End Practice
+        </RouterLink>
       </Button>
     </div>
     <div v-else class="overflow-hidden">

@@ -364,9 +364,11 @@ export async function getDeckSummaryReport(deckId: number) {
   return res.data;
 }
 
-export async function getDeckScores(deckId: number) {
-  const res = await axios.get<T.DeckScoresResponse>(`/decks/${deckId}/scores`);
-  return res.data;
+export async function getAssignmentsForDeck(deckId: number) {
+  const res = await axios.get<{ data: T.LtiResourceLinkEntry[] }>(
+    `/decks/${deckId}/assignments`,
+  );
+  return res.data.data;
 }
 
 export async function createDeckActivityEvent({

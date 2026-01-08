@@ -319,13 +319,37 @@ export interface LanguageOption {
 
 export interface LtiResourceLink {
   id: number;
+  lti_deployment_id: number;
   resource_link_id: string;
   title: string;
+  description: string | null;
+  context_id: string;
   context_title: string;
   context_label: string;
+  custom_params: Record<string, string> | null;
+  lineitems_url: string | null;
+  lineitem_url: string | null;
+  canvas_url: string | null;
+  ags_scopes: string[] | null;
+  entries?: LtiResourceLinkEntry[];
+  settings: Record<string, unknown> | null;
+  deck_id: number | null;
+  deck?: Deck;
+  created_at: ISODateTime;
+  updated_at: ISODateTime;
 }
 
-export interface DeckScoreInfo {
+export interface LtiResourceLinkEntry {
+  id: number;
+  resource_link?: LtiResourceLink;
+  is_staff: boolean;
+  score: AssignmentScore | null;
+  user?: User;
+  created_at: ISODateTime;
+  updated_at: ISODateTime;
+}
+
+export interface AssignmentScore {
   score: number;
   score_maximum: number;
   score_percentage: number;
@@ -333,27 +357,4 @@ export interface DeckScoreInfo {
   submitted_at: ISODateTime | null;
   submission_success: boolean | null;
   submission_error: string | null;
-}
-
-export interface DeckScoreEntry {
-  id: number;
-  resource_link: {
-    id: number;
-    title: string;
-    context_title: string;
-    context_label: string;
-    canvas_url: string | null;
-  };
-  is_staff: boolean;
-  user: {
-    id: number;
-    name: string;
-    email: string;
-  } | null;
-  score: DeckScoreInfo | null;
-}
-
-export interface DeckScoresResponse {
-  user_role: "student" | "staff";
-  entries: DeckScoreEntry[];
 }
