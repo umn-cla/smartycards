@@ -42,7 +42,6 @@ import { useDeckStatsQuery } from "@/queries/decks/useDeckStatsQuery";
 import * as T from "@/types";
 import ActivityPageHeader from "../ActivityPageHeader.vue";
 import DeckContextProvider from "@/components/DeckContextProvider.vue";
-import { useLtiContext } from "@/composables/useLtiContext";
 
 const props = defineProps<{
   deckId: number;
@@ -54,9 +53,6 @@ const { data: deck } = useDeckByIdQuery(deckIdRef);
 const { data: deckStats } = useDeckStatsQuery(deckIdRef);
 
 const { mutate: createActivityEvent } = useCreateDeckActivityEventMutation();
-
-// Extract LTI launch ID from URL if present
-const { launchId } = useLtiContext();
 
 async function handleWin(matchedPairs: number) {
   if (!deck.value) {

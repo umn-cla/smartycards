@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Enums\ActivityTypeEnum;
+use App\Http\Resources\LtiResourceLinkEntryResource;
 use App\Models\ActivityEvent;
 use App\Models\ActivityType;
 use App\Models\Deck;
@@ -37,21 +38,16 @@ class ActivityEventController extends Controller
             totalCount: $validated['total_count']
         );
 
-        // Get user's LTI entries for this deck (if any)
-        $entries = $ltiService->getEntriesForUserAndDeck(
+        // Get the most recent pending student entry for this deck (if any)
+        // Users can have more than one assignment for a deck.
+        // We want the ones that haven't been completed yet (score is null)
+        // If there are multiple incomplete entries, pick the most recent one
+        $pendingEntry = $ltiService->getScoreableEntryForUserAndDeck(
             userId: Auth::id(),
             deckId: $deck->id
         );
 
-        // Users can have more than one assignment for a deck.
-        // We want the ones that haven't been completed yet (score is null)
-        // If there are multiple incomplete entries, pick the most recent one
-        $pendingEntry = $entries
-            ->filter(fn ($entry) => !$entry->isCompleted() && !$entry->is_staff)
-            ->sortByDesc('last_launch_at')
-            ->first();
-
-        $ltiResourceLinkId = $pendingEntry?->lti_resource_link_id;
+        $ltiResourceLinkId = $pendingEntry?->lti_resource_link_id ?? null;
 
         // record the event with the LTI resource link if we have one
         $event = ActivityEvent::create([
@@ -90,12 +86,9 @@ class ActivityEventController extends Controller
 
         return response()->json([
             'activity_event' => $event,
-            'score' => $updatedEntry ? [
-                'id' => $updatedEntry->id,
-                'status' => 'queued',
-                'score' => $updatedEntry->score,
-                'score_maximum' => $updatedEntry->score_maximum,
-            ] : null,
+            'lti_resource_link_entry' => $updatedEntry
+                ? LtiResourceLinkEntryResource::make($updatedEntry)
+                : null,
         ], 201);
     }
 }

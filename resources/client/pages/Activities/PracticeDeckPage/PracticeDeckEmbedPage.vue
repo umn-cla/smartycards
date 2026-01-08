@@ -53,7 +53,7 @@ const props = defineProps<{
 }>();
 
 const deckIdRef = computed(() => props.deckId);
-const { launchId, isLtiLaunch } = useLtiContext();
+const { isLtiLaunch } = useLtiContext();
 
 const {
   initialSideName,

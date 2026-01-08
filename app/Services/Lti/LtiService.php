@@ -184,6 +184,23 @@ class LtiService
     }
 
     /**
+     * Get the most recent pending student entry for a user and deck
+     */
+    public function getScoreableEntryForUserAndDeck(int $userId, int $deckId): ?LtiResourceLinkEntry
+    {
+        return LtiResourceLinkEntry::query()
+            ->whereHas('resourceLink', function ($query) use ($deckId) {
+                $query->where('deck_id', $deckId);
+            })
+            ->where('user_id', $userId)
+            ->students() // ignore staff entries
+            ->pending() // only incomplete entries
+            ->orderByDesc('last_launch_at') // most recently used
+            ->with('resourceLink.deployment.platform')
+            ->first();
+    }
+
+    /**
      * Queue a score submission for an entry
      * Updates the score and queues it for submission to Canvas
      */

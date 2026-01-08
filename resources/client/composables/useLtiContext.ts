@@ -43,7 +43,10 @@ export function useLtiContext() {
    * Whether the current page is in any LTI launch context
    */
   const isLtiLaunch = computed(
-    () => !!launchId.value || isLtiResourceLaunch.value,
+    () =>
+      !!launchId.value ||
+      isLtiResourceLaunch.value ||
+      route.query.lti_launch === "true",
   );
 
   /**
