@@ -48,23 +48,25 @@ return new class extends Migration
                 continue;
             }
 
-            DB::table('lti_resource_link_entries')->insert([
-                'user_id' => $entry->user_id,
-                'lti_resource_link_id' => $entry->lti_resource_link_id,
-                'lti_user_id' => $entry->lti_user_id,
-                'roles' => $entry->roles,
-                'is_staff' => $entry->is_staff,
-                'last_launch_at' => $entry->last_launch_at,
-                'score' => $entry->score,
-                'score_maximum' => $entry->score_maximum ?? 100.00,
-                'activity_event_id' => $entry->activity_event_id,
-                'completed_at' => $entry->completed_at,
-                'submitted_at' => $entry->submitted_at,
-                'submission_success' => $entry->submission_success,
-                'submission_error' => $entry->submission_error,
-                'created_at' => $entry->created_at,
-                'updated_at' => $entry->updated_at,
-            ]);
+            DB::table('lti_resource_link_entries')
+            // ignore duplicates in we already migrated
+                ->insertOrIgnore([
+                    'user_id' => $entry->user_id,
+                    'lti_resource_link_id' => $entry->lti_resource_link_id,
+                    'lti_user_id' => $entry->lti_user_id,
+                    'roles' => $entry->roles,
+                    'is_staff' => $entry->is_staff,
+                    'last_launch_at' => $entry->last_launch_at,
+                    'score' => $entry->score,
+                    'score_maximum' => $entry->score_maximum ?? 100.00,
+                    'activity_event_id' => $entry->activity_event_id,
+                    'completed_at' => $entry->completed_at,
+                    'submitted_at' => $entry->submitted_at,
+                    'submission_success' => $entry->submission_success,
+                    'submission_error' => $entry->submission_error,
+                    'created_at' => $entry->created_at,
+                    'updated_at' => $entry->updated_at,
+                ]);
         }
     }
 
