@@ -82,8 +82,8 @@ return new class extends Migration
         $entries = DB::table('lti_resource_link_entries')->get();
 
         foreach ($entries as $entry) {
-            // Restore membership
-            DB::table('lti_resource_link_memberships')->insert([
+            // Restore membership (use insertOrIgnore to handle potential duplicates)
+            DB::table('lti_resource_link_memberships')->insertOrIgnore([
                 'user_id' => $entry->user_id,
                 'lti_resource_link_id' => $entry->lti_resource_link_id,
                 'lti_user_id' => $entry->lti_user_id,
@@ -94,9 +94,9 @@ return new class extends Migration
                 'updated_at' => $entry->updated_at,
             ]);
 
-            // Only restore score if it was completed
+            // Only restore score if it was completed (use insertOrIgnore to handle potential duplicates)
             if ($entry->score !== null) {
-                DB::table('lti_assignment_scores')->insert([
+                DB::table('lti_assignment_scores')->insertOrIgnore([
                     'user_id' => $entry->user_id,
                     'lti_resource_link_id' => $entry->lti_resource_link_id,
                     'lti_user_id' => $entry->lti_user_id,
