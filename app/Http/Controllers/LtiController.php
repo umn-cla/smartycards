@@ -128,6 +128,9 @@ class LtiController extends Controller
     public function deepLinkResponse(Request $request, LtiService $ltiService): View|RedirectResponse
     {
         $launchId = $request->input('launch_id');
+        if (!$launchId) {
+            return $this->handleException(new LtiException(self::MISSING_LAUNCH_ID_MESSAGE));
+        }
 
         try {
             $response = $ltiService->createDeepLinkResponse($launchId, $request->all());
