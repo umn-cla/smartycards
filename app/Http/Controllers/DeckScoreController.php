@@ -62,7 +62,7 @@ class DeckScoreController extends Controller
                 'score' => $entry->isCompleted() ? [
                     'score' => $entry->score,
                     'score_maximum' => $entry->score_maximum,
-                    'score_percentage' => ($entry->score / $entry->score_maximum) * 100,
+                    'score_percentage' => $entry->score_maximum != 0 ? ($entry->score / $entry->score_maximum) * 100 : null,
                     'completed_at' => $entry->completed_at,
                     'submitted_at' => $entry->submitted_at,
                     'submission_success' => $entry->submission_success,
