@@ -63,7 +63,7 @@
                   <div v-if="!entry.is_staff" class="text-right">
                     <template v-if="entry.score">
                       <p class="text-lg">
-                        {{ entry.score?.score_percentage.toFixed(0) }}%
+                        {{ entry.score.score_percentage.toFixed(0) }}%
                       </p>
                       <p class="text-xs text-brand-maroon-900/50">
                         {{ formatDate(entry.score.completed_at) }}

@@ -82,7 +82,9 @@ class LtiResourceLinkEntry extends Model
 
     public function scopeUnsubmitted($query)
     {
-        return $query->whereNull('submission_success')
-            ->orWhere('submission_success', false);
+        return $query->where(function ($q) {
+            $q->whereNull('submission_success')
+              ->orWhere('submission_success', false);
+        });
     }
 }

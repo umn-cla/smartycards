@@ -14,12 +14,14 @@ class DeckScoreController extends Controller
 
         $user = request()->user();
 
-        // Determine if user is staff in any resource link for this deck
-        $isStaff = LtiResourceLinkEntry::query()
+        // Get resource link IDs where user is staff (if any)
+        $staffResourceLinkIds = LtiResourceLinkEntry::query()
             ->whereHas('resourceLink', fn ($q) => $q->where('deck_id', $deck->id))
             ->where('user_id', $user->id)
             ->where('is_staff', true)
-            ->exists();
+            ->pluck('lti_resource_link_id');
+
+        $isStaff = $staffResourceLinkIds->isNotEmpty();
 
         // Students: See only their own entries
         // Staff: See all student entries for resource links where they have staff role
@@ -28,13 +30,6 @@ class DeckScoreController extends Controller
             ->with(['resourceLink', 'user']);
 
         if ($isStaff) {
-            // Get resource link IDs where user is staff
-            $staffResourceLinkIds = LtiResourceLinkEntry::query()
-                ->whereHas('resourceLink', fn ($q) => $q->where('deck_id', $deck->id))
-                ->where('user_id', $user->id)
-                ->where('is_staff', true)
-                ->pluck('lti_resource_link_id');
-
             // Show all student entries for those resource links
             $query->where('is_staff', false)
                 ->whereIn('lti_resource_link_id', $staffResourceLinkIds);

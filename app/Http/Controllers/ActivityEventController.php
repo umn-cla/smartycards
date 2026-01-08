@@ -45,9 +45,10 @@ class ActivityEventController extends Controller
 
         // Users can have more than one assignment for a deck.
         // We want the ones that haven't been completed yet (score is null)
+        // Staff should never have scores submitted
         // If there are multiple incomplete entries, pick the most recent one
         $pendingEntry = $entries
-            ->filter(fn ($entry) => !$entry->isCompleted())
+            ->filter(fn ($entry) => !$entry->isCompleted() && !$entry->is_staff)
             ->sortByDesc('last_launch_at')
             ->first();
 
@@ -63,13 +64,13 @@ class ActivityEventController extends Controller
         ]);
 
         // Queue score submission if we have an incomplete entry
+        // Safety check: never submit scores for staff
         $updatedEntry = null;
 
-        if ($pendingEntry !== null) {
+        if ($pendingEntry !== null && !$pendingEntry->is_staff) {
             try {
                 $updatedEntry = $ltiService->queueScoreSubmission(
                     entry: $pendingEntry,
-                    userId: Auth::id(),
                     activityEventId: $event->id,
                     score: 100.0,
                     scoreMaximum: 100.0

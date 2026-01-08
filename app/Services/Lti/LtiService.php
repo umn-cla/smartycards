@@ -189,7 +189,6 @@ class LtiService
      */
     public function queueScoreSubmission(
         LtiResourceLinkEntry $entry,
-        int $userId,
         ?int $activityEventId = null,
         float $score = 100.0,
         float $scoreMaximum = 100.0

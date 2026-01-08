@@ -16,8 +16,8 @@ use App\Http\Controllers\TTSController;
 use App\Http\Controllers\UploadFileController;
 use Illuminate\Support\Facades\Route;
 
-require __DIR__.'/shib.php';
-require __DIR__.'/lti.php';
+require __DIR__ . '/shib.php';
+require __DIR__ . '/lti.php';
 
 // homepage is public
 Route::get('/', function () {

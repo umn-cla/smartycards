@@ -48,7 +48,8 @@ return new class extends Migration
                 continue;
             }
 
-            DB::table('lti_resource_link_entries')->insert([
+            // Use insertOrIgnore to handle potential duplicate entries gracefully
+            DB::table('lti_resource_link_entries')->insertOrIgnore([
                 'user_id' => $entry->user_id,
                 'lti_resource_link_id' => $entry->lti_resource_link_id,
                 'lti_user_id' => $entry->lti_user_id,
