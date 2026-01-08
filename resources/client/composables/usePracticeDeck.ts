@@ -1,8 +1,8 @@
-import { computed, ref, type ComputedRef } from "vue";
+import { useCreateDeckActivityEventMutation } from "@/queries/deckActivityEvents/useCreateDeckActivityEventMutation";
 import { useDeckByIdQuery } from "@/queries/decks";
 import { useDeckStatsQuery } from "@/queries/decks/useDeckStatsQuery";
-import { useCreateDeckActivityEventMutation } from "@/queries/deckActivityEvents/useCreateDeckActivityEventMutation";
 import * as T from "@/types";
+import { ref, type ComputedRef } from "vue";
 
 interface UsePracticeDeckOptions {
   deckId: ComputedRef<number>;

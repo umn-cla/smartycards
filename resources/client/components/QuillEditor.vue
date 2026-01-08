@@ -2,16 +2,16 @@
   <div ref="editorContainerRef" class="quill-editor"></div>
 </template>
 <script setup lang="ts">
-import { onMounted, ref, useId, watch } from "vue";
-import Quill, { QuillOptions, Range } from "quill";
-import { Delta } from "quill/core";
-import Emitter from "quill/core/emitter";
-import { mergeDeepRight } from "ramda";
 import axios from "@/api/axios";
 import QuillBetterImage from "@umn-latis/quill-better-image-module";
+import Quill, { QuillOptions, Range } from "quill";
 import "quill-paste-smart";
+import { Delta } from "quill/core";
+import Emitter from "quill/core/emitter";
 import "quill/dist/quill.core.css";
 import "quill/dist/quill.snow.css";
+import { mergeDeepRight } from "ramda";
+import { onMounted, ref, useId, watch } from "vue";
 
 const props = withDefaults(
   defineProps<{

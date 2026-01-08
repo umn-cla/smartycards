@@ -53,22 +53,20 @@
   </DropdownMenu>
 </template>
 <script setup lang="ts">
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { computed } from "vue";
-import type { User } from "@/types";
 import config from "@/config";
-import { IconAdminPanel, IconExit, IconUser } from "./icons";
+import type { User } from "@/types";
+import { computed } from "vue";
+import { IconAdminPanel, IconUser } from "./icons";
 import IconLogOut from "./icons/IconLogOut.vue";
 
 const props = withDefaults(

@@ -97,10 +97,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch, onMounted } from "vue";
-import { useRouter, useRoute } from "vue-router";
+import { SelectOption, SimpleSelect } from "@/components/SimpleSelect";
 import { useAllDecksQuery } from "@/queries/decks";
-import { SimpleSelect, SelectOption } from "@/components/SimpleSelect";
+import { computed, onMounted, ref } from "vue";
+import { useRoute, useRouter } from "vue-router";
 
 // Get LTI launch data from window
 const ltiData = window.SmartyCards.ltiDeepLink;

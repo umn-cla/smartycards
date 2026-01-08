@@ -1,8 +1,8 @@
-import { createRouter, createWebHistory } from "vue-router";
-import HomePage from "../pages/HomePage/HomePage.vue";
-import { useQueryClient } from "@tanstack/vue-query";
 import * as api from "@/api";
 import { PROFILE_QUERY_KEY } from "@/queries/queryKeys";
+import { useQueryClient } from "@tanstack/vue-query";
+import { createRouter, createWebHistory } from "vue-router";
+import HomePage from "../pages/HomePage/HomePage.vue";
 
 function includeDevRoutesIfDev() {
   if (!import.meta.env.DEV) {
@@ -36,7 +36,7 @@ function includeDevRoutesIfDev() {
 
 const router = createRouter({
   history: createWebHistory(),
-  scrollBehavior(to, from, savedPosition) {
+  scrollBehavior(_to, _from, _savedPosition) {
     // always scroll to top
     return { top: 0 };
   },

@@ -18,19 +18,16 @@
   >
     <template #item="{ element }">
       <li class="drag-drop__list-item list-none">
-        <slot
-          name="item"
-          :element="element"
-        />
+        <slot name="item" :element="element" />
       </li>
     </template>
   </Draggable>
 </template>
 <script setup lang="ts" generic="T extends { id: string | number }">
-import { ref } from 'vue';
-import Draggable from 'vuedraggable';
+import { ref } from "vue";
+import Draggable from "vuedraggable";
 
-const props = withDefaults(
+withDefaults(
   defineProps<{
     modelValue: T[];
     group: string;
@@ -38,11 +35,11 @@ const props = withDefaults(
   }>(),
   {
     disabled: false,
-  }
+  },
 );
 
 defineEmits<{
-  (eventName: 'update:modelValue', value: T[]): void;
+  (eventName: "update:modelValue", value: T[]): void;
 }>();
 
 const isDragging = ref(false);

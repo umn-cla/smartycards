@@ -74,7 +74,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import { capitalize, type Component, computed, nextTick } from "vue";
+import { capitalize, type Component, computed } from "vue";
 import TextBlockInput from "./TextBlockInput.vue";
 import ImageBlockInput from "./ImageBlockInput.vue";
 import AudioBlockInput from "./AudioBlockInput.vue";

@@ -19,10 +19,10 @@
   </div>
 </template>
 <script setup lang="ts">
-import * as T from "@/types";
-import { IconBlockM, IconMenu } from "@/components/icons";
+import { IconMenu } from "@/components/icons";
 import ProfileMenu from "@/components/ProfileMenu.vue";
 import SmartycardsWordmark from "@/components/SmartycardsWordmark.vue";
+import * as T from "@/types";
 
 defineProps<{
   currentUser: T.User;

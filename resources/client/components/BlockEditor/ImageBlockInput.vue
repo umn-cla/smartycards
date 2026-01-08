@@ -103,11 +103,11 @@ function onFileChange(file: File) {
 async function handleProcessImage(
   _fieldName: string,
   file: File,
-  _metadata: any,
-  load: any,
-  _error: any,
-  _progress: any,
-  abort: any,
+  _metadata: unknown,
+  load: (fileUrl: string) => void,
+  _error: unknown,
+  _progress: unknown,
+  abort: unknown,
 ) {
   const fileInfo = await onFileChange(file);
 

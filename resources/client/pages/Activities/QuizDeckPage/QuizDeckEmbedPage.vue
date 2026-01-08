@@ -127,8 +127,14 @@
   </EmbedLayout>
 </template>
 <script setup lang="ts">
-import EmbedLayout from "@/layouts/EmbedLayout.vue";
+import * as api from "@/api";
+import HintTooltip from "@/components/HintTooltip.vue";
+import LevelProgress from "@/components/LevelProgress.vue";
+import Tuple from "@/components/Tuple.vue";
+import { IconExclamationTriangle } from "@/components/icons";
+import IconSpinner from "@/components/icons/IconSpinner.vue";
 import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
@@ -136,20 +142,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Label } from "@/components/ui/label";
-import { computed, reactive, ref, watch } from "vue";
-import { useDeckByIdQuery } from "@/queries/decks";
-import Quiz from "./Quiz.vue";
-import * as api from "@/api";
-import * as T from "@/types";
-import Tuple from "@/components/Tuple.vue";
-import IconSpinner from "@/components/icons/IconSpinner.vue";
-import HintTooltip from "@/components/HintTooltip.vue";
+import EmbedLayout from "@/layouts/EmbedLayout.vue";
 import { useCreateDeckActivityEventMutation } from "@/queries/deckActivityEvents/useCreateDeckActivityEventMutation";
+import { useDeckByIdQuery } from "@/queries/decks";
 import { useDeckStatsQuery } from "@/queries/decks/useDeckStatsQuery";
-import LevelProgress from "@/components/LevelProgress.vue";
-import { IconExclamationTriangle } from "@/components/icons";
+import * as T from "@/types";
+import { computed, reactive, ref, watch } from "vue";
 import ActivityPageHeader from "../ActivityPageHeader.vue";
+import Quiz from "./Quiz.vue";
 
 const props = defineProps<{
   deckId: number;
@@ -188,7 +188,7 @@ async function startQuiz() {
         skipErrorNotifications: true,
       },
     );
-  } catch (error) {
+  } catch {
     state.quizState = "error";
     return;
   }

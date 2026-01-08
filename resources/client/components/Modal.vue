@@ -56,20 +56,19 @@
 </template>
 
 <script setup lang="ts">
+import { IconExclamationTriangle } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-  DialogClose,
 } from "@/components/ui/dialog";
-import { IconExclamationTriangle } from "@/components/icons";
 import { computed } from "vue";
-import { CSSClass } from "@/types";
 
 type ModalButtonVariant =
   | "default"

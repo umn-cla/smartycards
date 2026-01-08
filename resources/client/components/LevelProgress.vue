@@ -12,14 +12,13 @@
   </div>
 </template>
 <script setup lang="ts">
-import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { computed } from "vue";
 import {
   getLevelFromTotalXP,
   getXPEarnedAtThisLevel,
   getXPNeededAtThisLevel,
 } from "@/lib/getXPLevel";
+import { computed } from "vue";
 
 const props = defineProps<{
   xp: number;

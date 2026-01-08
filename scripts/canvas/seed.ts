@@ -100,10 +100,10 @@ const IMPORTS = [
   { name: "enrollments.csv", content: ENROLLMENTS_CSV },
 ];
 
-const hasImportFailed = (status: any) =>
+const hasImportFailed = (status: unknown) =>
   ["failed", "failed_with_messages"].includes(status.workflow_state);
 
-const hasImportSucceeded = (status: any) =>
+const hasImportSucceeded = (status: unknown) =>
   ["imported", "imported_with_messages"].includes(status.workflow_state);
 
 const apiCall = async (endpoint: string, options: RequestInit = {}) => {

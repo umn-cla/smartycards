@@ -47,7 +47,15 @@ export default [
   {
     files: ["**/*.{js,mjs,cjs,ts,mts,cts,vue}"],
     rules: {
-      "@typescript-eslint/no-unused-vars": "warn",
+      "@typescript-eslint/no-unused-vars": [
+        "warn",
+        {
+          argsIgnorePattern: "^_",
+          varsIgnorePattern: "^_",
+          caughtErrorsIgnorePattern: "^_",
+          destructuredArrayIgnorePattern: "^_",
+        },
+      ],
       "vue/multi-word-component-names": "off",
       "no-unused-expressions": "off",
       "@typescript-eslint/no-unused-expressions": "off",
