@@ -66,7 +66,7 @@
                         {{ entry.score?.score_percentage.toFixed(0) }}%
                       </p>
                       <p class="text-xs text-brand-maroon-900/50">
-                        {{ entry.score.completed_at ? formatDate(entry.score.completed_at) : '-' }}
+                        {{ formatDate(entry.score.completed_at) }}
                       </p>
                     </template>
                     <p v-else class="text-sm text-brand-maroon-900/50">-</p>
