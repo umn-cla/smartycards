@@ -65,7 +65,10 @@
                       <p class="text-lg">
                         {{ entry.score.score_percentage.toFixed(0) }}%
                       </p>
-                      <p class="text-xs text-brand-maroon-900/50">
+                      <p
+                        v-if="entry.score.completed_at"
+                        class="text-xs text-brand-maroon-900/50"
+                      >
                         {{ formatDate(entry.score.completed_at) }}
                       </p>
                     </template>
