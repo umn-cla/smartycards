@@ -176,7 +176,7 @@ class LtiController extends Controller
             $resourceLink = $ltiService->createOrUpdateResourceLink($launch, $deckId);
 
             // Create or update entry to track user's role and score for this Canvas assignment
-            $entry = $ltiService->createOrUpdateEntry($launch, $user, $resourceLink);
+            $ltiService->createOrUpdateEntry($launch, $user, $resourceLink);
 
             return redirect("/decks/{$deckId}/activities/{$deckActivity}/embed?lti_launch=true");
         } catch (\Exception $e) {
