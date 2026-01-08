@@ -329,7 +329,7 @@ export interface DeckScoreInfo {
   score: number;
   score_maximum: number;
   score_percentage: number;
-  completed_at: ISODateTime;
+  completed_at: ISODateTime | null;
   submitted_at: ISODateTime | null;
   submission_success: boolean | null;
   submission_error: string | null;

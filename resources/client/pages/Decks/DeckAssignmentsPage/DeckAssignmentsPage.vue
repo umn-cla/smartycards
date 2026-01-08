@@ -66,7 +66,7 @@
                         {{ entry.score?.score_percentage.toFixed(0) }}%
                       </p>
                       <p class="text-xs text-brand-maroon-900/50">
-                        {{ formatDate(entry.score.completed_at) }}
+                        {{ entry.score.completed_at ? formatDate(entry.score.completed_at) : '-' }}
                       </p>
                     </template>
                     <p v-else class="text-sm text-brand-maroon-900/50">-</p>
@@ -139,7 +139,8 @@ const groupedByCourse = computed(() => {
   return Array.from(courseMap.values());
 });
 
-function formatDate(dateString: string): string {
+function formatDate(dateString: string | null): string {
+  if (!dateString) return '-';
   const date = new Date(dateString);
   return new Intl.DateTimeFormat("en-US", {
     dateStyle: "medium",
