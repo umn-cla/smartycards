@@ -47,7 +47,7 @@ class ActivityEventController extends Controller
         // We want the ones that haven't been completed yet (score is null)
         // If there are multiple incomplete entries, pick the most recent one
         $pendingEntry = $entries
-            ->filter(fn ($entry) => !$entry->isCompleted())
+            ->filter(fn ($entry) => !$entry->isCompleted() && !$entry->is_staff)
             ->sortByDesc('last_launch_at')
             ->first();
 
