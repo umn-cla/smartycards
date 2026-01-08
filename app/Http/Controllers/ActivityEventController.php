@@ -48,7 +48,7 @@ class ActivityEventController extends Controller
         // If there are multiple incomplete entries, pick the most recent one
         $pendingEntry = $entries
             ->filter(fn ($entry) => !$entry->isCompleted())
-            ->sortByDesc('updated_at')
+            ->sortByDesc('last_launch_at')
             ->first();
 
         $ltiResourceLinkId = $pendingEntry?->lti_resource_link_id;
