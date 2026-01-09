@@ -21,7 +21,7 @@ class LtiResourceLinkEntryResource extends JsonResource
             'score' => $this->isCompleted() ? [
                 'score' => $this->score,
                 'score_maximum' => $this->score_maximum,
-                'score_percentage' => $this->score_maximum != 0
+                'score_percentage' => $this->score_maximum !== 0
                     ? ($this->score / $this->score_maximum) * 100
                     : 100, // if maximum is 0, consider it 100%
                 'completed_at' => $this->completed_at,
