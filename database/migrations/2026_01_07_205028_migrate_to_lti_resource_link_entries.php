@@ -49,7 +49,7 @@ return new class extends Migration
             }
 
             DB::table('lti_resource_link_entries')
-            // ignore duplicates in we already migrated
+            // ignore duplicates if we already migrated
                 ->insertOrIgnore([
                     'user_id' => $entry->user_id,
                     'lti_resource_link_id' => $entry->lti_resource_link_id,
