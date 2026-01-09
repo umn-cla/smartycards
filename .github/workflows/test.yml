@@ -33,7 +33,7 @@ jobs:
       - name: Setup PHP
         uses: umn-cla/setup-php@main
         with:
-          php-version: "8.3"
+          php-version: "8.4"
 
       - uses: actions/setup-node@v4
         with:
