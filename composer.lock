@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "aa37229de541d31270b3a0768e5c43a2",
+    "content-hash": "638a3305f86e45da079aad9006f8937c",
     "packages": [
         {
             "name": "brick/math",
@@ -5595,12 +5595,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/UMN-LATIS/laravel-shibboleth.git",
-                "reference": "c30e9e9afbd7a67c909188408e2bd511c0f741cf"
+                "reference": "a46f2c2d872d70947f403c36397028e919697490"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/UMN-LATIS/laravel-shibboleth/zipball/c30e9e9afbd7a67c909188408e2bd511c0f741cf",
-                "reference": "c30e9e9afbd7a67c909188408e2bd511c0f741cf",
+                "url": "https://api.github.com/repos/UMN-LATIS/laravel-shibboleth/zipball/a46f2c2d872d70947f403c36397028e919697490",
+                "reference": "a46f2c2d872d70947f403c36397028e919697490",
                 "shasum": ""
             },
             "require": {
