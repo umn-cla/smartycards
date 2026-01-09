@@ -4,21 +4,20 @@ use App\Http\Controllers\ActivityEventController;
 use App\Http\Controllers\ActivityTypeController;
 use App\Http\Controllers\CardAttemptController;
 use App\Http\Controllers\CardStatsController;
+use App\Http\Controllers\DeckAssignmentController;
 use App\Http\Controllers\DeckCardController;
 use App\Http\Controllers\DeckController;
 use App\Http\Controllers\DeckInviteController;
 use App\Http\Controllers\DeckMembershipController;
 use App\Http\Controllers\DeckQuizController;
 use App\Http\Controllers\DeckReportController;
-use App\Http\Controllers\LtiGradeSubmissionController;
-use App\Http\Controllers\LtiResourceLinkController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TTSController;
 use App\Http\Controllers\UploadFileController;
 use Illuminate\Support\Facades\Route;
 
-require __DIR__ . '/shib.php';
-require __DIR__ . '/lti.php';
+require __DIR__.'/shib.php';
+require __DIR__.'/lti.php';
 
 // homepage is public
 Route::get('/', function () {
@@ -62,9 +61,7 @@ Route::middleware(['auth'])
 
         Route::get('decks/{deck}/reports/summary', [DeckReportController::class, 'summary']);
 
-        Route::get('decks/{deck}/assignments', [LtiResourceLinkController::class, 'userAssignments']);
-
-        Route::post('lti-grade-submissions/{submission}/retry', [LtiGradeSubmissionController::class, 'retry']);
+        Route::get('decks/{deck}/assignments', [DeckAssignmentController::class, 'index']);
 
         Route::resource('decks.activity-events', ActivityEventController::class);
 

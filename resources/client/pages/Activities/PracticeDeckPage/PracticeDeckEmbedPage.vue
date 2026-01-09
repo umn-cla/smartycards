@@ -53,7 +53,7 @@ const props = defineProps<{
 }>();
 
 const deckIdRef = computed(() => props.deckId);
-const { launchId, isLtiLaunch } = useLtiContext();
+const { isLtiLaunch } = useLtiContext();
 
 const {
   initialSideName,
@@ -63,7 +63,7 @@ const {
   hasCompletedPractice,
   handlePracticeComplete,
   handleResetPractice,
-} = usePracticeDeck({ deckId: deckIdRef, ltiLaunchId: launchId });
+} = usePracticeDeck({ deckId: deckIdRef, isLtiContext: isLtiLaunch });
 </script>
 <style scoped>
 button {

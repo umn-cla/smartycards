@@ -113,11 +113,11 @@ class LtiResourceLink extends Resource
                 ->help('Assignment and Grade Services scopes/permissions granted')
                 ->readonly(),
 
-            Text::make('Grade Submissions', function () {
-                return $this->gradeSubmissions->count();
+            Text::make('Entries', function () {
+                return $this->entries->count();
             })->onlyOnIndex(),
 
-            HasMany::make('Grade Submissions', 'gradeSubmissions', LtiGradeSubmission::class),
+            HasMany::make('Entries', 'entries', LtiResourceLinkEntry::class),
         ];
     }
 

@@ -9,13 +9,15 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Packback\Lti1p3\LtiException;
 use Packback\Lti1p3\LtiConstants;
+use Packback\Lti1p3\LtiException;
 
 class LtiController extends Controller
 {
     const DECK_PRACTICE_ACTIVITY = 'practice';
+
     const DECK_QUIZ_ACTIVITY = 'quiz';
+
     const DECK_MATCHING_ACTIVITY = 'matching';
 
     const MISSING_LAUNCH_ID_MESSAGE = 'No launch ID found. Please try launching again from Canvas.';
@@ -35,7 +37,7 @@ class LtiController extends Controller
         ]);
 
         return redirect()->route('lti.error', [
-            'message' => $userMessage ?? $e->getMessage()
+            'message' => $userMessage ?? $e->getMessage(),
         ]);
     }
 
@@ -68,7 +70,7 @@ class LtiController extends Controller
             if ($launch->isDeepLinkLaunch()) {
                 return redirect()->route('lti.deep_link', [
                     'launch_id' => $launchId,
-                    'launch_type' => 'deep_link'
+                    'launch_type' => 'deep_link',
                 ]);
             }
 
@@ -76,7 +78,6 @@ class LtiController extends Controller
             if ($launch->isResourceLaunch()) {
                 return redirect()->route('lti.resource', [
                     'launch_id' => $launchId,
-                    'launch_type' => 'resource'
                 ]);
             }
 
@@ -114,7 +115,7 @@ class LtiController extends Controller
             return view('lti.deep_link', [
                 'launch' => $launch,
                 'launch_id' => $launchId,
-                'settings' => $launch->getDeepLink()->settings()
+                'settings' => $launch->getDeepLink()->settings(),
             ]);
         } catch (\Exception $e) {
             return $this->handleException($e);
@@ -137,13 +138,12 @@ class LtiController extends Controller
             // Return auto-submit form that posts back to LMS
             return view('lti.auto_submit', [
                 'jwt' => $response['jwt'],
-                'return_url' => $response['return_url']
+                'return_url' => $response['return_url'],
             ]);
         } catch (\Exception $e) {
             return $this->handleException($e);
         }
     }
-
 
     /**
      * Handle resource launch (student clicks on assignment)
@@ -175,10 +175,10 @@ class LtiController extends Controller
             // Create or update the LTI resource link with AGS endpoints
             $resourceLink = $ltiService->createOrUpdateResourceLink($launch, $deckId);
 
-            // Track user's role in this Canvas course for grade report authorization
-            $ltiService->createOrUpdateMembership($launch, $user, $resourceLink);
+            // Create or update entry to track user's role and score for this Canvas assignment
+            $ltiService->createOrUpdateEntry($launch, $user, $resourceLink);
 
-            return redirect("/decks/{$deckId}/activities/{$deckActivity}/embed?launch_id={$launchId}&launch_type=resource");
+            return redirect("/decks/{$deckId}/activities/{$deckActivity}/embed?lti_launch=true");
         } catch (\Exception $e) {
             return $this->handleException($e);
         }

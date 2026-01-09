@@ -18,7 +18,7 @@
       </template>
       <div class="flex gap-2 items-center">
         <MoreDeckActions :deck="deck" />
-        <Button asChild variant="outline">
+        <Button asChild variant="secondary">
           <RouterLink
             v-if="deck.current_user_details.lti_resource_links.length"
             :to="{ name: 'decks.assignments', params: { deckId } }"
@@ -26,7 +26,7 @@
             Assignments
           </RouterLink>
         </Button>
-        <Button asChild variant="outline">
+        <Button asChild variant="secondary">
           <RouterLink
             v-if="deck.capabilities.canViewReports"
             :to="{ name: 'decks.reports.summary', params: { deckId } }"
@@ -144,25 +144,24 @@
   </AuthenticatedLayout>
 </template>
 <script setup lang="ts">
+import FlippableCard from "@/components/FlippableCard.vue";
+import { IconSearch } from "@/components/icons";
+import IconPlusFilled from "@/components/icons/IconPlusFilled.vue";
+import LevelProgress from "@/components/LevelProgress.vue";
+import PageHeader from "@/components/PageHeader.vue";
+import ScoreEmoji from "@/components/ScoreEmoji.vue";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { AuthenticatedLayout } from "@/layouts/AuthenticatedLayout";
+import MoreDeckActions from "@/pages/Decks/DeckIndexPage/MoreDeckActions.vue";
+import { useActivityTypesQuery } from "@/queries/activityTypes/useActivityTypesQuery";
 import { useDeleteCardMutation } from "@/queries/cards";
 import { useDeckByIdQuery } from "@/queries/decks";
 import * as T from "@/types";
+import { computed, ref } from "vue";
 import { RouterLink } from "vue-router";
-import { computed } from "vue";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import MoreDeckActions from "@/pages/Decks/DeckIndexPage/MoreDeckActions.vue";
-import PageHeader from "@/components/PageHeader.vue";
-import FlippableCard from "@/components/FlippableCard.vue";
-import IconPlusFilled from "@/components/icons/IconPlusFilled.vue";
-import ScoreEmoji from "@/components/ScoreEmoji.vue";
 import MoreCardActions from "./MoreCardActions.vue";
-import { ref } from "vue";
-import LevelProgress from "@/components/LevelProgress.vue";
-import { useActivityTypesQuery } from "@/queries/activityTypes/useActivityTypesQuery";
-import { Input } from "@/components/ui/input";
-import { IconSearch } from "@/components/icons";
 
 const props = defineProps<{
   deckId: number;

@@ -38,9 +38,9 @@ class ActivityEvent extends Model
         return $this->belongsTo(LtiResourceLink::class);
     }
 
-    public function gradeSubmissions()
+    public function ltiResourceLinkEntry()
     {
-        return $this->hasMany(LtiGradeSubmission::class);
+        return $this->hasOne(LtiResourceLinkEntry::class);
     }
 
     /**

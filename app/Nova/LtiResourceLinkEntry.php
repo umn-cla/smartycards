@@ -12,14 +12,14 @@ use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Fields\Textarea;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
-class LtiGradeSubmission extends Resource
+class LtiResourceLinkEntry extends Resource
 {
     /**
      * The model the resource corresponds to.
      *
-     * @var class-string<\App\Models\LtiGradeSubmission>
+     * @var class-string<\App\Models\LtiResourceLinkEntry>
      */
-    public static $model = \App\Models\LtiGradeSubmission::class;
+    public static $model = \App\Models\LtiResourceLinkEntry::class;
 
     /**
      * The single value that should be used to represent the resource when being displayed.
@@ -34,9 +34,7 @@ class LtiGradeSubmission extends Resource
      * @var array
      */
     public static $search = [
-        'id',
-        'lti_user_id',
-        'launch_id',
+        'id', 'lti_user_id',
     ];
 
     /**
@@ -49,86 +47,88 @@ class LtiGradeSubmission extends Resource
         return [
             ID::make()->sortable(),
 
+            BelongsTo::make('User', 'user', User::class)
+                ->sortable()
+                ->rules('required')
+                ->help('The SmartyCards user for this entry'),
+
             BelongsTo::make('Resource Link', 'resourceLink', LtiResourceLink::class)
                 ->sortable()
                 ->rules('required')
-                ->help('The Canvas assignment this grade was submitted to')
+                ->help('The LTI resource link (Canvas assignment) for this entry'),
+
+            Text::make('LTI User ID')
+                ->sortable()
+                ->help('Canvas user ID (sub claim from LTI launch)')
                 ->readonly(),
 
-            BelongsTo::make('User', 'user', User::class)
+            Code::make('Roles')
+                ->json()
+                ->hideFromIndex()
+                ->help('LTI roles from launch (e.g., Learner, Instructor)')
+                ->readonly(),
+
+            Boolean::make('Is Staff')
+                ->sortable()
+                ->help('Whether this user has a staff role in Canvas')
+                ->readonly(),
+
+            DateTime::make('Last Launch At')
+                ->sortable()
+                ->help('When this user last launched this assignment from Canvas')
+                ->readonly(),
+
+            Number::make('Score')
                 ->sortable()
                 ->nullable()
-                ->help('The SmartyCards user who received this grade')
+                ->step(0.01)
+                ->min(0)
+                ->help('Score earned (NULL until assignment is completed)')
+                ->readonly(),
+
+            Number::make('Score Maximum')
+                ->sortable()
+                ->step(0.01)
+                ->min(0)
+                ->help('Maximum possible score (typically 100.00)')
                 ->readonly(),
 
             BelongsTo::make('Activity Event', 'activityEvent', ActivityEvent::class)
                 ->sortable()
                 ->nullable()
-                ->help('The activity event that triggered this grade submission')
+                ->help('The activity event that triggered score completion')
                 ->readonly(),
 
-            Number::make('Score Given')
-                ->step(0.01)
+            DateTime::make('Completed At')
                 ->sortable()
-                ->help('The numeric score submitted to Canvas')
-                ->readonly(),
-
-            Number::make('Score Maximum')
-                ->step(0.01)
-                ->sortable()
-                ->help('The maximum possible score')
-                ->readonly(),
-
-            Text::make('Score %', function () {
-                return number_format($this->getScorePercentage(), 2) . '%';
-            })->onlyOnIndex(),
-
-            Text::make('Activity Progress')
-                ->sortable()
-                ->help('LTI activity progress status (Initialized, Started, InProgress, Submitted, Completed)')
-                ->readonly(),
-
-            Text::make('Grading Progress')
-                ->sortable()
-                ->help('LTI grading progress status (NotReady, Failed, Pending, PendingManual, FullyGraded)')
-                ->readonly(),
-
-            Text::make('LTI User ID')
-                ->hideFromIndex()
-                ->help('The LTI user ID from Canvas (may differ from SmartyCards user ID)')
-                ->readonly(),
-
-            Text::make('Launch ID')
-                ->hideFromIndex()
-                ->help('The LTI launch ID associated with this submission')
+                ->nullable()
+                ->help('When the user completed the assignment and earned a score')
                 ->readonly(),
 
             DateTime::make('Submitted At')
                 ->sortable()
-                ->help('When the grade was submitted to Canvas')
+                ->nullable()
+                ->help('When the score was submitted to Canvas')
                 ->readonly(),
 
-            Boolean::make('Success')
+            Boolean::make('Submission Success')
                 ->sortable()
-                ->help('Whether the grade submission was successful')
+                ->nullable()
+                ->help('Whether the score was successfully submitted to Canvas')
                 ->readonly(),
 
-            Textarea::make('Error Message')
+            Textarea::make('Submission Error')
                 ->hideFromIndex()
                 ->nullable()
-                ->help('Error message if the submission failed')
+                ->help('Error message if score submission to Canvas failed')
                 ->readonly(),
 
-            Code::make('Request Payload')
-                ->json()
+            DateTime::make('Created At')
                 ->hideFromIndex()
-                ->help('The full AGS request payload sent to Canvas')
                 ->readonly(),
 
-            Code::make('Response Data')
-                ->json()
+            DateTime::make('Updated At')
                 ->hideFromIndex()
-                ->help('The response data received from Canvas')
                 ->readonly(),
         ];
     }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Enums\ActivityTypeEnum;
+use App\Http\Resources\LtiResourceLinkEntryResource;
 use App\Models\ActivityEvent;
 use App\Models\ActivityType;
 use App\Models\Deck;
@@ -21,8 +22,6 @@ class ActivityEventController extends Controller
     {
         Gate::authorize('create', [ActivityEvent::class, $deck]);
 
-        // TODO: maybe we should rate limit or check some
-        // sort of token to avoid potential spamming
         $validated = $request->validate([
             'activity_type_name' => [
                 'required',
@@ -30,7 +29,6 @@ class ActivityEventController extends Controller
             ],
             'correct_count' => ['integer', 'nullable'],
             'total_count' => ['integer', 'nullable'],
-            'launch_id' => ['string', 'nullable'],
         ]);
 
         $activityType = ActivityType::where('name', $validated['activity_type_name'])->first();
@@ -40,26 +38,18 @@ class ActivityEventController extends Controller
             totalCount: $validated['total_count']
         );
 
-        // Handle LTI context: link activity to resource and queue grade submission
-        $ltiResourceLinkId = null;
-        $gradeSubmission = null;
+        // Get the most recent pending student entry for this deck (if any)
+        // Users can have more than one assignment for a deck.
+        // We want the ones that haven't been completed yet (score is null)
+        // If there are multiple incomplete entries, pick the most recent one
+        $pendingEntry = $ltiService->getScoreableEntryForUserAndDeck(
+            userId: Auth::id(),
+            deckId: $deck->id
+        );
 
-        if (!empty($validated['launch_id'])) {
-            try {
-                $launch = $ltiService->getLaunchFromCache($validated['launch_id']);
-                $resourceLink = $ltiService->createOrUpdateResourceLink($launch, $deck->id);
-                $ltiResourceLinkId = $resourceLink->id;
+        $ltiResourceLinkId = $pendingEntry?->lti_resource_link_id ?? null;
 
-                // Track user's role in this Canvas course for grade report authorization
-                $ltiService->createOrUpdateMembership($launch, Auth::user(), $resourceLink);
-            } catch (\Exception $e) {
-                \Log::warning('Failed to get LTI resource link for activity event', [
-                    'error' => $e->getMessage(),
-                    'launch_id' => $validated['launch_id'],
-                ]);
-            }
-        }
-
+        // record the event with the LTI resource link if we have one
         $event = ActivityEvent::create([
             'deck_id' => $deck->id,
             'activity_type_id' => $activityType->id,
@@ -68,38 +58,37 @@ class ActivityEventController extends Controller
             'xp' => $xp,
         ]);
 
-        // Queue grade submission to Canvas if LTI context
-        if (!empty($validated['launch_id'])) {
+        // Queue score submission if we have an incomplete entry
+        $updatedEntry = null;
+
+        if ($pendingEntry !== null) {
             try {
-                $gradeSubmission = $ltiService->queueGradeSubmissionFromLaunchId(
-                    launchId: $validated['launch_id'],
+                $updatedEntry = $ltiService->queueScoreSubmission(
+                    entry: $pendingEntry,
                     userId: Auth::id(),
                     activityEventId: $event->id,
-                    scoreGiven: 100.0,
+                    score: 100.0,
                     scoreMaximum: 100.0
                 );
 
-                \Log::info('Grade submission queued for Canvas via LTI', [
+                \Log::info('Score submission queued for Canvas via LTI', [
                     'activity_event_id' => $event->id,
-                    'grade_submission_id' => $gradeSubmission->id,
+                    'entry_id' => $updatedEntry->id,
                 ]);
             } catch (\Exception $e) {
-                \Log::error('Failed to queue grade submission to Canvas', [
+                \Log::error('Failed to queue score submission to Canvas', [
                     'error' => $e->getMessage(),
                     'activity_event_id' => $event->id,
-                    'launch_id' => $validated['launch_id'],
+                    'lti_resource_link_id' => $ltiResourceLinkId,
                 ]);
             }
         }
 
         return response()->json([
             'activity_event' => $event,
-            'grade_submission' => $gradeSubmission ? [
-                'id' => $gradeSubmission->id,
-                'status' => 'queued',
-                'score_given' => $gradeSubmission->score_given,
-                'score_maximum' => $gradeSubmission->score_maximum,
-            ] : null,
+            'lti_resource_link_entry' => $updatedEntry
+                ? LtiResourceLinkEntryResource::make($updatedEntry)
+                : null,
         ], 201);
     }
 }

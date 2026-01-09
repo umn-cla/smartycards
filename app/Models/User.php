@@ -110,18 +110,21 @@ class User extends Authenticatable implements AuditableContract
     }
 
     /**
-     * Get all LTI resource link memberships for this user
+     * Get all LTI resource link entries for this user
      */
-    public function ltiResourceLinkMemberships()
+    public function ltiResourceLinkEntries()
     {
-        return $this->hasMany(LtiResourceLinkMembership::class);
+        return $this->hasMany(LtiResourceLinkEntry::class);
     }
 
+    /**
+     * Get LTI resource links through entries
+     */
     public function ltiResourceLinks()
     {
         return $this->hasManyThrough(
             LtiResourceLink::class,
-            LtiResourceLinkMembership::class,
+            LtiResourceLinkEntry::class,
             'user_id',
             'id',
             'id',
@@ -130,11 +133,11 @@ class User extends Authenticatable implements AuditableContract
     }
 
     /**
-     * Get only staff memberships (where user is instructor/TA)
+     * Get only staff entries (where user is instructor/TA)
      */
-    public function staffResourceLinkMemberships()
+    public function staffResourceLinkEntries()
     {
-        return $this->ltiResourceLinkMemberships()->where('is_staff', true);
+        return $this->ltiResourceLinkEntries()->staff();
     }
 
     /**
@@ -142,7 +145,7 @@ class User extends Authenticatable implements AuditableContract
      */
     public function hasStaffRoleInDeck(Deck $deck): bool
     {
-        return $this->staffResourceLinkMemberships()
+        return $this->staffResourceLinkEntries()
             ->whereHas('resourceLink', function ($query) use ($deck) {
                 $query->where('deck_id', $deck->id);
             })

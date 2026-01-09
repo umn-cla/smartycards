@@ -10,11 +10,18 @@ export function useLtiContext() {
   const route = useRoute();
 
   /**
-   * The LTI launch ID from the current route
+   * The LTI launch ID from the current route (deep link only)
    */
   const launchId = computed(() => {
     const id = route.query.launch_id;
     return typeof id === "string" ? id : null;
+  });
+
+  /**
+   * Whether this is an LTI resource launch (from ?lti_launch=true)
+   */
+  const isLtiResourceLaunch = computed(() => {
+    return route.query.lti_launch === "true";
   });
 
   /**
@@ -23,8 +30,11 @@ export function useLtiContext() {
    */
   const launchType = computed((): LaunchType | null => {
     const type = route.query.launch_type;
-    if (type === "deep_link" || type === "resource") {
-      return type;
+    if (type === "deep_link") {
+      return "deep_link";
+    }
+    if (isLtiResourceLaunch.value) {
+      return "resource";
     }
     return null;
   });
@@ -32,7 +42,11 @@ export function useLtiContext() {
   /**
    * Whether the current page is in any LTI launch context
    */
-  const isLtiLaunch = computed(() => !!launchId.value);
+  const isLtiLaunch = computed(
+    () =>
+      !!launchId.value ||
+      isLtiResourceLaunch.value,
+  );
 
   /**
    * Whether we're in a deep link launch (instructor selecting/configuring content)
@@ -45,7 +59,7 @@ export function useLtiContext() {
   const isResourceLaunch = computed(() => launchType.value === "resource");
 
   return {
-    /** The LTI launch ID for the current session */
+    /** The LTI launch ID for the current session (deep link only) */
     launchId,
 
     /** The type of LTI launch ('deep_link' | 'resource' | null) */

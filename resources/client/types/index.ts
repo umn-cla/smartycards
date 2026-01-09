@@ -319,55 +319,42 @@ export interface LanguageOption {
 
 export interface LtiResourceLink {
   id: number;
+  lti_deployment_id: number;
   resource_link_id: string;
-  title: string;
-  context_title: string;
-  context_label: string;
-}
-
-export interface LtiGradeSubmission {
-  id: number;
-  user: User;
-  score_given: number;
-  score_maximum: number;
-  score_percentage: number;
-  success: boolean;
-  error_message: string | null;
-  submitted_at: ISODateTime;
-  activity_progress: string;
-  grading_progress: string;
-  can_retry: boolean;
-}
-
-export interface ResourceLinkWithSubmissions {
-  resource_link: LtiResourceLink;
-  submissions: LtiGradeSubmission[];
-}
-
-export interface GradesReport {
-  resource_links: ResourceLinkWithSubmissions[];
-  error_message?: string;
-}
-
-export interface UserAssignmentScore {
-  score_given: number;
-  score_maximum: number;
-  score_percentage: number;
-  submitted_at: ISODateTime;
-}
-
-export interface UserAssignment {
-  id: number;
   title: string;
   description: string | null;
   context_id: string;
   context_title: string;
   context_label: string;
+  custom_params: Record<string, string> | null;
+  lineitems_url: string | null;
+  lineitem_url: string | null;
   canvas_url: string | null;
-  is_staff: boolean;
-  score: UserAssignmentScore | null;
+  ags_scopes: string[] | null;
+  entries?: LtiResourceLinkEntry[];
+  settings: Record<string, unknown> | null;
+  deck_id: number | null;
+  deck?: Deck;
+  created_at: ISODateTime;
+  updated_at: ISODateTime;
 }
 
-export interface UserAssignmentsResponse {
-  assignments: UserAssignment[];
+export interface LtiResourceLinkEntry {
+  id: number;
+  resource_link?: LtiResourceLink;
+  is_staff: boolean;
+  score: AssignmentScore | null;
+  user?: User;
+  created_at: ISODateTime;
+  updated_at: ISODateTime;
+}
+
+export interface AssignmentScore {
+  score: number;
+  score_maximum: number;
+  score_percentage: number;
+  completed_at: ISODateTime | null;
+  submitted_at: ISODateTime | null;
+  submission_success: boolean | null;
+  submission_error: string | null;
 }

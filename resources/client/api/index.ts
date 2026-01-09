@@ -364,25 +364,11 @@ export async function getDeckSummaryReport(deckId: number) {
   return res.data;
 }
 
-export async function getDeckGradesReport(deckId: number) {
-  const res = await axios.get<T.GradesReport>(
-    `/decks/${deckId}/reports/grades`,
-  );
-  return res.data;
-}
-
-export async function getUserAssignments(deckId: number) {
-  const res = await axios.get<T.UserAssignmentsResponse>(
+export async function getAssignmentsForDeck(deckId: number) {
+  const res = await axios.get<{ data: T.LtiResourceLinkEntry[] }>(
     `/decks/${deckId}/assignments`,
   );
-  return res.data;
-}
-
-export async function retryGradeSubmission(submissionId: number) {
-  const res = await axios.post<{ message: string; submission_id: number }>(
-    `/lti-grade-submissions/${submissionId}/retry`,
-  );
-  return res.data;
+  return res.data.data;
 }
 
 export async function createDeckActivityEvent({
@@ -390,13 +376,11 @@ export async function createDeckActivityEvent({
   activityType,
   correctCount,
   totalCount,
-  ltiLaunchId,
 }: {
   deckId: T.Deck["id"];
   activityType: T.ActivityTypeName;
   correctCount: number;
   totalCount: number;
-  ltiLaunchId?: string | null;
 }) {
   const res = await axios.post<T.ActivityEvent>(
     `/decks/${deckId}/activity-events`,
@@ -404,7 +388,6 @@ export async function createDeckActivityEvent({
       activity_type_name: activityType,
       correct_count: correctCount,
       total_count: totalCount,
-      launch_id: ltiLaunchId,
     },
   );
   return res.data;

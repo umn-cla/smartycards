@@ -2,28 +2,28 @@
 
 namespace App\Services\Lti;
 
-use App\Models\User;
-use App\Models\LtiPlatform;
-use App\Models\LtiResourceLink;
-use App\Models\LtiGradeSubmission;
 use App\Enums\LtiActivityProgress;
 use App\Enums\LtiGradingProgress;
-use App\Jobs\SubmitLtiGrade;
+use App\Jobs\SubmitLtiScore;
+use App\Models\LtiPlatform;
+use App\Models\LtiResourceLinkEntry;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 use Packback\Lti1p3\DeepLinkResources\Resource;
-use Packback\Lti1p3\Interfaces\IDatabase;
 use Packback\Lti1p3\Interfaces\ICache;
 use Packback\Lti1p3\Interfaces\ICookie;
+use Packback\Lti1p3\Interfaces\IDatabase;
 use Packback\Lti1p3\Interfaces\ILtiServiceConnector;
 use Packback\Lti1p3\JwksEndpoint;
+use Packback\Lti1p3\LtiAssignmentsGradesService;
+use Packback\Lti1p3\LtiConstants;
 use Packback\Lti1p3\LtiException;
 use Packback\Lti1p3\LtiGrade;
 use Packback\Lti1p3\LtiMessageLaunch;
 use Packback\Lti1p3\LtiOidcLogin;
-use Packback\Lti1p3\LtiConstants;
 
 class LtiService
 {
@@ -46,6 +46,7 @@ class LtiService
         );
 
         $redirectUrl = $login->getRedirectUrl($launchUrl, $request);
+
         return redirect($redirectUrl);
     }
 
@@ -135,7 +136,6 @@ class LtiService
         ];
     }
 
-
     /**
      * Provide a JWKS endpoint for platforms to verify our signatures
      */
@@ -163,131 +163,131 @@ class LtiService
         }
 
         $nrps = $launch->getNrps();
+
         return $nrps->getMembers();
     }
 
     /**
-     * Create a grade submission record and queue a job to submit it to Canvas
-     * using Assignment and Grade Services (AGS)
+     * Get all entries for a user and deck
      *
-     * This method does NOT submit the grade synchronously - it queues a background job.
-     * The actual submission happens asynchronously with automatic retries.
+     * @return \Illuminate\Support\Collection Collection of LtiResourceLinkEntry objects
      */
-    public function queueGradeSubmissionFromLaunchId(
-        string $launchId,
-        int $userId,
-        ?int $activityEventId = null,
-        float $scoreGiven = 100.0,
-        float $scoreMaximum = 100.0
-    ): ?LtiGradeSubmission {
-        // Get the launch from cache to extract required data
-        $launch = $this->getLaunchFromCache($launchId);
-        $launchData = $launch->getLaunchData();
-
-        // Don't create grade submissions for staff (instructors/TAs)
-        if ($this->hasStaffRole($launch)) {
-            return null;
-        }
-
-        // Get the LTI user ID (sub claim)
-        $ltiUserId = $launchData['sub'] ?? null;
-        if (!$ltiUserId) {
-            throw new \Exception('LTI user ID not found in launch data');
-        }
-
-        // Find the resource link
-        $deploymentId = $launchData[LtiConstants::DEPLOYMENT_ID] ?? null;
-        $issuer = $launchData['iss'] ?? null;
-        $resourceLinkClaim = $launchData[LtiConstants::RESOURCE_LINK] ?? [];
-        $resourceLinkId = $resourceLinkClaim['id'] ?? null;
-
-        if (!$deploymentId || !$issuer || !$resourceLinkId) {
-            throw new \Exception('Missing required LTI claims for grade submission');
-        }
-
-        $platform = LtiPlatform::where('issuer', $issuer)->firstOrFail();
-
-        $deployment = $platform->deployments()
-            ->where('deployment_id', $deploymentId)
-            ->firstOrFail();
-
-        $resourceLink = LtiResourceLink::where('lti_deployment_id', $deployment->id)
-            ->where('resource_link_id', $resourceLinkId)
-            ->firstOrFail();
-
-        // Build request payload for audit trail
-        $requestPayload = [
-            'scoreGiven' => $scoreGiven,
-            'scoreMaximum' => $scoreMaximum,
-            'userId' => $ltiUserId,
-            'timestamp' => date('c'),
-            'activityProgress' => LtiActivityProgress::Completed->value,
-            'gradingProgress' => LtiGradingProgress::FullyGraded->value,
-        ];
-
-        // Create the grade submission record
-        $submission = LtiGradeSubmission::create([
-            'lti_resource_link_id' => $resourceLink->id,
-            'user_id' => $userId,
-            'activity_event_id' => $activityEventId,
-            'score_given' => $scoreGiven,
-            'score_maximum' => $scoreMaximum,
-            'activity_progress' => LtiActivityProgress::Completed,
-            'grading_progress' => LtiGradingProgress::FullyGraded,
-            'lti_user_id' => $ltiUserId,
-            'launch_id' => $launchId,
-            'submitted_at' => now(),
-            'success' => false, // Will be updated by the job
-            'request_payload' => $requestPayload,
-        ]);
-
-        // Dispatch the job to submit the grade asynchronously
-        SubmitLtiGrade::dispatch($submission);
-
-        return $submission;
+    public function getEntriesForUserAndDeck(int $userId, int $deckId)
+    {
+        return LtiResourceLinkEntry::query()
+            ->whereHas('resourceLink', function ($query) use ($deckId) {
+                $query->where('deck_id', $deckId);
+            })
+            ->where('user_id', $userId)
+            ->with('resourceLink.deployment.platform')
+            ->get();
     }
 
+    /**
+     * Get the most recent pending student entry for a user and deck
+     */
+    public function getScoreableEntryForUserAndDeck(int $userId, int $deckId): ?LtiResourceLinkEntry
+    {
+        return LtiResourceLinkEntry::query()
+            ->whereHas('resourceLink', function ($query) use ($deckId) {
+                $query->where('deck_id', $deckId);
+            })
+            ->where('user_id', $userId)
+            ->students() // ignore staff entries
+            ->pending() // only incomplete entries
+            ->orderByDesc('last_launch_at') // most recently used
+            ->with('resourceLink.deployment.platform')
+            ->first();
+    }
 
     /**
-     * Submit a grade using an existing grade submission record
-     * Requires the launch to still be cached (1hr TTL)
+     * Queue a score submission for an entry
+     * Updates the score and queues it for submission to Canvas
      */
-    public function submitGradeFromSubmission(LtiGradeSubmission $submission)
-    {
-        // Verify we have required data
-        if (!$submission->resourceLink) {
-            throw new \Exception('Resource link not found for grade submission');
+    public function queueScoreSubmission(
+        LtiResourceLinkEntry $entry,
+        int $userId,
+        ?int $activityEventId = null,
+        float $score = 100.0,
+        float $scoreMaximum = 100.0
+    ): LtiResourceLinkEntry {
+        if (!$entry->lti_user_id) {
+            throw new \Exception('LTI user ID not found in entry (legacy data)');
         }
 
-        if (!$submission->resourceLink->lineitem_url) {
+        $resourceLink = $entry->resourceLink;
+
+        if (!$resourceLink->lineitem_url) {
             throw new \Exception('Lineitem URL not available for this resource link');
         }
 
-        // Try to get the launch from cache
-        // Note: This depends on the launch still being cached
-        // If launch expires, this will throw an exception and the job will retry
-        try {
-            $launch = $this->getLaunchFromCache($submission->launch_id);
-        } catch (\Exception $e) {
-            throw new \Exception("Launch not found in cache (may have expired): {$e->getMessage()}");
+        // Update the entry with completion data
+        $entry->update([
+            'score' => $score,
+            'score_maximum' => $scoreMaximum,
+            'activity_event_id' => $activityEventId,
+            'completed_at' => now(),
+        ]);
+
+        // Dispatch job to submit score to Canvas
+        SubmitLtiScore::dispatch($entry);
+
+        return $entry;
+    }
+
+    /**
+     * Submit a score to Canvas using database-stored LTI configuration
+     * Uses the Packback library's AGS service which handles OAuth tokens automatically
+     */
+    public function submitScore(LtiResourceLinkEntry $entry): array
+    {
+        $resourceLink = $entry->resourceLink()->with('deployment.platform')->first();
+
+        if (!$resourceLink) {
+            throw new \Exception('Resource link not found for entry');
         }
 
-        // Verify AGS is available
-        if (!$launch->hasAgs()) {
-            throw new \Exception('AGS service not available for this launch');
+        if (!$resourceLink->lineitem_url) {
+            throw new \Exception('Lineitem URL not available');
         }
+
+        $deployment = $resourceLink->deployment;
+        $platform = $deployment->platform;
+
+        // Get the LTI registration from the database
+        $registration = $this->database->findRegistrationByIssuer($platform->issuer, $deployment->client_id);
+
+        if (!$registration) {
+            throw new \Exception('LTI registration not found for platform');
+        }
+
+        // Build the AGS service data with endpoints and scopes
+        $serviceData = [
+            'scope' => $resourceLink->ags_scopes ?? [],
+            'lineitem' => $resourceLink->lineitem_url,
+        ];
+
+        if ($resourceLink->lineitems_url) {
+            $serviceData['lineitems'] = $resourceLink->lineitems_url;
+        }
+
+        // Create AGS service instance - it handles OAuth tokens automatically
+        $ags = new LtiAssignmentsGradesService(
+            $this->connector,
+            $registration,
+            $serviceData
+        );
 
         // Prepare the grade object
         $grade = LtiGrade::new()
-            ->setScoreGiven($submission->score_given)
-            ->setScoreMaximum($submission->score_maximum)
-            ->setUserId($submission->lti_user_id)
+            ->setScoreGiven($entry->score)
+            ->setScoreMaximum($entry->score_maximum)
+            ->setUserId($entry->lti_user_id)
             ->setTimestamp(date('c'))
-            ->setActivityProgress($submission->activity_progress)
-            ->setGradingProgress($submission->grading_progress);
+            ->setActivityProgress(LtiActivityProgress::Completed->value)
+            ->setGradingProgress(LtiGradingProgress::FullyGraded->value);
 
-        // Submit the grade
-        $ags = $launch->getAgs();
+        // Submit the score - library handles OAuth token acquisition
         return $ags->putGrade($grade);
     }
 
@@ -301,6 +301,7 @@ class LtiService
         }
 
         $gs = $launch->getGs();
+
         return $gs->getGroups();
     }
 
@@ -314,14 +315,16 @@ class LtiService
         }
 
         $gs = $launch->getGs();
+
         return $gs->getGroupsBySet();
     }
 
     /**
      * Validates that LTI Launch data contains everything
      * we expect to create or authenticate a user
-     * @param array $launchData
+     *
      * @return array - validated data
+     *
      * @throws \Illuminate\Validation\ValidationException
      */
     private function validateLtiLaunchData(array $launchData): array
@@ -356,6 +359,7 @@ class LtiService
     private function normalizeDevSisId(string $sisId): string
     {
         $mappings = config('lti.dev_sis_mappings', []);
+
         return $mappings[$sisId] ?? $sisId;
     }
 
@@ -463,11 +467,12 @@ class LtiService
                 'email' => $email,
                 'first_name' => $firstName,
                 'last_name' => $lastName,
-                'name' => trim($firstName . ' ' . $lastName),
+                'name' => trim($firstName.' '.$lastName),
                 'password' => Hash::make(Str::random(32)),
             ]);
 
             Auth::login($user);
+
             return $user;
         }
 
@@ -481,31 +486,35 @@ class LtiService
         ]);
 
         Auth::login($user);
+
         return $user;
     }
 
     /**
-     * Create or update LTI resource link membership for a user
+     * Create or update LTI resource link entry for a user
      * Tracks which users have what roles in which Canvas courses
      */
-    public function createOrUpdateMembership(
+    public function createOrUpdateEntry(
         LtiMessageLaunch $launch,
         User $user,
         \App\Models\LtiResourceLink $resourceLink
-    ): \App\Models\LtiResourceLinkMembership {
+    ): LtiResourceLinkEntry {
         $launchData = $launch->getLaunchData();
         $roles = $launchData[LtiConstants::ROLES] ?? [];
         $isStaff = $this->hasStaffRole($launch);
+        $ltiUserId = $launchData['sub'] ?? null;
 
-        return \App\Models\LtiResourceLinkMembership::updateOrCreate(
+        return LtiResourceLinkEntry::updateOrCreate(
             [
                 'user_id' => $user->id,
                 'lti_resource_link_id' => $resourceLink->id,
             ],
             [
+                'lti_user_id' => $ltiUserId,
                 'roles' => $roles,
                 'is_staff' => $isStaff,
                 'last_launch_at' => now(),
+                'score_maximum' => 100.00,
             ]
         );
     }
