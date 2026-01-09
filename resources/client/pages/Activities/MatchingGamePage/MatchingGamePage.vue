@@ -48,17 +48,17 @@
   </AuthenticatedLayout>
 </template>
 <script setup lang="ts">
-import AuthenticatedLayout from "@/layouts/AuthenticatedLayout/AuthenticatedLayout.vue";
-import { Button } from "@/components/ui/button";
-import { computed, ref } from "vue";
-import { useDeckByIdQuery } from "@/queries/decks";
+import DeckContextProvider from "@/components/DeckContextProvider.vue";
 import IconChevronLeft from "@/components/icons/IconChevronLeft.vue";
-import MatchingGame from "./MatchingGame.vue";
-import { useCreateDeckActivityEventMutation } from "@/queries/deckActivityEvents/useCreateDeckActivityEventMutation";
 import LevelProgress from "@/components/LevelProgress.vue";
+import { Button } from "@/components/ui/button";
+import AuthenticatedLayout from "@/layouts/AuthenticatedLayout/AuthenticatedLayout.vue";
+import { useCreateDeckActivityEventMutation } from "@/queries/deckActivityEvents/useCreateDeckActivityEventMutation";
+import { useDeckByIdQuery } from "@/queries/decks";
 import { useDeckStatsQuery } from "@/queries/decks/useDeckStatsQuery";
 import * as T from "@/types";
-import DeckContextProvider from "@/components/DeckContextProvider.vue";
+import { computed } from "vue";
+import MatchingGame from "./MatchingGame.vue";
 
 const props = defineProps<{
   deckId: number;
@@ -66,7 +66,7 @@ const props = defineProps<{
 
 const deckIdRef = computed(() => props.deckId);
 
-const { data: deck, isLoading: isDeckLoading } = useDeckByIdQuery(deckIdRef);
+const { data: deck } = useDeckByIdQuery(deckIdRef);
 const { data: deckStats } = useDeckStatsQuery(deckIdRef);
 
 const { mutate: createActivityEvent } = useCreateDeckActivityEventMutation();

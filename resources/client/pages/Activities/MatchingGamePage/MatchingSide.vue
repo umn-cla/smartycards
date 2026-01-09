@@ -61,30 +61,30 @@
   </div>
 </template>
 <script setup lang="ts">
-import * as T from "@/types";
-import {
-  isImageBlock,
-  isTextBlock,
-  isVideoBlock,
-  isAudioBlock,
-  isEmbedBlock,
-  isMathBlock,
-  isHintBlock,
-} from "@/lib/isBlockOfType";
-import MathBlockView from "@/components/CardSideView/MathBlockView.vue";
+import EmbedBlockView from "@/components/CardSideView/EmbedBlockView.vue";
 import HintBlockView from "@/components/CardSideView/HintBlockView.vue";
 import ImageBlockView from "@/components/CardSideView/ImageBlockView.vue";
+import MathBlockView from "@/components/CardSideView/MathBlockView.vue";
 import TextBlockView from "@/components/CardSideView/TextBlockView.vue";
-import VideoBlockView from "@/components/CardSideView/VideoBlockView.vue";
-import EmbedBlockView from "@/components/CardSideView/EmbedBlockView.vue";
 import UnknownBlockView from "@/components/CardSideView/UnknownBlockView.vue";
+import VideoBlockView from "@/components/CardSideView/VideoBlockView.vue";
 import SimpleAudioPlayer from "@/components/SimpleAudioPlayer.vue";
-import { IconX, IconCheck } from "@/components/icons";
-import { MatchingCardSide } from "./matchingGameStore";
 import TTSContextProvider from "@/components/TTSContextProvider.vue";
+import { IconCheck, IconX } from "@/components/icons";
 import { useDeckContext } from "@/composables/useDeckContext";
+import {
+  isAudioBlock,
+  isEmbedBlock,
+  isHintBlock,
+  isImageBlock,
+  isMathBlock,
+  isTextBlock,
+  isVideoBlock,
+} from "@/lib/isBlockOfType";
+import * as T from "@/types";
+import { MatchingCardSide } from "./matchingGameStore";
 
-const props = defineProps<{
+defineProps<{
   blocks: T.ContentBlock[];
   label: T.CardSideName;
   status: MatchingCardSide["status"];

@@ -20,9 +20,9 @@
   </div>
 </template>
 <script setup lang="ts">
-import { computed, ref, watch } from "vue";
-import { IconCirclePlay, IconCirclePause } from "./icons";
 import { useMediaControls } from "@vueuse/core";
+import { ref, watch } from "vue";
+import { IconCirclePause, IconCirclePlay } from "./icons";
 
 const props = defineProps<{
   src: string;

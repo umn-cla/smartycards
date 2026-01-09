@@ -65,7 +65,7 @@ const defaultOptions = {
         clearFormatting: {
           key: "\\",
           shortKey: true,
-          handler(range, context) {
+          handler(range, _context) {
             if (!quill) {
               return;
             }

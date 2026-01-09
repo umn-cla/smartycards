@@ -31,11 +31,11 @@
   </div>
 </template>
 <script setup lang="ts">
+import { Button } from "@/components/ui/button";
 import * as T from "@/types";
-import { computed, reactive, ref, watch } from "vue";
+import { computed, watch } from "vue";
 import MatchingSide from "./MatchingSide.vue";
 import { useMatchingGameStore } from "./matchingGameStore";
-import { Button } from "@/components/ui/button";
 
 const props = defineProps<{
   cards: T.Card[];

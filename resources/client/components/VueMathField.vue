@@ -14,8 +14,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
 import { MathfieldElement } from "mathlive";
+import { ref } from "vue";
 
 withDefaults(
   defineProps<{
@@ -33,7 +33,7 @@ const emit = defineEmits<{
 
 const mathFieldRef = ref<MathfieldElement | null>(null);
 
-function handleInput(event: Event) {
+function handleInput() {
   emit("update:modelValue", mathFieldRef.value?.value || "");
 }
 </script>

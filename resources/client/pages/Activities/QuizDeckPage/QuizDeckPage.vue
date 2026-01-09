@@ -144,8 +144,15 @@
   </AuthenticatedLayout>
 </template>
 <script setup lang="ts">
-import AuthenticatedLayout from "@/layouts/AuthenticatedLayout/AuthenticatedLayout.vue";
+import * as api from "@/api";
+import HintTooltip from "@/components/HintTooltip.vue";
+import LevelProgress from "@/components/LevelProgress.vue";
+import Tuple from "@/components/Tuple.vue";
+import { IconExclamationTriangle } from "@/components/icons";
+import IconChevronLeft from "@/components/icons/IconChevronLeft.vue";
+import IconSpinner from "@/components/icons/IconSpinner.vue";
 import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
@@ -153,20 +160,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Label } from "@/components/ui/label";
-import { computed, reactive, ref, watch } from "vue";
-import { useDeckByIdQuery } from "@/queries/decks";
-import Quiz from "./Quiz.vue";
-import * as api from "@/api";
-import * as T from "@/types";
-import Tuple from "@/components/Tuple.vue";
-import IconChevronLeft from "@/components/icons/IconChevronLeft.vue";
-import IconSpinner from "@/components/icons/IconSpinner.vue";
-import HintTooltip from "@/components/HintTooltip.vue";
+import AuthenticatedLayout from "@/layouts/AuthenticatedLayout/AuthenticatedLayout.vue";
 import { useCreateDeckActivityEventMutation } from "@/queries/deckActivityEvents/useCreateDeckActivityEventMutation";
+import { useDeckByIdQuery } from "@/queries/decks";
 import { useDeckStatsQuery } from "@/queries/decks/useDeckStatsQuery";
-import LevelProgress from "@/components/LevelProgress.vue";
-import { IconExclamationTriangle } from "@/components/icons";
+import * as T from "@/types";
+import { computed, reactive, ref, watch } from "vue";
+import Quiz from "./Quiz.vue";
 
 const props = defineProps<{
   deckId: number;
@@ -189,7 +189,7 @@ const state = reactive({
 
 const deckIdRef = computed(() => props.deckId);
 
-const { data: deck, isLoading: isDeckLoading } = useDeckByIdQuery(deckIdRef);
+const { data: deck } = useDeckByIdQuery(deckIdRef);
 
 async function startQuiz() {
   state.quizState = "loading";
@@ -205,7 +205,7 @@ async function startQuiz() {
         skipErrorNotifications: true,
       },
     );
-  } catch (error) {
+  } catch {
     state.quizState = "error";
     return;
   }

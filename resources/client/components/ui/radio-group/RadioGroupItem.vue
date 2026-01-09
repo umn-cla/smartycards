@@ -1,14 +1,13 @@
 <script setup lang="ts">
-import { type HTMLAttributes, computed } from "vue";
+import IconCircleFilled from "@/components/icons/IconCircleFilled.vue";
+import { cn } from "@/lib/utils";
 import {
   RadioGroupIndicator,
   RadioGroupItem,
   type RadioGroupItemProps,
   useForwardProps,
 } from "radix-vue";
-import { CheckIcon } from "@radix-icons/vue";
-import { cn } from "@/lib/utils";
-import IconCircleFilled from "@/components/icons/IconCircleFilled.vue";
+import { type HTMLAttributes, computed } from "vue";
 
 const props = defineProps<
   RadioGroupItemProps & { class?: HTMLAttributes["class"] }

@@ -30,12 +30,11 @@
   </div>
 </template>
 <script setup lang="ts">
-import PageTitle from "@/components/PageTitle.vue";
 import PageSubtitle from "@/components/PageSubtitle.vue";
+import PageTitle from "@/components/PageTitle.vue";
 import IconChevronLeft from "@/components/icons/IconChevronLeft.vue";
-import { type RouteLocationRaw } from "vue-router";
 import type { CSSClass } from "@/types";
-import Badge from "./ui/badge/Badge.vue";
+import { type RouteLocationRaw } from "vue-router";
 
 withDefaults(
   defineProps<{
