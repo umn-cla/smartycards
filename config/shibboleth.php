@@ -36,6 +36,7 @@ return [
      */
 
     'emulate_idp' => env('SHIB_EMULATE', false),
+    'emulate_idp_login_view' => env('SHIB_EMULATE_LOGIN_VIEW', 'vendor.shibalike.IdpLogin'),
     'emulate_idp_users' => (function () {
         $fixturesPath = base_path('database/fixtures/users.json');
         if (!file_exists($fixturesPath)) {
