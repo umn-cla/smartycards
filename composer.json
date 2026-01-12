@@ -27,7 +27,7 @@
     "openai-php/client": "^0.10.1",
     "owen-it/laravel-auditing": "^14.0",
     "packbackbooks/lti-1p3-tool": "^6.3",
-    "razorbacks/laravel-shibboleth": "dev-umn#a46f2c2d872d70947f403c36397028e919697490",
+    "razorbacks/laravel-shibboleth": "dev-umn",
     "sentry/sentry": "^4.9",
     "sentry/sentry-laravel": "^4.9",
     "spatie/laravel-permission": "^6.9",
