@@ -7,7 +7,7 @@ return [
     |--------------------------------------------------------------------------
     |
     | Your tool's RSA private key, base64 encoded.
-    | Generate with: base64 -w 0 storage/lti-private.key
+    | Generate with: php artisan app:generate-lti-keys
     |
     */
     'private_key' => env('LTI_PRIVATE_KEY')
@@ -20,7 +20,7 @@ return [
     |--------------------------------------------------------------------------
     |
     | Your tool's RSA public key, base64 encoded.
-    | Generate with: base64 -w 0 storage/lti-public.key
+    | Generate with: php artisan app:generate-lti-keys
     |
     */
     'public_key' => env('LTI_PUBLIC_KEY')
