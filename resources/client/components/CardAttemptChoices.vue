@@ -23,11 +23,41 @@
     >
       ✅
     </button>
+    <HintTooltip>
+      <div class="flex flex-col gap-4 text-base p-2 leading-tight">
+        <div class="flex gap-2 align-baseline">
+          <div>❌</div>
+          <div>
+            <p class="text-white/90 font-medium mb-0">Wrong or didn't know</p>
+            <small class="text-white/50 text-xs"> Card returns soon </small>
+          </div>
+        </div>
+        <div class="flex gap-2 align-baseline">
+          <div>🫤</div>
+          <div>
+            <p class="text-white/90 font-medium mb-0">
+              Partially incorrect or difficult
+            </p>
+            <small class="text-white/50 text-xs">Card returns later</small>
+          </div>
+        </div>
+        <div class="flex gap-2 text-base align-baseline leading-tight">
+          <div>✅</div>
+          <div>
+            <p class="text-white/90 font-medium mb-0">Correct and easy</p>
+            <small class="text-white/50 text-xs">
+              Card removed from this session
+            </small>
+          </div>
+        </div>
+      </div>
+    </HintTooltip>
   </div>
 </template>
 <script setup lang="ts">
 import * as T from "@/types";
 import { useCreateCardAttemptMutation } from "@/queries/cardAttempts";
+import HintTooltip from "@/components/HintTooltip.vue";
 
 const props = withDefaults(
   defineProps<{
