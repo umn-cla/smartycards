@@ -1,5 +1,5 @@
 <template>
-  <div class="flex gap-4 items-center">
+  <div class="level-progress flex gap-4 items-center">
     <span
       class="flex-shrink-0 text-brand-maroon-900/50 uppercase text-xs font-bold"
     >

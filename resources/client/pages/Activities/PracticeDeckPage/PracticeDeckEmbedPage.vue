@@ -32,7 +32,7 @@
     </div>
     <LevelProgress
       :xp="deckStats?.current_user_xp ?? 0"
-      class="w-full px-4 mt-8 max-w-screen-sm mx-auto"
+      class="w-full max-w-screen-sm mx-auto fixed bottom-0 left-0 right-0 py-2 px-4"
     />
   </EmbedLayout>
 </template>
@@ -79,5 +79,12 @@ button {
 .practice-deck-embed-page .flippable-card {
   height: 20rem;
   max-width: 30rem;
+}
+.practice-deck-embed-page .level-progress {
+  display: none;
+
+  @media (min-height: 640px) {
+    display: block;
+  }
 }
 </style>
