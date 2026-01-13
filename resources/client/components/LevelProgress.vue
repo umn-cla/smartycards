@@ -12,7 +12,6 @@
   </div>
 </template>
 <script setup lang="ts">
-import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { computed } from "vue";
 import {
