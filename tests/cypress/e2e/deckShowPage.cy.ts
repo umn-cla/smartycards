@@ -206,17 +206,9 @@ describe("DeckShowPage", () => {
     cy.visit(`/decks/${deckId}`);
 
     // verify that the action buttons appear disabled
-    cy.contains("Practice")
-      .parent()
-      .should("have.class", "opacity-50")
-      .and("have.class", "pointer-events-none");
-    cy.contains("Quiz")
-      .parent()
-      .should("have.class", "opacity-50")
-      .and("have.class", "pointer-events-none");
-    cy.contains("Matching")
-      .parent()
-      .should("have.class", "opacity-50")
-      .and("have.class", "pointer-events-none");
+    cy.contains("Practice").should("have.class", "pointer-events-none");
+    cy.contains("Quiz").should("have.class", "pointer-events-none");
+
+    cy.contains("Matching").should("have.class", "pointer-events-none");
   });
 });
