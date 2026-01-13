@@ -94,15 +94,21 @@ const sortDecks = (deckList: T.Deck[]): T.Deck[] => {
       });
     case "updated":
     default:
-      return sorted.sort((a, b) => {
-        const dateA = new Date(a.updated_at).getTime();
-        const dateB = new Date(b.updated_at).getTime();
-        // Handle invalid dates by treating them as oldest
-        if (isNaN(dateA) && isNaN(dateB)) return 0;
-        if (isNaN(dateA)) return 1;
-        if (isNaN(dateB)) return -1;
-        return dateB - dateA;
-      });
+      // Pre-compute timestamps for better performance
+      const decksWithTimestamps = sorted.map((deck) => ({
+        deck,
+        timestamp: new Date(deck.updated_at).getTime(),
+      }));
+
+      return decksWithTimestamps
+        .sort((a, b) => {
+          // Handle invalid dates by treating them as oldest
+          if (isNaN(a.timestamp) && isNaN(b.timestamp)) return 0;
+          if (isNaN(a.timestamp)) return 1;
+          if (isNaN(b.timestamp)) return -1;
+          return b.timestamp - a.timestamp;
+        })
+        .map((item) => item.deck);
   }
 };
 
