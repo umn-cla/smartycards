@@ -55,7 +55,7 @@
           :class="[
             'bg-brand-teal-500 text-white px-4 py-2 text-center font-bold sm:px-8 sm:py-4 rounded-lg sm:text-4xl shadow-solid-teal-2',
             {
-              'opacity-25 cursor-not-allowed pointer-events-none saturate-0 shadow-none':
+              'opacity-25 pointer-events-none saturate-0 shadow-none':
                 !isPracticeEnabled,
             },
           ]"
@@ -70,7 +70,7 @@
           :class="[
             'bg-brand-blue-500 px-4 py-2 sm:px-8 sm:py-4 text-center font-bold rounded-lg sm:text-4xl shadow-solid-blue-2 text-white',
             {
-              'opacity-25 cursor-not-allowed pointer-events-none saturate-0 shadow-none':
+              'opacity-25 pointer-events-none saturate-0 shadow-none':
                 !isPracticeEnabled,
             },
           ]"
@@ -85,7 +85,7 @@
           :class="[
             'bg-purple-700 px-4 py-2 sm:px-8 sm:py-4 text-center font-bold rounded-lg sm:text-4xl shadow-solid-purple-900 text-white',
             {
-              'opacity-25 cursor-not-allowed pointer-events-none saturate-0 shadow-none':
+              'opacity-25 pointer-events-none saturate-0 shadow-none':
                 !isPracticeEnabled,
             },
           ]"
