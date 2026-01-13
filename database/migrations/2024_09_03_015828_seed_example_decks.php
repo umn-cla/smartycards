@@ -125,7 +125,7 @@ return new class extends Migration
                             'alt' => null,
                         ],
                         'type' => 'image',
-                        'content' => 'https://static3.museoreinasofia.es/sites/default/files/obras/DE00050_0.jpg',
+                        'content' => 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/76/Mural_del_%22Guernica%22_de_Picasso.jpg/960px-Mural_del_%22Guernica%22_de_Picasso.jpg',
                     ],
                 ],
                 'back' => [
