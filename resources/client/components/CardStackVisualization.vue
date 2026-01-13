@@ -13,11 +13,11 @@
       <div
         v-for="(cardData, index) in visibleCards"
         :key="cardData.key"
-        class="stack-card absolute rounded border"
+        class="stack-card absolute rounded border rotate-[30deg]"
         :class="{
-          'bg-brand-oatmeal-50 border-brand-maroon-800 shadow-sm':
+          'bg-brand-oatmeal-50 border-brand-maroon-900/50 shadow-sm':
             index === 0 && animationState !== 'reinserting',
-          'bg-brand-oatmeal-300/50 border-brand-maroon-800/30':
+          'bg-[#f0ddcf] border-brand-maroon-800/30':
             index > 0 || animationState === 'reinserting',
           'animate-puff-out': animationState === 'removing' && index === 0,
           'animate-shuffle-card': animationState === 'reinserting',
@@ -46,8 +46,8 @@ const props = defineProps<{
   reinsertionIndex: number | null;
 }>();
 
-const CARD_WIDTH = 40;
-const CARD_HEIGHT = 28;
+const CARD_WIDTH = 18;
+const CARD_HEIGHT = 24;
 const CARD_OFFSET_X = 8;
 const MAX_VISIBLE_CARDS = 50;
 
