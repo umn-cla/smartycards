@@ -218,10 +218,6 @@ const practiceXP = computed(
     xpByActivityTypeName.value?.[T.ActivityTypeName.PRACTICE_ALL_CARDS] ?? 0,
 );
 
-const hasCards = computed(() => {
-  return deck.value?.cards && deck.value.cards.length > 0;
-});
-
 function handleDeleteCard(card: T.Card) {
   deleteCard(card);
 }
@@ -252,7 +248,8 @@ function flipAllCards() {
 }
 
 const isPracticeEnabled = computed(() => {
-  return (deck.value?.cards.length ?? 0) >= 2;
+  const currentCardCount = deck.value?.cards.length ?? 0;
+  return currentCardCount >= 2;
 });
 </script>
 <style scoped></style>
