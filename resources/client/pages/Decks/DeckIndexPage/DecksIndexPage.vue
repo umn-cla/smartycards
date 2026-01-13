@@ -84,12 +84,20 @@ const sortDecks = (deckList: T.Deck[]): T.Deck[] => {
     case "name":
       return sorted.sort((a, b) => a.name.localeCompare(b.name));
     case "cards":
-      return sorted.sort((a, b) => (b.cards_count ?? 0) - (a.cards_count ?? 0));
+      return sorted.sort((a, b) => {
+        const countA = a.cards_count ?? 0;
+        const countB = b.cards_count ?? 0;
+        return countB - countA;
+      });
     case "updated":
     default:
       return sorted.sort((a, b) => {
         const dateA = new Date(a.updated_at).getTime();
         const dateB = new Date(b.updated_at).getTime();
+        // Handle invalid dates by treating them as oldest
+        if (isNaN(dateA) && isNaN(dateB)) return 0;
+        if (isNaN(dateA)) return 1;
+        if (isNaN(dateB)) return -1;
         return dateB - dateA;
       });
   }
