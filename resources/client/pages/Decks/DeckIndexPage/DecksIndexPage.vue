@@ -1,16 +1,18 @@
 <template>
   <AuthenticatedLayout>
     <main>
-      <PageHeader title="Decks" size="lg" class="mb-8" />
-
-      <div class="flex justify-between items-center mb-4">
-        <h3 class="text-3xl font-bold text-brand-maroon-800">My Decks</h3>
+      <div class="flex justify-between items-center mb-8">
+        <PageHeader title="Decks" size="lg" class="mb-0" />
         <div class="flex items-center gap-2">
-          <label for="sort-select" class="text-sm text-brand-maroon-800/70">
+          <label
+            id="sort-label"
+            for="sort-select"
+            class="text-sm text-brand-maroon-800/70"
+          >
             Sort by:
           </label>
           <Select v-model="sortBy" id="sort-select">
-            <SelectTrigger class="w-40 bg-white">
+            <SelectTrigger class="w-40 bg-white" aria-labelledby="sort-label">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -23,6 +25,7 @@
       </div>
 
       <section>
+        <h3 class="text-3xl font-bold text-brand-maroon-800 mb-4">My Decks</h3>
         <div class="card-grid !gap-6 sm:gap-4">
           <RouterLink
             :to="{ name: 'decks.create' }"
