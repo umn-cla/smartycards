@@ -211,4 +211,23 @@ describe("DeckShowPage", () => {
 
     cy.contains("Matching").should("have.class", "pointer-events-none");
   });
+
+  it("enables action buttons when deck has at least 2 cards", () => {
+    // create 2 cards
+    cy.createTextCardInDeck(deckId, {
+      front: "Card 1 Front",
+      back: "Card 1 Back",
+    });
+    cy.createTextCardInDeck(deckId, {
+      front: "Card 2 Front",
+      back: "Card 2 Back",
+    });
+
+    cy.visit(`/decks/${deckId}`);
+
+    // verify that the action buttons are enabled
+    cy.contains("Practice").should("not.have.class", "pointer-events-none");
+    cy.contains("Quiz").should("not.have.class", "pointer-events-none");
+    cy.contains("Matching").should("not.have.class", "pointer-events-none");
+  });
 });
