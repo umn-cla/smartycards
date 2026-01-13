@@ -24,33 +24,27 @@
       ✅
     </button>
     <HintTooltip>
-      <div class="flex flex-col gap-4 text-base p-2 leading-tight">
-        <div class="flex gap-2 align-baseline">
-          <div>❌</div>
-          <div>
-            <p class="text-white/90 font-medium mb-0">Wrong or didn't know</p>
-            <small class="text-white/50 text-xs"> Card returns soon </small>
-          </div>
-        </div>
-        <div class="flex gap-2 align-baseline">
-          <div>🫤</div>
-          <div>
-            <p class="text-white/90 font-medium mb-0">
-              Partially incorrect or difficult
-            </p>
-            <small class="text-white/50 text-xs">Card returns later</small>
-          </div>
-        </div>
-        <div class="flex gap-2 text-base align-baseline leading-tight">
-          <div>✅</div>
-          <div>
-            <p class="text-white/90 font-medium mb-0">Correct and easy</p>
-            <small class="text-white/50 text-xs">
-              Card removed from this session
-            </small>
-          </div>
-        </div>
-      </div>
+      <dl
+        class="grid grid-cols-[1rem_1fr] gap-y-2 gap-x-4 p-2 items-baseline text-base leading-tight"
+      >
+        <dt>❌</dt>
+        <dd>
+          <p class="m-0 font-semibold text-white/80">Wrong or didn't know</p>
+          <small class="text-white/60"> Card returns soon </small>
+        </dd>
+        <dt>🫤</dt>
+        <dd>
+          <p class="m-0 font-semibold text-white/80">
+            Partially incorrect or difficult
+          </p>
+          <small class="text-white/60">Card returns later</small>
+        </dd>
+        <dt>✅</dt>
+        <dd>
+          <p class="m-0 font-semibold text-white/80">Correct and easy</p>
+          <small class="text-white/60"> Card removed from this session </small>
+        </dd>
+      </dl>
     </HintTooltip>
   </div>
 </template>
