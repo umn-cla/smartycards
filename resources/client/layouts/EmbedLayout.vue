@@ -1,9 +1,7 @@
 <template>
-  <div :class="cn('min-h-dvh w-full', props.class)">
-    <div :class="cn('pt-6 sm:py-10', containerClass)">
-      <div :class="cn('px-4 sm:px-6')">
-        <slot />
-      </div>
+  <div :class="cn('embed-layout min-h-dvh w-full', props.class)">
+    <div :class="cn('p-4', containerClass)">
+      <slot />
     </div>
   </div>
 </template>

@@ -1,5 +1,5 @@
 <template>
-  <header class="flex flex-col mb-8 rounded-xl mx-auto max-w-screen-sm gap-6">
+  <header class="rounded-xl mx-auto max-w-screen-sm">
     <div
       class="flex gap-4 flex-wrap items-center"
       :class="{
