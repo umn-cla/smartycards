@@ -18,7 +18,7 @@
     />
     <div
       class="flex items-center justify-center w-full"
-      v-if="isTTSEnabled && charCount < MAX_TTS_CHARS"
+      v-if="isTTSEnabled && charCount < MAX_TTS_CHARS && ttsLocale !== 'none'"
     >
       <SimpleTTSPlayer :text="block.content" :selectedLanguage="ttsLocale" />
     </div>

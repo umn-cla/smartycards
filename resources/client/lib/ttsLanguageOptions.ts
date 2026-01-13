@@ -1,6 +1,7 @@
 import { LanguageOption } from "@/types";
 
 export const ttsLanguageOptions: LanguageOption[] = [
+  { name: "None", locale: "none" },
   { name: "Auto", locale: "auto" },
   { name: "Afrikaans", locale: "af-ZA" },
   { name: "Amharic", locale: "am-ET" },
@@ -94,6 +95,12 @@ export const ttsLanguageOptions: LanguageOption[] = [
   { name: "Chinese (Traditional)", locale: "zh-TW" },
   { name: "Zulu", locale: "zu-ZA" },
 ].toSorted((a, b) => {
+  if (a.locale === "none") {
+    return -1;
+  }
+  if (b.locale === "none") {
+    return 1;
+  }
   if (a.locale === "auto") {
     return -1;
   }
