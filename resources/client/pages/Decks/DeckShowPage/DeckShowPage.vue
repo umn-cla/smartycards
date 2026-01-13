@@ -52,7 +52,10 @@
       <div class="grid grid-cols-3 gap-4">
         <RouterLink
           :to="{ name: 'decks.practice', params: { deckId } }"
-          class="bg-brand-teal-500 text-white px-4 py-2 text-center font-bold sm:px-8 sm:py-4 rounded-lg sm:text-4xl shadow-solid-teal-2"
+          :class="[
+            'bg-brand-teal-500 text-white px-4 py-2 text-center font-bold sm:px-8 sm:py-4 rounded-lg sm:text-4xl shadow-solid-teal-2',
+            { 'opacity-50 cursor-not-allowed pointer-events-none': !hasCards }
+          ]"
         >
           Practice
           <p class="text-xs sm:text-base font-normal text-white/75">
@@ -61,7 +64,10 @@
         </RouterLink>
         <RouterLink
           :to="{ name: 'decks.quiz', params: { deckId } }"
-          class="bg-brand-blue-500 px-4 py-2 sm:px-8 sm:py-4 text-center font-bold rounded-lg sm:text-4xl shadow-solid-blue-2 text-white"
+          :class="[
+            'bg-brand-blue-500 px-4 py-2 sm:px-8 sm:py-4 text-center font-bold rounded-lg sm:text-4xl shadow-solid-blue-2 text-white',
+            { 'opacity-50 cursor-not-allowed pointer-events-none': !hasCards }
+          ]"
         >
           Quiz
           <p class="text-xs sm:text-base font-normal text-white/75">
@@ -70,7 +76,10 @@
         </RouterLink>
         <RouterLink
           :to="{ name: 'decks.games.matching', params: { deckId } }"
-          class="bg-purple-700 px-4 py-2 sm:px-8 sm:py-4 text-center font-bold rounded-lg sm:text-4xl shadow-solid-purple-900 text-white"
+          :class="[
+            'bg-purple-700 px-4 py-2 sm:px-8 sm:py-4 text-center font-bold rounded-lg sm:text-4xl shadow-solid-purple-900 text-white',
+            { 'opacity-50 cursor-not-allowed pointer-events-none': !hasCards }
+          ]"
         >
           Matching
           <p class="text-xs sm:text-base font-normal text-white/75">
@@ -194,6 +203,10 @@ const practiceXP = computed(
   () =>
     xpByActivityTypeName.value?.[T.ActivityTypeName.PRACTICE_ALL_CARDS] ?? 0,
 );
+
+const hasCards = computed(() => {
+  return deck.value?.cards && deck.value.cards.length > 0;
+});
 
 function handleDeleteCard(card: T.Card) {
   deleteCard(card);
