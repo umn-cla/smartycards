@@ -1,5 +1,5 @@
 <template>
-  <EmbedLayout>
+  <EmbedLayout class="practice-deck-embed-page">
     <Alert
       v-if="isLtiLaunch && hasCompletedPractice"
       type="success"
@@ -70,5 +70,10 @@ button {
   &:hover {
     text-decoration: none;
   }
+}
+</style>
+<style>
+.practice-deck-embed-page .card-side-view {
+  background: white;
 }
 </style>

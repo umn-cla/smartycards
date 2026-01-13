@@ -1,6 +1,6 @@
 <template>
   <div
-    class="rounded-lg p-2 flex flex-col gap-4 border border-black/20"
+    class="card-side-view rounded-lg p-2 flex flex-col gap-4 border border-black/20"
     :data-cy="`card-side-view--${label}`"
   >
     <h2 class="text-xs uppercase text-center text-black/30" v-if="showLabel">
