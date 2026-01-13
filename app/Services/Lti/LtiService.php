@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use Packback\Lti1p3\DeepLinkResources\Iframe;
 use Packback\Lti1p3\DeepLinkResources\Resource;
 use Packback\Lti1p3\Interfaces\ICache;
 use Packback\Lti1p3\Interfaces\ICookie;
@@ -123,7 +124,12 @@ class LtiService
                 // setting the deck as a custom param should let us
                 // link back to the deck when course is cloned
                 'deck_id' => $deckId,
-            ]);
+            ])
+            ->setIframe(
+                Iframe::new()
+                    ->setWidth(800)
+                    ->setHeight(640)
+            );
 
         // Get JWT for the response
         $jwt = $deeplink->getResponseJwt([$resource]);
