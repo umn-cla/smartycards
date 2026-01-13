@@ -201,4 +201,22 @@ describe("DeckShowPage", () => {
       cy.get("[data-cy='text-block-input-container']").should("not.exist");
     });
   });
+
+  it("disables action buttons when deck has no cards", () => {
+    cy.visit(`/decks/${deckId}`);
+
+    // verify that the action buttons appear disabled
+    cy.contains("Practice")
+      .parent()
+      .should("have.class", "opacity-50")
+      .and("have.class", "pointer-events-none");
+    cy.contains("Quiz")
+      .parent()
+      .should("have.class", "opacity-50")
+      .and("have.class", "pointer-events-none");
+    cy.contains("Matching")
+      .parent()
+      .should("have.class", "opacity-50")
+      .and("have.class", "pointer-events-none");
+  });
 });
