@@ -10,7 +10,7 @@ return [
     | that will be rendered. Otherwise, it will redirect to a route.
     |
      */
-    'sp_type' => env('SHIB_SP_TYPE', 'apache_shib'),
+    'sp_type' => env('SHIB_SP_TYPE', 'local_shib'),
     'local_shib' => [
         'idp_login' => '/local-sp/Login',
         'idp_logout' => '/local-sp/Logout',
@@ -20,7 +20,7 @@ return [
         'idp_logout' => '/Shibboleth.sso/Logout',
     ],
     'register_routes' => true,
-    'authenticated' => env('SHIB_REDIRECT_URI', '/dashboard'),
+    'authenticated' => env('SHIB_REDIRECT_URI', '/decks'),
     'authfield' => env('SHIB_AUTH_FIELD', 'emplid'),
     /*
     |--------------------------------------------------------------------------
@@ -36,6 +36,7 @@ return [
      */
 
     'emulate_idp' => env('SHIB_EMULATE', false),
+    'emulate_idp_login_view' => env('SHIB_EMULATE_LOGIN_VIEW', 'vendor.shibalike.IdpLogin'),
     'emulate_idp_users' => (function () {
         $fixturesPath = base_path('database/fixtures/users.json');
         if (!file_exists($fixturesPath)) {
