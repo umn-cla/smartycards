@@ -1,6 +1,6 @@
 <template>
   <div
-    class="bg-brand-oatmeal-50 shadow-sm border border-brand-oatmeal-300 rounded-sm aspect-square relative flex flex-col p-1 overflow-auto scrollbar-thin scrollbar-thumb-black/10 scrollbar-track-transparent"
+    class="matching-side bg-brand-oatmeal-50 shadow-sm border border-brand-oatmeal-300 rounded-sm aspect-square relative flex flex-col p-1 overflow-auto scrollbar-thin scrollbar-thumb-black/10 scrollbar-track-transparent"
     :class="{
       'ring-2 ring-brand-teal-300 ring-offset-2 bg-brand-teal-100 shadow-sm':
         status === 'selected',

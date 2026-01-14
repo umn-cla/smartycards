@@ -52,7 +52,13 @@
       <div class="grid grid-cols-3 gap-4">
         <RouterLink
           :to="{ name: 'decks.practice', params: { deckId } }"
-          class="bg-brand-teal-500 text-white px-4 py-2 text-center font-bold sm:px-8 sm:py-4 rounded-lg sm:text-4xl shadow-solid-teal-2"
+          :class="[
+            'bg-brand-teal-500 text-white px-4 py-2 text-center font-bold sm:px-8 sm:py-4 rounded-lg sm:text-4xl shadow-solid-teal-2',
+            {
+              'opacity-25 pointer-events-none saturate-0 shadow-none':
+                !isPracticeEnabled,
+            },
+          ]"
         >
           Practice
           <p class="text-xs sm:text-base font-normal text-white/75">
@@ -61,7 +67,13 @@
         </RouterLink>
         <RouterLink
           :to="{ name: 'decks.quiz', params: { deckId } }"
-          class="bg-brand-blue-500 px-4 py-2 sm:px-8 sm:py-4 text-center font-bold rounded-lg sm:text-4xl shadow-solid-blue-2 text-white"
+          :class="[
+            'bg-brand-blue-500 px-4 py-2 sm:px-8 sm:py-4 text-center font-bold rounded-lg sm:text-4xl shadow-solid-blue-2 text-white',
+            {
+              'opacity-25 pointer-events-none saturate-0 shadow-none':
+                !isPracticeEnabled,
+            },
+          ]"
         >
           Quiz
           <p class="text-xs sm:text-base font-normal text-white/75">
@@ -70,13 +82,24 @@
         </RouterLink>
         <RouterLink
           :to="{ name: 'decks.games.matching', params: { deckId } }"
-          class="bg-purple-700 px-4 py-2 sm:px-8 sm:py-4 text-center font-bold rounded-lg sm:text-4xl shadow-solid-purple-900 text-white"
+          :class="[
+            'bg-purple-700 px-4 py-2 sm:px-8 sm:py-4 text-center font-bold rounded-lg sm:text-4xl shadow-solid-purple-900 text-white',
+            {
+              'opacity-25 pointer-events-none saturate-0 shadow-none':
+                !isPracticeEnabled,
+            },
+          ]"
         >
           Matching
           <p class="text-xs sm:text-base font-normal text-white/75">
             +{{ matchingXP }} XP
           </p>
         </RouterLink>
+        <p class="col-span-3 text-center">
+          <em v-if="!isPracticeEnabled" class="text-black/60">
+            Create at least 2 cards to enable activities.
+          </em>
+        </p>
       </div>
 
       <section class="my-8">
@@ -223,5 +246,10 @@ const filteredCards = computed((): T.Card[] => {
 function flipAllCards() {
   initialCardSide.value = initialCardSide.value === "front" ? "back" : "front";
 }
+
+const isPracticeEnabled = computed(() => {
+  const currentCardCount = deck.value?.cards.length ?? 0;
+  return currentCardCount >= 2;
+});
 </script>
 <style scoped></style>

@@ -1,14 +1,14 @@
 <template>
-  <EmbedLayout>
+  <EmbedLayout class="quiz-deck-embed-page">
     <ActivityPageHeader title="Practice Quiz" :subtitle="deck?.name">
       <LevelProgress
         :xp="deckStats?.current_user_xp ?? 0"
-        class="w-full px-2"
+        class="w-full mt-2"
       />
     </ActivityPageHeader>
 
     <div
-      class="p-4 sm:p-8 pb-8 sm:pb-12 rounded-xl mx-auto max-w-screen-sm bg-brand-oatmeal-50"
+      class="p-4 sm:p-8 pb-8 sm:pb-12 rounded-xl mx-auto max-w-screen-sm bg-white mt-6"
     >
       <section class="flex flex-col gap-4" v-if="state.quizState === 'setup'">
         <h2 class="text-center font-bold text-xl">Set Up</h2>

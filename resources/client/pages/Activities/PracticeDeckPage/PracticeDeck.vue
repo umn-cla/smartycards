@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="practice-deck">
     <div
       v-if="!state.activeCard"
       class="flex flex-col items-center justify-center py-12 bg-brand-oatmeal-50 rounded-md shadow-sm"
