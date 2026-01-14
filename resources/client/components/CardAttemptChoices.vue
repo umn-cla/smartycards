@@ -23,11 +23,35 @@
     >
       ✅
     </button>
+    <HintTooltip>
+      <dl
+        class="grid grid-cols-[1rem_1fr] gap-y-2 gap-x-4 p-2 items-baseline text-base leading-tight"
+      >
+        <dt>❌</dt>
+        <dd>
+          <p class="m-0 font-semibold text-white/80">Wrong or didn't know</p>
+          <small class="text-white/60"> Card returns soon </small>
+        </dd>
+        <dt>🫤</dt>
+        <dd>
+          <p class="m-0 font-semibold text-white/80">
+            Partially incorrect or difficult
+          </p>
+          <small class="text-white/60">Card returns later</small>
+        </dd>
+        <dt>✅</dt>
+        <dd>
+          <p class="m-0 font-semibold text-white/80">Correct and easy</p>
+          <small class="text-white/60"> Card removed from this session </small>
+        </dd>
+      </dl>
+    </HintTooltip>
   </div>
 </template>
 <script setup lang="ts">
 import * as T from "@/types";
 import { useCreateCardAttemptMutation } from "@/queries/cardAttempts";
+import HintTooltip from "@/components/HintTooltip.vue";
 
 const props = withDefaults(
   defineProps<{

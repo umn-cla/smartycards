@@ -3,11 +3,11 @@
     <ActivityPageHeader title="Matching" :subtitle="deck?.name ?? ''">
       <LevelProgress
         :xp="deckStats?.current_user_xp ?? 0"
-        class="w-full px-2"
+        class="w-full mt-2"
       />
     </ActivityPageHeader>
 
-    <div v-if="deck" class="max-w-screen-sm mx-auto">
+    <div v-if="deck" class="max-w-screen-sm mx-auto mt-6">
       <div
         v-if="deck.cards.length < 2"
         class="bg-brand-oatmeal-50 p-4 rounded-xl text-center max-w-screen-sm mx-auto"
@@ -67,4 +67,8 @@ async function handleWin(matchedPairs: number) {
   });
 }
 </script>
-<style scoped></style>
+<style>
+.embed-layout .matching-side {
+  background: white;
+}
+</style>

@@ -27,7 +27,19 @@
     <div
       class="p-4 sm:p-8 pb-8 sm:pb-12 rounded-xl mx-auto max-w-screen-sm bg-brand-oatmeal-50"
     >
-      <section class="flex flex-col gap-4" v-if="state.quizState === 'setup'">
+      <section class="flex flex-col gap-4" v-if="deck && deck.cards.length < 2">
+        <h2 class="text-center font-bold text-xl">Set Up</h2>
+        <div class="text-center">
+          <p>You need at least 2 cards to take a quiz.</p>
+          <Button class="mt-4" asChild>
+            <RouterLink :to="`/decks/${deckId}/cards/create`">
+              Add a Card
+            </RouterLink>
+          </Button>
+        </div>
+      </section>
+
+      <section class="flex flex-col gap-4" v-else-if="state.quizState === 'setup'">
         <h2 class="text-center font-bold text-xl">Set Up</h2>
 
         <aside
