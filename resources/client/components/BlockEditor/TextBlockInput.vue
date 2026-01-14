@@ -44,7 +44,7 @@
         :text="text"
         :selectedLanguage="ttsLanguage"
         isIdleClass="bg-brand-oatmeal-50 !text-brand-maroon-800/75"
-        v-if="isTTSEnabled && charCount < MAX_TTS_CHARS"
+        v-if="isTTSEnabled && charCount < MAX_TTS_CHARS && ttsLanguage !== 'none'"
         class="float-right m-1 rounded-sm relative z-10"
       />
     </div>
