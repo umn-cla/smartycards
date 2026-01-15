@@ -10,11 +10,17 @@
       </p>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-        <div v-if="showOldValue">
+        <div>
           <p class="text-xs text-brand-maroon-900/50 mb-1">Before</p>
-          <div class="p-3 bg-red-50 border border-red-200 rounded text-sm">
+          <div
+            class="p-3 rounded text-sm"
+            :class="hasOldValue ? 'bg-red-50 border border-red-200' : 'bg-gray-100 border border-gray-200'"
+          >
+            <span v-if="!hasOldValue" class="text-brand-maroon-900/40 italic">
+              N/A
+            </span>
             <CardContentPreview
-              v-if="isCardContentField(field)"
+              v-else-if="isCardContentField(field)"
               :blocks="parseCardContent(oldValues?.[field])"
             />
             <span v-else class="whitespace-pre-wrap break-words">{{
@@ -23,11 +29,17 @@
           </div>
         </div>
 
-        <div v-if="showNewValue">
+        <div>
           <p class="text-xs text-brand-maroon-900/50 mb-1">After</p>
-          <div class="p-3 bg-green-50 border border-green-200 rounded text-sm">
+          <div
+            class="p-3 rounded text-sm"
+            :class="hasNewValue ? 'bg-green-50 border border-green-200' : 'bg-gray-100 border border-gray-200'"
+          >
+            <span v-if="!hasNewValue" class="text-brand-maroon-900/40 italic">
+              N/A
+            </span>
             <CardContentPreview
-              v-if="isCardContentField(field)"
+              v-else-if="isCardContentField(field)"
               :blocks="parseCardContent(newValues?.[field])"
             />
             <span v-else class="whitespace-pre-wrap break-words">{{
@@ -52,8 +64,9 @@ const props = defineProps<{
   event: AuditEvent;
 }>();
 
-const showOldValue = computed(() => props.event !== "created");
-const showNewValue = computed(() => props.event !== "deleted");
+// For "created" events, there's no old value; for "deleted" events, there's no new value
+const hasOldValue = computed(() => props.event !== "created");
+const hasNewValue = computed(() => props.event !== "deleted");
 
 const changedFields = computed(() => {
   const allFields = new Set([
