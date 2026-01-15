@@ -5,18 +5,18 @@
     @click="$emit('sort', field)"
   >
     <span>{{ label }}</span>
-    <span class="flex flex-col">
-      <ChevronUpIcon
-        class="size-3 -mb-1"
-        :class="isActive && currentDirection === 'asc'
-          ? 'text-brand-teal-600'
-          : 'text-brand-maroon-900/30'"
+    <span class="flex flex-col text-brand-maroon-900">
+      <CaretUpIcon
+        class="size-4"
+        :class="isActive && currentDirection === 'asc' ? 'block' : 'hidden'"
       />
-      <ChevronDownIcon
-        class="size-3"
-        :class="isActive && currentDirection === 'desc'
-          ? 'text-brand-teal-600'
-          : 'text-brand-maroon-900/30'"
+      <CaretDownIcon
+        class="size-4"
+        :class="isActive && currentDirection === 'desc' ? 'block' : 'hidden'"
+      />
+      <CaretSortIcon
+        class="size-4 text-brand-maroon-900/30"
+        :class="!isActive ? 'block' : 'hidden'"
       />
     </span>
   </button>
@@ -24,7 +24,13 @@
 
 <script setup lang="ts">
 import { computed } from "vue";
-import { ChevronUpIcon, ChevronDownIcon } from "@radix-icons/vue";
+import {
+  ChevronUpIcon,
+  ChevronDownIcon,
+  CaretSortIcon,
+  CaretDownIcon,
+  CaretUpIcon,
+} from "@radix-icons/vue";
 
 const props = defineProps<{
   label: string;

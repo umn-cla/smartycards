@@ -3,7 +3,7 @@
     <div v-if="deck" class="max-w-screen-lg mx-auto">
       <DeckContextProvider :deck="deck">
         <PageHeader
-          title="Edit History"
+          title="Deck History"
           :subtitle="deck?.name"
           :backLabel="deck?.name"
           :backTo="{ name: 'decks.show', params: { deckId } }"
@@ -16,10 +16,13 @@
           </div>
         </PageHeader>
 
-        <div v-if="auditHistory">
+        <div
+          v-if="auditHistory"
+          class="bg-brand-oatmeal-50 rounded-md shadow overflow-clip"
+        >
           <Table>
             <TableHeader>
-              <TableRow>
+              <TableRow class="bg-brand-maroon-900/10">
                 <TableHead class="w-8"></TableHead>
                 <TableHead>
                   <SortableHeader
@@ -31,7 +34,13 @@
                   />
                 </TableHead>
                 <TableHead>
-                  <span class="text-brand-maroon-900/70">ID</span>
+                  <SortableHeader
+                    label="Object ID"
+                    field="auditable_id"
+                    :current-sort="sortField"
+                    :current-direction="sortDirection"
+                    @sort="handleSort"
+                  />
                 </TableHead>
                 <TableHead>
                   <SortableHeader
@@ -62,21 +71,21 @@
                 </TableHead>
               </TableRow>
               <!-- Filter row -->
-              <TableRow class="bg-gray-50">
+              <TableRow>
                 <TableHead class="w-8 py-2">
-                  <button
+                  <Button
                     v-if="hasActiveFilters"
-                    class="text-xs text-brand-teal-600 hover:text-brand-teal-700"
                     title="Clear filters"
                     @click="clearFilters"
+                    class="uppercase text-[0.66rem] px-2 py-0.5 font-semibold rounded"
                   >
                     Clear
-                  </button>
+                  </Button>
                 </TableHead>
                 <TableHead class="py-2">
                   <select
                     v-model="filterObject"
-                    class="text-xs border border-brand-maroon-900/20 rounded px-1.5 py-1 bg-white w-full"
+                    class="text-xs border-none rounded px-1.5 py-1 bg-brand-maroon-900/5 w-20 font-medium"
                   >
                     <option value="">All</option>
                     <option value="Deck">Deck</option>
@@ -88,13 +97,13 @@
                     v-model="filterId"
                     type="text"
                     placeholder="ID..."
-                    class="text-xs border border-brand-maroon-900/20 rounded px-1.5 py-1 bg-white w-16"
+                    class="text-xs border-none rounded px-1.5 py-1 bg-brand-maroon-900/5 w-16 placeholder:text-black/25"
                   />
                 </TableHead>
                 <TableHead class="py-2">
                   <select
                     v-model="filterAction"
-                    class="text-xs border border-brand-maroon-900/20 rounded px-1.5 py-1 bg-white w-full"
+                    class="text-xs border-none rounded px-1.5 py-1 bg-brand-maroon-900/5 font-medium w-full"
                   >
                     <option value="">All</option>
                     <option value="created">Created</option>
@@ -108,7 +117,7 @@
                     v-model="filterUser"
                     type="text"
                     placeholder="Filter..."
-                    class="text-xs border border-brand-maroon-900/20 rounded px-1.5 py-1 bg-white w-full"
+                    class="text-xs border-none rounded px-1.5 py-1 bg-brand-maroon-900/5 placeholder:text-black/25 w-full"
                   />
                 </TableHead>
                 <TableHead class="py-2">
@@ -116,14 +125,14 @@
                     <input
                       v-model="filterDateFrom"
                       type="date"
-                      class="text-xs border border-brand-maroon-900/20 rounded px-1 py-1 bg-white"
+                      class="text-xs border-none rounded px-1.5 py-1 bg-brand-maroon-900/5 placeholder:text-black/25 w-28 font-medium"
                       title="From date"
                     />
                     <span class="text-brand-maroon-900/40">-</span>
                     <input
                       v-model="filterDateTo"
                       type="date"
-                      class="text-xs border border-brand-maroon-900/20 rounded px-1 py-1 bg-white"
+                      class="text-xs border-none rounded px-1.5 py-1 bg-brand-maroon-900/5 placeholder:text-black/25 w-28 font-medium"
                       title="To date"
                     />
                   </div>
@@ -133,8 +142,13 @@
             <TableBody>
               <!-- Empty state -->
               <TableRow v-if="audits.length === 0">
-                <TableCell colspan="6" class="text-center py-8 text-brand-maroon-900/50">
-                  <p v-if="hasActiveFilters">No changes match the current filters.</p>
+                <TableCell
+                  colspan="6"
+                  class="text-center py-8 text-brand-maroon-900/50"
+                >
+                  <p v-if="hasActiveFilters">
+                    No changes match the current filters.
+                  </p>
                   <p v-else>No edit history found for this deck.</p>
                 </TableCell>
               </TableRow>
@@ -153,9 +167,11 @@
                   <TableCell>
                     <span
                       class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium"
-                      :class="audit.auditable_type === 'Deck'
-                        ? 'bg-purple-100 text-purple-700'
-                        : 'bg-blue-100 text-blue-700'"
+                      :class="
+                        audit.auditable_type === 'Deck'
+                          ? 'bg-purple-100 text-purple-700'
+                          : 'bg-blue-100 text-blue-700'
+                      "
                     >
                       {{ audit.auditable_type }}
                     </span>
@@ -174,7 +190,7 @@
                   </TableCell>
                 </TableRow>
                 <TableRow v-if="expandedRows.has(audit.id)">
-                  <TableCell colspan="6" class="bg-gray-50 p-0">
+                  <TableCell colspan="6" class="bg-white p-0">
                     <div class="px-6 py-4">
                       <AuditValuesDiff
                         :old-values="audit.old_values"
@@ -281,10 +297,19 @@ const queryParams = computed(() => ({
 
 // Reset to page 1 when filters or sort changes
 watch(
-  [filterObject, filterId, filterAction, filterUser, filterDateFrom, filterDateTo, sortField, sortDirection],
+  [
+    filterObject,
+    filterId,
+    filterAction,
+    filterUser,
+    filterDateFrom,
+    filterDateTo,
+    sortField,
+    sortDirection,
+  ],
   () => {
     page.value = 1;
-  }
+  },
 );
 
 const { data: deck } = useDeckByIdQuery(deckIdRef);
@@ -298,8 +323,8 @@ const hasActiveFilters = computed(() =>
     filterAction.value ||
     filterUser.value ||
     filterDateFrom.value ||
-    filterDateTo.value
-  )
+    filterDateTo.value,
+  ),
 );
 
 const audits = computed(() => auditHistory.value?.data ?? []);

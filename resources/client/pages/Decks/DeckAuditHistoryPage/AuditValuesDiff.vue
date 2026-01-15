@@ -1,11 +1,16 @@
 <template>
   <div class="mt-4 space-y-4">
-    <div v-if="changedFields.length === 0" class="text-sm text-brand-maroon-900/50">
+    <div
+      v-if="changedFields.length === 0"
+      class="text-sm text-brand-maroon-900/50"
+    >
       No field changes recorded.
     </div>
 
     <div v-for="field in changedFields" :key="field" class="space-y-2">
-      <p class="text-xs font-semibold text-brand-maroon-900/70 uppercase tracking-wide">
+      <p
+        class="text-xs font-semibold text-brand-maroon-900/70 uppercase tracking-wide"
+      >
         {{ formatFieldName(field) }}
       </p>
 
@@ -14,7 +19,11 @@
           <p class="text-xs text-brand-maroon-900/50 mb-1">Before</p>
           <div
             class="p-3 rounded text-sm"
-            :class="hasOldValue ? 'bg-red-50 border border-red-200' : 'bg-gray-100 border border-gray-200'"
+            :class="
+              hasOldValue
+                ? 'bg-red-50 border border-red-200'
+                : 'bg-neutral-100 border border-neutral-200'
+            "
           >
             <span v-if="!hasOldValue" class="text-brand-maroon-900/40 italic">
               N/A
@@ -33,7 +42,11 @@
           <p class="text-xs text-brand-maroon-900/50 mb-1">After</p>
           <div
             class="p-3 rounded text-sm"
-            :class="hasNewValue ? 'bg-green-50 border border-green-200' : 'bg-gray-100 border border-gray-200'"
+            :class="
+              hasNewValue
+                ? 'bg-green-50 border border-green-200'
+                : 'bg-gray-100 border border-gray-200'
+            "
           >
             <span v-if="!hasNewValue" class="text-brand-maroon-900/40 italic">
               N/A
@@ -78,7 +91,13 @@ const changedFields = computed(() => {
 
 function isIgnoredField(field: string): boolean {
   // Skip internal/technical fields that aren't meaningful to users
-  const ignoredFields = ["id", "deck_id", "created_at", "updated_at", "deleted_at"];
+  const ignoredFields = [
+    "id",
+    "deck_id",
+    "created_at",
+    "updated_at",
+    "deleted_at",
+  ];
   return ignoredFields.includes(field);
 }
 
@@ -89,7 +108,9 @@ function formatFieldName(field: string): string {
 }
 
 function isCardContentField(field: string): boolean {
-  return props.auditableType === "Card" && (field === "front" || field === "back");
+  return (
+    props.auditableType === "Card" && (field === "front" || field === "back")
+  );
 }
 
 function parseCardContent(value: unknown): ContentBlock[] {

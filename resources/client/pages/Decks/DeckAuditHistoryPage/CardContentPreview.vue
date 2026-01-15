@@ -9,7 +9,7 @@
       class="flex items-start gap-2"
     >
       <span
-        class="inline-flex items-center justify-center px-1.5 py-0.5 text-xs font-medium rounded bg-brand-maroon-900/10 text-brand-maroon-900/70"
+        class="inline-flex items-center justify-center px-1.5 py-0.5 text-xs font-medium rounded bg-white shadow-sm text-brand-maroon-900/70"
       >
         {{ formatBlockType(block.type) }}
       </span>

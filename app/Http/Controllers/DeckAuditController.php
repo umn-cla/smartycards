@@ -24,7 +24,7 @@ class DeckAuditController extends Controller
             'user' => ['sometimes', 'string', 'max:255'],
             'from' => ['sometimes', 'date', 'date_format:Y-m-d'],
             'to' => ['sometimes', 'date', 'date_format:Y-m-d', 'after_or_equal:from'],
-            'sort' => ['sometimes', 'string', Rule::in(['auditable_type', 'event', 'user', 'created_at'])],
+            'sort' => ['sometimes', 'string', Rule::in(['auditable_type', 'auditable_id', 'event', 'user', 'created_at'])],
             'direction' => ['sometimes', 'string', Rule::in(['asc', 'desc'])],
         ]);
 

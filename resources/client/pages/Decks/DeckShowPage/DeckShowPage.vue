@@ -34,14 +34,6 @@
             Report
           </RouterLink>
         </Button>
-        <Button asChild variant="secondary">
-          <RouterLink
-            v-if="deck.capabilities.canViewAuditHistory"
-            :to="{ name: 'decks.reports.auditHistory', params: { deckId } }"
-          >
-            History
-          </RouterLink>
-        </Button>
         <Button asChild>
           <RouterLink
             :to="{ name: 'decks.share', params: { deckId } }"
