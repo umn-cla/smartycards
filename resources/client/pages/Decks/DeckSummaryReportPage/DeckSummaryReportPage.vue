@@ -20,7 +20,9 @@
         </PageHeader>
 
         <div class="mb-8">
-          <h2 class="text-2xl font-bold mb-4">Cards</h2>
+          <div class="flex items-center justify-between mb-4">
+            <h2 class="text-2xl font-bold">Cards</h2>
+          </div>
           <div>
             <Table>
               <TableHeader>
@@ -29,6 +31,8 @@
                   <TableHead class="text-center">Back</TableHead>
                   <TableHead class="text-center">Avg Score</TableHead>
                   <TableHead class="text-center">Attempts</TableHead>
+                  <TableHead class="text-center">Created</TableHead>
+                  <TableHead class="text-center">Edited</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -70,16 +74,49 @@
                     <span v-else class="text-sm text-brand-maroon-900/50">
                       -
                     </span>
-                    <!-- <Badge
-                    v-else
-                    variant="outline"
-                    class="text-sm bg-brand-maroon-900/5 text-brand-maroon-900/50"
-                  >
-                    N/A
-                  </Badge> -->
                   </TableCell>
                   <TableCell class="text-center">
                     {{ card.attempts_count }}
+                  </TableCell>
+                  <TableCell class="text-center">
+                    <div class="text-sm">
+                      <p class="font-medium">
+                        {{ formatDate(card.created_at) }}
+                      </p>
+                      <p class="text-brand-maroon-900/50">
+                        {{ card.created_by?.name ?? "-" }}
+                      </p>
+                    </div>
+                  </TableCell>
+                  <TableCell class="text-center">
+                    <div
+                      v-if="card.updated_at !== card.created_at"
+                      class="text-sm"
+                    >
+                      <p class="font-medium">
+                        {{ formatDate(card.updated_at) }}
+                      </p>
+                      <p class="text-brand-maroon-900/50">
+                        {{ card.updated_by?.name ?? "-" }}
+                      </p>
+                    </div>
+                    <p v-else class="text-sm text-brand-maroon-900/50">-</p>
+                  </TableCell>
+                  <TableCell class="text-center">
+                    <Button
+                      variant="secondary"
+                      asChild
+                      class="uppercase text-xs px-3 py-1.5"
+                    >
+                      <RouterLink
+                        :to="{
+                          name: 'cards.edit',
+                          params: { deckId, cardId: card.id },
+                        }"
+                      >
+                        Edit
+                      </RouterLink>
+                    </Button>
                   </TableCell>
                 </TableRow>
               </TableBody>
@@ -144,6 +181,8 @@ import MatchingSide from "@/pages/Activities/MatchingGamePage/MatchingSide.vue";
 import { Badge } from "@/components/ui/badge";
 import { useDeckSummaryReportQuery } from "@/queries/decks/useDeckSummaryReportQuery";
 import DeckContextProvider from "@/components/DeckContextProvider.vue";
+import { RouterLink } from "vue-router";
+import Button from "@/components/ui/button/Button.vue";
 
 const props = defineProps<{
   deckId: number;
@@ -154,5 +193,15 @@ const { data: deck } = useDeckByIdQuery(deckIdRef);
 const { data: report } = useDeckSummaryReportQuery(deckIdRef);
 const memberships = computed(() => report.value?.memberships_with_stats ?? []);
 const cards = computed(() => report.value?.cards_with_stats ?? []);
+
+function formatDate(dateString: string): string {
+  return new Date(dateString).toLocaleString(undefined, {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+  });
+}
 </script>
 <style scoped></style>

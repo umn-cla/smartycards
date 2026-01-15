@@ -89,6 +89,17 @@ const router = createRouter({
       }),
     },
     {
+      path: "/decks/:deckId/reports/audit-history",
+      name: "decks.reports.auditHistory",
+      component: () =>
+        import(
+          "../pages/Decks/DeckAuditHistoryPage/DeckAuditHistoryPage.vue"
+        ),
+      props: (route) => ({
+        deckId: Number(route.params.deckId),
+      }),
+    },
+    {
       path: "/decks/:deckId/assignments",
       name: "decks.assignments",
       component: () =>

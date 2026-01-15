@@ -95,6 +95,11 @@ class DeckPolicy
         return $user->isOwnerOfDeck($deck);
     }
 
+    public function viewAuditHistory(User $user, Deck $deck): bool
+    {
+        return $user->isOwnerOfDeck($deck);
+    }
+
     public function viewGrades(User $user, Deck $deck): bool
     {
         if (!$user->isOwnerOfDeck($deck)) {

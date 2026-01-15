@@ -47,6 +47,7 @@ class DeckResource extends JsonResource
                 'canViewMemberships' => $request->user()->can('viewMemberships', $this->resource),
                 'canCreateMembership' => $request->user()->can('createMembership', $this->resource),
                 'canViewReports' => $request->user()->can('viewReports', $this->resource),
+                'canViewAuditHistory' => $request->user()->can('viewAuditHistory', $this->resource),
                 'canViewGrades' => $request->user()->can('viewGrades', $this->resource),
                 'canCreateCards' => $request->user()->can('createCards', $this->resource),
                 'canLeave' => $request->user()->can('leave', $this->resource),

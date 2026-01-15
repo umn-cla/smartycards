@@ -364,6 +364,29 @@ export async function getDeckSummaryReport(deckId: number) {
   return res.data;
 }
 
+export interface AuditHistoryParams {
+  page?: number;
+  object?: string;
+  action?: string;
+  user?: string;
+  id?: string;
+  from?: string;
+  to?: string;
+  sort?: string;
+  direction?: "asc" | "desc";
+}
+
+export async function getDeckAuditHistory(
+  deckId: number,
+  params: AuditHistoryParams = {},
+) {
+  const res = await axios.get<T.DeckAuditHistoryResponse>(
+    `/decks/${deckId}/reports/audit-history`,
+    { params },
+  );
+  return res.data;
+}
+
 export async function getAssignmentsForDeck(deckId: number) {
   const res = await axios.get<{ data: T.LtiResourceLinkEntry[] }>(
     `/decks/${deckId}/assignments`,

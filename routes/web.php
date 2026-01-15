@@ -10,6 +10,7 @@ use App\Http\Controllers\DeckController;
 use App\Http\Controllers\DeckInviteController;
 use App\Http\Controllers\DeckMembershipController;
 use App\Http\Controllers\DeckQuizController;
+use App\Http\Controllers\DeckAuditController;
 use App\Http\Controllers\DeckReportController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TTSController;
@@ -60,6 +61,8 @@ Route::middleware(['auth'])
         ]);
 
         Route::get('decks/{deck}/reports/summary', [DeckReportController::class, 'summary']);
+
+        Route::get('decks/{deck}/reports/audit-history', [DeckAuditController::class, 'index']);
 
         Route::get('decks/{deck}/assignments', [DeckAssignmentController::class, 'index']);
 

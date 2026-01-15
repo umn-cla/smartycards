@@ -105,6 +105,7 @@ export interface Deck {
     canLeave: boolean;
     canJoinAsViewer: boolean; // can join if not already a member, and deck is public
     canViewReports: boolean;
+    canViewAuditHistory: boolean;
     canViewGrades: boolean;
     canCreateCards: boolean;
   };
@@ -268,9 +269,16 @@ interface MemberParticipationStats {
   has_matching_activity: boolean;
 }
 
+interface CardAuditUser {
+  id: number;
+  name: string;
+}
+
 interface CardWithGlobalStats extends Card {
   attempts_count: number;
   attempts_avg_score: number;
+  created_by: CardAuditUser | null;
+  updated_by: CardAuditUser | null;
 }
 
 export interface DeckSummaryReport {
@@ -357,4 +365,40 @@ export interface AssignmentScore {
   submitted_at: ISODateTime | null;
   submission_success: boolean | null;
   submission_error: string | null;
+}
+
+// Audit History Types
+export type AuditEvent = "created" | "updated" | "deleted" | "restored";
+
+export type AuditableType = "Deck" | "Card";
+
+export interface AuditUser {
+  id: number;
+  name: string;
+  email: string;
+}
+
+export interface AuditRecord {
+  id: number;
+  event: AuditEvent;
+  auditable_type: AuditableType;
+  auditable_id: number;
+  old_values: Record<string, unknown> | null;
+  new_values: Record<string, unknown> | null;
+  user: AuditUser | null;
+  created_at: ISODateTime;
+}
+
+export interface DeckAuditHistoryResponse {
+  data: AuditRecord[];
+  meta: {
+    current_page: number;
+    last_page: number;
+    per_page: number;
+    total: number;
+  };
+  links: {
+    prev: string | null;
+    next: string | null;
+  };
 }

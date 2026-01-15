@@ -13,6 +13,17 @@
           Settings
         </RouterLink>
       </DropdownMenuItem>
+      <DropdownMenuItem asChild v-if="deck.capabilities.canViewAuditHistory">
+        <RouterLink
+          :to="{
+            name: 'decks.reports.auditHistory',
+            params: { deckId: deck.id },
+          }"
+        >
+          <IconHistory class="size-5 mr-4" />
+          History
+        </RouterLink>
+      </DropdownMenuItem>
       <DropdownMenuItem asChild>
         <RouterLink :to="{ name: 'decks.clone', params: { deckId: deck.id } }">
           <IconCopy class="size-5 mr-4" />
@@ -113,6 +124,7 @@ import { reactive } from "vue";
 import { useRouter } from "vue-router";
 import EmbedDeckModal from "@/components/EmbedDeckModal.vue";
 import IconCopy from "@/components/icons/IconCopy.vue";
+import IconHistory from "@/components/icons/IconHistory.vue";
 
 defineProps<{
   deck: T.Deck;
