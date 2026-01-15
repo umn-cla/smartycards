@@ -31,6 +31,9 @@
                   />
                 </TableHead>
                 <TableHead>
+                  <span class="text-brand-maroon-900/70">ID</span>
+                </TableHead>
+                <TableHead>
                   <SortableHeader
                     label="Action"
                     field="event"
@@ -81,6 +84,14 @@
                   </select>
                 </TableHead>
                 <TableHead class="py-2">
+                  <input
+                    v-model="filterId"
+                    type="text"
+                    placeholder="ID..."
+                    class="text-xs border border-brand-maroon-900/20 rounded px-1.5 py-1 bg-white w-16"
+                  />
+                </TableHead>
+                <TableHead class="py-2">
                   <select
                     v-model="filterAction"
                     class="text-xs border border-brand-maroon-900/20 rounded px-1.5 py-1 bg-white w-full"
@@ -121,14 +132,14 @@
             </TableHeader>
             <TableBody>
               <!-- Empty state -->
-              <TableRow v-if="filteredAudits.length === 0">
-                <TableCell colspan="5" class="text-center py-8 text-brand-maroon-900/50">
+              <TableRow v-if="audits.length === 0">
+                <TableCell colspan="6" class="text-center py-8 text-brand-maroon-900/50">
                   <p v-if="hasActiveFilters">No changes match the current filters.</p>
                   <p v-else>No edit history found for this deck.</p>
                 </TableCell>
               </TableRow>
               <!-- Data rows -->
-              <template v-for="audit in sortedAudits" :key="audit.id">
+              <template v-for="audit in audits" :key="audit.id">
                 <TableRow
                   class="cursor-pointer hover:bg-brand-oatmeal-50"
                   @click="toggleRow(audit.id)"
@@ -149,6 +160,9 @@
                       {{ audit.auditable_type }}
                     </span>
                   </TableCell>
+                  <TableCell class="text-brand-maroon-900/70 font-mono text-sm">
+                    {{ audit.auditable_id }}
+                  </TableCell>
                   <TableCell>
                     <AuditEventBadge :event="audit.event" />
                   </TableCell>
@@ -160,7 +174,7 @@
                   </TableCell>
                 </TableRow>
                 <TableRow v-if="expandedRows.has(audit.id)">
-                  <TableCell colspan="5" class="bg-gray-50 p-0">
+                  <TableCell colspan="6" class="bg-gray-50 p-0">
                     <div class="px-6 py-4">
                       <AuditValuesDiff
                         :old-values="audit.old_values"
@@ -210,7 +224,7 @@ import PageHeader from "@/components/PageHeader.vue";
 import AuthenticatedLayout from "@/layouts/AuthenticatedLayout/AuthenticatedLayout.vue";
 import { useDeckByIdQuery } from "@/queries/decks";
 import { useDeckAuditHistoryQuery } from "@/queries/decks/useDeckAuditHistoryQuery";
-import { computed, ref } from "vue";
+import { computed, ref, watch } from "vue";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -226,42 +240,21 @@ import AuditEventBadge from "./AuditEventBadge.vue";
 import AuditValuesDiff from "./AuditValuesDiff.vue";
 import SortableHeader from "./SortableHeader.vue";
 import { ChevronDownIcon } from "@radix-icons/vue";
-import type { AuditRecord, AuditEvent, AuditableType } from "@/types";
+import type { AuditEvent, AuditableType } from "@/types";
 
 const props = defineProps<{
   deckId: number;
 }>();
 
 const deckIdRef = computed(() => props.deckId);
-const page = ref(1);
-
-const { data: deck } = useDeckByIdQuery(deckIdRef);
-const { data: auditHistory } = useDeckAuditHistoryQuery(deckIdRef, page);
 
 // Filters
 const filterObject = ref<AuditableType | "">("");
+const filterId = ref("");
 const filterAction = ref<AuditEvent | "">("");
 const filterUser = ref("");
 const filterDateFrom = ref("");
 const filterDateTo = ref("");
-
-const hasActiveFilters = computed(() =>
-  Boolean(
-    filterObject.value ||
-    filterAction.value ||
-    filterUser.value ||
-    filterDateFrom.value ||
-    filterDateTo.value
-  )
-);
-
-function clearFilters() {
-  filterObject.value = "";
-  filterAction.value = "";
-  filterUser.value = "";
-  filterDateFrom.value = "";
-  filterDateTo.value = "";
-}
 
 // Sorting
 type SortField = "auditable_type" | "event" | "user" | "created_at";
@@ -269,6 +262,57 @@ type SortDirection = "asc" | "desc";
 
 const sortField = ref<SortField>("created_at");
 const sortDirection = ref<SortDirection>("desc");
+
+// Pagination
+const page = ref(1);
+
+// Build query params from filter/sort state
+const queryParams = computed(() => ({
+  page: page.value,
+  object: filterObject.value || undefined,
+  id: filterId.value || undefined,
+  action: filterAction.value || undefined,
+  user: filterUser.value || undefined,
+  from: filterDateFrom.value || undefined,
+  to: filterDateTo.value || undefined,
+  sort: sortField.value,
+  direction: sortDirection.value,
+}));
+
+// Reset to page 1 when filters or sort changes
+watch(
+  [filterObject, filterId, filterAction, filterUser, filterDateFrom, filterDateTo, sortField, sortDirection],
+  () => {
+    page.value = 1;
+  }
+);
+
+const { data: deck } = useDeckByIdQuery(deckIdRef);
+const { data: auditHistory } = useDeckAuditHistoryQuery(deckIdRef, queryParams);
+
+// Computed helpers
+const hasActiveFilters = computed(() =>
+  Boolean(
+    filterObject.value ||
+    filterId.value ||
+    filterAction.value ||
+    filterUser.value ||
+    filterDateFrom.value ||
+    filterDateTo.value
+  )
+);
+
+const audits = computed(() => auditHistory.value?.data ?? []);
+
+// Actions
+function clearFilters() {
+  filterObject.value = "";
+  filterId.value = "";
+  filterAction.value = "";
+  filterUser.value = "";
+  filterDateFrom.value = "";
+  filterDateTo.value = "";
+}
 
 function handleSort(field: string) {
   const sortableField = field as SortField;
@@ -292,72 +336,6 @@ function toggleRow(id: number) {
   // Trigger reactivity
   expandedRows.value = new Set(expandedRows.value);
 }
-
-// Filtered audits
-const filteredAudits = computed((): AuditRecord[] => {
-  if (!auditHistory.value?.data) return [];
-
-  return auditHistory.value.data.filter((audit) => {
-    if (filterObject.value && audit.auditable_type !== filterObject.value) {
-      return false;
-    }
-    if (filterAction.value && audit.event !== filterAction.value) {
-      return false;
-    }
-    if (filterUser.value) {
-      const userName = audit.user?.name?.toLowerCase() ?? "";
-      if (!userName.includes(filterUser.value.toLowerCase())) {
-        return false;
-      }
-    }
-    if (filterDateFrom.value || filterDateTo.value) {
-      const auditDate = new Date(audit.created_at);
-      if (filterDateFrom.value) {
-        const fromDate = new Date(filterDateFrom.value);
-        fromDate.setHours(0, 0, 0, 0);
-        if (auditDate < fromDate) {
-          return false;
-        }
-      }
-      if (filterDateTo.value) {
-        const toDate = new Date(filterDateTo.value);
-        toDate.setHours(23, 59, 59, 999);
-        if (auditDate > toDate) {
-          return false;
-        }
-      }
-    }
-    return true;
-  });
-});
-
-// Sorted audits
-const sortedAudits = computed((): AuditRecord[] => {
-  const audits = [...filteredAudits.value];
-
-  audits.sort((a, b) => {
-    let comparison = 0;
-
-    switch (sortField.value) {
-      case "auditable_type":
-        comparison = a.auditable_type.localeCompare(b.auditable_type);
-        break;
-      case "event":
-        comparison = a.event.localeCompare(b.event);
-        break;
-      case "user":
-        comparison = (a.user?.name ?? "").localeCompare(b.user?.name ?? "");
-        break;
-      case "created_at":
-        comparison = new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
-        break;
-    }
-
-    return sortDirection.value === "asc" ? comparison : -comparison;
-  });
-
-  return audits;
-});
 
 function formatDateTime(dateString: string): string {
   const date = new Date(dateString);
