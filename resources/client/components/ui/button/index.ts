@@ -15,8 +15,6 @@ export const buttonVariants = cva(
           "border border-brand-maroon-800/20 hover:bg-white brand-maroon-800/20 hover:text-brand-maroon-800 dark:border-neutral-800 dark:bg-neutral-950 dark:hover:bg-neutral-800 dark:hover:text-neutral-50",
         secondary:
           "bg-brand-maroon-800/5 text-brand-maroon-800 hover:bg-brand-maroon-800/80 hover:text-white dark:bg-neutral-800 dark:text-neutral-50 dark:hover:bg-neutral-800/80",
-        tertiary:
-          "bg-brand-maroon-800/5 text-brand-maroon-800 hover:bg-brand-maroon-800/80 hover:text-white dark:bg-neutral-800 dark:text-neutral-50 dark:hover:bg-neutral-800/80 uppercase text-[0.6rem] font-semibold",
         ghost:
           "hover:bg-neutral-100 hover:text-brand-maroon-800 dark:hover:bg-neutral-800 dark:hover:text-neutral-50",
         link: "text-brand-maroon-800 underline-offset-4 hover:underline dark:text-neutral-50",
