@@ -124,7 +124,6 @@ import { reactive } from "vue";
 import { useRouter } from "vue-router";
 import EmbedDeckModal from "@/components/EmbedDeckModal.vue";
 import IconCopy from "@/components/icons/IconCopy.vue";
-import { CounterClockwiseClockIcon } from "@radix-icons/vue";
 import IconHistory from "@/components/icons/IconHistory.vue";
 
 defineProps<{
