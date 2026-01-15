@@ -269,9 +269,16 @@ interface MemberParticipationStats {
   has_matching_activity: boolean;
 }
 
+interface CardAuditUser {
+  id: number;
+  name: string;
+}
+
 interface CardWithGlobalStats extends Card {
   attempts_count: number;
   attempts_avg_score: number;
+  created_by: CardAuditUser | null;
+  updated_by: CardAuditUser | null;
 }
 
 export interface DeckSummaryReport {

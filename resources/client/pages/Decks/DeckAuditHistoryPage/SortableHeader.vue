@@ -24,13 +24,7 @@
 
 <script setup lang="ts">
 import { computed } from "vue";
-import {
-  ChevronUpIcon,
-  ChevronDownIcon,
-  CaretSortIcon,
-  CaretDownIcon,
-  CaretUpIcon,
-} from "@radix-icons/vue";
+import { CaretSortIcon, CaretDownIcon, CaretUpIcon } from "@radix-icons/vue";
 
 const props = defineProps<{
   label: string;

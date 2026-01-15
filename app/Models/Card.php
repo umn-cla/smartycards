@@ -48,6 +48,51 @@ class Card extends Model implements AuditableContract
             ]);
     }
 
+    /**
+     * Scope to load audit trail info: who created and who last updated each card.
+     */
+    public function scopeWithAuditInfo(Builder $query): Builder
+    {
+        return $query->with([
+            'audits' => function ($q) {
+                $q->with('user:id,name,email')
+                    ->whereIn('event', ['created', 'updated'])
+                    ->orderBy('created_at', 'asc');
+            },
+        ]);
+    }
+
+    /**
+     * Get the user who created this card from the audits table.
+     */
+    public function getCreatedByAttribute(): ?User
+    {
+        if (!$this->relationLoaded('audits')) {
+            return null;
+        }
+
+        $createdAudit = $this->audits->firstWhere('event', 'created');
+
+        return $createdAudit?->user;
+    }
+
+    /**
+     * Get the user who last updated this card from the audits table.
+     */
+    public function getUpdatedByAttribute(): ?User
+    {
+        if (!$this->relationLoaded('audits')) {
+            return null;
+        }
+
+        $updatedAudit = $this->audits
+            ->where('event', 'updated')
+            ->sortByDesc('created_at')
+            ->first();
+
+        return $updatedAudit?->user;
+    }
+
     public function scopeWithLastAttemptedAt(Builder $query, User $user)
     {
         return $query
