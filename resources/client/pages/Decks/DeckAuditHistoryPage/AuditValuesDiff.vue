@@ -1,5 +1,5 @@
 <template>
-  <div class="mt-4 space-y-4">
+  <div class="mt-4">
     <div
       v-if="changedFields.length === 0"
       class="text-sm text-brand-maroon-900/50"
@@ -7,60 +7,83 @@
       No field changes recorded.
     </div>
 
-    <div v-for="field in changedFields" :key="field" class="space-y-2">
-      <p
-        class="text-xs font-semibold text-brand-maroon-900/70 uppercase tracking-wide"
+    <div v-else class="grid grid-cols-1 md:grid-cols-[auto_1fr_1fr]">
+      <!-- Header row (hidden on mobile) -->
+      <div
+        class="hidden md:contents text-xs font-semibold text-brand-maroon-900/70 uppercase tracking-wide"
       >
-        {{ formatFieldName(field) }}
-      </p>
-
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-        <div>
-          <p class="text-xs text-brand-maroon-900/50 mb-1">Before</p>
-          <div
-            class="p-3 rounded text-sm"
-            :class="
-              hasOldValue
-                ? 'bg-red-50 border border-red-200'
-                : 'bg-neutral-100 border border-neutral-200'
-            "
-          >
-            <span v-if="!hasOldValue" class="text-brand-maroon-900/40 italic">
-              N/A
-            </span>
-            <CardContentPreview
-              v-else-if="isCardContentField(field)"
-              :blocks="parseCardContent(oldValues?.[field])"
-            />
-            <span v-else class="whitespace-pre-wrap break-words">{{
-              formatValue(oldValues?.[field])
-            }}</span>
-          </div>
-        </div>
-
-        <div>
-          <p class="text-xs text-brand-maroon-900/50 mb-1">After</p>
-          <div
-            class="p-3 rounded text-sm"
-            :class="
-              hasNewValue
-                ? 'bg-green-50 border border-green-200'
-                : 'bg-gray-100 border border-gray-200'
-            "
-          >
-            <span v-if="!hasNewValue" class="text-brand-maroon-900/40 italic">
-              N/A
-            </span>
-            <CardContentPreview
-              v-else-if="isCardContentField(field)"
-              :blocks="parseCardContent(newValues?.[field])"
-            />
-            <span v-else class="whitespace-pre-wrap break-words">{{
-              formatValue(newValues?.[field])
-            }}</span>
-          </div>
-        </div>
+        <div class="p-2">Field</div>
+        <div class="p-2">Before</div>
+        <div class="p-2">After</div>
       </div>
+
+      <!-- Data rows -->
+      <template v-for="field in changedFields" :key="field">
+        <div
+          class="md:contents border-t border-brand-maroon-900/10 pt-3 md:pt-0 md:border-0 first:border-0 first:pt-0"
+        >
+          <!-- Field name -->
+          <div
+            class="py-1 md:py-3 text-sm font-medium text-brand-maroon-900/70 md:border-t md:border-brand-maroon-900/10 px-3"
+          >
+            {{ formatFieldName(field) }}
+          </div>
+
+          <!-- Before value -->
+          <div
+            class="py-1 md:py-3 md:border-t md:border-brand-maroon-900/10 px-3"
+          >
+            <p class="text-xs text-brand-maroon-900/50 mb-1 md:hidden">
+              Before
+            </p>
+            <div
+              class="p-3 rounded text-sm"
+              :class="
+                hasOldValue
+                  ? 'bg-red-50 border border-red-200'
+                  : 'bg-neutral-100 border border-neutral-200'
+              "
+            >
+              <span v-if="!hasOldValue" class="text-brand-maroon-900/40 italic">
+                N/A
+              </span>
+              <CardContentPreview
+                v-else-if="isCardContentField(field)"
+                :blocks="parseCardContent(oldValues?.[field])"
+              />
+              <span v-else class="whitespace-pre-wrap break-words">{{
+                formatValue(oldValues?.[field])
+              }}</span>
+            </div>
+          </div>
+
+          <!-- After value -->
+          <div
+            class="py-1 md:py-3 md:border-t md:border-brand-maroon-900/10 px-3"
+          >
+            <p class="text-xs text-brand-maroon-900/50 mb-1 md:hidden">After</p>
+            <div
+              class="p-3 rounded text-sm"
+              :class="
+                hasNewValue
+                  ? 'bg-green-50 border border-green-200'
+                  : 'bg-gray-100 border border-gray-200'
+              "
+            >
+              <span v-if="!hasNewValue" class="text-brand-maroon-900/40 italic">
+                N/A
+              </span>
+              <CardContentPreview
+                v-else-if="isCardContentField(field)"
+                :blocks="parseCardContent(newValues?.[field])"
+              />
+              <span v-else class="whitespace-pre-wrap break-words">{{
+                formatValue(newValues?.[field])
+              }}</span>
+            </div>
+          </div>
+        </div>
+      </template>
     </div>
   </div>
 </template>
