@@ -182,7 +182,6 @@ import { Badge } from "@/components/ui/badge";
 import { useDeckSummaryReportQuery } from "@/queries/decks/useDeckSummaryReportQuery";
 import DeckContextProvider from "@/components/DeckContextProvider.vue";
 import { RouterLink } from "vue-router";
-import { IconArrowRight } from "@/components/icons";
 import Button from "@/components/ui/button/Button.vue";
 
 const props = defineProps<{
