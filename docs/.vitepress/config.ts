@@ -72,6 +72,10 @@ export default defineConfig({
             link: "/teaching/deck-summary-report",
           },
           {
+            text: "Deck History",
+            link: "/teaching/deck-history",
+          },
+          {
             text: "Classroom Activities",
             link: "/teaching/classroom-activities",
           },

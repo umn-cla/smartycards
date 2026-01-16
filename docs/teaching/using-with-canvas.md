@@ -1,8 +1,43 @@
-# Using with Canvas
+# Using with Canvas (LTI Integration)
 
-SmartyCards activities can be embedded into any website, including Canvas. You will need to be a deck **owner** to access the embed code.
+SmartyCards can be integrated with Canvas using LTI (Learning Tools Interoperability). This allows you to create assignments that link directly to SmartyCards decks, with automatic grade passback to the Canvas gradebook.
 
-## Step by step
+### Setting Up an LTI Assignment
+
+<!-- TODO: Add screenshots for each step -->
+
+1. In Canvas, create a new **Assignment**
+2. For Submission Type, select **External Tool**
+3. Find and select **SmartyCards** from the list of available tools
+4. Choose the deck you want to assign
+5. Set the points and due date as desired
+6. Save the assignment
+
+::: warning
+Your Canvas administrator must first add and enable the SmartyCards LTI for your institution. If you don't see SmartyCards in the External Tool list, contact your Canvas admin or email <latistecharch@umn.edu>.
+:::
+
+### Student Experience
+
+When students click the assignment:
+
+1. They are taken directly to the SmartyCards practice activity
+2. They practice all cards in the deck
+3. Once complete, their grade (100%) is automatically submitted to Canvas
+
+Students can return to the assignment to practice again, but their grade is recorded on first completion.
+
+### How Grading Works
+
+SmartyCards assignments are graded on **participation, not correctness**. Students earn 100% once they complete the practice session by going through all cards in the deck. The goal is to encourage practice and engagement, not to penalize students for getting answers wrong while learning.
+
+If you have a large deck, consider breaking it into smaller decks for multiple assignments to make it more manageable for students.
+
+## Embedding Activities
+
+You can also embed SmartyCards activities into any Canvas page without grading. You will need to be a deck **owner** to access the embed code.
+
+### Step by Step
 
 To embed into a Canvas page:
 
@@ -40,7 +75,7 @@ To embed into a Canvas page:
 
 - **Can I set up a SmartyCards assignment to grade students for participation?**
 
-  Not yet. It's something we're looking at, but we need more data on how SmartyCards is used a classroom setting. If you have thoughts on how you'd like this to work, email <latistecharch@umn.edu>.
+  Yes! See [LTI Assignments](#lti-assignments) above. You can create Canvas assignments with automatic grade passback. Students earn 100% when they complete the practice session.
 
 - **Can students see one another's activity?**
 
