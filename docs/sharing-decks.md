@@ -103,7 +103,7 @@ You've create a deck to help your class practice and study.
 - **Viewers** – Students
 
 :::tip
-Post your `View` invite link or [`Embed` a practice activity](./teaching/using-with-canvas.md) in your Canvas classroom, so that students can add themselves.
+Post your `View` invite link or [`Embed` a practice activity](./teaching/lti-assignments-in-canvas.md) in your Canvas classroom, so that students can add themselves.
 :::
 
 #### Collaborative Study

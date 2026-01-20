@@ -1,8 +1,14 @@
-# Using with Canvas
+# Embedding Ungraded Activities in Canvas
 
-SmartyCards activities can be embedded into any website, including Canvas. You will need to be a deck **owner** to access the embed code.
+Deck owners can also embed **ungraded** SmartyCards activities into any Canvas page.
 
-## Step by step
+This is a great option for instructors who want to provide students with easy access to practice activities without setting up formal assignments or grade passback.
+
+::: info
+For **graded** assignments with automatic grade passback to the Canvas gradebook, see [Using with Canvas (LTI Integration)](./lti-assignments-in-canvas.md).
+:::
+
+## Step by Step
 
 To embed into a Canvas page:
 
@@ -30,22 +36,3 @@ To embed into a Canvas page:
 
    ![Final embedded activity in SmartyCards](../img/final-practice-embedded-in-canvas.png)
 
-7. To see participation and avg card difficulty,
-
-## FAQ
-
-- **How can I see participation and average card difficulty?**
-
-  Use the [Deck Summary Report](./deck-summary-report.md) to see a summary of participation.
-
-- **Can I set up a SmartyCards assignment to grade students for participation?**
-
-  Not yet. It's something we're looking at, but we need more data on how SmartyCards is used a classroom setting. If you have thoughts on how you'd like this to work, email <latistecharch@umn.edu>.
-
-- **Can students see one another's activity?**
-
-  No. The deck summary report is only visible to deck owners.
-
-- **I have another question/suggestion about using SmartyCards with Canvas!**
-
-  We're always happy to help! Email <latistecharch@umn.edu>.

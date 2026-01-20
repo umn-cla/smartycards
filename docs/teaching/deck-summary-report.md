@@ -18,6 +18,7 @@ The report will show the **average score** and **number of attempts** for each c
 
 This is a great way to see which concepts might need reviewing in class.
 
+
 ::: info
 **How are the scores calculated?**
 Each time a student practices a card, a score is recorded based on the icon they click
@@ -28,6 +29,18 @@ Each time a student practices a card, a score is recorded based on the icon they
 
 The score in the summary report is the average of all attempts among all deck members.
 :::
+
+### Card Authorship Information
+
+![Card authorship information in deck summary report](../img/summary-report-create-edit-cols.png)
+
+Each card in the summary report displays authorship information:
+
+- **Created by** — The user who originally created the card and when it was created
+- **Last edited by** — The user who most recently edited the card and when the edit was made
+
+This helps faculty track contributions when multiple editors collaborate on a deck, and provides context for when cards were last reviewed or updated.
+
 
 ## Deck Participation
 

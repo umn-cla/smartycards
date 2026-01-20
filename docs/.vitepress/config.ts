@@ -63,13 +63,21 @@ export default defineConfig({
         text: "Teaching",
         items: [
           {
-            text: "Using with Canvas",
-            link: "/teaching/using-with-canvas",
+            text: "Using with Canvas (Graded)",
+            link: "/teaching/lti-assignments-in-canvas",
+          },
+          {
+            text: "Embedding in Canvas (Ungraded)",
+            link: "/teaching/embedding-activities-in-canvas",
           },
 
           {
             text: "Deck Summary Report",
             link: "/teaching/deck-summary-report",
+          },
+          {
+            text: "Deck History",
+            link: "/teaching/deck-history",
           },
           {
             text: "Classroom Activities",
