@@ -75,7 +75,7 @@ class DeckMembershipPolicy
         // deleted before we check membership.
         // https://university-of-minnesota-rd.sentry.io/issues/7243453987
         if (! $deck) {
-            return true;
+            return false;
         }
 
         if (! $user->isOwnerOfDeck($deck)) {
