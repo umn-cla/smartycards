@@ -70,6 +70,14 @@ class DeckMembershipPolicy
     public function removeSelf(User $user, DeckMembership $deckMembership): bool
     {
         $deck = $deckMembership->deck;
+
+        // Handle a race where deck could be null if it's soft
+        // deleted before we check membership.
+        // https://university-of-minnesota-rd.sentry.io/issues/7243453987
+        if (! $deck) {
+            return true;
+        }
+
         if (! $user->isOwnerOfDeck($deck)) {
             return true;
         }
