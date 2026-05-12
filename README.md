@@ -75,6 +75,9 @@ npm install
 # Start queue worker (in a separate terminal), if using LTI Grades
 sail artisan queue:work --verbose
 
+# generate certs (requires mkcert to be installed)
+npm run cert
+
 # start vite
 npm run dev
 ```
