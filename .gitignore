@@ -21,3 +21,7 @@ yarn-error.log
 /.vscode
 .cert
 docs/.vitepress/cache
+.mcp.json
+boost.json
+.agents/
+.github/skills
