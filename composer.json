@@ -39,6 +39,7 @@
     "deployer/deployer": "^7.4",
     "fakerphp/faker": "^1.23",
     "laracasts/cypress": "^3.0",
+    "laravel/boost": "^2.4",
     "laravel/pint": "^1.16",
     "laravel/sail": "^1.58",
     "laravel/telescope": "^5.0",
