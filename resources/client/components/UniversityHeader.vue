@@ -5,7 +5,7 @@
 </template>
 <script setup lang="ts">
 import { UniversityHeader } from "@umn-latis/cla-vue-template";
-import "@umn-latis/cla-vue-template/dist/style.css";
+import "@umn-latis/cla-vue-template/dist/index.css";
 </script>
 
 <style>
