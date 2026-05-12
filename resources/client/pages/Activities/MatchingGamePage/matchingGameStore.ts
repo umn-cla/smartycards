@@ -1,6 +1,6 @@
 import * as T from "@/types";
 import { defineStore } from "pinia";
-import { toShuffled, uuid } from "@/lib/utils";
+import { toShuffled } from "@/lib/utils";
 
 export interface MatchingCardSide {
   id: string;
@@ -26,14 +26,14 @@ export const useMatchingGameStore = defineStore("matchingGame", {
 
       this.sides = gameCards.reduce((acc, card) => {
         const front: MatchingCardSide = {
-          id: uuid(),
+          id: crypto.randomUUID(),
           cardId: card.id,
           blocks: card.front,
           label: "front",
           status: "idle",
         };
         const back: MatchingCardSide = {
-          id: uuid(),
+          id: crypto.randomUUID(),
           cardId: card.id,
           blocks: card.back,
           label: "back",
