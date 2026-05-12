@@ -18,6 +18,19 @@
 # - ::1 (IPv6 localhost)
 # - Your machine's local IP address (for testing on other devices)
 
+# Check for mkcert
+if ! command -v mkcert &> /dev/null; then
+    echo "Error: mkcert is not installed."
+    echo ""
+    echo "Install it first:"
+    echo "  macOS:               brew install mkcert"
+    echo "  Linux (Fedora/RHEL): sudo dnf install mkcert"
+    echo "  Linux (Debian/Ubuntu): sudo apt install mkcert"
+    echo ""
+    echo "Then run: mkcert -install"
+    exit 1
+fi
+
 # Clean up any existing certificates
 rm -rf .cert
 
