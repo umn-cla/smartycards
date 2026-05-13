@@ -67,7 +67,9 @@ import { computed, ref } from "vue";
 import * as api from "@/api";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import vueFilePond from "vue-filepond";
+// vue-filepond's package.json is giving us a `cjs` export, so
+// we import the esm version directly to avoid issues with Vite
+import vueFilePond from "vue-filepond/dist/vue-filepond.esm.js";
 import FilePondPluginFileValidateType from "filepond-plugin-file-validate-type";
 import { IconX } from "../icons";
 import "filepond/dist/filepond.min.css";
