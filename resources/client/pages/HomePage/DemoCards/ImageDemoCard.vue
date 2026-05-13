@@ -16,12 +16,6 @@ const front: CardSide = [
       alt: "The Two Fridas by Frida Kahlo",
     },
   },
-  // {
-  //   id: crypto.randomUUID(),
-  //   type: "text",
-  //   content: "Title, Artist, Year?",
-  //   meta: null,
-  // },
 ];
 
 const back: CardSide = [

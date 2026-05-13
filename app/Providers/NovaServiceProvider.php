@@ -81,6 +81,10 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
      */
     public function register()
     {
-        //
+        // Work around a deployment issue during `artisan:route:cache`:
+        // "Unable to prepare route [logout] for serialization. Another
+        // route has already been assigned name [logout]."
+        // Disable Fortify's routes to avoid the conflict.
+        \Laravel\Fortify\Fortify::ignoreRoutes();
     }
 }

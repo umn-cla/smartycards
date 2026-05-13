@@ -52,7 +52,7 @@ Cypress.Commands.add(
   "createDeckForUser",
   (
     umndid: string,
-    { name, description = "" }: { name: string; description: string },
+    { name, description = "" }: { name: string; description?: string },
   ) => {
     return cy.php(`
       $user = \\App\\Models\\User::where("umndid", "${umndid}")->first();

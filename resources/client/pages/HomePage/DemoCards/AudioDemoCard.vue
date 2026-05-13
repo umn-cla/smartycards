@@ -13,12 +13,6 @@ const front: CardSide = [
     content: "https://www.allaboutbirds.org/guide/assets/sound/550633.mp3",
     meta: null,
   },
-  // {
-  //   id: crypto.randomUUID(),
-  //   type: "text",
-  //   content: "Which bird is singing?",
-  //   meta: null,
-  // },
 ];
 
 const back: CardSide = [
