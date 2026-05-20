@@ -98,7 +98,7 @@ import * as api from "@/api";
 import { ContentBlock } from "@/types";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import vueFilePond from "vue-filepond";
+import vueFilePond from "vue-filepond/dist/vue-filepond.esm.js";
 import FilePondPluginFileValidateType from "filepond-plugin-file-validate-type";
 import { IconX } from "../icons";
 import { isValidUrl } from "@/lib/utils";
