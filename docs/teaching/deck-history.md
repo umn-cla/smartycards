@@ -18,7 +18,7 @@ The deck history shows record of all changes, including:
 
 ## Accessing Deck History
 
-![Deck History Access](../img/deck-history-menu.png)
+![Deck History Access](../img/choose-history-menu.png)
 
 To view the history for a deck:
 
