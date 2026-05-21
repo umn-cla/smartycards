@@ -1,5 +1,5 @@
-import "@fontsource-variable/nunito";
-import "@fontsource-variable/rokkitt";
+import "@fontsource-variable/nunito/index.css";
+import "@fontsource-variable/rokkitt/index.css";
 
 import "./app.css";
 import "mathlive";
@@ -9,9 +9,7 @@ import "katex/dist/katex.css";
 import { createApp } from "vue";
 import { createPinia } from "pinia";
 import { VueQueryPlugin } from "@tanstack/vue-query";
-
-// for formula rendering
-import katex from "katex";
+import * as katex from "katex";
 window.katex = katex;
 import "katex/contrib/mhchem/mhchem.js";
 
