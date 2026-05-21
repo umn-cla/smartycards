@@ -13,6 +13,10 @@ import * as katex from "katex";
 window.katex = katex;
 import "katex/contrib/mhchem/mhchem.js";
 
+// disable attempts to play sounds
+import { MathfieldElement } from "mathlive";
+MathfieldElement.soundsDirectory = null;
+
 // for accessibility
 import VueAnnouncer from "@vue-a11y/announcer";
 
