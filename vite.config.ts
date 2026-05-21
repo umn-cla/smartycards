@@ -6,6 +6,9 @@ import laravel from "laravel-vite-plugin";
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd());
+  const host = env.VITE_APP_URL
+    ? new URL(env.VITE_APP_URL).hostname
+    : "127.0.0.1";
 
   return {
     plugins: [
@@ -41,14 +44,14 @@ export default defineConfig(({ mode }) => {
       },
     },
     server: {
-      host: new URL(env.VITE_CLIENT_BASE_URL).hostname,
-      port: 5173,
+      host,
       https: {
         cert: "./.cert/cert.pem",
         key: "./.cert/key.pem",
       },
       hmr: {
-        host: new URL(env.VITE_CLIENT_BASE_URL).hostname,
+        // needed so HMR connects back to a custom hostname (e.g. smartycards.docker)
+        host,
       },
     },
   };
