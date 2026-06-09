@@ -33,7 +33,12 @@ class DeckMembership extends Resource
      */
     public function title()
     {
-        return "{$this->user->name} ({$this->role}) - {$this->deck->name}";
+        // user/deck can be null when the related record is soft-deleted;
+        // fall back to the foreign key so the row stays identifiable.
+        $user = $this->user?->name ?? "User #{$this->user_id}";
+        $deck = $this->deck?->name ?? "Deck #{$this->deck_id}";
+
+        return "{$user} ({$this->role}) - {$deck}";
     }
 
     /**
