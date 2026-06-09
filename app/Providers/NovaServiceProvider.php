@@ -41,7 +41,7 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
 
     /**
      * Configure the Nova authorization services.
-     * This overides the default authorization method in
+     * This overrides the default authorization method in
      * NovaApplicationServiceProvider so that the gate applies
      * in local environments as well.
      *
