@@ -99,6 +99,11 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
      */
     public function register()
     {
+        // Registers Nova's booted callback that bootstraps the /admin page
+        // routes. Without this, only the nova-api/* routes load and /admin
+        // falls through to the SPA fallback.
+        parent::register();
+
         // Work around a deployment issue during `artisan:route:cache`:
         // "Unable to prepare route [logout] for serialization. Another
         // route has already been assigned name [logout]."

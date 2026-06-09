@@ -248,11 +248,6 @@ const router = createRouter({
         deckId: Number(route.params.deckId),
       }),
     },
-    {
-      path: "/admin",
-      name: "admin",
-      component: () => import("@/pages/AdminPage.vue"),
-    },
 
     // LTI Routes
     {

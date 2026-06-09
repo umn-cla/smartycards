@@ -10,11 +10,17 @@ class DeckMembershipPolicy
 {
     /**
      * Determine whether the user can view any models.
+     *
+     * Nova invokes this with only the user; membership visibility is
+     * deck-scoped, so deny when no deck is supplied.
      */
-    public function viewAny(User $user, Deck $deck): bool
+    public function viewAny(User $user, ?Deck $deck = null): bool
     {
-        return $user->hasRoleInDeck($deck, 'owner');
+        if (!$deck) {
+            return false;
+        }
 
+        return $user->hasRoleInDeck($deck, 'owner');
     }
 
     /**
@@ -28,8 +34,12 @@ class DeckMembershipPolicy
     /**
      * Determine whether the user can create models.
      */
-    public function create(User $user, Deck $deck): bool
+    public function create(User $user, ?Deck $deck = null): bool
     {
+        if (!$deck) {
+            return false;
+        }
+
         return $user->hasRoleInDeck($deck, 'owner');
     }
 
@@ -41,7 +51,7 @@ class DeckMembershipPolicy
         $isOwnMembership = $user->id === $deckMembership->user_id;
 
         // if it's not their own membership, just check if they're an owner
-        if (! $isOwnMembership) {
+        if (!$isOwnMembership) {
             return $user->isOwnerOfDeck($deckMembership->deck);
         }
 
@@ -74,11 +84,11 @@ class DeckMembershipPolicy
         // Handle a race where deck could be null if it's soft
         // deleted before we check membership.
         // https://university-of-minnesota-rd.sentry.io/issues/7243453987
-        if (! $deck) {
+        if (!$deck) {
             return true;
         }
 
-        if (! $user->isOwnerOfDeck($deck)) {
+        if (!$user->isOwnerOfDeck($deck)) {
             return true;
         }
 

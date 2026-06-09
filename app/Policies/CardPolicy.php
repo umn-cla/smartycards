@@ -27,8 +27,12 @@ class CardPolicy
     /**
      * Determine whether the user can create models.
      */
-    public function create(User $user, Deck $deck): bool
+    public function create(User $user, ?Deck $deck = null): bool
     {
+        if (!$deck) {
+            return false;
+        }
+
         return $user->hasRoleInDeck($deck, ['owner', 'editor']);
     }
 
