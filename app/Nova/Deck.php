@@ -2,7 +2,6 @@
 
 namespace App\Nova;
 
-use Illuminate\Http\Request;
 use Laravel\Nova\Fields\Boolean;
 use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\ID;
@@ -35,6 +34,17 @@ class Deck extends Resource
     ];
 
     /**
+     * Build an "index" query for the given resource.
+     *
+     * Aggregate the card and membership counts in a single query so the
+     * index columns don't lazy-load each relation per row (N+1).
+     */
+    public static function indexQuery(NovaRequest $request, $query)
+    {
+        return $query->withCount(['cards', 'memberships']);
+    }
+
+    /**
      * Get the fields displayed by the resource.
      *
      * @return array
@@ -49,12 +59,12 @@ class Deck extends Resource
 
             // card count
             Text::make('Card Count', function () {
-                return $this->cards->count();
+                return $this->cards_count;
             })->onlyOnIndex(),
 
             // membership count
             Text::make('Membership Count', function () {
-                return $this->memberships->count();
+                return $this->memberships_count;
             })->onlyOnIndex(),
 
             HasMany::make('Cards'),
