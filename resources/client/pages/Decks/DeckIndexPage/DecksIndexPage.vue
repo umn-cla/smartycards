@@ -1,11 +1,31 @@
 <template>
   <AuthenticatedLayout>
     <main>
-      <PageHeader title="Decks" size="lg" class="mb-8" />
+      <div class="flex justify-between items-center mb-8">
+        <PageHeader title="Decks" size="lg" class="mb-0" />
+        <div class="flex items-center gap-2">
+          <label
+            id="sort-label"
+            for="sort-select"
+            class="text-sm text-brand-maroon-800/70"
+          >
+            Sort by:
+          </label>
+          <Select v-model="sortBy" id="sort-select">
+            <SelectTrigger class="w-40 bg-white" aria-labelledby="sort-label">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="updated">Last updated</SelectItem>
+              <SelectItem value="name">Deck name</SelectItem>
+              <SelectItem value="cards">Number of cards</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
 
       <section>
         <h3 class="text-3xl font-bold text-brand-maroon-800 mb-4">My Decks</h3>
-
         <div class="card-grid !gap-6 sm:gap-4">
           <RouterLink
             :to="{ name: 'decks.create' }"
@@ -15,7 +35,11 @@
             <span>Create Deck</span>
           </RouterLink>
 
-          <DeckListItem :deck="deck" v-for="deck in myDecks" :key="deck.id" />
+          <DeckListItem
+            :deck="deck"
+            v-for="deck in sortedMyDecks"
+            :key="deck.id"
+          />
         </div>
       </section>
 
@@ -23,10 +47,10 @@
         <h3 class="text-3xl font-bold text-brand-maroon-800 mb-4">
           Shared Decks
         </h3>
-        <div class="card-grid !gap-6 sm:gap-4" v-if="sharedDecks.length">
+        <div class="card-grid !gap-6 sm:gap-4" v-if="sortedSharedDecks.length">
           <DeckListItem
             :deck="deck"
-            v-for="deck in sharedDecks"
+            v-for="deck in sortedSharedDecks"
             :key="deck.id"
           />
         </div>
@@ -40,12 +64,53 @@ import { RouterLink } from "vue-router";
 import { AuthenticatedLayout } from "@/layouts/AuthenticatedLayout";
 import { useAllDecksQuery } from "@/queries/decks";
 import DeckListItem from "./DeckListItem.vue";
-import { computed } from "vue";
+import { computed, ref } from "vue";
 import * as T from "@/types";
 import PageHeader from "@/components/PageHeader.vue";
 import { IconPlusFilled } from "@/components/icons";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const { data: decks } = useAllDecksQuery();
+
+const sortBy = ref<"updated" | "name" | "cards">("updated");
+
+const sortDecks = (deckList: T.Deck[]): T.Deck[] => {
+  const sorted = [...deckList];
+
+  switch (sortBy.value) {
+    case "name":
+      return sorted.sort((a, b) => a.name.localeCompare(b.name));
+    case "cards":
+      return sorted.sort((a, b) => {
+        const countA = a.cards_count ?? 0;
+        const countB = b.cards_count ?? 0;
+        return countB - countA;
+      });
+    case "updated":
+    default:
+      // Pre-compute timestamps for better performance
+      const decksWithTimestamps = sorted.map((deck) => ({
+        deck,
+        timestamp: new Date(deck.updated_at).getTime(),
+      }));
+
+      return decksWithTimestamps
+        .sort((a, b) => {
+          // Handle invalid dates by treating them as oldest
+          if (isNaN(a.timestamp) && isNaN(b.timestamp)) return 0;
+          if (isNaN(a.timestamp)) return 1;
+          if (isNaN(b.timestamp)) return -1;
+          return b.timestamp - a.timestamp;
+        })
+        .map((item) => item.deck);
+  }
+};
 
 const myDecks = computed((): T.Deck[] => {
   return (
@@ -61,6 +126,14 @@ const sharedDecks = computed((): T.Deck[] => {
       (deck) => deck.current_user_role !== T.MembershipRole.OWNER,
     ) ?? []
   );
+});
+
+const sortedMyDecks = computed((): T.Deck[] => {
+  return sortDecks(myDecks.value);
+});
+
+const sortedSharedDecks = computed((): T.Deck[] => {
+  return sortDecks(sharedDecks.value);
 });
 </script>
 <style scoped></style>
