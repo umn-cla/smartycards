@@ -1,0 +1,42 @@
+describe("Laravel Nova admin (/admin)", () => {
+  beforeEach(() => {
+    cy.refreshDatabase();
+    cy.seed();
+  });
+
+  context("when the user is not logged in", () => {
+    it("redirects to the login page", () => {
+      cy.request({
+        url: "/admin",
+        followRedirect: false,
+        failOnStatusCode: false,
+      }).then((response) => {
+        expect(response.status).to.eq(302);
+        expect(response.headers.location).to.contain("/login");
+      });
+    });
+  });
+
+  context("as a basic user", () => {
+    beforeEach(() => {
+      cy.login({ umndid: "astudent" });
+    });
+
+    it("returns 403 for a non-admin user", () => {
+      cy.request({ url: "/admin", failOnStatusCode: false })
+        .its("status")
+        .should("eq", 403);
+    });
+  });
+
+  context("as a super admin", () => {
+    beforeEach(() => {
+      cy.login({ umndid: "admin" });
+    });
+
+    it("loads the dashboard", () => {
+      cy.visit("/admin");
+      cy.contains("Get Started").should("be.visible");
+    });
+  });
+});

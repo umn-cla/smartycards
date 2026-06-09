@@ -4,8 +4,10 @@ namespace App\Providers;
 
 use App\Models\Permission;
 use App\Models\User;
+use App\Nova\Dashboards\Main;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use Laravel\Fortify\Fortify;
 use Laravel\Nova\Nova;
 use Laravel\Nova\NovaApplicationServiceProvider;
 
@@ -23,7 +25,6 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
         Nova::userTimezone(function (Request $request) {
             return $request->user()?->timezone ?? 'America/Chicago';
         });
-
     }
 
     /**
@@ -36,6 +37,25 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
         Nova::routes()
             ->withAuthenticationRoutes(['auth'])
             ->register();
+    }
+
+    /**
+     * Configure the Nova authorization services.
+     * This overrides the default authorization method in
+     * NovaApplicationServiceProvider so that the gate applies
+     * in local environments as well.
+     *
+     * @return void
+     */
+    protected function authorization()
+    {
+        $this->gate();
+
+        Nova::auth(function ($request) {
+            $user = $request->user();
+
+            return $user !== null && Gate::forUser($user)->check('viewNova');
+        });
     }
 
     /**
@@ -60,7 +80,7 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
     protected function dashboards()
     {
         return [
-            new \App\Nova\Dashboards\Main,
+            new Main,
         ];
     }
 
@@ -81,10 +101,15 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
      */
     public function register()
     {
+        // Registers Nova's booted callback that bootstraps the /admin page
+        // routes. Without this, only the nova-api/* routes load and /admin
+        // falls through to the SPA fallback.
+        parent::register();
+
         // Work around a deployment issue during `artisan:route:cache`:
         // "Unable to prepare route [logout] for serialization. Another
         // route has already been assigned name [logout]."
         // Disable Fortify's routes to avoid the conflict.
-        \Laravel\Fortify\Fortify::ignoreRoutes();
+        Fortify::ignoreRoutes();
     }
 }

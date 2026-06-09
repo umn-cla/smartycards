@@ -32,8 +32,12 @@ class CardAttemptPolicy
     /**
      * Determine whether the user can create models.
      */
-    public function create(User $user, Card $card): bool
+    public function create(User $user, ?Card $card = null): bool
     {
+        if (!$card) {
+            return false;
+        }
+
         // if a user can view a card, they can create an attempt
         return $user->can('view', $card);
     }

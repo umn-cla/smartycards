@@ -1,4 +1,5 @@
 import { defineConfig } from "cypress";
+import "dotenv/config";
 
 export default defineConfig({
   chromeWebSecurity: false,
@@ -12,7 +13,7 @@ export default defineConfig({
   viewportWidth: 1920,
   viewportHeight: 1080,
   e2e: {
-    baseUrl: "https://localhost",
+    baseUrl: process.env.APP_URL ?? "https://localhost",
     specPattern: "tests/cypress/e2e/**/*.{cy,spec}.{js,jsx,ts,tsx}",
     supportFile: "tests/cypress/support/index.ts",
     experimentalRunAllSpecs: true,

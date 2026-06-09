@@ -1,10 +1,9 @@
 <?php
 
+use Illuminate\Http\Middleware\CheckResponseForModifications;
 use Laravel\Nova\Actions\ActionResource;
 use Laravel\Nova\Http\Middleware\Authenticate;
 use Laravel\Nova\Http\Middleware\Authorize;
-use Laravel\Nova\Http\Middleware\BootTools;
-use Laravel\Nova\Http\Middleware\DispatchServingNovaEvent;
 use Laravel\Nova\Http\Middleware\HandleInertiaRequests;
 
 return [
@@ -46,7 +45,7 @@ return [
     |
     */
 
-    'domain' => env('NOVA_DOMAIN_NAME', null),
+    'domain' => env('NOVA_DOMAIN', env('NOVA_DOMAIN_NAME')),
 
     /*
     |--------------------------------------------------------------------------
@@ -59,7 +58,7 @@ return [
     |
     */
 
-    'path' => '/admin',
+    'path' => env('NOVA_PATH', '/admin'),
 
     /*
     |--------------------------------------------------------------------------
@@ -101,14 +100,20 @@ return [
     'middleware' => [
         'web',
         HandleInertiaRequests::class,
-        DispatchServingNovaEvent::class,
-        BootTools::class,
+        'nova:serving',
     ],
 
     'api_middleware' => [
         'nova',
         Authenticate::class,
+        // \Laravel\Nova\Http\Middleware\AuthenticateSession::class,
+        // \Laravel\Nova\Http\Middleware\EnsureEmailIsVerified::class,
         Authorize::class,
+    ],
+
+    'asset_middleware' => [
+        'nova:api',
+        CheckResponseForModifications::class,
     ],
 
     /*
