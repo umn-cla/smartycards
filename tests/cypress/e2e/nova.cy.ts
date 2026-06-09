@@ -22,7 +22,7 @@ describe("Laravel Nova admin (/admin)", () => {
       cy.login({ umndid: "astudent" });
     });
 
-    it("loads the dashboard with the Get Started panel", () => {
+    it("returns 403 for a non-admin user", () => {
       cy.request({ url: "/admin", failOnStatusCode: false })
         .its("status")
         .should("eq", 403);
