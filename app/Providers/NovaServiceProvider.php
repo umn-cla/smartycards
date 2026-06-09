@@ -52,7 +52,9 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
         $this->gate();
 
         Nova::auth(function ($request) {
-            return Gate::check('viewNova', [$request->user()]);
+            $user = $request->user();
+
+            return $user !== null && Gate::forUser($user)->check('viewNova');
         });
     }
 
