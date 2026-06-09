@@ -12,7 +12,7 @@ describe("Laravel Nova admin (/admin)", () => {
         failOnStatusCode: false,
       }).then((response) => {
         expect(response.status).to.eq(302);
-        expect(response.redirectedToUrl).to.contain("/login");
+        expect(response.headers.location).to.contain("/login");
       });
     });
   });
