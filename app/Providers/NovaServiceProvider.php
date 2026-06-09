@@ -4,8 +4,10 @@ namespace App\Providers;
 
 use App\Models\Permission;
 use App\Models\User;
+use App\Nova\Dashboards\Main;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use Laravel\Fortify\Fortify;
 use Laravel\Nova\Nova;
 use Laravel\Nova\NovaApplicationServiceProvider;
 
@@ -23,7 +25,6 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
         Nova::userTimezone(function (Request $request) {
             return $request->user()?->timezone ?? 'America/Chicago';
         });
-
     }
 
     /**
@@ -77,7 +78,7 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
     protected function dashboards()
     {
         return [
-            new \App\Nova\Dashboards\Main,
+            new Main,
         ];
     }
 
@@ -102,6 +103,6 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
         // "Unable to prepare route [logout] for serialization. Another
         // route has already been assigned name [logout]."
         // Disable Fortify's routes to avoid the conflict.
-        \Laravel\Fortify\Fortify::ignoreRoutes();
+        Fortify::ignoreRoutes();
     }
 }
