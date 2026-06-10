@@ -2,6 +2,7 @@
 
 namespace App\Library;
 
+use App\Exceptions\QuizGenerationException;
 use App\Library\OpenAIService\OpenAIService;
 use App\Models\Deck;
 use Illuminate\Support\Collection;
@@ -18,13 +19,13 @@ class QuizMaker
         'challenge_level' => 'undergrad',
     ];
 
-    private $openAI;
+    private OpenAIService $openAI;
 
-    public function __construct(Deck $deck, ?array $options = [])
+    public function __construct(Deck $deck, array $options, OpenAIService $openAI)
     {
         $this->deck = $deck;
         $this->options = array_merge($this->defaultOptions, $options);
-        $this->openAI = new OpenAIService;
+        $this->openAI = $openAI;
     }
 
     public function getSystemText()
@@ -202,10 +203,18 @@ class QuizMaker
         $response = $this->openAI->request(
             prompt: $this->getPrompt(),
             systemText: $this->getSystemText(),
-            responseSchema: $this->getResponseSchema()
+            responseSchema: $this->getResponseSchema(),
+            // ~1k tokens per question; keeps a full quiz from being truncated.
+            maxTokens: $this->options['numberOfQuestions'] * 1000,
         );
 
-        $quiz = json_decode($response, true);
+        $quiz = json_decode($response->content, true);
+
+        // A truncated or empty response decodes to null (or lacks a questions
+        // array). Fail loudly instead of dereferencing null. (SMARTYCARDS-11)
+        if (! is_array($quiz) || ! isset($quiz['questions']) || ! is_array($quiz['questions'])) {
+            throw QuizGenerationException::fromResponse($response);
+        }
 
         $sourceCardIds = collect($quiz['questions'])->map(fn($question) => $question['sourceCardId']);
 
@@ -217,7 +226,8 @@ class QuizMaker
 
         // add the card data to the quiz
         foreach ($quiz['questions'] as &$question) {
-            $card = $cardLookup[$question['sourceCardId']];
+            // null when the model references a card outside this deck
+            $card = $cardLookup[$question['sourceCardId']] ?? null;
 
             $question['sourceCard'] = $card;
             $question['sourceCardSide'] = $this->options['cardSide'];

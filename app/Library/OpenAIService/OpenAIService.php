@@ -36,19 +36,24 @@ class OpenAIService
     /**
      * Sends a chat request to the OpenAI service.
      */
-    public function request(string $prompt, ?string $systemText, array $responseSchema): string
+    public function request(string $prompt, ?string $systemText, array $responseSchema, int $maxTokens = 800): ChatResponse
     {
         $systemText = $systemText ?? $this->systemText;
         $payload = ChatRequest::createPayload(
             prompt: $prompt,
             systemText: $systemText,
-            responseSchema: $responseSchema
+            responseSchema: $responseSchema,
+            maxTokens: $maxTokens,
         );
 
         try {
             $response = $this->client->chat()->create($payload);
+            $choice = $response->choices[0];
 
-            return $response->choices[0]->message->content;
+            return new ChatResponse(
+                content: $choice->message->content ?? '',
+                finishReason: $choice->finishReason ?? 'unknown',
+            );
         } catch (Exception $e) {
             // Handle the exception or log it
             throw new Exception('Failed to communicate with OpenAI: '.$e->getMessage());

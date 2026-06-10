@@ -8,13 +8,13 @@ class ChatRequest
 
     private float $temperature = 0.7;
 
-    private float $maxTokens = 800;
+    private int $maxTokens;
 
     private float $topP = 0.95;
 
     private array $responseSchema = [];
 
-    public function __construct(string $prompt, string $systemText, array $responseSchema)
+    public function __construct(string $prompt, string $systemText, array $responseSchema, int $maxTokens = 800)
     {
         if ($systemText) {
             $this->addMessage('system', $systemText);
@@ -23,6 +23,7 @@ class ChatRequest
         $this->addMessage('user', $prompt);
 
         $this->responseSchema = $responseSchema;
+        $this->maxTokens = $maxTokens;
     }
 
     public function addMessage(string $role, string $content): void
@@ -52,9 +53,14 @@ class ChatRequest
         ];
     }
 
-    public static function createPayload(string $prompt, string $systemText, $responseSchema): array
+    public static function createPayload(string $prompt, string $systemText, array $responseSchema, int $maxTokens = 800): array
     {
-        $chatRequest = new self(prompt: $prompt, systemText: $systemText, responseSchema: $responseSchema);
+        $chatRequest = new self(
+            prompt: $prompt,
+            systemText: $systemText,
+            responseSchema: $responseSchema,
+            maxTokens: $maxTokens,
+        );
 
         return $chatRequest->toArray();
     }
