@@ -112,7 +112,7 @@
                 <TableHead class="py-2">
                   <input
                     v-model="filterUser"
-                    data-cy="audit-filter-user"
+                    data-cy="audit-user-filter-input"
                     type="text"
                     placeholder="Filter..."
                     class="text-base md:text-xs border-none rounded px-1.5 py-1 bg-brand-maroon-900/5 placeholder:text-black/25 w-full"
@@ -138,16 +138,16 @@
               </TableRow>
             </TableHeader>
             <TableBody>
-              <TableRow v-if="isAuditHistoryError">
+              <TableRow v-if="isErrorWithoutData">
                 <TableCell
                   colspan="6"
                   class="text-center py-8 text-brand-maroon-900/70"
                 >
-                  Could not load history for these filters.
+                  Could not load audit history.
                 </TableCell>
               </TableRow>
               <!-- Empty state -->
-              <TableRow v-else-if="auditHistory && audits.length === 0">
+              <TableRow v-else-if="isLoadedAndEmpty">
                 <TableCell
                   colspan="6"
                   class="text-center py-8 text-brand-maroon-900/50"
@@ -169,9 +169,8 @@
                       variant="ghost"
                       size="icon"
                       class="size-6"
-                      data-cy="audit-row-toggle"
+                      data-cy="toggle-audit-row-button"
                       :aria-expanded="expandedRows.has(audit.id)"
-                      @click.stop="toggleRow(audit.id)"
                     >
                       <span class="sr-only">
                         Changes to {{ audit.auditable_type }}
@@ -248,7 +247,7 @@
             <Button
               variant="outline"
               :disabled="!auditHistory.links.next"
-              @click="page++"
+              @click="page = Math.min(page + 1, auditHistory.meta.last_page)"
             >
               Next
             </Button>
@@ -357,6 +356,12 @@ const hasActiveFilters = computed(() =>
 );
 
 const audits = computed(() => auditHistory.value?.data ?? []);
+
+const isErrorWithoutData = computed(
+  () => isAuditHistoryError.value && !auditHistory.value,
+);
+
+const isLoadedAndEmpty = computed(() => auditHistory.value?.data.length === 0);
 
 // Actions
 function clearFilters() {
