@@ -1,6 +1,10 @@
 <template>
   <div class="quiz">
-    <h3 ref="questionHeading" tabindex="-1" class="text-center mb-8">
+    <h3
+      ref="questionHeading"
+      tabindex="-1"
+      class="text-center mb-8 focus:outline-none"
+    >
       Question {{ questionNumber }} of
       {{ totalQuestions }}
     </h3>
@@ -26,8 +30,9 @@
         class="pl-4"
       >
         <!-- Keep the question index in :key. An index-only
-          key reuses the radios, and radix-vue names them
-          "0", "1", "2" instead of the choice text. -->
+          key reuses the radios, and radix-vue sets their
+          aria-label to "0", "1", "2" instead of the
+          choice text. -->
         <Label
           class="flex items-center p-4 bg-brand-maroon-950/5 rounded-md transition"
           v-for="(choice, index) in activeQuestion.choices"
@@ -95,6 +100,7 @@
 <script setup lang="ts">
 import * as T from "@/types";
 import { computed, nextTick, ref, useTemplateRef } from "vue";
+import { unrefElement } from "@vueuse/core";
 import { useAnnouncer } from "@vue-a11y/announcer";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -104,13 +110,13 @@ import Markdown from "@/components/Markdown.vue";
 import { makeContentBlock } from "@/lib/makeContentBlock";
 import { isMathBlock, isTextBlock } from "@/lib/isBlockOfType";
 import {
-  checkAnswer,
+  gradeAnswer,
   describeAnswerResult,
   describeQuizScore,
   goToNextQuestion,
   isLastQuestion,
   selectChoice,
-  startQuizProgress,
+  createQuizProgress,
   type QuizProgress,
 } from "./quizProgress";
 
@@ -128,7 +134,7 @@ const emit = defineEmits<{
   );
 }>();
 
-const progress = ref<QuizProgress>(startQuizProgress());
+const progress = ref<QuizProgress>(createQuizProgress());
 const announcer = useAnnouncer();
 const nextOrFinishButton =
   useTemplateRef<InstanceType<typeof Button>>("nextOrFinishButton");
@@ -196,7 +202,11 @@ function isRevealedCorrectChoice(choiceIndex: number): boolean {
 }
 
 function isRevealedWrongSelection(choiceIndex: number): boolean {
-  return isShowingResult.value && selectedChoiceIndex.value === choiceIndex;
+  return (
+    isShowingResult.value &&
+    selectedChoiceIndex.value === choiceIndex &&
+    !isChoiceIndexCorrect(choiceIndex)
+  );
 }
 
 const isAnswerCorrect = computed((): boolean => {
@@ -212,15 +222,8 @@ function selectChoiceByRadioValue(radioValue: string): void {
   progress.value = selectChoice(progress.value, Number.parseInt(radioValue));
 }
 
-function focusButton(button: InstanceType<typeof Button> | null): void {
-  const buttonElement: unknown = button?.$el;
-  if (buttonElement instanceof HTMLElement) {
-    buttonElement.focus();
-  }
-}
-
 async function checkSelectedAnswer(): Promise<void> {
-  const checkedProgress = checkAnswer(progress.value, activeQuestion.value);
+  const checkedProgress = gradeAnswer(progress.value, activeQuestion.value);
   progress.value = checkedProgress;
   if (checkedProgress.answer.status !== "showingResult") {
     return;
@@ -230,7 +233,7 @@ async function checkSelectedAnswer(): Promise<void> {
     describeAnswerResult(checkedProgress.answer, activeQuestion.value),
   );
   await nextTick();
-  focusButton(nextOrFinishButton.value);
+  unrefElement(nextOrFinishButton)?.focus();
 }
 
 async function showNextQuestion(): Promise<void> {

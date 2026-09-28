@@ -107,7 +107,7 @@
         <h2
           ref="completeHeading"
           tabindex="-1"
-          class="text-center font-bold text-xl"
+          class="text-center font-bold text-xl focus:outline-none"
         >
           Complete
         </h2>

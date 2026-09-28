@@ -20,7 +20,7 @@ export interface QuizProgress {
   answer: AnswerState;
 }
 
-export function startQuizProgress(): QuizProgress {
+export function createQuizProgress(): QuizProgress {
   return {
     questionIndex: 0,
     correctCount: 0,
@@ -43,7 +43,7 @@ export function selectChoice(
   };
 }
 
-export function checkAnswer(
+export function gradeAnswer(
   progress: QuizProgress,
   question: T.QuizQuestion,
 ): QuizProgress {
@@ -79,18 +79,18 @@ export function checkAnswer(
 
 export function isLastQuestion(
   progress: QuizProgress,
-  questionCount: number,
+  totalQuestions: number,
 ): boolean {
-  return progress.questionIndex === questionCount - 1;
+  return progress.questionIndex === totalQuestions - 1;
 }
 
 export function goToNextQuestion(
   progress: QuizProgress,
-  questionCount: number,
+  totalQuestions: number,
 ): QuizProgress {
   if (
     progress.answer.status !== "showingResult" ||
-    isLastQuestion(progress, questionCount)
+    isLastQuestion(progress, totalQuestions)
   ) {
     return progress;
   }
