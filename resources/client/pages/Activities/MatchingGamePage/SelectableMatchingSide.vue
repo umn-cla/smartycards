@@ -9,7 +9,6 @@
       :aria-pressed="side.status === 'selected'"
       :aria-disabled="isMatched"
       :aria-labelledby="`${contentId} ${positionId}`"
-      @click.stop="emit('select')"
     />
     <MatchingSide
       :id="contentId"
