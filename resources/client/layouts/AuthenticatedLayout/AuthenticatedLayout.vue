@@ -1,5 +1,13 @@
 <template>
   <div class="min-h-dvh bg-brand-oatmeal-100">
+    <button
+      type="button"
+      class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] focus:rounded-md focus:bg-brand-maroon-800 focus:px-4 focus:py-2 focus:text-brand-oatmeal-50 focus:outline-none focus:ring-2 focus:ring-brand-gold-500"
+      @click="focusMainContent"
+    >
+      Skip to main content
+    </button>
+
     <MobileSidebarNav
       v-model:isSidebarOpen="isSidebarOpen"
       :navigation="navigation"
@@ -22,7 +30,12 @@
       :currentUser="currentUser"
     />
 
-    <main :class="cn('pt-6 sm:py-10 lg:pl-72', containerClass)">
+    <main
+      id="main-content"
+      ref="mainContentRef"
+      tabindex="-1"
+      :class="cn('pt-6 sm:py-10 lg:pl-72 focus:outline-none', containerClass)"
+    >
       <div :class="cn('px-4 sm:px-6 lg:px-8')">
         <slot />
       </div>
@@ -64,6 +77,11 @@ const navigation: T.NavMenuItem[] = [
 ];
 
 const isSidebarOpen = ref(false);
+const mainContentRef = ref<HTMLElement | null>(null);
+
+function focusMainContent() {
+  mainContentRef.value?.focus();
+}
 const { data: currentUser } = useAuthQuery();
 const { data: decks } = useAllDecksQuery();
 
