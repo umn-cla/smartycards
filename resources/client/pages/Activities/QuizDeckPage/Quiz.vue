@@ -1,9 +1,9 @@
 <template>
   <div class="quiz">
-    <h1 class="text-center mb-8">
+    <h3 ref="questionHeading" tabindex="-1" class="text-center mb-8">
       Question {{ questionNumber }} of
       {{ totalQuestions }}
-    </h1>
+    </h3>
 
     <div class="w-80 max-w-full mx-auto">
       <CardSideView
@@ -12,18 +12,26 @@
         :sideName="activeQuestion.sourceCardSide"
         class="mb-4"
       />
-      <Markdown :content="activeQuestion.prompt" class="mb-4" />
+      <Markdown
+        :id="activeQuestionPromptId"
+        :content="activeQuestion.prompt"
+        class="mb-4"
+      />
 
       <RadioGroup
         :modelValue="selectedChoiceIndex?.toString()"
         @update:modelValue="selectChoiceByRadioValue"
         :disabled="isShowingResult"
+        :aria-labelledby="activeQuestionPromptId"
         class="pl-4"
       >
+        <!-- Keep the question index in :key. An index-only
+          key reuses the radios, and radix-vue names them
+          "0", "1", "2" instead of the choice text. -->
         <Label
           class="flex items-center p-4 bg-brand-maroon-950/5 rounded-md transition"
           v-for="(choice, index) in activeQuestion.choices"
-          :key="index"
+          :key="`${progress.questionIndex}-${index}`"
           :for="getQuestionChoiceId(progress.questionIndex, index)"
           :class="{
             '!bg-brand-teal-300/10 rounded-md border border-brand-teal-500/50 !text-brand-teal-700':
@@ -77,12 +85,7 @@
         <Button
           v-if="progress.questionIndex === totalQuestions - 1"
           ref="nextOrFinishButton"
-          @click="
-            $emit('end-quiz', {
-              correctCount: progress.correctCount,
-              incorrectCount: progress.incorrectCount,
-            })
-          "
+          @click="finishQuiz"
         >
           Finish
         </Button>
@@ -108,6 +111,7 @@ import { isMathBlock, isTextBlock } from "@/lib/isBlockOfType";
 import {
   checkAnswer,
   describeAnswerResult,
+  describeQuizScore,
   goToNextQuestion,
   selectChoice,
   startQuizProgress,
@@ -118,7 +122,7 @@ const props = defineProps<{
   quiz: T.Quiz;
 }>();
 
-defineEmits<{
+const emit = defineEmits<{
   (
     eventName: "end-quiz",
     payload: {
@@ -132,6 +136,7 @@ const progress = ref<QuizProgress>(startQuizProgress());
 const announcer = useAnnouncer();
 const nextOrFinishButton =
   useTemplateRef<InstanceType<typeof Button>>("nextOrFinishButton");
+const questionHeading = useTemplateRef<HTMLHeadingElement>("questionHeading");
 
 const isShowingResult = computed(
   () => progress.value.answer.status === "showingResult",
@@ -143,6 +148,9 @@ const questionNumber = computed(() => progress.value.questionIndex + 1);
 const totalQuestions = computed(() => props.quiz.questions.length);
 const activeQuestion = computed(
   () => props.quiz.questions[progress.value.questionIndex],
+);
+const activeQuestionPromptId = computed(
+  () => `quiz-q${progress.value.questionIndex}-prompt`,
 );
 
 function createImageBlocksFromTextBlock(text: string): T.ImageContentBlock[] {
@@ -221,8 +229,18 @@ async function checkSelectedAnswer(): Promise<void> {
   focusButton(nextOrFinishButton.value);
 }
 
-function showNextQuestion(): void {
+async function showNextQuestion(): Promise<void> {
   progress.value = goToNextQuestion(progress.value);
+  await nextTick();
+  questionHeading.value?.focus();
+}
+
+function finishQuiz(): void {
+  announcer.polite(describeQuizScore(progress.value));
+  emit("end-quiz", {
+    correctCount: progress.value.correctCount,
+    incorrectCount: progress.value.incorrectCount,
+  });
 }
 </script>
 <style scoped></style>

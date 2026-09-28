@@ -100,3 +100,8 @@ export function describeAnswerResult(
   const correctChoiceNumber = question.correctChoiceIndex + 1;
   return `Incorrect. The correct answer is choice ${correctChoiceNumber}.`;
 }
+
+export function describeQuizScore(progress: QuizProgress): string {
+  const answeredCount = progress.correctCount + progress.incorrectCount;
+  return `Quiz complete. ${progress.correctCount} of ${answeredCount} correct.`;
+}
