@@ -16,12 +16,12 @@ describe("QuillEditor keyboard", () => {
       cy.get(".ql-toolbar .ql-code-block").click();
       cy.get(".ql-editor .ql-code-block").should("have.text", "x = 1");
     });
+
+    cy.focused().should("have.class", "ql-editor");
   });
 
   it("moves focus out of a code block on Tab", () => {
-    cy.focused().should("have.class", "ql-editor");
-
-    cy.press(Cypress.Keyboard.Keys.TAB);
+    cy.realPress("Tab");
 
     cy.focused().should("not.have.class", "ql-editor");
     cy.get("@frontTextBlock")
@@ -29,22 +29,12 @@ describe("QuillEditor keyboard", () => {
       .should("have.text", "x = 1");
   });
 
-  it("leaves Shift+Tab in a code block to the browser", () => {
-    cy.window().then((win) => {
-      cy.get("@frontTextBlock")
-        .find(".ql-editor")
-        .then(($editor) => {
-          const shiftTab = new win.KeyboardEvent("keydown", {
-            key: "Tab",
-            shiftKey: true,
-            bubbles: true,
-            cancelable: true,
-          });
+  it("moves focus out of a code block on Shift+Tab", () => {
+    cy.realPress(["Shift", "Tab"]);
 
-          const isNotCancelled = $editor[0].dispatchEvent(shiftTab);
-
-          expect(isNotCancelled).to.equal(true);
-        });
-    });
+    cy.focused().should("not.have.class", "ql-editor");
+    cy.get("@frontTextBlock")
+      .find(".ql-editor .ql-code-block")
+      .should("have.text", "x = 1");
   });
 });

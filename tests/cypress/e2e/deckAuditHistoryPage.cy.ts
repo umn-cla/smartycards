@@ -1,12 +1,14 @@
 describe("DeckAuditHistoryPage", () => {
+  const auditHistoryRoute = {
+    method: "GET",
+    pathname: "/api/decks/*/reports/audit-history",
+  };
+
   beforeEach(() => {
     cy.refreshDatabase();
     cy.login({ umndid: "user" });
 
-    cy.intercept({
-      method: "GET",
-      pathname: "/api/decks/*/reports/audit-history",
-    }).as("auditHistory");
+    cy.intercept(auditHistoryRoute).as("auditHistory");
 
     cy.createDeckForUser("user", { name: "Deck 1" }).then((deck) => {
       cy.visit(`/decks/${deck.id}/reports/audit-history`);
@@ -16,19 +18,22 @@ describe("DeckAuditHistoryPage", () => {
   });
 
   it("expands a row from the keyboard", () => {
-    cy.get('[data-cy="audit-row-toggle"]').first().focus();
+    cy.get('[data-cy="toggle-audit-row-button"]').first().focus();
 
-    cy.press(Cypress.Keyboard.Keys.ENTER);
+    cy.realPress("Enter");
 
     cy.focused().should("have.attr", "aria-expanded", "true");
     cy.get('[data-cy="audit-row-changes"]').should("be.visible");
   });
 
   it("keeps focus in a filter while filtered results load", () => {
-    cy.get('[data-cy="audit-filter-user"]').type("u");
+    cy.intercept({ ...auditHistoryRoute, query: { user: "u" } }).as(
+      "userFilteredAuditHistory",
+    );
 
-    cy.wait("@auditHistory").its("request.query.user").should("equal", "u");
+    cy.get('[data-cy="audit-user-filter-input"]').type("u");
 
-    cy.focused().should("have.attr", "data-cy", "audit-filter-user");
+    cy.wait("@userFilteredAuditHistory");
+    cy.focused().should("have.attr", "data-cy", "audit-user-filter-input");
   });
 });
