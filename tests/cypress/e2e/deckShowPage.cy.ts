@@ -124,6 +124,19 @@ describe("DeckShowPage", () => {
     // verify that we see only the card that matches the search term
     cy.get('[data-cy="flippable-card"]').should("have.length", 1);
     cy.contains("Another card");
+    cy.get("#announcer").should("have.text", "1 matching card.");
+  });
+
+  it("announces Flip All once for the page", () => {
+    cy.createTextCardInDeck(deckId, { front: "Front side", back: "Back side" });
+
+    cy.visit(`/decks/${deckId}`);
+
+    cy.contains("Flip All").click();
+    cy.get("#announcer").should("have.text", "All cards showing back.");
+
+    cy.contains("Flip All").click();
+    cy.get("#announcer").should("have.text", "All cards showing front.");
   });
 
   it("'Create and Add Another' button uses previous card's structure", () => {
@@ -184,6 +197,10 @@ describe("DeckShowPage", () => {
     // CREATE AND ADD ANOTHER
     cy.contains("Create + Another").click();
     cy.wait("@createCard");
+    cy.get("#announcer").should(
+      "have.text",
+      "Card created. Form cleared for the next card.",
+    );
 
     cy.get("[data-cy='front-side-input']").within(() => {
       // verify that the front side has the image block and hint block

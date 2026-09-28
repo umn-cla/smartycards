@@ -39,6 +39,10 @@ describe("DeckShowPage", () => {
       cy.contains(/Back side \d/);
       markCorrectAndWaitForCardToLeave(cardText);
     });
+    cy.get("#announcer").should(
+      "have.text",
+      "Card removed from this session. 2 cards left.",
+    );
 
     // card 2
     cy.contains(/Front side \d/).then(($el: JQuery<HTMLElement>) => {
@@ -48,6 +52,10 @@ describe("DeckShowPage", () => {
       cardsSeen.add(cardText);
       markCorrectAndWaitForCardToLeave(cardText);
     });
+    cy.get("#announcer").should(
+      "have.text",
+      "Card removed from this session. 1 card left.",
+    );
 
     // card 3
     cy.contains(/Front side \d/).then(($el: JQuery<HTMLElement>) => {
@@ -57,6 +65,10 @@ describe("DeckShowPage", () => {
       cardsSeen.add(cardText);
       markCorrectAndWaitForCardToLeave(cardText);
     });
+    cy.get("#announcer").should(
+      "have.text",
+      "You have completed this practice session.",
+    );
 
     // we should see the end message
     cy.contains("You have completed").then(() => {
