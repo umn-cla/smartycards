@@ -104,14 +104,13 @@ export function goToNextQuestion(
 
 export function describeAnswerResult(
   answer: ShowingResult,
-  question: T.QuizQuestion,
+  correctChoiceText: string,
 ): string {
   if (answer.isCorrect) {
     return "Correct!";
   }
 
-  const correctChoiceNumber = question.correctChoiceIndex + 1;
-  return `Incorrect. The correct answer is choice ${correctChoiceNumber}.`;
+  return `Incorrect. The correct answer is ${correctChoiceText}.`;
 }
 
 export function describeQuizScore(progress: QuizProgress): string {

@@ -60,7 +60,7 @@ describe("QuizDeckPage", () => {
     cy.contains("❌ Incorrect");
     cy.get("#announcer").should(
       "contain",
-      "Incorrect. The correct answer is choice 1.",
+      "Incorrect. The correct answer is Paris.",
     );
     cy.focused().should("contain.text", "Next");
   });

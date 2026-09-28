@@ -101,6 +101,8 @@
 import * as T from "@/types";
 import { computed, nextTick, ref, useTemplateRef } from "vue";
 import { unrefElement } from "@vueuse/core";
+import { escapeHtmlText } from "@/lib/escapeHtmlText";
+import { markdownToSpeechText } from "@/lib/markdownToSpeechText";
 import { useAnnouncer } from "@vue-a11y/announcer";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -229,9 +231,15 @@ async function checkSelectedAnswer(): Promise<void> {
     return;
   }
 
-  announcer.polite(
-    describeAnswerResult(checkedProgress.answer, activeQuestion.value),
+  const { choices, correctChoiceIndex } = activeQuestion.value;
+  const correctChoiceText = markdownToSpeechText(choices[correctChoiceIndex]);
+  const resultMessage = describeAnswerResult(
+    checkedProgress.answer,
+    correctChoiceText,
   );
+  // VueAnnouncer sets messages as innerHTML. Without
+  // escapeHtmlText, choice text becomes markup.
+  announcer.polite(escapeHtmlText(resultMessage));
   await nextTick();
   unrefElement(nextOrFinishButton)?.focus();
 }
