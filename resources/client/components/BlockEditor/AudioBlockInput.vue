@@ -72,7 +72,7 @@
       </div>
       <button
         class="absolute top-0 right-0 bg-neutral-700 hover:bg-brand-maroon-800 text-neutral-100 rounded-full w-6 h-6 flex items-center justify-center transition-colors"
-        @click="$emit('update:modelValue', '')"
+        @click="clearAudio"
       >
         <IconX />
         <span class="sr-only">Clear</span>
@@ -94,7 +94,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from "vue";
+import { ref, computed, nextTick } from "vue";
 import * as api from "@/api";
 import { ContentBlock } from "@/types";
 import { Label } from "@/components/ui/label";
@@ -110,6 +110,7 @@ import "filepond-plugin-image-preview/dist/filepond-plugin-image-preview.min.css
 import { useMakeInputId } from "@/composables/useMakeInputId";
 import { useErrorStore } from "@/stores/useErrorStore";
 import { useAnnouncer } from "@vue-a11y/announcer";
+import { focusIfNothingIsFocused } from "@/lib/focusIfNothingIsFocused";
 
 const props = defineProps<{
   id: ContentBlock["id"];
@@ -127,6 +128,15 @@ const myFiles = ref<string[]>([]);
 const isUploading = ref(false);
 const isValidUrlComputed = computed(() => isValidUrl(props.modelValue));
 const announcer = useAnnouncer();
+
+function getAudioUrlInput(): HTMLElement | null {
+  return document.getElementById(makeInputId("audio-url"));
+}
+
+function clearAudio(): void {
+  getAudioUrlInput()?.focus();
+  emit("update:modelValue", "");
+}
 
 function onFileChange(file: File) {
   return api.uploadFile(file);
@@ -147,6 +157,7 @@ async function handleProcessAudio(
 
   emit("update:modelValue", fileInfo.url);
   announcer.polite("Audio file uploaded.");
+  nextTick(() => focusIfNothingIsFocused(getAudioUrlInput()));
 
   return { abort };
 }
@@ -162,6 +173,8 @@ async function handleRecordingComplete({
   url: string;
   mimeType: string;
 }) {
+  getAudioUrlInput()?.focus();
+
   try {
     isUploading.value = true;
     announcer.polite("Uploading recording.");

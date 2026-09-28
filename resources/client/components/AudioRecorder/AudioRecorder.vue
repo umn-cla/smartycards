@@ -17,13 +17,17 @@
           </template>
         </div>
       </div>
-      <RecordButton :isRecording="isRecording" @click="toggleRecording" />
+      <RecordButton
+        ref="recordButton"
+        :isRecording="isRecording"
+        @click="toggleRecording"
+      />
     </div>
     <div v-if="audioBlob && !isRecording" class="mt-3">
       <audio controls :src="audioUrl ?? ''" class="w-full h-10"></audio>
 
       <div class="flex justify-end gap-2 mt-3">
-        <Button variant="secondary" @click="resetRecording"> Discard </Button>
+        <Button variant="secondary" @click="discardRecording"> Discard </Button>
 
         <Button @click="emitSaveEvent"> Use Recording </Button>
       </div>
@@ -32,7 +36,8 @@
 </template>
 
 <script setup lang="ts">
-import { watch } from "vue";
+import { type ComponentPublicInstance, ref, watch } from "vue";
+import { unrefElement } from "@vueuse/core";
 import { useAnnouncer } from "@vue-a11y/announcer";
 import { pluralize } from "@/utils/pluralize";
 import { useAudioRecorder } from "./useAudioRecorder";
@@ -67,6 +72,13 @@ watch(isRecording, (isNowRecording) => {
     `Recording stopped after ${seconds} ${pluralize(seconds, "second")}.`,
   );
 });
+
+const recordButton = ref<ComponentPublicInstance | null>(null);
+
+function discardRecording(): void {
+  unrefElement(recordButton)?.focus();
+  resetRecording();
+}
 
 const toggleRecording = () => {
   if (isRecording.value) {

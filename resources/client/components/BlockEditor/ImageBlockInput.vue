@@ -30,7 +30,7 @@
       </div>
       <button
         class="absolute top-0 right-0 bg-neutral-700 hover:bg-brand-maroon-800 text-neutral-100 rounded-full w-6 h-6 flex items-center justify-center transition-colors"
-        @click="$emit('update:modelValue', '')"
+        @click="clearImage"
       >
         <IconX />
         <span class="sr-only">Clear</span>
@@ -63,7 +63,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { computed, nextTick, ref } from "vue";
 import * as api from "@/api";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -78,6 +78,7 @@ import { isValidUrl } from "@/lib/utils";
 import * as T from "@/types";
 import { useMakeInputId } from "@/composables/useMakeInputId";
 import { useAnnouncer } from "@vue-a11y/announcer";
+import { focusIfNothingIsFocused } from "@/lib/focusIfNothingIsFocused";
 
 const props = defineProps<{
   id: T.ContentBlock["id"];
@@ -100,6 +101,15 @@ const announcer = useAnnouncer();
 
 const myFiles = ref<string[]>([]);
 
+function getImageUrlInput(): HTMLElement | null {
+  return document.getElementById(makeInputId("image-url"));
+}
+
+function clearImage(): void {
+  getImageUrlInput()?.focus();
+  emit("update:modelValue", "");
+}
+
 function onFileChange(file: File) {
   return api.uploadFile(file);
 }
@@ -119,6 +129,7 @@ async function handleProcessImage(
 
   emit("update:modelValue", fileInfo.url);
   announcer.polite("Image uploaded.");
+  nextTick(() => focusIfNothingIsFocused(getImageUrlInput()));
 
   return { abort };
 }
