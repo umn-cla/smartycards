@@ -170,6 +170,7 @@ function handleSave({ saveAndAddAnother = false } = {}) {
       form.back = backTypes.length
         ? backTypes.map(makeContentBlock)
         : [makeContentBlock("text")];
+      announcer.polite("Card created. Form cleared for the next card.");
       return;
     }
 

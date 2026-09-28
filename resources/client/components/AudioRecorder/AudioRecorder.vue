@@ -32,6 +32,9 @@
 </template>
 
 <script setup lang="ts">
+import { watch } from "vue";
+import { useAnnouncer } from "@vue-a11y/announcer";
+import { pluralize } from "@/utils/pluralize";
 import { useAudioRecorder } from "./useAudioRecorder";
 import RecordButton from "./RecordButton.vue";
 import Button from "@/components/ui/button/Button.vue";
@@ -51,6 +54,19 @@ const {
   resetRecording,
   formatTime,
 } = useAudioRecorder();
+
+const announcer = useAnnouncer();
+
+watch(isRecording, (isNowRecording) => {
+  if (isNowRecording) {
+    announcer.polite("Recording started.");
+    return;
+  }
+  const seconds = Math.floor(recordingTime.value);
+  announcer.polite(
+    `Recording stopped after ${seconds} ${pluralize(seconds, "second")}.`,
+  );
+});
 
 const toggleRecording = () => {
   if (isRecording.value) {

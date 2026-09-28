@@ -77,6 +77,7 @@ import "filepond-plugin-image-preview/dist/filepond-plugin-image-preview.min.css
 import { isValidUrl } from "@/lib/utils";
 import * as T from "@/types";
 import { useMakeInputId } from "@/composables/useMakeInputId";
+import { useAnnouncer } from "@vue-a11y/announcer";
 
 const props = defineProps<{
   id: T.ContentBlock["id"];
@@ -95,6 +96,7 @@ const { makeInputId } = useMakeInputId("image-block-input", props.id);
 
 const FilePond = vueFilePond(FilePondPluginFileValidateType);
 const isValidUrlComputed = computed(() => isValidUrl(props.modelValue));
+const announcer = useAnnouncer();
 
 const myFiles = ref<string[]>([]);
 
@@ -116,6 +118,7 @@ async function handleProcessImage(
   load(fileInfo.url);
 
   emit("update:modelValue", fileInfo.url);
+  announcer.polite("Image uploaded.");
 
   return { abort };
 }

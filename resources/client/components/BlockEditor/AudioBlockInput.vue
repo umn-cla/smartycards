@@ -109,6 +109,7 @@ import "filepond/dist/filepond.min.css";
 import "filepond-plugin-image-preview/dist/filepond-plugin-image-preview.min.css";
 import { useMakeInputId } from "@/composables/useMakeInputId";
 import { useErrorStore } from "@/stores/useErrorStore";
+import { useAnnouncer } from "@vue-a11y/announcer";
 
 const props = defineProps<{
   id: ContentBlock["id"];
@@ -125,6 +126,7 @@ const FilePond = vueFilePond(FilePondPluginFileValidateType);
 const myFiles = ref<string[]>([]);
 const isUploading = ref(false);
 const isValidUrlComputed = computed(() => isValidUrl(props.modelValue));
+const announcer = useAnnouncer();
 
 function onFileChange(file: File) {
   return api.uploadFile(file);
@@ -144,6 +146,7 @@ async function handleProcessAudio(
   load(fileInfo.url);
 
   emit("update:modelValue", fileInfo.url);
+  announcer.polite("Audio file uploaded.");
 
   return { abort };
 }
@@ -161,6 +164,7 @@ async function handleRecordingComplete({
 }) {
   try {
     isUploading.value = true;
+    announcer.polite("Uploading recording.");
 
     // determine the file extension based on the MIME type
     const extension = mimeType.split("/")[1];
@@ -176,6 +180,7 @@ async function handleRecordingComplete({
 
     // Update the model value with the new URL
     emit("update:modelValue", fileInfo.url);
+    announcer.polite("Recording uploaded.");
 
     // Clean up the temporary object URL
     URL.revokeObjectURL(url);
