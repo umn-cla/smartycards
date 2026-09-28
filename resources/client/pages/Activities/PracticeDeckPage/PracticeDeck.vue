@@ -184,7 +184,6 @@ function handleAnswer(score: number) {
   // if there is no active card, we've completed the session
   if (!state.activeCard) {
     emit("complete", props.deck.cards.length);
-    announcer.polite("You have completed this practice session.");
   } else {
     announcer.polite(
       `${practiceAnswerOutcomes[score]} ${describeCardsLeft(cardsLeft.value)}`,

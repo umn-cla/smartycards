@@ -65,10 +65,6 @@ describe("DeckShowPage", () => {
       cardsSeen.add(cardText);
       markCorrectAndWaitForCardToLeave(cardText);
     });
-    cy.get("#announcer").should(
-      "have.text",
-      "You have completed this practice session.",
-    );
 
     // we should see the end message
     cy.contains("You have completed").then(() => {
