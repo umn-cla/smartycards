@@ -264,8 +264,9 @@ function describeCardSearchResult(
 watchDebounced(
   cardSearch,
   () => {
+    const isSearchEmpty = !cardSearch.value;
     announcer.polite(
-      describeCardSearchResult(filteredCards.value.length, !cardSearch.value),
+      describeCardSearchResult(filteredCards.value.length, isSearchEmpty),
     );
   },
   { debounce: 500 },
@@ -273,7 +274,7 @@ watchDebounced(
 
 function flipAllCards() {
   initialCardSide.value = initialCardSide.value === "front" ? "back" : "front";
-  announcer.polite(`All cards showing ${initialCardSide.value}.`);
+  announcer.polite(`All cards now show the ${initialCardSide.value}.`);
 }
 
 const isPracticeEnabled = computed(() => {

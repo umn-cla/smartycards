@@ -14,7 +14,7 @@
       class="h-20 bg-brand-maroon-900/5 border-none font-mono text-xs flex-1"
     />
     <Button
-      @click="handleCopy(mode)"
+      @click="copyEmbedCodeAndAnnounce(mode)"
       variant="outline"
       class="flex gap-1 text-xs"
     >
@@ -95,7 +95,7 @@ const isEmbedCopied = reactive<Record<EmbedMode, boolean>>({
   matching: false,
 });
 
-async function handleCopy(mode: EmbedMode): Promise<void> {
+async function copyEmbedCodeAndAnnounce(mode: EmbedMode): Promise<void> {
   const embedCodeForMode = embedCodes.value[mode];
   await copy(embedCodeForMode);
   if (!copied.value) return;

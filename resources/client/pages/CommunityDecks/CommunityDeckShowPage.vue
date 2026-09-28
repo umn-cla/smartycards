@@ -72,7 +72,7 @@ const announcer = useAnnouncer();
 
 function flipAllCards() {
   initialCardSide.value = initialCardSide.value === "front" ? "back" : "front";
-  announcer.polite(`All cards showing ${initialCardSide.value}.`);
+  announcer.polite(`All cards now show the ${initialCardSide.value}.`);
 }
 
 const { mutate: joinDeck } = useJoinCommunityDeckMutation();
