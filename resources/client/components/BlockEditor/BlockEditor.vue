@@ -53,6 +53,7 @@
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button
+          ref="addBlockButton"
           variant="ghost"
           class="rounded-t-none hover:bg-brand-maroon-800/10 focus-visible:ring-2 focus-visible:ring-blue-600"
           data-cy="add-content-block-button"
@@ -75,7 +76,8 @@
   </div>
 </template>
 <script setup lang="ts">
-import { capitalize, type Component, computed, nextTick } from "vue";
+import { capitalize, type Component, computed, nextTick, ref } from "vue";
+import { unrefElement } from "@vueuse/core";
 import TextBlockInput from "./TextBlockInput.vue";
 import ImageBlockInput from "./ImageBlockInput.vue";
 import AudioBlockInput from "./AudioBlockInput.vue";
@@ -94,7 +96,10 @@ import {
 import { type ContentBlock, type ContentBlockType } from "@/types";
 import MathBlockInput from "./MathBlockInput.vue";
 import { makeContentBlock } from "@/lib/makeContentBlock";
-import { focusBlockInput } from "@/lib/blockEditorHelpers";
+import {
+  focusBlockDragHandle,
+  focusBlockInput,
+} from "@/lib/blockEditorHelpers";
 
 const lookupComponentType: Record<ContentBlockType, Component> = {
   text: TextBlockInput,
@@ -123,6 +128,8 @@ const emit = defineEmits<{
   (event: "dragHandle:down", block: ContentBlock): void;
 }>();
 
+const addBlockButton = ref<InstanceType<typeof Button> | null>(null);
+
 const blockTypes = computed(() => {
   const types = Object.keys(lookupComponentType) as ContentBlockType[];
   return types.toSorted();
@@ -140,7 +147,17 @@ function addEditorBlock(type: ContentBlock["type"]) {
   }, 250);
 }
 
-function removeBlock(id: string) {
+function removeBlock(id: string): void {
+  const removedIndex = props.modelValue.findIndex((block) => block.id === id);
+  const blockToFocus: ContentBlock | undefined =
+    props.modelValue[removedIndex + 1] ?? props.modelValue[removedIndex - 1];
+
+  if (blockToFocus) {
+    focusBlockDragHandle(blockToFocus);
+  } else {
+    unrefElement(addBlockButton)?.focus();
+  }
+
   emit(
     "update:modelValue",
     props.modelValue.filter((block) => block.id !== id),
