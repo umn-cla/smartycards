@@ -115,6 +115,7 @@
                 <TableHead class="py-2">
                   <input
                     v-model="filterUser"
+                    data-cy="audit-filter-user"
                     type="text"
                     placeholder="Filter..."
                     class="text-base md:text-xs border-none rounded px-1.5 py-1 bg-brand-maroon-900/5 placeholder:text-black/25 w-full"
@@ -189,7 +190,10 @@
                     {{ formatDateTime(audit.created_at) }}
                   </TableCell>
                 </TableRow>
-                <TableRow v-if="expandedRows.has(audit.id)">
+                <TableRow
+                  v-if="expandedRows.has(audit.id)"
+                  data-cy="audit-row-changes"
+                >
                   <TableCell colspan="6" class="bg-white p-0">
                     <div class="px-6 py-4">
                       <AuditValuesDiff
