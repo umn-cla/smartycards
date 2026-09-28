@@ -36,6 +36,8 @@ describe("BlockEditor focus after Remove block", () => {
       .focus();
     cy.realPress("Enter");
 
-    cy.focused().should("have.attr", "data-cy", "add-content-block-button");
+    cy.get("@frontSideInput")
+      .find('[data-cy="add-content-block-button"]')
+      .should("have.focus");
   });
 });
