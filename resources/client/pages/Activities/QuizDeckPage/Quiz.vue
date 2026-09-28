@@ -15,76 +15,89 @@
       <Markdown :content="activeQuestion.prompt" class="mb-4" />
 
       <RadioGroup
-        :modelValue="state.activeChoiceIndex?.toString()"
-        @update:modelValue="handleUpdateRadioGroup"
-        :disabled="isChoiceMade"
+        :modelValue="selectedChoiceIndex?.toString()"
+        @update:modelValue="selectChoiceByRadioValue"
+        :disabled="isShowingResult"
         class="pl-4"
       >
         <Label
           class="flex items-center p-4 bg-brand-maroon-950/5 rounded-md transition"
           v-for="(choice, index) in activeQuestion.choices"
           :key="index"
-          :for="getQuestionChoiceId(state.activeQuestionIndex, index)"
+          :for="getQuestionChoiceId(progress.questionIndex, index)"
           :class="{
             '!bg-brand-teal-300/10 rounded-md border border-brand-teal-500/50 !text-brand-teal-700':
-              isChoiceMade && isChoiceIndexCorrect(index),
-            'hover:bg-brand-gold-500/50 cursor-pointer': !isChoiceMade,
+              isShowingResult && isChoiceIndexCorrect(index),
+            'hover:bg-brand-gold-500/50 cursor-pointer': !isShowingResult,
           }"
         >
           <RadioGroupItem
-            :id="getQuestionChoiceId(state.activeQuestionIndex, index)"
+            :id="getQuestionChoiceId(progress.questionIndex, index)"
             :value="index.toString()"
             class="mr-2"
             :class="{
               'border-brand-teal-700':
-                isChoiceMade && isChoiceIndexCorrect(index),
+                isShowingResult && isChoiceIndexCorrect(index),
             }"
           />
           <div class="flex w-full items-center justify-between gap-4">
             <Markdown :content="choice" />
             <!-- <span>{{ choice }}</span> -->
-            <span v-if="isChoiceMade && isChoiceIndexCorrect(index)">✅</span>
-            <span v-else-if="isChoiceMade && state.activeChoiceIndex === index"
+            <span v-if="isShowingResult && isChoiceIndexCorrect(index)"
+              >✅</span
+            >
+            <span v-else-if="isShowingResult && selectedChoiceIndex === index"
               >❌</span
             >
           </div>
         </Label>
       </RadioGroup>
 
-      <footer v-if="isChoiceMade">
+      <footer v-if="!isShowingResult" class="mt-8">
+        <Button
+          :disabled="selectedChoiceIndex === null"
+          @click="checkSelectedAnswer"
+        >
+          Check answer
+        </Button>
+      </footer>
+
+      <footer v-else>
         <div
           class="my-8 p-4 rounded-md"
           :class="{
-            'bg-brand-teal-300/10': isActiveChoiceCorrect,
-            'bg-brand-orange-500/10': !isActiveChoiceCorrect,
+            'bg-brand-teal-300/10': isAnswerCorrect,
+            'bg-brand-orange-500/10': !isAnswerCorrect,
           }"
         >
-          <p v-if="isActiveChoiceCorrect" class="text-brand-teal-500">
-            ✅ Correct!
-          </p>
+          <p v-if="isAnswerCorrect" class="text-brand-teal-500">✅ Correct!</p>
           <p v-else class="text-brand-orange-500">❌ Incorrect</p>
         </div>
 
         <Button
-          v-if="state.activeQuestionIndex === totalQuestions - 1"
+          v-if="progress.questionIndex === totalQuestions - 1"
+          ref="nextOrFinishButton"
           @click="
             $emit('end-quiz', {
-              correctCount: state.correctCount,
-              incorrectCount: state.incorrectCount,
+              correctCount: progress.correctCount,
+              incorrectCount: progress.incorrectCount,
             })
           "
         >
           Finish
         </Button>
 
-        <Button v-else @click="handleNextQuestion"> Next </Button>
+        <Button v-else ref="nextOrFinishButton" @click="showNextQuestion">
+          Next
+        </Button>
       </footer>
     </div>
   </div>
 </template>
 <script setup lang="ts">
 import * as T from "@/types";
-import { reactive, computed, watch } from "vue";
+import { computed, nextTick, ref, useTemplateRef } from "vue";
+import { useAnnouncer } from "@vue-a11y/announcer";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Button } from "@/components/ui/button";
@@ -92,6 +105,14 @@ import CardSideView from "@/components/CardSideView/CardSideView.vue";
 import Markdown from "@/components/Markdown.vue";
 import { makeContentBlock } from "@/lib/makeContentBlock";
 import { isMathBlock, isTextBlock } from "@/lib/isBlockOfType";
+import {
+  checkAnswer,
+  describeAnswerResult,
+  goToNextQuestion,
+  selectChoice,
+  startQuizProgress,
+  type QuizProgress,
+} from "./quizProgress";
 
 const props = defineProps<{
   quiz: T.Quiz;
@@ -107,18 +128,21 @@ defineEmits<{
   );
 }>();
 
-const state = reactive({
-  activeQuestionIndex: 0,
-  activeChoiceIndex: undefined as undefined | number,
-  correctCount: 0,
-  incorrectCount: 0,
-});
+const progress = ref<QuizProgress>(startQuizProgress());
+const announcer = useAnnouncer();
+const nextOrFinishButton =
+  useTemplateRef<InstanceType<typeof Button>>("nextOrFinishButton");
 
-const isChoiceMade = computed(() => state.activeChoiceIndex !== undefined);
-const questionNumber = computed(() => state.activeQuestionIndex + 1);
+const isShowingResult = computed(
+  () => progress.value.answer.status === "showingResult",
+);
+const selectedChoiceIndex = computed(
+  () => progress.value.answer.selectedChoiceIndex,
+);
+const questionNumber = computed(() => progress.value.questionIndex + 1);
 const totalQuestions = computed(() => props.quiz.questions.length);
 const activeQuestion = computed(
-  () => props.quiz.questions[state.activeQuestionIndex],
+  () => props.quiz.questions[progress.value.questionIndex],
 );
 
 function createImageBlocksFromTextBlock(text: string): T.ImageContentBlock[] {
@@ -163,31 +187,42 @@ function isChoiceIndexCorrect(choiceIndex?: number): boolean {
   return activeQuestion.value.correctChoiceIndex === choiceIndex;
 }
 
-const isActiveChoiceCorrect = computed((): boolean => {
-  return isChoiceMade.value && isChoiceIndexCorrect(state.activeChoiceIndex);
+const isAnswerCorrect = computed((): boolean => {
+  const { answer } = progress.value;
+  return answer.status === "showingResult" && answer.isCorrect;
 });
 
 function getQuestionChoiceId(questionIndex: number, choiceIndex: number) {
   return `quiz-q${questionIndex}-choice${choiceIndex}`;
 }
 
-function handleUpdateRadioGroup(str: string) {
-  state.activeChoiceIndex = Number.parseInt(str);
+function selectChoiceByRadioValue(radioValue: string): void {
+  progress.value = selectChoice(progress.value, Number.parseInt(radioValue));
 }
 
-watch([() => state.activeQuestionIndex, () => state.activeChoiceIndex], () => {
-  if (!isChoiceMade.value) return;
+function focusButton(button: InstanceType<typeof Button> | null): void {
+  const buttonElement: unknown = button?.$el;
+  if (buttonElement instanceof HTMLElement) {
+    buttonElement.focus();
+  }
+}
 
-  if (isActiveChoiceCorrect.value) {
-    state.correctCount += 1;
+async function checkSelectedAnswer(): Promise<void> {
+  const progressWithResult = checkAnswer(progress.value, activeQuestion.value);
+  progress.value = progressWithResult;
+  if (progressWithResult.answer.status !== "showingResult") {
     return;
   }
-  state.incorrectCount += 1;
-});
 
-function handleNextQuestion() {
-  state.activeQuestionIndex += 1;
-  state.activeChoiceIndex = undefined;
+  announcer.polite(
+    describeAnswerResult(progressWithResult.answer, activeQuestion.value),
+  );
+  await nextTick();
+  focusButton(nextOrFinishButton.value);
+}
+
+function showNextQuestion(): void {
+  progress.value = goToNextQuestion(progress.value);
 }
 </script>
 <style scoped></style>
