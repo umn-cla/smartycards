@@ -39,6 +39,7 @@ import { useAnnouncer } from "@vue-a11y/announcer";
 import SelectableMatchingSide from "./SelectableMatchingSide.vue";
 import { SelectSideResult, useMatchingGameStore } from "./matchingGameStore";
 import { Button } from "@/components/ui/button";
+import { pluralize } from "@/utils/pluralize";
 
 const props = defineProps<{
   cards: T.Card[];
@@ -61,14 +62,13 @@ function toPairAnnouncement(result: SelectSideResult): string | null {
       return null;
     case "pairMismatched":
       return "Not a match. Try again.";
-    case "pairMatched":
-      if (result.unmatchedPairCount === 0) {
+    case "pairMatched": {
+      const pairCount = result.unmatchedPairCount;
+      if (pairCount === 0) {
         return "Match.";
       }
-      if (result.unmatchedPairCount === 1) {
-        return "Match. 1 pair left.";
-      }
-      return `Match. ${result.unmatchedPairCount} pairs left.`;
+      return `Match. ${pairCount} ${pluralize(pairCount, "pair")} left.`;
+    }
   }
 }
 
@@ -89,7 +89,7 @@ function focusPlayAgainButton(): void {
 
 function focusFirstSide(): void {
   sideGrid.value
-    ?.querySelector<HTMLButtonElement>("button[aria-pressed]")
+    ?.querySelector<HTMLButtonElement>("[data-select-side]")
     ?.focus();
 }
 

@@ -117,7 +117,7 @@ export const useMatchingGameStore = defineStore("matchingGame", {
           return side;
         });
 
-        if (this.sides.every((side) => side.status !== "idle")) {
+        if (this.unmatchedPairCount === 0) {
           this.gameState = "win";
         }
       }, 500);

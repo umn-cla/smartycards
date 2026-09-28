@@ -8,6 +8,7 @@
   >
     <button
       type="button"
+      data-select-side
       class="sr-only"
       :aria-pressed="side.status === 'selected'"
       :aria-disabled="isMatched"

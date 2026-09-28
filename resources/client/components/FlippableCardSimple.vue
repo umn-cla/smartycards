@@ -27,7 +27,8 @@
       <slot name="append" />
     </div>
     <!-- Keep Flip outside both faces: the hidden face is
-      inert, so a Flip inside it loses focus after a flip. -->
+      inert, so a Flip inside it loses focus after
+      a flip. -->
     <Button
       variant="ghost"
       :aria-label="`Flip to ${otherSideName}`"
