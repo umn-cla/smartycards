@@ -1,11 +1,6 @@
 <template>
   <div>
-    <div class="mb-4" v-if="backTo">
-      <RouterLink :to="backTo" class="flex gap-2 items-center">
-        <IconChevronLeft class="size-5" />
-        {{ backLabel }}
-      </RouterLink>
-    </div>
+    <BackLink v-if="backTo" :to="backTo">{{ backLabel }}</BackLink>
 
     <header
       class="flex gap-8 flex-wrap justify-between items-center"
@@ -32,7 +27,7 @@
 <script setup lang="ts">
 import PageTitle from "@/components/PageTitle.vue";
 import PageSubtitle from "@/components/PageSubtitle.vue";
-import IconChevronLeft from "@/components/icons/IconChevronLeft.vue";
+import BackLink from "@/components/BackLink.vue";
 import { type RouteLocationRaw } from "vue-router";
 import type { CSSClass } from "@/types";
 import Badge from "./ui/badge/Badge.vue";

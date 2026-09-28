@@ -1,15 +1,9 @@
 <template>
   <AuthenticatedLayout>
     <div v-if="deck" class="max-w-screen-lg mx-auto">
-      <div class="mb-4">
-        <RouterLink
-          :to="{ name: 'decks.show', params: { deckId: deck?.id } }"
-          class="flex gap-2 items-center"
-        >
-          <IconChevronLeft class="size-5" />
-          {{ deck.name }}
-        </RouterLink>
-      </div>
+      <BackLink :to="{ name: 'decks.show', params: { deckId: deck?.id } }">
+        {{ deck.name }}
+      </BackLink>
       <header class="mb-8 pb-8 border-b border-black/10">
         <PageTitle class="mb-2">Import Cards</PageTitle>
         <PageSubtitle>{{ deck.name }}</PageSubtitle>
@@ -124,7 +118,7 @@ import { AuthenticatedLayout } from "@/layouts/AuthenticatedLayout";
 import * as api from "@/api";
 import { useRouter } from "vue-router";
 import { useDeckByIdQuery } from "@/queries/decks";
-import { IconChevronLeft } from "@/components/icons";
+import BackLink from "@/components/BackLink.vue";
 import PageTitle from "@/components/PageTitle.vue";
 import PageSubtitle from "@/components/PageSubtitle.vue";
 import {

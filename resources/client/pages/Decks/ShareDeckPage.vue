@@ -1,15 +1,9 @@
 <template>
   <AuthenticatedLayout>
     <div v-if="deck && deckMemberships" class="max-w-screen-md mx-auto">
-      <div class="mb-4">
-        <RouterLink
-          :to="{ name: 'decks.show', params: { deckId: deck.id } }"
-          class="flex gap-2 items-center"
-        >
-          <IconChevronLeft class="size-5" />
-          {{ deck.name }}
-        </RouterLink>
-      </div>
+      <BackLink :to="{ name: 'decks.show', params: { deckId: deck.id } }">
+        {{ deck.name }}
+      </BackLink>
       <header class="mb-8 flex gap-8 flex-wrap justify-between items-start">
         <div>
           <h1 class="text-5xl font-bold">Share Deck</h1>
@@ -103,7 +97,7 @@ import {
 } from "@/queries/deckMemberships";
 import { useDeckByIdQuery } from "@/queries/decks";
 import DeckMembership from "@/components/DeckMembership.vue";
-import { IconChevronLeft } from "@/components/icons";
+import BackLink from "@/components/BackLink.vue";
 import ShareLink from "@/components/ShareLink.vue";
 import EmbedDeckSection from "@/components/EmbedDeckSection.vue";
 
