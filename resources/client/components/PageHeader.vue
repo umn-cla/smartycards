@@ -1,11 +1,11 @@
 <template>
   <div>
-    <nav class="mb-4" v-if="backTo">
+    <div class="mb-4" v-if="backTo">
       <RouterLink :to="backTo" class="flex gap-2 items-center">
         <IconChevronLeft class="size-5" />
         {{ backLabel }}
       </RouterLink>
-    </nav>
+    </div>
 
     <header
       class="flex gap-8 flex-wrap justify-between items-center"

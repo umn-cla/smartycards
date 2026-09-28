@@ -1,7 +1,7 @@
 <template>
   <AuthenticatedLayout>
     <div class="px-4 pb-12">
-      <nav class="mb-4">
+      <div class="mb-4">
         <RouterLink
           :to="{ name: 'decks.show', params: { deckId: props.deckId } }"
           class="flex gap-2 items-center"
@@ -9,7 +9,7 @@
           <IconChevronLeft class="size-5" />
           {{ deck?.name }}
         </RouterLink>
-      </nav>
+      </div>
 
       <Transition name="fade">
         <div v-if="deck">

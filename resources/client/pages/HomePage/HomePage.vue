@@ -13,7 +13,13 @@
           class="block w-[66dvw] max-w-64 md:max-w-full md:w-96"
         />
         <div>
-          <SmartycardsWordmark class="text-brand-gold-500" />
+          <h1>
+            <span class="sr-only">SmartyCards</span>
+            <SmartycardsWordmark
+              class="text-brand-gold-500"
+              aria-hidden="true"
+            />
+          </h1>
           <p class="text-xl md:text-4xl leading-none mt-2">
             Digital flashcards for every learner
           </p>
@@ -37,20 +43,20 @@
       <section class="p-8 my-8">
         <div class="card-grid mx-auto max-w-screen-lg !gap-8">
           <article class="flex flex-col gap-2 items-center">
-            <h3 class="text-xl">Audio</h3>
+            <h2 class="text-xl">Audio</h2>
             <AudioDemoCard />
           </article>
           <article class="flex flex-col gap-2 items-center">
-            <h3 class="text-xl">Text</h3>
+            <h2 class="text-xl">Text</h2>
             <TextDemoCard />
           </article>
           <article class="flex flex-col gap-2 items-center">
-            <h3 class="text-xl">Image</h3>
+            <h2 class="text-xl">Image</h2>
             <ImageDemoCard />
           </article>
 
           <article class="flex flex-col gap-2 items-center">
-            <h3 class="text-xl">Video</h3>
+            <h2 class="text-xl">Video</h2>
             <VideoDemoCard />
           </article>
         </div>

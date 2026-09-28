@@ -1,8 +1,12 @@
 <template>
   <div :class="cn('embed-layout min-h-dvh w-full', props.class)">
-    <div :class="cn('p-4', containerClass)">
+    <main
+      id="main-content"
+      tabindex="-1"
+      :class="cn('p-4 focus:outline-none', containerClass)"
+    >
       <slot />
-    </div>
+    </main>
   </div>
 </template>
 

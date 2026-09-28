@@ -1,10 +1,10 @@
 <template>
   <AuthenticatedLayout>
-    <main>
+    <div>
       <PageHeader title="Decks" size="lg" class="mb-8" />
 
       <section>
-        <h3 class="text-3xl font-bold text-brand-maroon-800 mb-4">My Decks</h3>
+        <h2 class="text-3xl font-bold text-brand-maroon-800 mb-4">My Decks</h2>
 
         <div class="card-grid !gap-6 sm:gap-4">
           <RouterLink
@@ -20,9 +20,9 @@
       </section>
 
       <section class="my-8">
-        <h3 class="text-3xl font-bold text-brand-maroon-800 mb-4">
+        <h2 class="text-3xl font-bold text-brand-maroon-800 mb-4">
           Shared Decks
-        </h3>
+        </h2>
         <div class="card-grid !gap-6 sm:gap-4" v-if="sharedDecks.length">
           <DeckListItem
             :deck="deck"
@@ -32,7 +32,7 @@
         </div>
         <p v-else class="my-4">No shared decks</p>
       </section>
-    </main>
+    </div>
   </AuthenticatedLayout>
 </template>
 <script setup lang="ts">

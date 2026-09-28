@@ -1,5 +1,9 @@
 <template>
-  <div class="p-4 max-w-2xl mx-auto">
+  <main
+    id="main-content"
+    tabindex="-1"
+    class="p-4 max-w-2xl mx-auto focus:outline-none"
+  >
     <h1 class="text-xl font-bold text-brand-maroon-800 mb-4">
       Create Assignment
     </h1>
@@ -93,7 +97,7 @@
         :value="selectedDeck?.id.toString()"
       />
     </form>
-  </div>
+  </main>
 </template>
 
 <script setup lang="ts">

@@ -1,7 +1,7 @@
 <template>
   <AuthenticatedLayout>
     <div v-if="deck && deckMemberships" class="max-w-screen-md mx-auto">
-      <nav class="mb-4">
+      <div class="mb-4">
         <RouterLink
           :to="{ name: 'decks.show', params: { deckId: deck.id } }"
           class="flex gap-2 items-center"
@@ -9,7 +9,7 @@
           <IconChevronLeft class="size-5" />
           {{ deck.name }}
         </RouterLink>
-      </nav>
+      </div>
       <header class="mb-8 flex gap-8 flex-wrap justify-between items-start">
         <div>
           <h1 class="text-5xl font-bold">Share Deck</h1>
@@ -23,7 +23,7 @@
         <section
           class="bg-brand-oatmeal-50 p-4 rounded-md border border-brand-maroon-900/10"
         >
-          <h3 class="text-xl font-bold mb-4">Invite</h3>
+          <h2 class="text-xl font-bold mb-4">Invite</h2>
           <p class="mb-4">
             Share the link below to invite others to this deck with view or edit
             permissions.
@@ -48,7 +48,7 @@
         <section
           class="bg-brand-oatmeal-50 p-4 rounded-md border border-brand-maroon-900/10"
         >
-          <h3 class="text-xl font-bold mb-4">Embed Deck</h3>
+          <h2 class="text-xl font-bold mb-4">Embed Deck</h2>
           <div v-if="deck.current_user_details.lti_resource_links.length">
             <p class="mb-4">
               This deck is linked to Canvas. To embed in your course:

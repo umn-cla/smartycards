@@ -9,10 +9,10 @@
       :backTo="{ name: 'community.decks.index' }"
     >
     </PageHeader>
-    <main v-if="deck">
+    <div v-if="deck">
       <section class="my-8">
         <header class="my-4 flex justify-between items-baseline">
-          <h3 class="text-3xl font-bold">Cards</h3>
+          <h2 class="text-3xl font-bold">Cards</h2>
           <div class="flex gap-1">
             <Button @click="flipAllCards" variant="secondary">
               Flip All
@@ -40,7 +40,7 @@
           />
         </div>
       </section>
-    </main>
+    </div>
   </AuthenticatedLayout>
 </template>
 <script setup lang="ts">

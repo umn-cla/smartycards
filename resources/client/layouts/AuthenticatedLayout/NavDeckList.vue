@@ -1,10 +1,11 @@
 <template>
   <div
+    :id="labelId"
     class="text-xs tracking-wider uppercase leading-6 text-white/25 font-bold"
   >
     {{ label }}
   </div>
-  <ul role="list" class="-mx-2 mt-2 space-y-1">
+  <ul role="list" :aria-labelledby="labelId" class="-mx-2 mt-2 space-y-1">
     <li v-for="deck in decks" :key="deck.name">
       <RouterLink
         :to="`/decks/${deck.id}`"
@@ -20,11 +21,14 @@
   </ul>
 </template>
 <script setup lang="ts">
+import { useId } from "vue";
 import * as T from "@/types";
 
 defineProps<{
   label: string;
   decks: T.Deck[];
 }>();
+
+const labelId = useId();
 </script>
 <style scoped></style>

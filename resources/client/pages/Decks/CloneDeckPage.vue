@@ -8,7 +8,7 @@
         class="mb-8"
       />
 
-      <main>
+      <div>
         <form
           v-if="deck"
           @submit.prevent="handleClone"
@@ -52,7 +52,7 @@
             <Button type="submit">Clone</Button>
           </div>
         </form>
-      </main>
+      </div>
     </div>
   </AuthenticatedLayout>
 </template>

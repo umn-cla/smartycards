@@ -1,5 +1,5 @@
 <template>
-  <div
+  <header
     class="sticky top-0 z-40 flex items-center justify-between bg-brand-maroon-800 px-4 py-4 shadow-sm sm:px-6 lg:hidden gap-2"
   >
     <div class="flex items-center gap-2">
@@ -16,7 +16,7 @@
       </RouterLink>
     </div>
     <ProfileMenu :currentUser="currentUser" variant="avatar-only" />
-  </div>
+  </header>
 </template>
 <script setup lang="ts">
 import * as T from "@/types";

@@ -1,7 +1,7 @@
 <template>
   <AuthenticatedLayout>
     <div v-if="deck" class="max-w-screen-lg mx-auto">
-      <nav class="mb-4">
+      <div class="mb-4">
         <RouterLink
           :to="{ name: 'decks.show', params: { deckId: deck?.id } }"
           class="flex gap-2 items-center"
@@ -9,12 +9,12 @@
           <IconChevronLeft class="size-5" />
           {{ deck.name }}
         </RouterLink>
-      </nav>
+      </div>
       <header class="mb-8 pb-8 border-b border-black/10">
         <PageTitle class="mb-2">Import Cards</PageTitle>
         <PageSubtitle>{{ deck.name }}</PageSubtitle>
       </header>
-      <main>
+      <div>
         <section class="my-8">
           <p class="my-4">
             Import cards from a spreadsheet in the following format:
@@ -34,9 +34,9 @@
 
           <div class="my-4">
             <div class="flex justify-between items-center mb-2 gap-4 flex-wrap">
-              <h3 class="uppercase text-xs tracking-wider font-bold">
+              <h2 class="uppercase text-xs tracking-wider font-bold">
                 Example
-              </h3>
+              </h2>
               <Button
                 variant="secondary"
                 class="text-xs"
@@ -114,7 +114,7 @@
             Import
           </Button>
         </form>
-      </main>
+      </div>
     </div>
   </AuthenticatedLayout>
 </template>
