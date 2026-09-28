@@ -53,6 +53,7 @@ import LevelProgress from "@/components/LevelProgress.vue";
 import PracticeDeck from "./PracticeDeck.vue";
 import StartingSideSelect from "@/components/StartingSideSelect.vue";
 import { usePracticeDeck } from "@/composables/usePracticeDeck";
+import { useDeckDocumentTitle } from "@/lib/documentTitle";
 
 const props = defineProps<{
   deckId: number;
@@ -67,6 +68,7 @@ const {
   deckStats,
   handlePracticeComplete,
 } = usePracticeDeck({ deckId: deckIdRef });
+useDeckDocumentTitle(deck);
 </script>
 <style scoped>
 button {

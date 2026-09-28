@@ -46,6 +46,7 @@
 <script setup lang="ts">
 import { AuthenticatedLayout } from "@/layouts/AuthenticatedLayout";
 import { useDeckByIdQuery } from "@/queries/decks";
+import { useDeckDocumentTitle } from "@/lib/documentTitle";
 import * as T from "@/types";
 import { computed } from "vue";
 import { Button } from "@/components/ui/button";
@@ -63,6 +64,7 @@ const props = defineProps<{
 const deckIdRef = computed(() => props.deckId);
 
 const { data: deck } = useDeckByIdQuery(deckIdRef);
+useDeckDocumentTitle(deck);
 
 const initialCardSide = ref<T.CardSideName>("front");
 

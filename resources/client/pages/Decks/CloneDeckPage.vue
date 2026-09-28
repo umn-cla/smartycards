@@ -61,6 +61,7 @@ import PageHeader from "@/components/PageHeader.vue";
 import { AuthenticatedLayout } from "@/layouts/AuthenticatedLayout";
 import { computed, nextTick, reactive, watch } from "vue";
 import { useDeckByIdQuery } from "@/queries/decks";
+import { useDeckDocumentTitle } from "@/lib/documentTitle";
 import { useRouter } from "vue-router";
 import InputGroup from "@/components/InputGroup.vue";
 import { Button } from "@/components/ui/button";
@@ -82,6 +83,7 @@ const form = reactive({
 
 const deckIdRef = computed(() => props.deckId);
 const { data: deck } = useDeckByIdQuery(deckIdRef);
+useDeckDocumentTitle(deck);
 const { mutate: cloneDeck } = useCloneDeckMutation();
 
 const router = useRouter();

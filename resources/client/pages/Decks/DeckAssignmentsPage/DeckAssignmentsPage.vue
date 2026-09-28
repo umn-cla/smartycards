@@ -96,6 +96,7 @@
 import PageHeader from "@/components/PageHeader.vue";
 import AuthenticatedLayout from "@/layouts/AuthenticatedLayout/AuthenticatedLayout.vue";
 import { useDeckByIdQuery } from "@/queries/decks";
+import { useDeckDocumentTitle } from "@/lib/documentTitle";
 import { useDeckAssignmentsQuery } from "@/queries/decks/useDeckAssignmentsQuery";
 import { computed } from "vue";
 import Tuple from "@/components/Tuple.vue";
@@ -109,6 +110,7 @@ const props = defineProps<{
 
 const deckIdRef = computed(() => props.deckId);
 const { data: deck } = useDeckByIdQuery(deckIdRef);
+useDeckDocumentTitle(deck);
 const { data: entries } = useDeckAssignmentsQuery(deckIdRef);
 
 const entryCount = computed(() => entries.value?.length ?? 0);

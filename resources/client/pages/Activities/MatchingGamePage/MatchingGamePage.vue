@@ -52,6 +52,7 @@ import AuthenticatedLayout from "@/layouts/AuthenticatedLayout/AuthenticatedLayo
 import { Button } from "@/components/ui/button";
 import { computed, ref } from "vue";
 import { useDeckByIdQuery } from "@/queries/decks";
+import { useDeckDocumentTitle } from "@/lib/documentTitle";
 import IconChevronLeft from "@/components/icons/IconChevronLeft.vue";
 import MatchingGame from "./MatchingGame.vue";
 import { useCreateDeckActivityEventMutation } from "@/queries/deckActivityEvents/useCreateDeckActivityEventMutation";
@@ -67,6 +68,7 @@ const props = defineProps<{
 const deckIdRef = computed(() => props.deckId);
 
 const { data: deck, isLoading: isDeckLoading } = useDeckByIdQuery(deckIdRef);
+useDeckDocumentTitle(deck);
 const { data: deckStats } = useDeckStatsQuery(deckIdRef);
 
 const { mutate: createActivityEvent } = useCreateDeckActivityEventMutation();

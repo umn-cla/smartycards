@@ -174,6 +174,7 @@ import {
 import { Label } from "@/components/ui/label";
 import { computed, nextTick, reactive, ref, useTemplateRef, watch } from "vue";
 import { useDeckByIdQuery } from "@/queries/decks";
+import { useDeckDocumentTitle } from "@/lib/documentTitle";
 import Quiz from "./Quiz.vue";
 import * as api from "@/api";
 import * as T from "@/types";
@@ -210,6 +211,7 @@ const completeHeading = useTemplateRef<HTMLHeadingElement>("completeHeading");
 const deckIdRef = computed(() => props.deckId);
 
 const { data: deck, isLoading: isDeckLoading } = useDeckByIdQuery(deckIdRef);
+useDeckDocumentTitle(deck);
 
 async function startQuiz() {
   state.quizState = "loading";

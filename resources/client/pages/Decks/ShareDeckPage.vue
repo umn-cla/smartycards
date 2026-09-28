@@ -96,6 +96,7 @@ import {
   useRegenerateDeckShareLinkMutation,
 } from "@/queries/deckMemberships";
 import { useDeckByIdQuery } from "@/queries/decks";
+import { useDeckDocumentTitle } from "@/lib/documentTitle";
 import DeckMembership from "@/components/DeckMembership.vue";
 import BackLink from "@/components/BackLink.vue";
 import ShareLink from "@/components/ShareLink.vue";
@@ -107,6 +108,7 @@ const props = defineProps<{
 
 const deckIdRef = computed(() => props.deckId);
 const { data: deck } = useDeckByIdQuery(deckIdRef);
+useDeckDocumentTitle(deck);
 const { data: deckMemberships } = useDeckMembershipsQuery(deckIdRef);
 const { data: shareViewUrl } = useDeckShareLinkQuery(deckIdRef, "view");
 const { data: shareEditUrl } = useDeckShareLinkQuery(deckIdRef, "edit");

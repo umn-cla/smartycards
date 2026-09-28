@@ -262,6 +262,7 @@
 import PageHeader from "@/components/PageHeader.vue";
 import AuthenticatedLayout from "@/layouts/AuthenticatedLayout/AuthenticatedLayout.vue";
 import { useDeckByIdQuery } from "@/queries/decks";
+import { useDeckDocumentTitle } from "@/lib/documentTitle";
 import { useDeckAuditHistoryQuery } from "@/queries/decks/useDeckAuditHistoryQuery";
 import { computed, ref, watch } from "vue";
 import { refDebounced } from "@vueuse/core";
@@ -340,6 +341,7 @@ watch(
 );
 
 const { data: deck } = useDeckByIdQuery(deckIdRef);
+useDeckDocumentTitle(deck);
 const { data: auditHistory, isError: isAuditHistoryError } =
   useDeckAuditHistoryQuery(deckIdRef, queryParams);
 

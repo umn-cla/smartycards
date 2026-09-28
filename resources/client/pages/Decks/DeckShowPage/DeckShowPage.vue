@@ -181,6 +181,7 @@ import MoreDeckActions from "@/pages/Decks/DeckIndexPage/MoreDeckActions.vue";
 import { useActivityTypesQuery } from "@/queries/activityTypes/useActivityTypesQuery";
 import { useDeleteCardMutation } from "@/queries/cards";
 import { useDeckByIdQuery } from "@/queries/decks";
+import { useDeckDocumentTitle } from "@/lib/documentTitle";
 import * as T from "@/types";
 import { computed, ref } from "vue";
 import { RouterLink } from "vue-router";
@@ -194,6 +195,7 @@ const cardSearch = ref("");
 const deckIdRef = computed(() => props.deckId);
 
 const { data: deck } = useDeckByIdQuery(deckIdRef);
+useDeckDocumentTitle(deck);
 const { mutate: deleteCard } = useDeleteCardMutation();
 const { data: activityTypes } = useActivityTypesQuery();
 
