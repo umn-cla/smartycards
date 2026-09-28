@@ -85,7 +85,7 @@
                 <TableHead class="py-2">
                   <select
                     v-model="filterObject"
-                    class="text-xs border-none rounded px-1.5 py-1 bg-brand-maroon-900/5 w-20 font-medium"
+                    class="text-base md:text-xs border-none rounded px-1.5 py-1 bg-brand-maroon-900/5 w-20 font-medium"
                   >
                     <option value="">All</option>
                     <option value="Deck">Deck</option>
@@ -97,13 +97,13 @@
                     v-model="filterId"
                     type="text"
                     placeholder="ID..."
-                    class="text-xs border-none rounded px-1.5 py-1 bg-brand-maroon-900/5 w-16 placeholder:text-black/25"
+                    class="text-base md:text-xs border-none rounded px-1.5 py-1 bg-brand-maroon-900/5 w-16 placeholder:text-black/25"
                   />
                 </TableHead>
                 <TableHead class="py-2">
                   <select
                     v-model="filterAction"
-                    class="text-xs border-none rounded px-1.5 py-1 bg-brand-maroon-900/5 font-medium w-full"
+                    class="text-base md:text-xs border-none rounded px-1.5 py-1 bg-brand-maroon-900/5 font-medium w-full"
                   >
                     <option value="">All</option>
                     <option value="created">Created</option>
@@ -117,7 +117,7 @@
                     v-model="filterUser"
                     type="text"
                     placeholder="Filter..."
-                    class="text-xs border-none rounded px-1.5 py-1 bg-brand-maroon-900/5 placeholder:text-black/25 w-full"
+                    class="text-base md:text-xs border-none rounded px-1.5 py-1 bg-brand-maroon-900/5 placeholder:text-black/25 w-full"
                   />
                 </TableHead>
                 <TableHead class="py-2">
@@ -125,14 +125,14 @@
                     <input
                       v-model="filterDateFrom"
                       type="date"
-                      class="text-xs border-none rounded px-1.5 py-1 bg-brand-maroon-900/5 placeholder:text-black/25 w-28 font-medium"
+                      class="text-base md:text-xs border-none rounded px-1.5 py-1 bg-brand-maroon-900/5 placeholder:text-black/25 w-28 font-medium"
                       title="From date"
                     />
                     <span class="text-brand-maroon-900/40">-</span>
                     <input
                       v-model="filterDateTo"
                       type="date"
-                      class="text-xs border-none rounded px-1.5 py-1 bg-brand-maroon-900/5 placeholder:text-black/25 w-28 font-medium"
+                      class="text-base md:text-xs border-none rounded px-1.5 py-1 bg-brand-maroon-900/5 placeholder:text-black/25 w-28 font-medium"
                       title="To date"
                     />
                   </div>

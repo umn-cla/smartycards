@@ -28,7 +28,7 @@
         <code>
           <textarea
             :id="makeInputId('latex-editor')"
-            class="block break-all w-full bg-transparent border-none focus:ring-0 px-2 py-0 text-sm"
+            class="block break-all w-full bg-transparent border-none focus:ring-0 px-2 py-0 text-base md:text-sm"
             :value="modelValue"
             @input="
               $emit(

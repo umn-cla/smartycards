@@ -83,7 +83,35 @@ npm run dev
 ```
 
 **Related Documentation:**
+
 - [LTI Grade Submission Queue](docs/lti-grade-submission-queue.md) - Architecture and monitoring
+
+## Testing on a Phone
+
+```sh
+# Get your IP
+ipconfig getifaddr en0
+
+# Set APP_URL=https://<your-ip>:8443 in .env
+open .env
+
+# If your IP changed since your last npm run cert, regenerate certs and restart nginx
+npm run cert
+sail restart
+
+# Restart vite so it binds your IP
+npm run dev
+
+# (one time) Open root cert to install on phone
+open "$(mkcert -CAROOT)"
+# Then:
+# 1. AirDrop rootCA.pem to your iPhone
+# 2. Settings > Profile Downloaded > Install
+#    (or Settings > General > VPN & Device Management)
+# 3. Settings > General > About > Certificate Trust Settings > turn on mkcert
+
+# On the phone, open https://<your-ip>:8443
+```
 
 ## Deploying
 

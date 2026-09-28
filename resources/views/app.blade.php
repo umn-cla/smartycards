@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#2E091E">
   <link rel="icon" href="favicon.svg">
   <link rel="mask-icon" href="mask-icon.svg" color="#2E091E">

@@ -1,6 +1,6 @@
 <template>
   <select
-    class="w-28 bg-brand-maroon-800/5 border-none rounded-md text-sm"
+    class="w-28 bg-brand-maroon-800/5 border-none rounded-md text-base md:text-sm"
     :value="modelValue ?? ''"
     @input="
       $emit('update:modelValue', ($event.target as HTMLSelectElement).value)
