@@ -5,9 +5,7 @@
       class="flex flex-col items-center justify-center py-12 bg-brand-oatmeal-50 rounded-md shadow-sm"
     >
       <p>You have completed this practice session.</p>
-      <Button @click="initPracticeSession" class="my-4">
-        Practice Again
-      </Button>
+      <Button @click="restartPractice" class="my-4"> Practice Again </Button>
       <Button asChild variant="secondary">
         <RouterLink
           :to="{ name: 'decks.show', params: { deckId: props.deck.id } }"
@@ -31,7 +29,7 @@
         }"
       />
       <CardStackVisualization
-        :total-cards="cardsRemaining + (state.activeCard ? 1 : 0)"
+        :total-cards="cardsLeft"
         :animation-state="state.stackAnimationState"
         :reinsertion-index="state.lastReinsertionIndex"
       />
@@ -56,6 +54,8 @@ import { Button } from "@/components/ui/button";
 import { reactive, watch, onMounted, computed } from "vue";
 import { toShuffled, getRandomIntInclusive } from "@/lib/utils";
 import { partition } from "ramda";
+import { useAnnouncer } from "@vue-a11y/announcer";
+import { pluralize } from "@/utils/pluralize";
 
 const props = defineProps<{
   deck: T.DeckWithCards;
@@ -82,6 +82,22 @@ const state = reactive({
 });
 
 const cardsRemaining = computed(() => state.cardsToPractice.length);
+
+const cardsLeft = computed(
+  () => cardsRemaining.value + (state.activeCard ? 1 : 0),
+);
+
+const announcer = useAnnouncer();
+
+const practiceAnswerOutcomes: Record<number, string> = {
+  1: "Card returns soon.",
+  2: "Card returns later.",
+  3: "Card removed from this session.",
+};
+
+function describeCardsLeft(count: number): string {
+  return `${count} ${pluralize(count, "card")} left.`;
+}
 
 function getInitialSideName(card: T.Card): T.CardSideName {
   return props.initialSideName === "random"
@@ -168,6 +184,11 @@ function handleAnswer(score: number) {
   // if there is no active card, we've completed the session
   if (!state.activeCard) {
     emit("complete", props.deck.cards.length);
+    announcer.polite("You have completed this practice session.");
+  } else {
+    announcer.polite(
+      `${practiceAnswerOutcomes[score]} ${describeCardsLeft(cardsLeft.value)}`,
+    );
   }
 
   // after animation is complete, show the initial side
@@ -225,16 +246,25 @@ function initPracticeSession() {
   }, 500);
 }
 
+function restartPractice(): void {
+  initPracticeSession();
+  announcer.polite(`Practice restarted. ${describeCardsLeft(cardsLeft.value)}`);
+}
+
 onMounted(() => {
   initPracticeSession();
 });
 
 watch(
   () => props.initialSideName,
-  () => {
+  (_sideName, previousSideName) => {
     // reinit the practice session
     // if the side changes
-    initPracticeSession();
+    if (previousSideName === undefined) {
+      initPracticeSession();
+      return;
+    }
+    restartPractice();
   },
   { immediate: true },
 );
