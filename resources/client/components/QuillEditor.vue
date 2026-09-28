@@ -62,6 +62,11 @@ const defaultOptions = {
           key: "Tab",
           handler: () => true,
         },
+        // Removing these makes Tab and Shift+Tab indent
+        // or outdent a code block instead of leaving the
+        // editor, which fails quillEditorKeyboard.cy.ts.
+        "indent code-block": null,
+        "outdent code-block": null,
         clearFormatting: {
           key: "\\",
           shortKey: true,
