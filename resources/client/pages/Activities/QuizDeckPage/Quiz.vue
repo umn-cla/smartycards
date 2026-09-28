@@ -1,9 +1,13 @@
 <template>
   <div class="quiz">
-    <h1 class="text-center mb-8">
+    <h3
+      ref="questionHeading"
+      tabindex="-1"
+      class="text-center mb-8 focus:outline-none"
+    >
       Question {{ questionNumber }} of
       {{ totalQuestions }}
-    </h1>
+    </h3>
 
     <div class="w-80 max-w-full mx-auto">
       <CardSideView
@@ -12,79 +16,94 @@
         :sideName="activeQuestion.sourceCardSide"
         class="mb-4"
       />
-      <Markdown :content="activeQuestion.prompt" class="mb-4" />
+      <Markdown
+        :id="activeQuestionPromptId"
+        :content="activeQuestion.prompt"
+        class="mb-4"
+      />
 
       <RadioGroup
-        :modelValue="state.activeChoiceIndex?.toString()"
-        @update:modelValue="handleUpdateRadioGroup"
-        :disabled="isChoiceMade"
+        :modelValue="selectedChoiceIndex?.toString()"
+        @update:modelValue="selectChoiceByRadioValue"
+        :disabled="isShowingResult"
+        :aria-labelledby="activeQuestionPromptId"
         class="pl-4"
       >
+        <!-- Keep the question index in :key. An index-only
+          key reuses the radios, and radix-vue sets their
+          aria-label to "0", "1", "2" instead of the
+          choice text. -->
         <Label
           class="flex items-center p-4 bg-brand-maroon-950/5 rounded-md transition"
           v-for="(choice, index) in activeQuestion.choices"
-          :key="index"
-          :for="getQuestionChoiceId(state.activeQuestionIndex, index)"
+          :key="`${progress.questionIndex}-${index}`"
+          :for="getQuestionChoiceId(progress.questionIndex, index)"
           :class="{
             '!bg-brand-teal-300/10 rounded-md border border-brand-teal-500/50 !text-brand-teal-700':
-              isChoiceMade && isChoiceIndexCorrect(index),
-            'hover:bg-brand-gold-500/50 cursor-pointer': !isChoiceMade,
+              isRevealedCorrectChoice(index),
+            'hover:bg-brand-gold-500/50 cursor-pointer': !isShowingResult,
           }"
         >
           <RadioGroupItem
-            :id="getQuestionChoiceId(state.activeQuestionIndex, index)"
+            :id="getQuestionChoiceId(progress.questionIndex, index)"
             :value="index.toString()"
             class="mr-2"
             :class="{
-              'border-brand-teal-700':
-                isChoiceMade && isChoiceIndexCorrect(index),
+              'border-brand-teal-700': isRevealedCorrectChoice(index),
             }"
           />
           <div class="flex w-full items-center justify-between gap-4">
             <Markdown :content="choice" />
             <!-- <span>{{ choice }}</span> -->
-            <span v-if="isChoiceMade && isChoiceIndexCorrect(index)">✅</span>
-            <span v-else-if="isChoiceMade && state.activeChoiceIndex === index"
-              >❌</span
-            >
+            <span v-if="isRevealedCorrectChoice(index)">✅</span>
+            <span v-else-if="isRevealedWrongSelection(index)">❌</span>
           </div>
         </Label>
       </RadioGroup>
 
-      <footer v-if="isChoiceMade">
+      <footer v-if="!isShowingResult" class="mt-8">
+        <Button
+          :disabled="selectedChoiceIndex === null"
+          @click="checkSelectedAnswer"
+        >
+          Check answer
+        </Button>
+      </footer>
+
+      <footer v-else>
         <div
           class="my-8 p-4 rounded-md"
           :class="{
-            'bg-brand-teal-300/10': isActiveChoiceCorrect,
-            'bg-brand-orange-500/10': !isActiveChoiceCorrect,
+            'bg-brand-teal-300/10': isAnswerCorrect,
+            'bg-brand-orange-500/10': !isAnswerCorrect,
           }"
         >
-          <p v-if="isActiveChoiceCorrect" class="text-brand-teal-500">
-            ✅ Correct!
-          </p>
+          <p v-if="isAnswerCorrect" class="text-brand-teal-500">✅ Correct!</p>
           <p v-else class="text-brand-orange-500">❌ Incorrect</p>
         </div>
 
         <Button
-          v-if="state.activeQuestionIndex === totalQuestions - 1"
-          @click="
-            $emit('end-quiz', {
-              correctCount: state.correctCount,
-              incorrectCount: state.incorrectCount,
-            })
-          "
+          v-if="isLastQuestion(progress, totalQuestions)"
+          ref="nextOrFinishButton"
+          @click="finishQuiz"
         >
           Finish
         </Button>
 
-        <Button v-else @click="handleNextQuestion"> Next </Button>
+        <Button v-else ref="nextOrFinishButton" @click="showNextQuestion">
+          Next
+        </Button>
       </footer>
     </div>
   </div>
 </template>
 <script setup lang="ts">
 import * as T from "@/types";
-import { reactive, computed, watch } from "vue";
+import { computed, nextTick, ref, useTemplateRef } from "vue";
+import { unrefElement } from "@vueuse/core";
+import { escapeHtmlText } from "@/lib/escapeHtmlText";
+import { markdownToSpeechText } from "@/lib/markdownToSpeechText";
+import { useAnnouncer } from "@vue-a11y/announcer";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Button } from "@/components/ui/button";
@@ -92,12 +111,22 @@ import CardSideView from "@/components/CardSideView/CardSideView.vue";
 import Markdown from "@/components/Markdown.vue";
 import { makeContentBlock } from "@/lib/makeContentBlock";
 import { isMathBlock, isTextBlock } from "@/lib/isBlockOfType";
+import {
+  gradeAnswer,
+  describeAnswerResult,
+  describeQuizScore,
+  goToNextQuestion,
+  isLastQuestion,
+  selectChoice,
+  createQuizProgress,
+  type QuizProgress,
+} from "./quizProgress";
 
 const props = defineProps<{
   quiz: T.Quiz;
 }>();
 
-defineEmits<{
+const emit = defineEmits<{
   (
     eventName: "end-quiz",
     payload: {
@@ -107,18 +136,25 @@ defineEmits<{
   );
 }>();
 
-const state = reactive({
-  activeQuestionIndex: 0,
-  activeChoiceIndex: undefined as undefined | number,
-  correctCount: 0,
-  incorrectCount: 0,
-});
+const progress = ref<QuizProgress>(createQuizProgress());
+const announcer = useAnnouncer();
+const nextOrFinishButton =
+  useTemplateRef<InstanceType<typeof Button>>("nextOrFinishButton");
+const questionHeading = useTemplateRef<HTMLHeadingElement>("questionHeading");
 
-const isChoiceMade = computed(() => state.activeChoiceIndex !== undefined);
-const questionNumber = computed(() => state.activeQuestionIndex + 1);
+const isShowingResult = computed(
+  () => progress.value.answer.status === "showingResult",
+);
+const selectedChoiceIndex = computed(
+  () => progress.value.answer.selectedChoiceIndex,
+);
+const questionNumber = computed(() => progress.value.questionIndex + 1);
 const totalQuestions = computed(() => props.quiz.questions.length);
 const activeQuestion = computed(
-  () => props.quiz.questions[state.activeQuestionIndex],
+  () => props.quiz.questions[progress.value.questionIndex],
+);
+const activeQuestionPromptId = computed(
+  () => `quiz-q${progress.value.questionIndex}-prompt`,
 );
 
 function createImageBlocksFromTextBlock(text: string): T.ImageContentBlock[] {
@@ -159,35 +195,67 @@ const activeQuestionPromptMedia = computed((): T.ContentBlock[] => {
     return [...acc, block];
   }, []);
 });
-function isChoiceIndexCorrect(choiceIndex?: number): boolean {
+function isChoiceIndexCorrect(choiceIndex: number): boolean {
   return activeQuestion.value.correctChoiceIndex === choiceIndex;
 }
 
-const isActiveChoiceCorrect = computed((): boolean => {
-  return isChoiceMade.value && isChoiceIndexCorrect(state.activeChoiceIndex);
+function isRevealedCorrectChoice(choiceIndex: number): boolean {
+  return isShowingResult.value && isChoiceIndexCorrect(choiceIndex);
+}
+
+function isRevealedWrongSelection(choiceIndex: number): boolean {
+  return (
+    isShowingResult.value &&
+    selectedChoiceIndex.value === choiceIndex &&
+    !isChoiceIndexCorrect(choiceIndex)
+  );
+}
+
+const isAnswerCorrect = computed((): boolean => {
+  const { answer } = progress.value;
+  return answer.status === "showingResult" && answer.isCorrect;
 });
 
 function getQuestionChoiceId(questionIndex: number, choiceIndex: number) {
   return `quiz-q${questionIndex}-choice${choiceIndex}`;
 }
 
-function handleUpdateRadioGroup(str: string) {
-  state.activeChoiceIndex = Number.parseInt(str);
+function selectChoiceByRadioValue(radioValue: string): void {
+  progress.value = selectChoice(progress.value, Number.parseInt(radioValue));
 }
 
-watch([() => state.activeQuestionIndex, () => state.activeChoiceIndex], () => {
-  if (!isChoiceMade.value) return;
-
-  if (isActiveChoiceCorrect.value) {
-    state.correctCount += 1;
+async function checkSelectedAnswer(): Promise<void> {
+  const checkedProgress = gradeAnswer(progress.value, activeQuestion.value);
+  progress.value = checkedProgress;
+  if (checkedProgress.answer.status !== "showingResult") {
     return;
   }
-  state.incorrectCount += 1;
-});
 
-function handleNextQuestion() {
-  state.activeQuestionIndex += 1;
-  state.activeChoiceIndex = undefined;
+  const { choices, correctChoiceIndex } = activeQuestion.value;
+  const correctChoiceText = markdownToSpeechText(choices[correctChoiceIndex]);
+  const resultMessage = describeAnswerResult(
+    checkedProgress.answer,
+    correctChoiceText,
+  );
+  // VueAnnouncer sets messages as innerHTML. Without
+  // escapeHtmlText, choice text becomes markup.
+  announcer.polite(escapeHtmlText(resultMessage));
+  await nextTick();
+  unrefElement(nextOrFinishButton)?.focus();
+}
+
+async function showNextQuestion(): Promise<void> {
+  progress.value = goToNextQuestion(progress.value, totalQuestions.value);
+  await nextTick();
+  questionHeading.value?.focus();
+}
+
+function finishQuiz(): void {
+  announcer.polite(describeQuizScore(progress.value));
+  emit("end-quiz", {
+    correctCount: progress.value.correctCount,
+    incorrectCount: progress.value.incorrectCount,
+  });
 }
 </script>
 <style scoped></style>

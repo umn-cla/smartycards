@@ -133,7 +133,13 @@
       </section>
 
       <section v-else>
-        <h2 class="text-center font-bold text-xl">Complete</h2>
+        <h2
+          ref="completeHeading"
+          tabindex="-1"
+          class="text-center font-bold text-xl focus:outline-none"
+        >
+          Complete
+        </h2>
 
         <div class="flex flex-col gap-4 items-center">
           <Tuple label="✅ Correct">
@@ -166,7 +172,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
-import { computed, reactive, ref, watch } from "vue";
+import { computed, nextTick, reactive, ref, useTemplateRef, watch } from "vue";
 import { useDeckByIdQuery } from "@/queries/decks";
 import Quiz from "./Quiz.vue";
 import * as api from "@/api";
@@ -198,6 +204,8 @@ const state = reactive({
   correctCount: 0,
   incorrectCount: 0,
 });
+
+const completeHeading = useTemplateRef<HTMLHeadingElement>("completeHeading");
 
 const deckIdRef = computed(() => props.deckId);
 
@@ -242,6 +250,8 @@ async function handleEndQuiz(payload: {
   state.quizState = "complete";
   state.correctCount = payload.correctCount;
   state.incorrectCount = payload.incorrectCount;
+  await nextTick();
+  completeHeading.value?.focus();
 }
 
 // shuffle through some messages while users are waiting
