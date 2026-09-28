@@ -127,16 +127,16 @@ describe("DeckShowPage", () => {
     cy.get("#announcer").should("have.text", "1 matching card.");
   });
 
-  it("announces Flip All once for the page", () => {
+  it("announces which side all cards show after Flip All", () => {
     cy.createTextCardInDeck(deckId, { front: "Front side", back: "Back side" });
 
     cy.visit(`/decks/${deckId}`);
 
     cy.contains("Flip All").click();
-    cy.get("#announcer").should("have.text", "All cards showing back.");
+    cy.get("#announcer").should("have.text", "All cards now show the back.");
 
     cy.contains("Flip All").click();
-    cy.get("#announcer").should("have.text", "All cards showing front.");
+    cy.get("#announcer").should("have.text", "All cards now show the front.");
   });
 
   it("'Create and Add Another' button uses previous card's structure", () => {

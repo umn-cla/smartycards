@@ -86,6 +86,10 @@ describe("DeckShowPage", () => {
 
     // select back
     cy.get("#starting-side-select").select("Back");
+    cy.get("#announcer").should(
+      "have.text",
+      "Practice restarted. 3 cards left.",
+    );
 
     // expect back side now
     cy.contains(/Back side \d/);
