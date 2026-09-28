@@ -56,6 +56,7 @@ import { ref } from "vue";
 import { useJoinCommunityDeckMutation } from "@/queries/community";
 import { useLeaveDeckMutation } from "@/queries/deckMemberships";
 import { useRouter } from "vue-router";
+import { useAnnouncer } from "@vue-a11y/announcer";
 
 const props = defineProps<{
   deckId: number;
@@ -67,9 +68,11 @@ const { data: deck } = useDeckByIdQuery(deckIdRef);
 useDeckDocumentTitle(deck);
 
 const initialCardSide = ref<T.CardSideName>("front");
+const announcer = useAnnouncer();
 
 function flipAllCards() {
   initialCardSide.value = initialCardSide.value === "front" ? "back" : "front";
+  announcer.polite(`All cards showing ${initialCardSide.value}.`);
 }
 
 const { mutate: joinDeck } = useJoinCommunityDeckMutation();

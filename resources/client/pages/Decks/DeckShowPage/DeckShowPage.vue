@@ -185,6 +185,9 @@ import { useDeckDocumentTitle } from "@/lib/documentTitle";
 import * as T from "@/types";
 import { computed, ref } from "vue";
 import { RouterLink } from "vue-router";
+import { useAnnouncer } from "@vue-a11y/announcer";
+import { watchDebounced } from "@vueuse/core";
+import { pluralize } from "@/utils/pluralize";
 import MoreCardActions from "./MoreCardActions.vue";
 
 const props = defineProps<{
@@ -245,8 +248,32 @@ const filteredCards = computed((): T.Card[] => {
   });
 });
 
+const announcer = useAnnouncer();
+
+function describeCardSearchResult(
+  matchCount: number,
+  isSearchEmpty: boolean,
+): string {
+  if (isSearchEmpty) {
+    return `Showing ${matchCount} ${pluralize(matchCount, "card")}.`;
+  }
+  if (matchCount === 0) return "No matching cards.";
+  return `${matchCount} matching ${pluralize(matchCount, "card")}.`;
+}
+
+watchDebounced(
+  cardSearch,
+  () => {
+    announcer.polite(
+      describeCardSearchResult(filteredCards.value.length, !cardSearch.value),
+    );
+  },
+  { debounce: 500 },
+);
+
 function flipAllCards() {
   initialCardSide.value = initialCardSide.value === "front" ? "back" : "front";
+  announcer.polite(`All cards showing ${initialCardSide.value}.`);
 }
 
 const isPracticeEnabled = computed(() => {
