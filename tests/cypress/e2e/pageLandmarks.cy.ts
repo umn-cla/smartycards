@@ -64,6 +64,7 @@ describe("Page landmarks and headings", () => {
         cy.contains("main", textShownWhenLoaded);
       }
 
+      cy.get("h1").should("have.length", 1);
       cy.get("main h1").should("have.length", 1);
       cy.get("main").should("have.length", 1);
 

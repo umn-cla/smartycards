@@ -39,6 +39,11 @@ describe("QuizDeckPage", () => {
     cy.wait("@createQuiz");
   });
 
+  it("has one h1 while a quiz is running", () => {
+    cy.contains("Question 1 of 2");
+    cy.get("h1").should("have.length", 1);
+  });
+
   it("moves the selection with arrow keys without committing an answer", () => {
     cy.get("#quiz-q0-choice0").focus();
 
