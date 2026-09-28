@@ -1,23 +1,41 @@
 const deckName = "Deck 1";
 const deckDescription = "About deck 1";
 
-const pages: { pathTemplate: string; readyText: string | null }[] = [
-  { pathTemplate: "/", readyText: null },
-  { pathTemplate: "/decks", readyText: deckName },
-  { pathTemplate: "/decks/:deckId", readyText: deckName },
-  { pathTemplate: "/decks/:deckId/share", readyText: deckName },
-  { pathTemplate: "/decks/:deckId/import", readyText: deckName },
-  { pathTemplate: "/decks/:deckId/clone", readyText: deckName },
-  { pathTemplate: "/decks/:deckId/cards/create", readyText: deckName },
-  { pathTemplate: "/community/decks", readyText: deckName },
-  { pathTemplate: "/community/decks/:deckId", readyText: deckName },
-  { pathTemplate: "/profile", readyText: null },
+const pages: { pathTemplate: string; textShownWhenLoaded: string | null }[] = [
+  { pathTemplate: "/", textShownWhenLoaded: null },
+  { pathTemplate: "/decks", textShownWhenLoaded: deckName },
+  { pathTemplate: "/decks/:deckId", textShownWhenLoaded: deckName },
+  { pathTemplate: "/decks/:deckId/share", textShownWhenLoaded: deckName },
+  { pathTemplate: "/decks/:deckId/import", textShownWhenLoaded: deckName },
+  { pathTemplate: "/decks/:deckId/clone", textShownWhenLoaded: deckName },
+  {
+    pathTemplate: "/decks/:deckId/cards/create",
+    textShownWhenLoaded: deckName,
+  },
+  { pathTemplate: "/community/decks", textShownWhenLoaded: deckName },
+  { pathTemplate: "/community/decks/:deckId", textShownWhenLoaded: deckName },
+  { pathTemplate: "/profile", textShownWhenLoaded: null },
   {
     pathTemplate: "/decks/:deckId/activities/practice/embed",
-    readyText: deckName,
+    textShownWhenLoaded: deckName,
   },
-  { pathTemplate: "/no-such-page", readyText: null },
+  { pathTemplate: "/no-such-page", textShownWhenLoaded: null },
 ];
+
+const allHeadings = "h1, h2, h3, h4, h5, h6";
+
+function toHeadingLevel(heading: HTMLElement): number {
+  return Number(heading.tagName.slice(1));
+}
+
+function expectNoSkippedHeadingLevels(levels: number[]): void {
+  levels.forEach((level, index) => {
+    const previousLevel = levels[index - 1] ?? 0;
+    expect(level, `level of heading ${index + 1}`).to.be.at.most(
+      previousLevel + 1,
+    );
+  });
+}
 
 describe("Page landmarks and headings", () => {
   let deckId: number;
@@ -38,30 +56,25 @@ describe("Page landmarks and headings", () => {
     cy.login({ umndid: "user" });
   });
 
-  pages.forEach(({ pathTemplate, readyText }) => {
-    it(`has one main with one h1 and no skipped heading levels: ${pathTemplate}`, () => {
+  pages.forEach(({ pathTemplate, textShownWhenLoaded }) => {
+    it(`has one main with one h1, no skipped heading levels, and no deck description as a heading: ${pathTemplate}`, () => {
       cy.visit(pathTemplate.replace(":deckId", String(deckId)));
 
-      if (readyText) {
-        cy.contains("main", readyText);
+      if (textShownWhenLoaded) {
+        cy.contains("main", textShownWhenLoaded);
       }
 
       cy.get("main h1").should("have.length", 1);
       cy.get("main").should("have.length", 1);
+
       cy.get("main")
-        .find("h1, h2, h3, h4, h5, h6")
-        .should("not.contain", deckDescription)
+        .find(allHeadings)
         .then(($headings) => {
-          const levels = $headings
-            .toArray()
-            .map((heading) => Number(heading.tagName.slice(1)));
-          levels.forEach((level, index) => {
-            const previousLevel = levels[index - 1] ?? 0;
-            expect(level, `level of heading ${index + 1}`).to.be.at.most(
-              previousLevel + 1,
-            );
-          });
+          const levels = $headings.toArray().map(toHeadingLevel);
+          expectNoSkippedHeadingLevels(levels);
         });
+
+      cy.get("main").find(allHeadings).should("not.contain", deckDescription);
     });
   });
 });

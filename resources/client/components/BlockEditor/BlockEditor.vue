@@ -24,9 +24,9 @@
           </button>
           <section class="flex-grow">
             <div class="flex justify-between items-center">
-              <h2 class="text-xs text-brand-maroon-800/50 font-base">
+              <h3 class="text-xs text-brand-maroon-800/50 font-base">
                 {{ capitalize(block.type) }}
-              </h2>
+              </h3>
               <button
                 class="cursor-pointer flex items-start px-3 py-3"
                 @click="removeBlock(block.id)"

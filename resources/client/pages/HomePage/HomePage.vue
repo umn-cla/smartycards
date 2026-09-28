@@ -3,7 +3,7 @@
     class="min-h-screen home-page relative bg-umn-maroon-900 text-brand-oatmeal-100 h-full"
   >
     <UniversityHeader />
-    <main>
+    <main id="main-content" tabindex="-1" class="focus:outline-none">
       <section
         class="text-brand-oatmeal-100 flex items-center justify-center flex-col px-4 text-center gap-4"
       >
