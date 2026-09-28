@@ -15,7 +15,8 @@
         :side="side"
         :deck="deck"
         :sideName="label"
-        class="absolute w-full h-full backface-hidden color-maroon-950"
+        :inert="label !== currentCardSide"
+        class="absolute w-full h-full backface-hidden color-maroon-950 pb-14"
         :class="{
           'z-20': label === currentCardSide,
           'z-10': label !== currentCardSide,
@@ -28,16 +29,17 @@
         </template>
         <template #append>
           <slot name="append" />
-          <Button
-            variant="ghost"
-            class="bg-brand-maroon-800/5 hover:bg-brand-maroon-800/10 uppercase text-xs tracking-wider text-brand-maroon-950 font-sans"
-            @click="flipCard"
-          >
-            Flip
-          </Button>
         </template>
       </CardSideView>
     </div>
+    <Button
+      variant="ghost"
+      :aria-label="`Flip to ${otherSideName}`"
+      class="absolute inset-x-2 bottom-2 z-30 bg-brand-maroon-800/5 hover:bg-brand-maroon-800/10 uppercase text-xs tracking-wider text-brand-maroon-950 font-sans"
+      @click="flipCard"
+    >
+      Flip
+    </Button>
   </div>
 </template>
 
@@ -46,6 +48,7 @@ import { CardSideView } from "@/components/CardSideView";
 import { ref, watch, computed } from "vue";
 import { CardSide, CardSideName, Deck } from "@/types";
 import { Button } from "@/components/ui/button";
+import { useAnnouncer } from "@vue-a11y/announcer";
 
 const props = withDefaults(
   defineProps<{
@@ -93,8 +96,15 @@ watch(labelledCardSides, () => {
   currentCardSide.value = props.initialSideName;
 });
 
-function flipCard() {
-  currentCardSide.value = currentCardSide.value === "front" ? "back" : "front";
+const otherSideName = computed(
+  (): CardSideName => (currentCardSide.value === "front" ? "back" : "front"),
+);
+
+const announcer = useAnnouncer();
+
+function flipCard(): void {
+  currentCardSide.value = otherSideName.value;
+  announcer.polite(`Showing ${currentCardSide.value}`);
 }
 </script>
 
