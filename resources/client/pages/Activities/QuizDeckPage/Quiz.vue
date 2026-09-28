@@ -35,7 +35,7 @@
           :for="getQuestionChoiceId(progress.questionIndex, index)"
           :class="{
             '!bg-brand-teal-300/10 rounded-md border border-brand-teal-500/50 !text-brand-teal-700':
-              isShowingResult && isChoiceIndexCorrect(index),
+              isRevealedCorrectChoice(index),
             'hover:bg-brand-gold-500/50 cursor-pointer': !isShowingResult,
           }"
         >
@@ -44,19 +44,14 @@
             :value="index.toString()"
             class="mr-2"
             :class="{
-              'border-brand-teal-700':
-                isShowingResult && isChoiceIndexCorrect(index),
+              'border-brand-teal-700': isRevealedCorrectChoice(index),
             }"
           />
           <div class="flex w-full items-center justify-between gap-4">
             <Markdown :content="choice" />
             <!-- <span>{{ choice }}</span> -->
-            <span v-if="isShowingResult && isChoiceIndexCorrect(index)"
-              >✅</span
-            >
-            <span v-else-if="isShowingResult && selectedChoiceIndex === index"
-              >❌</span
-            >
+            <span v-if="isRevealedCorrectChoice(index)">✅</span>
+            <span v-else-if="isRevealedWrongSelection(index)">❌</span>
           </div>
         </Label>
       </RadioGroup>
@@ -83,7 +78,7 @@
         </div>
 
         <Button
-          v-if="progress.questionIndex === totalQuestions - 1"
+          v-if="isLastQuestion(progress, totalQuestions)"
           ref="nextOrFinishButton"
           @click="finishQuiz"
         >
@@ -113,6 +108,7 @@ import {
   describeAnswerResult,
   describeQuizScore,
   goToNextQuestion,
+  isLastQuestion,
   selectChoice,
   startQuizProgress,
   type QuizProgress,
@@ -191,8 +187,16 @@ const activeQuestionPromptMedia = computed((): T.ContentBlock[] => {
     return [...acc, block];
   }, []);
 });
-function isChoiceIndexCorrect(choiceIndex?: number): boolean {
+function isChoiceIndexCorrect(choiceIndex: number): boolean {
   return activeQuestion.value.correctChoiceIndex === choiceIndex;
+}
+
+function isRevealedCorrectChoice(choiceIndex: number): boolean {
+  return isShowingResult.value && isChoiceIndexCorrect(choiceIndex);
+}
+
+function isRevealedWrongSelection(choiceIndex: number): boolean {
+  return isShowingResult.value && selectedChoiceIndex.value === choiceIndex;
 }
 
 const isAnswerCorrect = computed((): boolean => {
@@ -216,21 +220,21 @@ function focusButton(button: InstanceType<typeof Button> | null): void {
 }
 
 async function checkSelectedAnswer(): Promise<void> {
-  const progressWithResult = checkAnswer(progress.value, activeQuestion.value);
-  progress.value = progressWithResult;
-  if (progressWithResult.answer.status !== "showingResult") {
+  const checkedProgress = checkAnswer(progress.value, activeQuestion.value);
+  progress.value = checkedProgress;
+  if (checkedProgress.answer.status !== "showingResult") {
     return;
   }
 
   announcer.polite(
-    describeAnswerResult(progressWithResult.answer, activeQuestion.value),
+    describeAnswerResult(checkedProgress.answer, activeQuestion.value),
   );
   await nextTick();
   focusButton(nextOrFinishButton.value);
 }
 
 async function showNextQuestion(): Promise<void> {
-  progress.value = goToNextQuestion(progress.value);
+  progress.value = goToNextQuestion(progress.value, totalQuestions.value);
   await nextTick();
   questionHeading.value?.focus();
 }

@@ -5,13 +5,13 @@ interface ChoosingAnswer {
   selectedChoiceIndex: number | null;
 }
 
-export interface ShowingAnswerResult {
+interface ShowingResult {
   status: "showingResult";
   selectedChoiceIndex: number;
   isCorrect: boolean;
 }
 
-export type AnswerState = ChoosingAnswer | ShowingAnswerResult;
+type AnswerState = ChoosingAnswer | ShowingResult;
 
 export interface QuizProgress {
   questionIndex: number;
@@ -56,7 +56,7 @@ export function checkAnswer(
   }
 
   const isCorrect = answer.selectedChoiceIndex === question.correctChoiceIndex;
-  const answerResult: ShowingAnswerResult = {
+  const answerResult: ShowingResult = {
     status: "showingResult",
     selectedChoiceIndex: answer.selectedChoiceIndex,
     isCorrect,
@@ -77,8 +77,21 @@ export function checkAnswer(
   };
 }
 
-export function goToNextQuestion(progress: QuizProgress): QuizProgress {
-  if (progress.answer.status !== "showingResult") {
+export function isLastQuestion(
+  progress: QuizProgress,
+  questionCount: number,
+): boolean {
+  return progress.questionIndex === questionCount - 1;
+}
+
+export function goToNextQuestion(
+  progress: QuizProgress,
+  questionCount: number,
+): QuizProgress {
+  if (
+    progress.answer.status !== "showingResult" ||
+    isLastQuestion(progress, questionCount)
+  ) {
     return progress;
   }
 
@@ -90,7 +103,7 @@ export function goToNextQuestion(progress: QuizProgress): QuizProgress {
 }
 
 export function describeAnswerResult(
-  answer: ShowingAnswerResult,
+  answer: ShowingResult,
   question: T.QuizQuestion,
 ): string {
   if (answer.isCorrect) {

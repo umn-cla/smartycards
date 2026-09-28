@@ -42,13 +42,13 @@ describe("QuizDeckPage", () => {
   it("moves the selection with arrow keys without committing an answer", () => {
     cy.get("#quiz-q0-choice0").focus();
 
-    cy.realPress("ArrowDown");
+    cy.realPress("ArrowDown", { pressDelay: 100 });
 
     cy.get("#quiz-q0-choice1").should("have.attr", "aria-checked", "true");
     cy.get('[role="radiogroup"]').should("not.have.attr", "data-disabled");
     cy.contains(/Correct!|Incorrect/).should("not.exist");
 
-    cy.realPress("ArrowDown");
+    cy.realPress("ArrowDown", { pressDelay: 100 });
 
     cy.get("#quiz-q0-choice2").should("have.attr", "aria-checked", "true");
 
