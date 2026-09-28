@@ -4,7 +4,9 @@
       v-if="!state.activeCard"
       class="flex flex-col items-center justify-center py-12 bg-brand-oatmeal-50 rounded-md shadow-sm"
     >
-      <p>You have completed this practice session.</p>
+      <p ref="completionMessage" tabindex="-1">
+        You have completed this practice session.
+      </p>
       <Button @click="restartPractice" class="my-4"> Practice Again </Button>
       <Button asChild variant="secondary">
         <RouterLink
@@ -51,11 +53,12 @@ import CardAttemptChoices from "@/components/CardAttemptChoices.vue";
 import CardStackVisualization from "@/components/CardStackVisualization.vue";
 import FlippableCard from "@/components/FlippableCard.vue";
 import { Button } from "@/components/ui/button";
-import { reactive, watch, onMounted, computed } from "vue";
+import { reactive, watch, onMounted, computed, nextTick, ref } from "vue";
 import { toShuffled, getRandomIntInclusive } from "@/lib/utils";
 import { partition } from "ramda";
 import { useAnnouncer } from "@vue-a11y/announcer";
 import { pluralize } from "@/utils/pluralize";
+import { focusIfNothingIsFocused } from "@/lib/focusIfNothingIsFocused";
 
 const props = defineProps<{
   deck: T.DeckWithCards;
@@ -96,6 +99,8 @@ const announcementByScore: Record<number, string> = {
 function describeCardsLeft(count: number): string {
   return `${count} ${pluralize(count, "card")} left.`;
 }
+
+const completionMessage = ref<HTMLParagraphElement | null>(null);
 
 function getInitialSideName(card: T.Card): T.CardSideName {
   return props.initialSideName === "random"
@@ -182,6 +187,7 @@ function handleAnswer(score: number) {
   // if there is no active card, we've completed the session
   if (!state.activeCard) {
     emit("complete", props.deck.cards.length);
+    nextTick(() => focusIfNothingIsFocused(completionMessage.value));
   } else {
     announcer.polite(
       `${announcementByScore[score]} ${describeCardsLeft(cardsLeftIncludingActive.value)}`,
