@@ -16,10 +16,7 @@
           </div>
         </PageHeader>
 
-        <div
-          v-if="auditHistory"
-          class="bg-brand-oatmeal-50 rounded-md shadow overflow-clip"
-        >
+        <div class="bg-brand-oatmeal-50 rounded-md shadow overflow-clip">
           <Table>
             <TableHeader>
               <TableRow class="bg-brand-maroon-900/10">
@@ -141,8 +138,16 @@
               </TableRow>
             </TableHeader>
             <TableBody>
+              <TableRow v-if="isAuditHistoryError">
+                <TableCell
+                  colspan="6"
+                  class="text-center py-8 text-brand-maroon-900/70"
+                >
+                  Could not load history for these filters.
+                </TableCell>
+              </TableRow>
               <!-- Empty state -->
-              <TableRow v-if="audits.length === 0">
+              <TableRow v-else-if="auditHistory && audits.length === 0">
                 <TableCell
                   colspan="6"
                   class="text-center py-8 text-brand-maroon-900/50"
@@ -160,10 +165,25 @@
                   @click="toggleRow(audit.id)"
                 >
                   <TableCell class="w-8">
-                    <ChevronDownIcon
-                      class="size-4 text-brand-maroon-900/50 transition-transform"
-                      :class="{ 'rotate-180': expandedRows.has(audit.id) }"
-                    />
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      class="size-6"
+                      data-cy="audit-row-toggle"
+                      :aria-expanded="expandedRows.has(audit.id)"
+                      @click.stop="toggleRow(audit.id)"
+                    >
+                      <span class="sr-only">
+                        Changes to {{ audit.auditable_type }}
+                        {{ audit.auditable_id }},
+                        {{ formatDateTime(audit.created_at) }}
+                      </span>
+                      <ChevronDownIcon
+                        aria-hidden="true"
+                        class="size-4 text-brand-maroon-900/50 transition-transform"
+                        :class="{ 'rotate-180': expandedRows.has(audit.id) }"
+                      />
+                    </Button>
                   </TableCell>
                   <TableCell>
                     <span
@@ -211,7 +231,7 @@
 
           <!-- Pagination -->
           <div
-            v-if="auditHistory.meta.last_page > 1"
+            v-if="auditHistory && auditHistory.meta.last_page > 1"
             class="mt-6 flex items-center justify-center gap-4"
           >
             <Button
@@ -245,6 +265,7 @@ import AuthenticatedLayout from "@/layouts/AuthenticatedLayout/AuthenticatedLayo
 import { useDeckByIdQuery } from "@/queries/decks";
 import { useDeckAuditHistoryQuery } from "@/queries/decks/useDeckAuditHistoryQuery";
 import { computed, ref, watch } from "vue";
+import { refDebounced } from "@vueuse/core";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -276,6 +297,9 @@ const filterUser = ref("");
 const filterDateFrom = ref("");
 const filterDateTo = ref("");
 
+const debouncedFilterId = refDebounced(filterId, 300);
+const debouncedFilterUser = refDebounced(filterUser, 300);
+
 // Sorting
 type SortField = "auditable_type" | "event" | "user" | "created_at";
 type SortDirection = "asc" | "desc";
@@ -290,9 +314,9 @@ const page = ref(1);
 const queryParams = computed(() => ({
   page: page.value,
   object: filterObject.value || undefined,
-  id: filterId.value || undefined,
+  id: debouncedFilterId.value || undefined,
   action: filterAction.value || undefined,
-  user: filterUser.value || undefined,
+  user: debouncedFilterUser.value || undefined,
   from: filterDateFrom.value || undefined,
   to: filterDateTo.value || undefined,
   sort: sortField.value,
@@ -303,9 +327,9 @@ const queryParams = computed(() => ({
 watch(
   [
     filterObject,
-    filterId,
+    debouncedFilterId,
     filterAction,
-    filterUser,
+    debouncedFilterUser,
     filterDateFrom,
     filterDateTo,
     sortField,
@@ -317,7 +341,8 @@ watch(
 );
 
 const { data: deck } = useDeckByIdQuery(deckIdRef);
-const { data: auditHistory } = useDeckAuditHistoryQuery(deckIdRef, queryParams);
+const { data: auditHistory, isError: isAuditHistoryError } =
+  useDeckAuditHistoryQuery(deckIdRef, queryParams);
 
 // Computed helpers
 const hasActiveFilters = computed(() =>
