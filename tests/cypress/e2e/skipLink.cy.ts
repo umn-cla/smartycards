@@ -9,7 +9,9 @@ describe("Skip link", () => {
     cy.get("a[href], button, input, select, textarea, [tabindex]")
       .not('[tabindex="-1"]')
       .first()
-      .should("have.text", "Skip to main content");
+      .invoke("text")
+      .invoke("trim")
+      .should("equal", "Skip to main content");
   });
 
   it("moves focus to the main content", () => {
@@ -18,5 +20,9 @@ describe("Skip link", () => {
     cy.realPress("Enter");
 
     cy.focused().should("have.id", "main-content");
+
+    cy.realPress("Tab");
+
+    cy.focused().closest("#main-content").should("exist");
   });
 });

@@ -1,6 +1,7 @@
 describe("FlippableCard", () => {
   const frontFace = '[data-cy="card-side-view--Front"]';
   const backFace = '[data-cy="card-side-view--Back"]';
+  const moreCardActionsButton = '[data-cy="more-card-actions-button"]';
 
   beforeEach(() => {
     cy.refreshDatabase();
@@ -30,19 +31,17 @@ describe("FlippableCard", () => {
   });
 
   it("does not Tab into the hidden back face", () => {
-    cy.get("@flipButton").focus();
+    cy.get(frontFace).find(moreCardActionsButton).focus();
 
     cy.realPress("Tab");
 
-    cy.document().should((doc) => {
-      const hiddenFace = doc.querySelector(backFace);
-      expect(hiddenFace?.contains(doc.activeElement)).to.equal(false);
-    });
+    cy.get("@flipButton").should("have.focus");
   });
 
   it("does not Shift+Tab into the hidden front face", () => {
     cy.get("@flipButton").focus();
     cy.realPress("Enter");
+    cy.get(backFace).find(moreCardActionsButton).focus();
 
     cy.realPress(["Shift", "Tab"]);
 
