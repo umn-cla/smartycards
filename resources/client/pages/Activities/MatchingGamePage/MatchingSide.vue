@@ -10,8 +10,9 @@
   >
     <TTSContextProvider :deck="deck ?? null" :cardSideName="label">
       <Transition name="fade">
-        <aside
+        <div
           v-if="status !== 'idle'"
+          aria-hidden="true"
           class="absolute inset-0 z-20 rounded-sm font-bold text-4xl px-4 py-3 flex items-center justify-center text-brand-oatmeal-50"
           :class="{
             'bg-brand-orange-500/75 backdrop-blur-sm': status === 'mismatch',
@@ -20,13 +21,11 @@
         >
           <span v-if="status === 'match'">
             <IconCheck />
-            <span class="sr-only">Match</span>
           </span>
           <span v-else-if="status === 'mismatch'">
             <IconX />
-            <span class="sr-only">Not a match. Try again</span>
           </span>
-        </aside>
+        </div>
       </Transition>
       <div class="flex flex-col gap-4 my-auto py-1 items-start mx-auto">
         <template v-for="block in blocks" :key="block.id">

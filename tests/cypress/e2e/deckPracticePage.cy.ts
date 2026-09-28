@@ -25,35 +25,38 @@ describe("DeckShowPage", () => {
 
     const cardsSeen = new Set<string>();
 
+    function markCorrectAndWaitForCardToLeave(cardText: string) {
+      cy.contains("✅").click();
+      cy.contains(cardText).should("not.exist");
+    }
+
     // card 1
     cy.contains(/Front side \d/).then(($el: JQuery<HTMLElement>) => {
-      cardsSeen.add($el.text());
-    });
+      const cardText = $el.text().trim();
+      cardsSeen.add(cardText);
 
-    cy.contains("Flip").click();
-    cy.contains(/Back side \d/);
-    cy.contains("✅").click();
-    cy.wait(500);
+      cy.contains("Flip").click();
+      cy.contains(/Back side \d/);
+      markCorrectAndWaitForCardToLeave(cardText);
+    });
 
     // card 2
     cy.contains(/Front side \d/).then(($el: JQuery<HTMLElement>) => {
       // we should not see the same card again
-      const cardText = $el.text();
+      const cardText = $el.text().trim();
       expect(cardsSeen.has(cardText)).to.be.false;
       cardsSeen.add(cardText);
+      markCorrectAndWaitForCardToLeave(cardText);
     });
-    cy.contains("✅").click();
-    cy.wait(500);
 
     // card 3
     cy.contains(/Front side \d/).then(($el: JQuery<HTMLElement>) => {
       // we should not see the same card again
-      const cardText = $el.text();
+      const cardText = $el.text().trim();
       expect(cardsSeen.has(cardText)).to.be.false;
       cardsSeen.add(cardText);
+      markCorrectAndWaitForCardToLeave(cardText);
     });
-    cy.contains("✅").click();
-    cy.wait(500);
 
     // we should see the end message
     cy.contains("You have completed").then(() => {

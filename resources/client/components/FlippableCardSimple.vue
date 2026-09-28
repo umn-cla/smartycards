@@ -4,8 +4,9 @@
       v-for="side in ['front', 'back']"
       :key="side"
       :label="side"
+      :inert="side !== currentCardSide"
       :class="[
-        `card-side card-side__${side} p-2 flex flex-col gap-1 min-h-[20rem] transition-transform duration-500 transform-style-preserve-3d backface-hidden rounded-lg`,
+        `card-side card-side__${side} p-2 pb-11 flex flex-col gap-1 min-h-[20rem] transition-transform duration-500 transform-style-preserve-3d backface-hidden rounded-lg`,
         {
           'bg-brand-oatmeal-50': side === 'front',
           'bg-brand-gold-300': side === 'back',
@@ -24,22 +25,26 @@
       <slot :name="side" />
 
       <slot name="append" />
-
-      <Button
-        variant="ghost"
-        class="flip-button bg-brand-maroon-800/5 hover:bg-brand-maroon-800/10 uppercase text-xs tracking-wider text-brand-maroon-950 font-sans"
-        @click="flipCard"
-      >
-        Flip
-      </Button>
     </div>
+    <!-- Keep Flip outside both faces: the hidden face is
+      inert, so a Flip inside it loses focus after
+      a flip. -->
+    <Button
+      variant="ghost"
+      :aria-label="`Flip to ${otherSideName}`"
+      class="row-start-1 col-start-1 self-end z-30 m-2 bg-brand-maroon-800/5 hover:bg-brand-maroon-800/10 uppercase text-xs tracking-wider text-brand-maroon-950 font-sans"
+      @click="flipCard"
+    >
+      Flip
+    </Button>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from "vue";
+import { ref, watch, computed } from "vue";
 import { CardSideName } from "@/types";
 import { Button } from "@/components/ui/button";
+import { useAnnouncer } from "@vue-a11y/announcer";
 
 const props = withDefaults(
   defineProps<{
@@ -54,8 +59,15 @@ const props = withDefaults(
 
 const currentCardSide = ref<CardSideName>(props.initialSideName);
 
-function flipCard() {
-  currentCardSide.value = currentCardSide.value === "front" ? "back" : "front";
+const otherSideName = computed(
+  (): CardSideName => (currentCardSide.value === "front" ? "back" : "front"),
+);
+
+const announcer = useAnnouncer();
+
+function flipCard(): void {
+  currentCardSide.value = otherSideName.value;
+  announcer.polite(`Showing ${currentCardSide.value}`);
 }
 
 // if initialSideName prop changes, update currentCardSide
