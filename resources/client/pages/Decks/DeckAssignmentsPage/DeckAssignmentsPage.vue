@@ -77,7 +77,9 @@
                       class="inline-flex items-center gap-2 px-4 py-2 text-brand-maroon-700 bg-brand-maroon-900/5 hover:bg-brand-maroon-900/10 rounded transition-colors text-xs uppercase"
                     >
                       View in Canvas
-                      <ExternalLinkIcon class="w-3 h-3" />
+                      <span aria-hidden="true">
+                        <ExternalLinkIcon class="w-3 h-3" />
+                      </span>
                     </a>
                   </div>
                 </div>

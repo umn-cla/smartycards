@@ -47,7 +47,9 @@ const forwarded = useForwardPropsEmits(delegatedProps, emits);
         class="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-white transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-stone-950 focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-stone-100 data-[state=open]:text-stone-500 dark:ring-offset-stone-950 dark:focus:ring-stone-300 dark:data-[state=open]:bg-stone-800 dark:data-[state=open]:text-stone-400"
         data-cy="dialog-close"
       >
-        <Cross2Icon class="w-4 h-4" />
+        <span aria-hidden="true">
+          <Cross2Icon class="w-4 h-4" />
+        </span>
         <span class="sr-only">Close</span>
       </DialogClose>
     </DialogContent>

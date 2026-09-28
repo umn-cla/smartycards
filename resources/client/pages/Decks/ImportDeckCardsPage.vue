@@ -38,7 +38,9 @@
                 href="/examples/french-english.csv"
                 download
               >
-                <DownloadIcon class="size-4 mr-2" />
+                <span aria-hidden="true">
+                  <DownloadIcon class="size-4 mr-2" />
+                </span>
                 Download
               </Button>
             </div>

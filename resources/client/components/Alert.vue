@@ -9,7 +9,7 @@
     }"
   >
     <div class="flex">
-      <div class="shrink-0">
+      <div class="shrink-0" aria-hidden="true">
         <IconComponent
           class="size-5"
           :class="{
@@ -18,7 +18,6 @@
             'text-green-500': type === 'success',
             'text-red-500': type === 'error',
           }"
-          aria-hidden="true"
         />
       </div>
       <div

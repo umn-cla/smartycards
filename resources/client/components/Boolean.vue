@@ -1,6 +1,9 @@
 <template>
   <div class="flex items-center justify-center">
-    <IconCheckCircle v-if="modelValue" class="text-brand-teal-300" />
+    <template v-if="modelValue">
+      <IconCheckCircle class="text-brand-teal-300" />
+      <span class="sr-only">Yes</span>
+    </template>
     <span v-else> - </span>
   </div>
 </template>
