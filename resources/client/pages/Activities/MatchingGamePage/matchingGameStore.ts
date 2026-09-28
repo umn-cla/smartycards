@@ -10,6 +10,11 @@ export interface MatchingCardSide {
   status: "idle" | "selected" | "match" | "mismatch" | "disabled";
 }
 
+export type SelectSideResult =
+  | { type: "pairIncomplete" }
+  | { type: "pairMatched"; pairsLeft: number }
+  | { type: "pairMismatched" };
+
 export const useMatchingGameStore = defineStore("matchingGame", {
   state: () => ({
     gameState: "setup" as "setup" | "playing" | "win" | "error",
@@ -18,6 +23,12 @@ export const useMatchingGameStore = defineStore("matchingGame", {
   getters: {
     selectedSides(state) {
       return state.sides.filter((side) => side.status === "selected");
+    },
+    unmatchedPairCount(state): number {
+      const unmatchedSides = state.sides.filter(
+        (side) => side.status !== "match" && side.status !== "disabled",
+      );
+      return unmatchedSides.length / 2;
     },
   },
   actions: {
@@ -49,7 +60,7 @@ export const useMatchingGameStore = defineStore("matchingGame", {
       this.gameState = "playing";
     },
 
-    selectSide(sideId: string) {
+    selectSide(sideId: string): SelectSideResult {
       this.sides = this.sides.map((side) => {
         if (side.id === sideId && ["idle", "selected"].includes(side.status)) {
           return {
@@ -61,23 +72,25 @@ export const useMatchingGameStore = defineStore("matchingGame", {
         return side;
       });
 
-      this.checkSelectedSidesForMatches();
+      return this.checkSelectedSidesForMatches();
     },
 
-    checkSelectedSidesForMatches() {
+    checkSelectedSidesForMatches(): SelectSideResult {
       const selectedSides = this.selectedSides;
 
       if (selectedSides.length < 2) {
-        return;
+        return { type: "pairIncomplete" };
       }
 
       // if the sides are a match, then update status to "match"
       const [side1, side2] = selectedSides;
       if (side1.cardId === side2.cardId) {
         this.handleMatch(selectedSides);
-      } else {
-        this.handleMismatch(selectedSides);
+        return { type: "pairMatched", pairsLeft: this.unmatchedPairCount };
       }
+
+      this.handleMismatch(selectedSides);
+      return { type: "pairMismatched" };
     },
 
     handleMatch(selectedSides: MatchingCardSide[]) {

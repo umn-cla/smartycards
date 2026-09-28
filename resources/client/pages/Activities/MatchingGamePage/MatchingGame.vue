@@ -6,20 +6,22 @@
         class="flex flex-col items-center justify-center p-4 border bg-brand-oatmeal-50 rounded-md gap-4"
       >
         <p class="text-center text-4xl font-bold">You win!</p>
-        <Button @click="matchingGameStore.init(cards)"> Play Again </Button>
+        <Button ref="playAgainButton" @click="startNewGame()">
+          Play Again
+        </Button>
       </div>
       <div
         v-else-if="gameState === 'playing'"
+        ref="tileGrid"
         class="matching-game grid grid-cols-4 gap-1"
       >
         <TransitionGroup name="list">
-          <MatchingSide
-            v-for="side in matchingGameStore.sides"
-            :blocks="side.blocks"
+          <SelectableMatchingSide
+            v-for="(side, index) in matchingGameStore.sides"
             :key="side.id"
-            :label="side.label"
-            :status="side.status"
-            @click="matchingGameStore.selectSide(side.id)"
+            :side="side"
+            :position="index + 1"
+            @select="selectSide(side.id)"
           />
         </TransitionGroup>
       </div>
@@ -32,9 +34,10 @@
 </template>
 <script setup lang="ts">
 import * as T from "@/types";
-import { computed, reactive, ref, watch } from "vue";
-import MatchingSide from "./MatchingSide.vue";
-import { useMatchingGameStore } from "./matchingGameStore";
+import { computed, nextTick, useTemplateRef, watch } from "vue";
+import { useAnnouncer } from "@vue-a11y/announcer";
+import SelectableMatchingSide from "./SelectableMatchingSide.vue";
+import { SelectSideResult, useMatchingGameStore } from "./matchingGameStore";
 import { Button } from "@/components/ui/button";
 
 const props = defineProps<{
@@ -47,6 +50,42 @@ const emit = defineEmits<{
 
 const matchingGameStore = useMatchingGameStore();
 const gameState = computed(() => matchingGameStore.gameState);
+const announcer = useAnnouncer();
+const playAgainButton =
+  useTemplateRef<InstanceType<typeof Button>>("playAgainButton");
+const tileGrid = useTemplateRef<HTMLDivElement>("tileGrid");
+
+function toPairAnnouncement(result: SelectSideResult): string | null {
+  switch (result.type) {
+    case "pairIncomplete":
+      return null;
+    case "pairMismatched":
+      return "Not a match. Try again.";
+    case "pairMatched":
+      if (result.pairsLeft === 0) {
+        return "Match.";
+      }
+      if (result.pairsLeft === 1) {
+        return "Match. 1 pair left.";
+      }
+      return `Match. ${result.pairsLeft} pairs left.`;
+  }
+}
+
+function selectSide(sideId: string): void {
+  const announcement = toPairAnnouncement(matchingGameStore.selectSide(sideId));
+  if (announcement) {
+    announcer.polite(announcement);
+  }
+}
+
+async function startNewGame(): Promise<void> {
+  matchingGameStore.init(props.cards);
+  await nextTick();
+  tileGrid.value
+    ?.querySelector<HTMLButtonElement>("button[aria-pressed]")
+    ?.focus();
+}
 
 function reload() {
   window.location.reload();
@@ -60,10 +99,17 @@ watch(
   { immediate: true },
 );
 
-watch(gameState, (state) => {
+watch(gameState, async (state) => {
   if (state === "win") {
     const matchedPairs = matchingGameStore.sides.length / 2;
     emit("gameover", matchedPairs);
+    announcer.polite("You win!");
+
+    await nextTick();
+    const playAgainElement: unknown = playAgainButton.value?.$el;
+    if (playAgainElement instanceof HTMLButtonElement) {
+      playAgainElement.focus();
+    }
   }
 });
 </script>
