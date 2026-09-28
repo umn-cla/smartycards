@@ -129,6 +129,8 @@ async function handleProcessImage(
 
   emit("update:modelValue", fileInfo.url);
   announcer.polite("Image uploaded.");
+  // Without nextTick, FilePond still holds focus and
+  // focusIfNothingIsFocused skips the URL input.
   nextTick(() => focusIfNothingIsFocused(getImageUrlInput()));
 
   return { abort };

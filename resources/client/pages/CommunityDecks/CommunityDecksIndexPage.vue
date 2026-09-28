@@ -16,7 +16,7 @@
               class="bg-brand-oatmeal-50 p-4 rounded-lg border border-brand-oatmeal-300/75"
             >
               <h2
-                :id="`community-deck-name-${deck.id}`"
+                :id="getDeckNameId(deck.id)"
                 tabindex="-1"
                 class="text-lg font-bold"
               >
@@ -37,10 +37,7 @@
                 </Button>
                 <Button
                   v-if="deck.capabilities.canLeave"
-                  @click="
-                    focusDeckName(deck.id);
-                    leaveDeck(deck.id);
-                  "
+                  @click="leaveDeckAndFocusName(deck.id)"
                   variant="destructive"
                   >Leave</Button
                 >
@@ -59,10 +56,7 @@
                 </Button>
                 <Button
                   v-if="deck.capabilities.canJoinAsViewer"
-                  @click="
-                    focusDeckName(deck.id);
-                    joinDeck(deck.id);
-                  "
+                  @click="joinDeckAndFocusName(deck.id)"
                   >Join</Button
                 >
               </div>
@@ -85,8 +79,22 @@ const { data: communityDecks, isLoading } = useCommunityDecksQuery();
 const { mutate: joinDeck } = useJoinCommunityDeckMutation();
 const { mutate: leaveDeck } = useLeaveDeckMutation();
 
+function getDeckNameId(deckId: number): string {
+  return `community-deck-name-${deckId}`;
+}
+
 function focusDeckName(deckId: number): void {
-  document.getElementById(`community-deck-name-${deckId}`)?.focus();
+  document.getElementById(getDeckNameId(deckId))?.focus();
+}
+
+function joinDeckAndFocusName(deckId: number): void {
+  focusDeckName(deckId);
+  joinDeck(deckId);
+}
+
+function leaveDeckAndFocusName(deckId: number): void {
+  focusDeckName(deckId);
+  leaveDeck(deckId);
 }
 </script>
 <style scoped></style>

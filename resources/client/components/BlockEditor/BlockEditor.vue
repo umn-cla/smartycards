@@ -76,7 +76,14 @@
   </div>
 </template>
 <script setup lang="ts">
-import { capitalize, type Component, computed, nextTick, ref } from "vue";
+import {
+  capitalize,
+  type Component,
+  type ComponentPublicInstance,
+  computed,
+  nextTick,
+  ref,
+} from "vue";
 import { unrefElement } from "@vueuse/core";
 import TextBlockInput from "./TextBlockInput.vue";
 import ImageBlockInput from "./ImageBlockInput.vue";
@@ -128,7 +135,7 @@ const emit = defineEmits<{
   (event: "dragHandle:down", block: ContentBlock): void;
 }>();
 
-const addBlockButton = ref<InstanceType<typeof Button> | null>(null);
+const addBlockButton = ref<ComponentPublicInstance | null>(null);
 
 const blockTypes = computed(() => {
   const types = Object.keys(lookupComponentType) as ContentBlockType[];

@@ -27,7 +27,9 @@
       <audio controls :src="audioUrl ?? ''" class="w-full h-10"></audio>
 
       <div class="flex justify-end gap-2 mt-3">
-        <Button variant="secondary" @click="discardRecording"> Discard </Button>
+        <Button variant="secondary" @click="resetRecordingAndFocusRecordButton">
+          Discard
+        </Button>
 
         <Button @click="emitSaveEvent"> Use Recording </Button>
       </div>
@@ -75,7 +77,7 @@ watch(isRecording, (isNowRecording) => {
 
 const recordButton = ref<ComponentPublicInstance | null>(null);
 
-function discardRecording(): void {
+function resetRecordingAndFocusRecordButton(): void {
   unrefElement(recordButton)?.focus();
   resetRecording();
 }

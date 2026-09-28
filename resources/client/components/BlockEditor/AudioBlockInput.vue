@@ -157,6 +157,8 @@ async function handleProcessAudio(
 
   emit("update:modelValue", fileInfo.url);
   announcer.polite("Audio file uploaded.");
+  // Without nextTick, FilePond still holds focus and
+  // focusIfNothingIsFocused skips the URL input.
   nextTick(() => focusIfNothingIsFocused(getAudioUrlInput()));
 
   return { abort };
