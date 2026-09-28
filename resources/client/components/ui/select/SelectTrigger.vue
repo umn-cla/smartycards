@@ -24,7 +24,11 @@ const forwardedProps = useForwardProps(delegatedProps)
     )"
   >
     <slot />
-    <SelectIcon>
+    <!--
+      as-child moves aria-hidden onto the radix icon,
+      which drops it (functional component, no props)
+    -->
+    <SelectIcon class="shrink-0">
       <CaretSortIcon class="w-4 h-4 opacity-50" />
     </SelectIcon>
   </SelectTrigger>
