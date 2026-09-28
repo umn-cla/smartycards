@@ -13,7 +13,7 @@
           :id="`block-editor__block__${block.id}`"
         >
           <button
-            class="drag-handle cursor-move flex items-start px-1 py-3 focus:ring-2 focus-visible:ring-2 focus-visible:ring-blue-600 focus:ring-blue-600 active:ring-2 active:ring-blue-600"
+            class="drag-handle cursor-move flex items-start px-1 py-3 focus-visible:ring-2 focus-visible:ring-blue-600 active:ring-2 active:ring-blue-600"
             @keydown.up.prevent="$emit('dragHandle:up', block)"
             @keydown.down.prevent="$emit('dragHandle:down', block)"
             @keydown.left.prevent="$emit('dragHandle:left', block)"
