@@ -29,7 +29,7 @@
         }"
       />
       <CardStackVisualization
-        :total-cards="cardsLeft"
+        :total-cards="cardsLeftIncludingActive"
         :animation-state="state.stackAnimationState"
         :reinsertion-index="state.lastReinsertionIndex"
       />
@@ -81,15 +81,13 @@ const state = reactive({
   lastReinsertionIndex: null as number | null,
 });
 
-const cardsRemaining = computed(() => state.cardsToPractice.length);
-
-const cardsLeft = computed(
-  () => cardsRemaining.value + (state.activeCard ? 1 : 0),
+const cardsLeftIncludingActive = computed(
+  () => state.cardsToPractice.length + (state.activeCard ? 1 : 0),
 );
 
 const announcer = useAnnouncer();
 
-const practiceAnswerOutcomes: Record<number, string> = {
+const announcementByScore: Record<number, string> = {
   1: "Card returns soon.",
   2: "Card returns later.",
   3: "Card removed from this session.",
@@ -186,7 +184,7 @@ function handleAnswer(score: number) {
     emit("complete", props.deck.cards.length);
   } else {
     announcer.polite(
-      `${practiceAnswerOutcomes[score]} ${describeCardsLeft(cardsLeft.value)}`,
+      `${announcementByScore[score]} ${describeCardsLeft(cardsLeftIncludingActive.value)}`,
     );
   }
 
@@ -247,7 +245,9 @@ function initPracticeSession() {
 
 function restartPractice(): void {
   initPracticeSession();
-  announcer.polite(`Practice restarted. ${describeCardsLeft(cardsLeft.value)}`);
+  announcer.polite(
+    `Practice restarted. ${describeCardsLeft(cardsLeftIncludingActive.value)}`,
+  );
 }
 
 onMounted(() => {
@@ -257,9 +257,8 @@ onMounted(() => {
 watch(
   () => props.initialSideName,
   (_sideName, previousSideName) => {
-    // reinit the practice session
-    // if the side changes
-    if (previousSideName === undefined) {
+    const isInitialRun = previousSideName === undefined;
+    if (isInitialRun) {
       initPracticeSession();
       return;
     }
