@@ -1,6 +1,7 @@
 export function focusIfNothingIsFocused(element: HTMLElement | null): void {
   const isNothingFocused =
-    document.activeElement === null || document.activeElement === document.body;
+    document.activeElement === document.body ||
+    document.activeElement === document.documentElement;
 
   if (isNothingFocused) {
     element?.focus();
