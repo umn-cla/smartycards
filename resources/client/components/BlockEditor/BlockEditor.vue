@@ -55,6 +55,7 @@
         <Button
           variant="ghost"
           class="rounded-t-none hover:bg-brand-maroon-800/10 focus-visible:ring-2 focus-visible:ring-blue-600"
+          data-cy="add-content-block-button"
         >
           <Icons.IconPlusFilled class="size-4 mr-2" />
           Add Block
