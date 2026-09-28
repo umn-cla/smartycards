@@ -1,7 +1,7 @@
 <template>
   <AuthenticatedLayout>
     <h1>
-      {{ error ? "Could not join this deck" : "Processing deck invite..." }}
+      {{ error ? "Could not accept deck invite" : "Processing deck invite..." }}
     </h1>
     <p v-if="error">{{ error }}</p>
   </AuthenticatedLayout>
