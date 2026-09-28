@@ -1,6 +1,8 @@
 <template>
+  <!-- Keep @click here: mouse clicks land on MatchingSide,
+    and another @click on the button selects twice. -->
   <div
-    class="relative rounded-sm has-[>button:focus-visible]:outline has-[>button:focus-visible]:outline-2 has-[>button:focus-visible]:outline-offset-4 has-[>button:focus-visible]:outline-brand-maroon-800 has-[>button:focus-visible]:z-10"
+    class="selectable-matching-side relative rounded-sm"
     @click="emit('select')"
   >
     <button
@@ -22,7 +24,7 @@
 <script setup lang="ts">
 import { computed, useId } from "vue";
 import MatchingSide from "./MatchingSide.vue";
-import { MatchingCardSide } from "./matchingGameStore";
+import { isMatchedSide, MatchingCardSide } from "./matchingGameStore";
 
 const props = defineProps<{
   side: MatchingCardSide;
@@ -36,7 +38,10 @@ const emit = defineEmits<{
 const contentId = useId();
 const positionId = useId();
 
-const isMatched = computed(
-  () => props.side.status === "match" || props.side.status === "disabled",
-);
+const isMatched = computed(() => isMatchedSide(props.side));
 </script>
+<style scoped>
+.selectable-matching-side:has(> button:focus-visible) {
+  @apply z-10 outline outline-2 outline-offset-4 outline-brand-maroon-800;
+}
+</style>

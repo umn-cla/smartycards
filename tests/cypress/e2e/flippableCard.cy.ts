@@ -1,6 +1,6 @@
 describe("FlippableCard", () => {
-  const frontFace = '[data-cy="card-side-view--Front"]';
-  const backFace = '[data-cy="card-side-view--Back"]';
+  const frontSide = '[data-cy="card-side-view--Front"]';
+  const backSide = '[data-cy="card-side-view--Back"]';
   const moreCardActionsButton = '[data-cy="more-card-actions-button"]';
 
   beforeEach(() => {
@@ -21,17 +21,17 @@ describe("FlippableCard", () => {
   });
 
   it("marks only the hidden face inert", () => {
-    cy.get(frontFace).should("not.have.attr", "inert");
-    cy.get(backFace).should("have.attr", "inert");
+    cy.get(frontSide).should("not.have.attr", "inert");
+    cy.get(backSide).should("have.attr", "inert");
 
     cy.get("@flipButton").click();
 
-    cy.get(frontFace).should("have.attr", "inert");
-    cy.get(backFace).should("not.have.attr", "inert");
+    cy.get(frontSide).should("have.attr", "inert");
+    cy.get(backSide).should("not.have.attr", "inert");
   });
 
   it("does not Tab into the hidden back face", () => {
-    cy.get(frontFace).find(moreCardActionsButton).focus();
+    cy.get(frontSide).find(moreCardActionsButton).focus();
 
     cy.realPress("Tab");
 
@@ -41,12 +41,12 @@ describe("FlippableCard", () => {
   it("does not Shift+Tab into the hidden front face", () => {
     cy.get("@flipButton").focus();
     cy.realPress("Enter");
-    cy.get(backFace).find(moreCardActionsButton).focus();
+    cy.get(backSide).find(moreCardActionsButton).focus();
 
     cy.realPress(["Shift", "Tab"]);
 
     cy.document().should((doc) => {
-      const hiddenFace = doc.querySelector(frontFace);
+      const hiddenFace = doc.querySelector(frontSide);
       expect(hiddenFace?.contains(doc.activeElement)).to.equal(false);
     });
   });

@@ -79,7 +79,7 @@ const navigation: T.NavMenuItem[] = [
 const isSidebarOpen = ref(false);
 const mainContentRef = ref<HTMLElement | null>(null);
 
-function focusMainContent() {
+function focusMainContent(): void {
   mainContentRef.value?.focus();
 }
 const { data: currentUser } = useAuthQuery();

@@ -1,5 +1,5 @@
 describe("MatchingGame keyboard", () => {
-  function selectControlFor(text: string) {
+  function selectButtonFor(text: string) {
     return cy.contains(".matching-side", text).siblings("button[aria-pressed]");
   }
 
@@ -19,24 +19,24 @@ describe("MatchingGame keyboard", () => {
     cy.realPress("Tab");
     cy.get("button[aria-pressed]").eq(1).should("have.focus");
 
-    selectControlFor("Front 1").focus();
+    selectButtonFor("Front 1").focus();
     cy.realPress("Space");
-    selectControlFor("Front 1").should("have.attr", "aria-pressed", "true");
+    selectButtonFor("Front 1").should("have.attr", "aria-pressed", "true");
 
-    selectControlFor("Back 1").focus();
+    selectButtonFor("Back 1").focus();
     cy.realPress("Enter");
     cy.get("#announcer").should("have.text", "Match. 1 pair left.");
 
     cy.contains(".matching-side", "Back 1").should("have.class", "opacity-25");
-    selectControlFor("Back 1")
+    selectButtonFor("Back 1")
       .should("have.focus")
       .and("have.attr", "aria-disabled", "true");
     cy.realPress("Enter");
-    selectControlFor("Back 1").should("have.attr", "aria-pressed", "false");
+    selectButtonFor("Back 1").should("have.attr", "aria-pressed", "false");
 
-    selectControlFor("Front 2").focus();
+    selectButtonFor("Front 2").focus();
     cy.realPress("Space");
-    selectControlFor("Back 2").focus();
+    selectButtonFor("Back 2").focus();
     cy.realPress("Enter");
     cy.get("#announcer").should("have.text", "You win!");
     cy.focused().should("contain.text", "Play Again");
@@ -46,13 +46,13 @@ describe("MatchingGame keyboard", () => {
   });
 
   it("announces a mismatch", () => {
-    selectControlFor("Front 1").focus();
+    selectButtonFor("Front 1").focus();
     cy.realPress("Space");
-    selectControlFor("Back 2").focus();
+    selectButtonFor("Back 2").focus();
     cy.realPress("Enter");
 
     cy.get("#announcer").should("have.text", "Not a match. Try again.");
-    selectControlFor("Front 1").should("have.attr", "aria-pressed", "false");
-    selectControlFor("Back 2").should("have.attr", "aria-pressed", "false");
+    selectButtonFor("Front 1").should("have.attr", "aria-pressed", "false");
+    selectButtonFor("Back 2").should("have.attr", "aria-pressed", "false");
   });
 });

@@ -12,7 +12,7 @@
       </div>
       <div
         v-else-if="gameState === 'playing'"
-        ref="tileGrid"
+        ref="sideGrid"
         class="matching-game grid grid-cols-4 gap-1"
       >
         <TransitionGroup name="list">
@@ -53,7 +53,7 @@ const gameState = computed(() => matchingGameStore.gameState);
 const announcer = useAnnouncer();
 const playAgainButton =
   useTemplateRef<InstanceType<typeof Button>>("playAgainButton");
-const tileGrid = useTemplateRef<HTMLDivElement>("tileGrid");
+const sideGrid = useTemplateRef<HTMLDivElement>("sideGrid");
 
 function toPairAnnouncement(result: SelectSideResult): string | null {
   switch (result.type) {
@@ -62,29 +62,34 @@ function toPairAnnouncement(result: SelectSideResult): string | null {
     case "pairMismatched":
       return "Not a match. Try again.";
     case "pairMatched":
-      if (result.pairsLeft === 0) {
+      if (result.unmatchedPairCount === 0) {
         return "Match.";
       }
-      if (result.pairsLeft === 1) {
+      if (result.unmatchedPairCount === 1) {
         return "Match. 1 pair left.";
       }
-      return `Match. ${result.pairsLeft} pairs left.`;
+      return `Match. ${result.unmatchedPairCount} pairs left.`;
   }
 }
 
 function selectSide(sideId: string): void {
-  const announcement = toPairAnnouncement(matchingGameStore.selectSide(sideId));
+  const selectResult = matchingGameStore.selectSide(sideId);
+  const announcement = toPairAnnouncement(selectResult);
   if (announcement) {
     announcer.polite(announcement);
   }
 }
 
+function focusFirstSide(): void {
+  sideGrid.value
+    ?.querySelector<HTMLButtonElement>("button[aria-pressed]")
+    ?.focus();
+}
+
 async function startNewGame(): Promise<void> {
   matchingGameStore.init(props.cards);
   await nextTick();
-  tileGrid.value
-    ?.querySelector<HTMLButtonElement>("button[aria-pressed]")
-    ?.focus();
+  focusFirstSide();
 }
 
 function reload() {

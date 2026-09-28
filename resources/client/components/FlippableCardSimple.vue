@@ -29,7 +29,7 @@
     <Button
       variant="ghost"
       :aria-label="`Flip to ${otherSideName}`"
-      class="flip-button row-start-1 col-start-1 self-end z-30 m-2 bg-brand-maroon-800/5 hover:bg-brand-maroon-800/10 uppercase text-xs tracking-wider text-brand-maroon-950 font-sans"
+      class="row-start-1 col-start-1 self-end z-30 m-2 bg-brand-maroon-800/5 hover:bg-brand-maroon-800/10 uppercase text-xs tracking-wider text-brand-maroon-950 font-sans"
       @click="flipCard"
     >
       Flip

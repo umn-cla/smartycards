@@ -10,9 +10,13 @@ export interface MatchingCardSide {
   status: "idle" | "selected" | "match" | "mismatch" | "disabled";
 }
 
+export function isMatchedSide(side: MatchingCardSide): boolean {
+  return side.status === "match" || side.status === "disabled";
+}
+
 export type SelectSideResult =
   | { type: "pairIncomplete" }
-  | { type: "pairMatched"; pairsLeft: number }
+  | { type: "pairMatched"; unmatchedPairCount: number }
   | { type: "pairMismatched" };
 
 export const useMatchingGameStore = defineStore("matchingGame", {
@@ -25,9 +29,7 @@ export const useMatchingGameStore = defineStore("matchingGame", {
       return state.sides.filter((side) => side.status === "selected");
     },
     unmatchedPairCount(state): number {
-      const unmatchedSides = state.sides.filter(
-        (side) => side.status !== "match" && side.status !== "disabled",
-      );
+      const unmatchedSides = state.sides.filter((side) => !isMatchedSide(side));
       return unmatchedSides.length / 2;
     },
   },
@@ -86,7 +88,10 @@ export const useMatchingGameStore = defineStore("matchingGame", {
       const [side1, side2] = selectedSides;
       if (side1.cardId === side2.cardId) {
         this.handleMatch(selectedSides);
-        return { type: "pairMatched", pairsLeft: this.unmatchedPairCount };
+        return {
+          type: "pairMatched",
+          unmatchedPairCount: this.unmatchedPairCount,
+        };
       }
 
       this.handleMismatch(selectedSides);
