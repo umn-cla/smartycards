@@ -84,6 +84,8 @@
           />
           <div
             v-if="importError"
+            ref="importErrorAlert"
+            tabindex="-1"
             class="text-red-700 my-4 flex items-center gap-2 bg-red-700/10 p-4 rounded-md text-sm"
           >
             <IconExclamationTriangle class="size-6 flex-shrink-0" />
@@ -115,7 +117,7 @@
   </AuthenticatedLayout>
 </template>
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { computed, nextTick, ref } from "vue";
 import { AuthenticatedLayout } from "@/layouts/AuthenticatedLayout";
 import * as api from "@/api";
 import { useRouter } from "vue-router";
@@ -146,6 +148,7 @@ const fileInput = ref<HTMLInputElement | null>(null);
 const selectedFile = ref<File | null>(null);
 const deckIdRef = computed(() => props.deckId);
 const importError = ref<string | null>(null);
+const importErrorAlert = ref<HTMLDivElement | null>(null);
 const { data: deck } = useDeckByIdQuery(deckIdRef);
 useDeckDocumentTitle(deck);
 
@@ -181,6 +184,9 @@ async function handleImport() {
     if (fileInput.value) {
       fileInput.value.value = "";
     }
+
+    await nextTick();
+    importErrorAlert.value?.focus();
   }
 }
 </script>
