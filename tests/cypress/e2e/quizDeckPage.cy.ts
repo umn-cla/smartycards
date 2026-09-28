@@ -64,4 +64,40 @@ describe("QuizDeckPage", () => {
     );
     cy.focused().should("contain.text", "Next");
   });
+
+  it("names radios by their choice text and moves focus after Next and Finish", () => {
+    cy.get("#quiz-q0-choice1").click();
+    cy.get("#quiz-q0-choice1").should("have.attr", "aria-checked", "true");
+    cy.get("#quiz-q0-choice0").click();
+    cy.contains("button", "Check answer").click();
+
+    cy.contains("✅ Correct!");
+    cy.focused().should("contain.text", "Next");
+
+    cy.realPress("Enter");
+
+    cy.focused().should("match", "h3").and("contain.text", "Question 2 of 2");
+    ["Red", "Green", "Blue"].forEach((choiceText, choiceIndex) => {
+      cy.get(`#quiz-q1-choice${choiceIndex}`)
+        .should("have.attr", "aria-label")
+        .and("contain", choiceText);
+    });
+    cy.get('[role="radiogroup"]')
+      .invoke("attr", "aria-labelledby")
+      .then((promptId) => {
+        cy.get(`#${promptId}`).should(
+          "contain.text",
+          "What color is a clear daytime sky?",
+        );
+      });
+
+    cy.get("#quiz-q1-choice0").click();
+    cy.contains("button", "Check answer").click();
+    cy.focused().should("contain.text", "Finish");
+
+    cy.realPress("Enter");
+
+    cy.focused().should("match", "h2").and("contain.text", "Complete");
+    cy.get("#announcer").should("contain", "Quiz complete. 1 of 2 correct.");
+  });
 });
