@@ -32,6 +32,9 @@
         </template>
       </CardSideView>
     </div>
+    <!-- Keep Flip outside both faces: the hidden face is
+      inert, so a Flip inside it loses focus after a flip
+      and flippableCard.cy.ts fails. -->
     <Button
       variant="ghost"
       :aria-label="`Flip to ${otherSideName}`"

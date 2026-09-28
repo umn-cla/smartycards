@@ -74,10 +74,10 @@ export const useMatchingGameStore = defineStore("matchingGame", {
         return side;
       });
 
-      return this.checkSelectedSidesForMatches();
+      return this.markSelectedPair();
     },
 
-    checkSelectedSidesForMatches(): SelectSideResult {
+    markSelectedPair(): SelectSideResult {
       const selectedSides = this.selectedSides;
 
       if (selectedSides.length < 2) {

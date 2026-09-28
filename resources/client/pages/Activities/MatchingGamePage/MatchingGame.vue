@@ -21,7 +21,7 @@
             :key="side.id"
             :side="side"
             :position="index + 1"
-            @select="selectSide(side.id)"
+            @select="selectSideAndAnnounce(side.id)"
           />
         </TransitionGroup>
       </div>
@@ -72,11 +72,18 @@ function toPairAnnouncement(result: SelectSideResult): string | null {
   }
 }
 
-function selectSide(sideId: string): void {
-  const selectResult = matchingGameStore.selectSide(sideId);
-  const announcement = toPairAnnouncement(selectResult);
+function selectSideAndAnnounce(sideId: string): void {
+  const selectSideResult = matchingGameStore.selectSide(sideId);
+  const announcement = toPairAnnouncement(selectSideResult);
   if (announcement) {
     announcer.polite(announcement);
+  }
+}
+
+function focusPlayAgainButton(): void {
+  const playAgainElement: unknown = playAgainButton.value?.$el;
+  if (playAgainElement instanceof HTMLButtonElement) {
+    playAgainElement.focus();
   }
 }
 
@@ -105,17 +112,16 @@ watch(
 );
 
 watch(gameState, async (state) => {
-  if (state === "win") {
-    const matchedPairs = matchingGameStore.sides.length / 2;
-    emit("gameover", matchedPairs);
-    announcer.polite("You win!");
-
-    await nextTick();
-    const playAgainElement: unknown = playAgainButton.value?.$el;
-    if (playAgainElement instanceof HTMLButtonElement) {
-      playAgainElement.focus();
-    }
+  if (state !== "win") {
+    return;
   }
+
+  const matchedPairs = matchingGameStore.sides.length / 2;
+  emit("gameover", matchedPairs);
+  announcer.polite("You win!");
+
+  await nextTick();
+  focusPlayAgainButton();
 });
 </script>
 <style scoped></style>

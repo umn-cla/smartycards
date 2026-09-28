@@ -20,7 +20,7 @@ describe("FlippableCard", () => {
       .as("flipButton");
   });
 
-  it("marks only the hidden face inert", () => {
+  it("marks only the hidden side inert", () => {
     cy.get(frontSide).should("not.have.attr", "inert");
     cy.get(backSide).should("have.attr", "inert");
 
@@ -30,7 +30,7 @@ describe("FlippableCard", () => {
     cy.get(backSide).should("not.have.attr", "inert");
   });
 
-  it("does not Tab into the hidden back face", () => {
+  it("does not Tab into the hidden back side", () => {
     cy.get(frontSide).find(moreCardActionsButton).focus();
 
     cy.realPress("Tab");
@@ -38,7 +38,7 @@ describe("FlippableCard", () => {
     cy.get("@flipButton").should("have.focus");
   });
 
-  it("does not Shift+Tab into the hidden front face", () => {
+  it("does not Shift+Tab into the hidden front side", () => {
     cy.get("@flipButton").focus();
     cy.realPress("Enter");
     cy.get(backSide).find(moreCardActionsButton).focus();
@@ -46,12 +46,12 @@ describe("FlippableCard", () => {
     cy.realPress(["Shift", "Tab"]);
 
     cy.document().should((doc) => {
-      const hiddenFace = doc.querySelector(frontSide);
-      expect(hiddenFace?.contains(doc.activeElement)).to.equal(false);
+      const hiddenSide = doc.querySelector(frontSide);
+      expect(hiddenSide?.contains(doc.activeElement)).to.equal(false);
     });
   });
 
-  it("has one Flip button that keeps focus and names the next face", () => {
+  it("has one Flip button that keeps focus and names the next side", () => {
     cy.get('[data-cy="flippable-card"] button:contains("Flip")').should(
       "have.length",
       1,

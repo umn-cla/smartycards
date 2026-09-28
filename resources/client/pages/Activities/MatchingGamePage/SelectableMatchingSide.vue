@@ -1,6 +1,7 @@
 <template>
-  <!-- Keep @click here: mouse clicks land on MatchingSide,
-    and another @click on the button selects twice. -->
+  <!-- Keep @click on this div: the sr-only button never
+    gets mouse clicks, and its keyboard click bubbles here,
+    so a second @click would toggle the tile back off. -->
   <div
     class="selectable-matching-side relative rounded-sm"
     @click="emit('select')"
