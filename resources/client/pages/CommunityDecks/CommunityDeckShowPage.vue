@@ -12,7 +12,9 @@
     <div v-if="deck">
       <section class="my-8">
         <header class="my-4 flex justify-between items-baseline">
-          <h2 class="text-3xl font-bold">Cards</h2>
+          <h2 ref="cardsHeading" tabindex="-1" class="text-3xl font-bold">
+            Cards
+          </h2>
           <div class="flex gap-1">
             <Button @click="flipAllCards" variant="secondary">
               Flip All
@@ -24,7 +26,7 @@
             >
             <Button
               v-else-if="deck.capabilities.canLeave"
-              @click="leaveDeck(deck.id)"
+              @click="leaveDeckAndFocusCardsHeading"
               variant="destructive"
               >Leave Deck</Button
             >
@@ -83,5 +85,12 @@ async function handleJoinDeck() {
   router.push({ name: "decks.show", params: { deckId: deckIdRef.value } });
 }
 const { mutate: leaveDeck } = useLeaveDeckMutation();
+
+const cardsHeading = ref<HTMLHeadingElement | null>(null);
+
+function leaveDeckAndFocusCardsHeading(): void {
+  cardsHeading.value?.focus();
+  leaveDeck(deckIdRef.value);
+}
 </script>
 <style scoped></style>

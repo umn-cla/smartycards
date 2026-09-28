@@ -15,7 +15,13 @@
             <article
               class="bg-brand-oatmeal-50 p-4 rounded-lg border border-brand-oatmeal-300/75"
             >
-              <h2 class="text-lg font-bold">{{ deck.name }}</h2>
+              <h2
+                :id="`community-deck-name-${deck.id}`"
+                tabindex="-1"
+                class="text-lg font-bold"
+              >
+                {{ deck.name }}
+              </h2>
               <p class="text-sm text-stone-400 mb-4">{{ deck.description }}</p>
 
               <div v-if="deck.current_user_role" class="flex gap-2 justify-end">
@@ -31,7 +37,10 @@
                 </Button>
                 <Button
                   v-if="deck.capabilities.canLeave"
-                  @click="leaveDeck(deck.id)"
+                  @click="
+                    focusDeckName(deck.id);
+                    leaveDeck(deck.id);
+                  "
                   variant="destructive"
                   >Leave</Button
                 >
@@ -50,7 +59,10 @@
                 </Button>
                 <Button
                   v-if="deck.capabilities.canJoinAsViewer"
-                  @click="joinDeck(deck.id)"
+                  @click="
+                    focusDeckName(deck.id);
+                    joinDeck(deck.id);
+                  "
                   >Join</Button
                 >
               </div>
@@ -72,5 +84,9 @@ import { useLeaveDeckMutation } from "@/queries/deckMemberships";
 const { data: communityDecks, isLoading } = useCommunityDecksQuery();
 const { mutate: joinDeck } = useJoinCommunityDeckMutation();
 const { mutate: leaveDeck } = useLeaveDeckMutation();
+
+function focusDeckName(deckId: number): void {
+  document.getElementById(`community-deck-name-${deckId}`)?.focus();
+}
 </script>
 <style scoped></style>
