@@ -378,7 +378,11 @@ const isErrorWithoutData = computed(
 
 const isLoadedAndEmpty = computed(() => auditHistory.value?.data.length === 0);
 
-// Result announcements
+const isQueryFiltered = computed(() => {
+  const { object, id, action, user, from, to } = queryParams.value;
+  return [object, id, action, user, from, to].some(Boolean);
+});
+
 const announcer = useAnnouncer();
 let isResultAnnouncementPending = false;
 
@@ -434,7 +438,7 @@ watch([auditHistory, isAuditHistoryPlaceholder, isErrorWithoutData], () => {
     auditHistory: auditHistory.value,
     isPlaceholder: isAuditHistoryPlaceholder.value,
     isErrorWithoutData: isErrorWithoutData.value,
-    hasActiveFilters: hasActiveFilters.value,
+    hasActiveFilters: isQueryFiltered.value,
   });
   if (!announcement) return;
   isResultAnnouncementPending = false;

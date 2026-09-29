@@ -62,7 +62,6 @@ import {
   onMounted,
   computed,
   nextTick,
-  ref,
   useTemplateRef,
 } from "vue";
 import { toShuffled, getRandomIntInclusive } from "@/lib/utils";
@@ -111,7 +110,8 @@ function describeCardsLeft(count: number): string {
   return `${count} ${pluralize(count, "card")} left.`;
 }
 
-const completionMessage = ref<HTMLParagraphElement | null>(null);
+const completionMessage =
+  useTemplateRef<HTMLParagraphElement>("completionMessage");
 const practiceCard =
   useTemplateRef<InstanceType<typeof FlippableCard>>("practiceCard");
 

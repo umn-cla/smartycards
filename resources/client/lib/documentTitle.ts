@@ -11,7 +11,6 @@ export function useDeckDocumentTitle(
   deck: MaybeRefOrGetter<Pick<T.Deck, "name"> | null | undefined>,
 ): void {
   const route = useRoute();
-  const pageTitle = route.meta.title;
   const deckName = computed(() => toValue(deck)?.name);
   watch(
     // router.afterEach resets the title on each navigation.
@@ -19,7 +18,7 @@ export function useDeckDocumentTitle(
     // after moving between two decks with the same name.
     [() => route.fullPath, deckName],
     () => {
-      document.title = toDocumentTitle([pageTitle, deckName.value]);
+      document.title = toDocumentTitle([route.meta.title, deckName.value]);
     },
     { immediate: true },
   );

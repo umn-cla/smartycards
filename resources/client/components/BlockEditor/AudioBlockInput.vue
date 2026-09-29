@@ -81,7 +81,7 @@
 
     <p class="text-neutral-400 text-xs text-center mt-4">— or —</p>
     <div class="mb-2">
-      <Label :for="makeInputId('image-url')" class="sr-only">Audio Url</Label>
+      <Label :for="makeInputId('audio-url')" class="sr-only">Audio Url</Label>
       <Input
         :id="makeInputId('audio-url')"
         :modelValue="modelValue"

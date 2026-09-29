@@ -4,7 +4,10 @@
       <IconCheckCircle class="text-brand-teal-300" />
       <span class="sr-only">Yes</span>
     </template>
-    <span v-else> - </span>
+    <template v-else>
+      <span aria-hidden="true">-</span>
+      <span class="sr-only">No</span>
+    </template>
   </div>
 </template>
 <script setup lang="ts">
