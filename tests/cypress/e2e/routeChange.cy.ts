@@ -51,6 +51,21 @@ describe("Route change", () => {
     );
   });
 
+  it("announces a deck page whose deck request fails", () => {
+    cy.createDeckForUser("user", { name: "Spanish 101" }).then((deck) => {
+      cy.intercept(
+        { method: "GET", pathname: `/api/decks/${deck.id}` },
+        { statusCode: 404 },
+      ).as("missingDeck");
+      cy.visit("/decks");
+
+      cy.get(`nav a[href="/decks/${deck.id}"]`).click();
+    });
+
+    cy.wait("@missingDeck");
+    cy.get("#announcer").should("have.text", "Deck - SmartyCards");
+  });
+
   it("announces a deck name containing HTML as text", () => {
     const markupDeckName = '<img src="x" data-cy="injected">';
     cy.createDeckForUser("user", { name: markupDeckName }).then((deck) => {
