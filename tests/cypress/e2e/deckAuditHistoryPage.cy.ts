@@ -50,4 +50,13 @@ describe("DeckAuditHistoryPage", () => {
       "No changes match the current filters.",
     );
   });
+
+  it("keeps keyboard focus in the filter row after Clear", () => {
+    cy.get('[data-cy="audit-user-filter-input"]').type("u");
+    cy.get('[data-cy="audit-clear-filters-button"]').focus();
+
+    cy.realPress("Enter");
+
+    cy.focused().should("have.attr", "data-cy", "audit-object-filter-select");
+  });
 });

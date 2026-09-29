@@ -72,6 +72,7 @@
                 <TableHead class="w-8 py-2">
                   <Button
                     v-if="hasActiveFilters"
+                    data-cy="audit-clear-filters-button"
                     title="Clear filters"
                     @click="clearFilters"
                     class="uppercase text-[0.66rem] px-2 py-0.5 font-semibold rounded"
@@ -82,6 +83,7 @@
                 <TableHead class="py-2">
                   <select
                     v-model="filterObject"
+                    data-cy="audit-object-filter-select"
                     class="text-base md:text-xs border-none rounded px-1.5 py-1 bg-brand-maroon-900/5 w-20 font-medium"
                   >
                     <option value="">All</option>
