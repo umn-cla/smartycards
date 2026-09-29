@@ -24,6 +24,9 @@ export function useDocumentTitleState(): ComputedRef<DocumentTitleState> {
   } = useDeckByIdQuery(titleDeckId);
 
   return computed(() => {
+    // Waiting on isFetching alone also waits out TanStack's
+    // 3 retries (about 7 s), and the failed-request test in
+    // routeChange.cy.ts times out.
     const isFirstDeckRequestPending =
       isFetchingTitleDeck.value && titleDeckFailureCount.value === 0;
     return {
