@@ -177,11 +177,12 @@
                         {{ audit.auditable_id }},
                         {{ formatDateTime(audit.created_at) }}
                       </span>
-                      <ChevronDownIcon
-                        aria-hidden="true"
-                        class="size-4 text-brand-maroon-900/50 transition-transform"
-                        :class="{ 'rotate-180': expandedRows.has(audit.id) }"
-                      />
+                      <span aria-hidden="true">
+                        <ChevronDownIcon
+                          class="size-4 text-brand-maroon-900/50 transition-transform"
+                          :class="{ 'rotate-180': expandedRows.has(audit.id) }"
+                        />
+                      </span>
                     </Button>
                   </TableCell>
                   <TableCell>
