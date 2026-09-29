@@ -15,7 +15,7 @@
             <article
               class="bg-brand-oatmeal-50 p-4 rounded-lg border border-brand-oatmeal-300/75"
             >
-              <h3 class="text-lg font-bold">{{ deck.name }}</h3>
+              <h2 class="text-lg font-bold">{{ deck.name }}</h2>
               <p class="text-sm text-stone-400 mb-4">{{ deck.description }}</p>
 
               <div v-if="deck.current_user_role" class="flex gap-2 justify-end">

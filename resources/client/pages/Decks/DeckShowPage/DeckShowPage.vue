@@ -48,7 +48,7 @@
       :xp="deck?.current_user_details.xp ?? 0"
       class="mt-8 mb-12"
     />
-    <main v-if="deck">
+    <div v-if="deck">
       <div class="grid grid-cols-3 gap-4">
         <RouterLink
           :to="{ name: 'decks.practice', params: { deckId } }"
@@ -106,7 +106,7 @@
         <header
           class="flex justify-between items-baseline sticky top-16 lg:top-0 z-10 bg-brand-oatmeal-100 py-4 gap-4 flex-wrap"
         >
-          <h3 class="text-3xl font-bold">Cards</h3>
+          <h2 class="text-3xl font-bold">Cards</h2>
           <div class="flex gap-4">
             <form class="relative">
               <IconSearch
@@ -163,7 +163,7 @@
           </template>
         </div>
       </section>
-    </main>
+    </div>
   </AuthenticatedLayout>
 </template>
 <script setup lang="ts">

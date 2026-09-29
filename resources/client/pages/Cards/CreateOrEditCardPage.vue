@@ -1,15 +1,9 @@
 <template>
   <AuthenticatedLayout>
     <div class="px-4 pb-12">
-      <nav class="mb-4">
-        <RouterLink
-          :to="{ name: 'decks.show', params: { deckId: props.deckId } }"
-          class="flex gap-2 items-center"
-        >
-          <IconChevronLeft class="size-5" />
-          {{ deck?.name }}
-        </RouterLink>
-      </nav>
+      <BackLink :to="{ name: 'decks.show', params: { deckId: props.deckId } }">
+        {{ deck?.name }}
+      </BackLink>
 
       <Transition name="fade">
         <div v-if="deck">
@@ -83,7 +77,7 @@ import { useDeckByIdQuery } from "@/queries/decks";
 import { useRouter } from "vue-router";
 import * as T from "@/types";
 import CardSideInput from "@/components/CardSideInput.vue";
-import { IconChevronLeft } from "@/components/icons";
+import BackLink from "@/components/BackLink.vue";
 import { Button } from "@/components/ui/button";
 import PageTitle from "@/components/PageTitle.vue";
 import PageSubtitle from "@/components/PageSubtitle.vue";

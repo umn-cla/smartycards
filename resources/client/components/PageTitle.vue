@@ -20,7 +20,7 @@ withDefaults(
   }>(),
   {
     size: "default",
-    as: "h2",
+    as: "h1",
   },
 );
 </script>

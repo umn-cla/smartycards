@@ -5,7 +5,7 @@
       v-if="deck"
     >
       <h1
-        class="font-bold text-brand-maroon-800 text-lg sm:text-xl text-center leading-none hidden sm:block"
+        class="font-bold text-brand-maroon-800 text-lg sm:text-xl text-center leading-none sr-only sm:not-sr-only"
       >
         {{ deck.name }}
       </h1>

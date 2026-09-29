@@ -3,7 +3,13 @@
     class="min-h-screen guest-layout relative flex flex-col gap-4 bg-brand-maroon-900"
   >
     <UniversityHeader />
-    <slot />
+    <main
+      id="main-content"
+      tabindex="-1"
+      class="flex flex-1 flex-col gap-4 focus:outline-none"
+    >
+      <slot />
+    </main>
   </div>
 </template>
 <script setup lang="ts">

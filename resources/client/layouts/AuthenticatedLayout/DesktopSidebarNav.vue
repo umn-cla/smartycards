@@ -10,7 +10,7 @@
         <BlockMIcon class="h-5 text-brand-gold-500" />
         <SmartycardsWordmark class="text-brand-oatmeal-100 h-5 mt-1" />
       </RouterLink>
-      <nav class="flex flex-1 flex-col">
+      <nav class="flex flex-1 flex-col" aria-label="Primary">
         <ul role="list" class="flex flex-1 flex-col gap-y-7">
           <li>
             <ul role="list" class="-mx-2 space-y-1">

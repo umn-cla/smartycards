@@ -1,7 +1,10 @@
 <template>
   <AuthenticatedLayout>
-    <h1 v-if="!error">Processing deck invite...</h1>
-    <p v-if="error">{{ error }}</p>
+    <template v-if="error">
+      <h1>Could not accept deck invite</h1>
+      <p>{{ error }}</p>
+    </template>
+    <h1 v-else>Processing deck invite...</h1>
   </AuthenticatedLayout>
 </template>
 <script setup lang="ts">

@@ -1,8 +1,8 @@
 <template>
   <div>
-    <div>
-      <Label class="text-sm text-brand-maroon-800/50">{{ label }}</Label>
-    </div>
+    <h2 class="text-sm font-medium leading-none text-brand-maroon-800/50">
+      {{ label }}
+    </h2>
     <BlockEditor
       :modelValue="modelValue"
       @update:modelValue="emit('update:modelValue', $event)"
@@ -17,7 +17,6 @@
 <script setup lang="ts">
 import * as T from "@/types";
 import { BlockEditor } from "@/components/BlockEditor";
-import { Label } from "@/components/ui/label";
 
 defineProps<{
   label: string;

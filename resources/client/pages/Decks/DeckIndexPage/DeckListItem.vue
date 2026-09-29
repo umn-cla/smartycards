@@ -26,9 +26,9 @@
       <h3 class="font-bold text-xl text-brand-maroon-800">
         {{ deck.name }}
       </h3>
-      <h4 class="font-bold text-brand-maroon-800/50" v-if="deck.description">
+      <p class="font-bold text-brand-maroon-800/50" v-if="deck.description">
         {{ deck.description }}
-      </h4>
+      </p>
       <div
         class="font-sans text-[0.66rem] text-brand-maroon-900/60 text-center uppercase flex flex-col items-center justify-center mt-4 gap-1"
       >
