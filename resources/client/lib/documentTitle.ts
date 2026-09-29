@@ -12,6 +12,16 @@ function toDocumentTitle(parts: (string | undefined)[]): string {
   return [...namedParts, "SmartyCards"].join(" - ");
 }
 
+/**
+ * Title state for the current route. WCAG 2.4.2 asks a
+ * single-page app to retitle each view. An in-app
+ * navigation has no page load, which is when screen
+ * readers announce a new page, so the caller writes
+ * `title` to document.title and also announces it.
+ * Announce only once `isWaitingForDeck` is false, or
+ * routes with `hasDeckNameInTitle` are announced
+ * without the deck name.
+ */
 export function useDocumentTitleState(): ComputedRef<DocumentTitleState> {
   const route = useRoute();
   const titleDeckId = computed(() =>
