@@ -7,7 +7,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import { nextTick, ref, watch, watchEffect } from "vue";
+import { nextTick, ref, watch, watchPostEffect } from "vue";
 import { RouterView, START_LOCATION, useRouter } from "vue-router";
 import { useAnnouncer } from "@vue-a11y/announcer";
 import ErrorModal from "./components/ErrorModal.vue";
@@ -19,7 +19,7 @@ const { polite } = useAnnouncer();
 const documentTitleState = useDocumentTitleState();
 const isTitleAnnouncementPending = ref(false);
 
-watchEffect(() => {
+watchPostEffect(() => {
   document.title = documentTitleState.value.title;
 });
 

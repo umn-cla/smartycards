@@ -123,7 +123,6 @@ import * as api from "@/api";
 import { useRouter } from "vue-router";
 import { useDeckByIdQuery } from "@/queries/decks";
 import BackLink from "@/components/BackLink.vue";
-import { useDeckDocumentTitle } from "@/lib/documentTitle";
 import PageTitle from "@/components/PageTitle.vue";
 import PageSubtitle from "@/components/PageSubtitle.vue";
 import {
@@ -150,7 +149,6 @@ const deckIdRef = computed(() => props.deckId);
 const importError = ref<string | null>(null);
 const importErrorAlert = ref<HTMLDivElement | null>(null);
 const { data: deck } = useDeckByIdQuery(deckIdRef);
-useDeckDocumentTitle(deckIdRef, deck);
 
 const router = useRouter();
 

@@ -166,7 +166,6 @@
 import PageHeader from "@/components/PageHeader.vue";
 import AuthenticatedLayout from "@/layouts/AuthenticatedLayout/AuthenticatedLayout.vue";
 import { useDeckByIdQuery } from "@/queries/decks";
-import { useDeckDocumentTitle } from "@/lib/documentTitle";
 import { computed } from "vue";
 import {
   Table,
@@ -191,7 +190,6 @@ const props = defineProps<{
 
 const deckIdRef = computed(() => props.deckId);
 const { data: deck } = useDeckByIdQuery(deckIdRef);
-useDeckDocumentTitle(deckIdRef, deck);
 const { data: report } = useDeckSummaryReportQuery(deckIdRef);
 const memberships = computed(() => report.value?.memberships_with_stats ?? []);
 const cards = computed(() => report.value?.cards_with_stats ?? []);

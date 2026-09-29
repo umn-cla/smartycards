@@ -74,7 +74,6 @@ import {
   useCardByIdQuery,
 } from "@/queries/cards";
 import { useDeckByIdQuery } from "@/queries/decks";
-import { useDeckDocumentTitle } from "@/lib/documentTitle";
 import { useRouter } from "vue-router";
 import * as T from "@/types";
 import CardSideInput from "@/components/CardSideInput.vue";
@@ -106,7 +105,6 @@ const isCreateMode = computed(() => !props.cardId);
 const deckIdRef = computed(() => props.deckId);
 const cardIdRef = computed(() => props.cardId ?? null);
 const { data: deck } = useDeckByIdQuery(deckIdRef);
-useDeckDocumentTitle(deckIdRef, deck);
 const { data: card } = useCardByIdQuery(cardIdRef);
 
 onMounted(() => {

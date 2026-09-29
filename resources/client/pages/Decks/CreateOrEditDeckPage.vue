@@ -70,7 +70,6 @@ import {
   useUpdateDeckMutation,
   useDeckByIdQuery,
 } from "@/queries/decks";
-import { useDeckDocumentTitle } from "@/lib/documentTitle";
 import { useRouter } from "vue-router";
 import InputGroup from "@/components/InputGroup.vue";
 import PageHeader from "@/components/PageHeader.vue";
@@ -101,7 +100,6 @@ const deckIdRef = computed(() => props.deckId);
 // LTI context detection
 const { launchId, isDeepLinkLaunch, launchType } = useLtiContext();
 const { data: deck } = useDeckByIdQuery(deckIdRef);
-useDeckDocumentTitle(deckIdRef, deck);
 const { mutate: createDeck } = useCreateDeckMutation();
 const { mutate: updateDeck } = useUpdateDeckMutation();
 

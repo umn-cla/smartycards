@@ -7,6 +7,7 @@ import { PROFILE_QUERY_KEY } from "@/queries/queryKeys";
 declare module "vue-router" {
   interface RouteMeta {
     title?: string;
+    hasDeckNameInTitle?: boolean;
   }
 }
 
@@ -71,7 +72,7 @@ const router = createRouter({
     {
       path: "/community/decks/:deckId",
       name: "community.decks.show",
-      meta: { title: "Preview Deck" },
+      meta: { title: "Preview Deck", hasDeckNameInTitle: true },
       component: () =>
         import("@/pages/CommunityDecks/CommunityDeckShowPage.vue"),
       props: (route) => ({
@@ -81,7 +82,7 @@ const router = createRouter({
     {
       path: "/decks/:deckId",
       name: "decks.show",
-      meta: { title: "Deck" },
+      meta: { title: "Deck", hasDeckNameInTitle: true },
       component: () => import("../pages/Decks/DeckShowPage/DeckShowPage.vue"),
       props: (route) => ({
         deckId: Number(route.params.deckId),
@@ -90,7 +91,7 @@ const router = createRouter({
     {
       path: "/decks/:deckId/reports/summary",
       name: "decks.reports.summary",
-      meta: { title: "Summary Report" },
+      meta: { title: "Summary Report", hasDeckNameInTitle: true },
       component: () =>
         import(
           "../pages/Decks/DeckSummaryReportPage/DeckSummaryReportPage.vue"
@@ -102,7 +103,7 @@ const router = createRouter({
     {
       path: "/decks/:deckId/reports/audit-history",
       name: "decks.reports.auditHistory",
-      meta: { title: "Deck History" },
+      meta: { title: "Deck History", hasDeckNameInTitle: true },
       component: () =>
         import(
           "../pages/Decks/DeckAuditHistoryPage/DeckAuditHistoryPage.vue"
@@ -114,7 +115,7 @@ const router = createRouter({
     {
       path: "/decks/:deckId/assignments",
       name: "decks.assignments",
-      meta: { title: "Assignments" },
+      meta: { title: "Assignments", hasDeckNameInTitle: true },
       component: () =>
         import("../pages/Decks/DeckAssignmentsPage/DeckAssignmentsPage.vue"),
       props: (route) => ({
@@ -133,7 +134,7 @@ const router = createRouter({
     {
       path: "/decks/:deckId/edit",
       name: "decks.edit",
-      meta: { title: "Edit Deck" },
+      meta: { title: "Edit Deck", hasDeckNameInTitle: true },
       component: () => import("../pages/Decks/CreateOrEditDeckPage.vue"),
       props: (route) => ({
         deckId: Number(route.params.deckId),
@@ -142,7 +143,7 @@ const router = createRouter({
     {
       path: "/decks/:deckId/import",
       name: "decks.import",
-      meta: { title: "Import Cards" },
+      meta: { title: "Import Cards", hasDeckNameInTitle: true },
       component: () => import("../pages/Decks/ImportDeckCardsPage.vue"),
       props: (route) => ({
         deckId: Number(route.params.deckId),
@@ -151,7 +152,7 @@ const router = createRouter({
     {
       path: "/decks/:deckId/clone",
       name: "decks.clone",
-      meta: { title: "Clone Deck" },
+      meta: { title: "Clone Deck", hasDeckNameInTitle: true },
       component: () => import("@/pages/Decks/CloneDeckPage.vue"),
       props: (route) => ({
         deckId: Number(route.params.deckId),
@@ -160,7 +161,7 @@ const router = createRouter({
     {
       path: "/decks/:deckId/share",
       name: "decks.share",
-      meta: { title: "Share Deck" },
+      meta: { title: "Share Deck", hasDeckNameInTitle: true },
       component: () => import("../pages/Decks/ShareDeckPage.vue"),
       props: (route) => ({
         deckId: Number(route.params.deckId),
@@ -185,7 +186,7 @@ const router = createRouter({
     {
       path: "/decks/:deckId/cards/create",
       name: "cards.create",
-      meta: { title: "Create Card" },
+      meta: { title: "Create Card", hasDeckNameInTitle: true },
       component: () => import("../pages/Cards/CreateOrEditCardPage.vue"),
       props: (route) => ({
         deckId: Number(route.params.deckId),
@@ -194,7 +195,7 @@ const router = createRouter({
     {
       path: "/decks/:deckId/cards/:cardId/edit",
       name: "cards.edit",
-      meta: { title: "Edit Card" },
+      meta: { title: "Edit Card", hasDeckNameInTitle: true },
       component: () => import("../pages/Cards/CreateOrEditCardPage.vue"),
       props: (route) => ({
         deckId: Number(route.params.deckId),
@@ -205,7 +206,7 @@ const router = createRouter({
       path: "/decks/:deckId/activities/practice",
       alias: "/decks/:deckId/practice",
       name: "decks.practice",
-      meta: { title: "Practice" },
+      meta: { title: "Practice", hasDeckNameInTitle: true },
       component: () =>
         import("../pages/Activities/PracticeDeckPage/PracticeDeckPage.vue"),
       props: (route) => ({
@@ -227,7 +228,7 @@ const router = createRouter({
       path: "/decks/:deckId/activities/quiz",
       alias: "/decks/:deckId/quiz",
       name: "decks.quiz",
-      meta: { title: "Quiz" },
+      meta: { title: "Quiz", hasDeckNameInTitle: true },
       component: () =>
         import("@/pages/Activities/QuizDeckPage/QuizDeckPage.vue"),
       props: (route) => ({
@@ -249,7 +250,7 @@ const router = createRouter({
       path: "/decks/:deckId/activities/matching",
       alias: "/decks/:deckId/games/matching",
       name: "decks.games.matching",
-      meta: { title: "Matching" },
+      meta: { title: "Matching", hasDeckNameInTitle: true },
       component: () =>
         import("@/pages/Activities/MatchingGamePage/MatchingGamePage.vue"),
       props: (route) => ({
