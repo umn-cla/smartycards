@@ -267,6 +267,8 @@ import { useDeckDocumentTitle } from "@/lib/documentTitle";
 import { useDeckAuditHistoryQuery } from "@/queries/decks/useDeckAuditHistoryQuery";
 import { computed, ref, watch } from "vue";
 import { refDebounced } from "@vueuse/core";
+import { useAnnouncer } from "@vue-a11y/announcer";
+import { pluralize } from "@/utils/pluralize";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -282,7 +284,11 @@ import AuditEventBadge from "./AuditEventBadge.vue";
 import AuditValuesDiff from "./AuditValuesDiff.vue";
 import SortableHeader from "./SortableHeader.vue";
 import { ChevronDownIcon } from "@radix-icons/vue";
-import type { AuditEvent, AuditableType } from "@/types";
+import type {
+  AuditEvent,
+  AuditableType,
+  DeckAuditHistoryResponse,
+} from "@/types";
 
 const props = defineProps<{
   deckId: number;
@@ -343,8 +349,11 @@ watch(
 
 const { data: deck } = useDeckByIdQuery(deckIdRef);
 useDeckDocumentTitle(deck);
-const { data: auditHistory, isError: isAuditHistoryError } =
-  useDeckAuditHistoryQuery(deckIdRef, queryParams);
+const {
+  data: auditHistory,
+  isError: isAuditHistoryError,
+  isPlaceholderData: isAuditHistoryPlaceholder,
+} = useDeckAuditHistoryQuery(deckIdRef, queryParams);
 
 // Computed helpers
 const hasActiveFilters = computed(() =>
@@ -365,6 +374,43 @@ const isErrorWithoutData = computed(
 );
 
 const isLoadedAndEmpty = computed(() => auditHistory.value?.data.length === 0);
+
+// Result announcements
+const announcer = useAnnouncer();
+let isResultAnnouncementPending = false;
+
+function describeAuditHistoryResult(
+  meta: DeckAuditHistoryResponse["meta"],
+  hasActiveFilters: boolean,
+): string {
+  if (meta.total === 0) {
+    return hasActiveFilters
+      ? "No changes match the current filters."
+      : "No edit history found for this deck.";
+  }
+  const count = `${meta.total} ${pluralize(meta.total, "change")}.`;
+  return meta.last_page > 1
+    ? `${count} Page ${meta.current_page} of ${meta.last_page}.`
+    : count;
+}
+
+watch(queryParams, () => {
+  isResultAnnouncementPending = true;
+});
+
+watch([auditHistory, isAuditHistoryPlaceholder, isErrorWithoutData], () => {
+  if (!isResultAnnouncementPending) return;
+  if (isErrorWithoutData.value) {
+    isResultAnnouncementPending = false;
+    announcer.assertive("Could not load audit history.");
+    return;
+  }
+  if (!auditHistory.value || isAuditHistoryPlaceholder.value) return;
+  isResultAnnouncementPending = false;
+  announcer.polite(
+    describeAuditHistoryResult(auditHistory.value.meta, hasActiveFilters.value),
+  );
+});
 
 // Actions
 function clearFilters() {
