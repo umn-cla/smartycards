@@ -16,6 +16,7 @@
     >
       <IconCirclePause v-if="playing" />
       <IconCirclePlay v-else />
+      <span class="sr-only">{{ playing ? "Pause" : "Play" }} audio</span>
     </button>
   </div>
 </template>
