@@ -217,7 +217,7 @@ const router = createRouter({
       path: "/decks/:deckId/activities/practice/embed",
       alias: "/decks/:deckId/practice/embed",
       name: "decks.practice.embed",
-      meta: { title: "Practice" },
+      meta: { title: "Practice", hasDeckNameInTitle: true },
       component: () =>
         import("@/pages/Activities/PracticeDeckPage/PracticeDeckEmbedPage.vue"),
       props: (route) => ({
@@ -239,7 +239,7 @@ const router = createRouter({
       path: "/decks/:deckId/activities/quiz/embed",
       alias: "/decks/:deckId/quiz/embed",
       name: "decks.quiz.embed",
-      meta: { title: "Quiz" },
+      meta: { title: "Quiz", hasDeckNameInTitle: true },
       component: () =>
         import("@/pages/Activities/QuizDeckPage/QuizDeckEmbedPage.vue"),
       props: (route) => ({
@@ -261,7 +261,7 @@ const router = createRouter({
       path: "/decks/:deckId/activities/matching/embed",
       alias: "/decks/:deckId/games/matching/embed",
       name: "decks.games.matching.embed",
-      meta: { title: "Matching" },
+      meta: { title: "Matching", hasDeckNameInTitle: true },
       component: () =>
         import("@/pages/Activities/MatchingGamePage/MatchingGameEmbedPage.vue"),
       props: (route) => ({
