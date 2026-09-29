@@ -36,6 +36,7 @@
       inert, so a Flip inside it loses focus after a flip
       and flippableCard.cy.ts fails. -->
     <Button
+      ref="flipButton"
       variant="ghost"
       :aria-label="`Flip to ${otherSideName}`"
       class="absolute inset-x-2 bottom-2 z-30 bg-brand-maroon-800/5 hover:bg-brand-maroon-800/10 uppercase text-xs tracking-wider text-brand-maroon-950 font-sans"
@@ -48,7 +49,8 @@
 
 <script setup lang="ts">
 import { CardSideView } from "@/components/CardSideView";
-import { ref, watch, computed } from "vue";
+import { ref, watch, computed, useTemplateRef } from "vue";
+import { unrefElement } from "@vueuse/core";
 import { CardSide, CardSideName, Deck } from "@/types";
 import { Button } from "@/components/ui/button";
 import { useAnnouncer } from "@vue-a11y/announcer";
@@ -109,6 +111,14 @@ function flipCard(): void {
   currentCardSide.value = otherSideName.value;
   announcer.polite(`Showing ${currentCardSide.value}`);
 }
+
+const flipButton = useTemplateRef<InstanceType<typeof Button>>("flipButton");
+
+function focusFlipButton(options?: FocusOptions): void {
+  unrefElement(flipButton)?.focus(options);
+}
+
+defineExpose({ focusFlipButton });
 </script>
 
 <style scoped>

@@ -7,7 +7,9 @@
       <p ref="completionMessage" tabindex="-1">
         You have completed this practice session.
       </p>
-      <Button @click="restartPractice" class="my-4"> Practice Again </Button>
+      <Button @click="restartPracticeAndFocusFlipButton" class="my-4">
+        Practice Again
+      </Button>
       <Button asChild variant="secondary">
         <RouterLink
           :to="{ name: 'decks.show', params: { deckId: props.deck.id } }"
@@ -19,6 +21,7 @@
     </div>
     <div v-else class="overflow-hidden">
       <FlippableCard
+        ref="practiceCard"
         :front="state.isTransitiongToNext ? [] : state.activeCard?.front"
         :back="state.isTransitiongToNext ? [] : state.activeCard?.back"
         :showLabels="true"
@@ -53,7 +56,15 @@ import CardAttemptChoices from "@/components/CardAttemptChoices.vue";
 import CardStackVisualization from "@/components/CardStackVisualization.vue";
 import FlippableCard from "@/components/FlippableCard.vue";
 import { Button } from "@/components/ui/button";
-import { reactive, watch, onMounted, computed, nextTick, ref } from "vue";
+import {
+  reactive,
+  watch,
+  onMounted,
+  computed,
+  nextTick,
+  ref,
+  useTemplateRef,
+} from "vue";
 import { toShuffled, getRandomIntInclusive } from "@/lib/utils";
 import { partition } from "ramda";
 import { useAnnouncer } from "@vue-a11y/announcer";
@@ -101,6 +112,8 @@ function describeCardsLeft(count: number): string {
 }
 
 const completionMessage = ref<HTMLParagraphElement | null>(null);
+const practiceCard =
+  useTemplateRef<InstanceType<typeof FlippableCard>>("practiceCard");
 
 function getInitialSideName(card: T.Card): T.CardSideName {
   return props.initialSideName === "random"
@@ -254,6 +267,15 @@ function restartPractice(): void {
   announcer.polite(
     `Practice restarted. ${describeCardsLeft(cardsLeftIncludingActive.value)}`,
   );
+}
+
+async function restartPracticeAndFocusFlipButton(): Promise<void> {
+  restartPractice();
+  await nextTick();
+  // The new card starts translated below the overflow-hidden
+  // wrapper. Without preventScroll, focus() scrolls that
+  // wrapper and the card stays shifted after it slides in.
+  practiceCard.value?.focusFlipButton({ preventScroll: true });
 }
 
 onMounted(() => {
