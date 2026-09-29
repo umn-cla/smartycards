@@ -73,6 +73,10 @@ describe("DeckShowPage", () => {
 
     // we should see the retry button
     cy.contains("Practice Again").click();
+    cy.get("#announcer").should(
+      "have.text",
+      "Practice restarted. 3 cards left.",
+    );
 
     // we should see the first card again
     cy.contains(/Front side \d/);
