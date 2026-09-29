@@ -74,7 +74,7 @@
                     v-if="hasActiveFilters"
                     data-cy="audit-clear-filters-button"
                     title="Clear filters"
-                    @click="clearFilters"
+                    @click="clearFiltersAndFocusObjectFilter"
                     class="uppercase text-[0.66rem] px-2 py-0.5 font-semibold rounded"
                   >
                     Clear
@@ -82,6 +82,7 @@
                 </TableHead>
                 <TableHead class="py-2">
                   <select
+                    ref="objectFilterSelect"
                     v-model="filterObject"
                     data-cy="audit-object-filter-select"
                     class="text-base md:text-xs border-none rounded px-1.5 py-1 bg-brand-maroon-900/5 w-20 font-medium"
@@ -415,7 +416,10 @@ watch([auditHistory, isAuditHistoryPlaceholder, isErrorWithoutData], () => {
 });
 
 // Actions
-function clearFilters() {
+const objectFilterSelect = ref<HTMLSelectElement | null>(null);
+
+function clearFiltersAndFocusObjectFilter() {
+  objectFilterSelect.value?.focus();
   filterObject.value = "";
   filterId.value = "";
   filterAction.value = "";
