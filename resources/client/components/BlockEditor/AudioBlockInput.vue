@@ -72,7 +72,7 @@
       </div>
       <button
         class="absolute top-0 right-0 bg-neutral-700 hover:bg-brand-maroon-800 text-neutral-100 rounded-full w-6 h-6 flex items-center justify-center transition-colors"
-        @click="clearAudio"
+        @click="clearAudioAndFocusUrlInput"
       >
         <IconX />
         <span class="sr-only">Clear</span>
@@ -133,7 +133,7 @@ function getAudioUrlInput(): HTMLElement | null {
   return document.getElementById(makeInputId("audio-url"));
 }
 
-function clearAudio(): void {
+function clearAudioAndFocusUrlInput(): void {
   getAudioUrlInput()?.focus();
   emit("update:modelValue", "");
 }

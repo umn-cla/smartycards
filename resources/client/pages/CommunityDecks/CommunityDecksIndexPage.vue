@@ -83,17 +83,13 @@ function getDeckNameId(deckId: number): string {
   return `community-deck-name-${deckId}`;
 }
 
-function focusDeckName(deckId: number): void {
-  document.getElementById(getDeckNameId(deckId))?.focus();
-}
-
 function joinDeckAndFocusName(deckId: number): void {
-  focusDeckName(deckId);
+  document.getElementById(getDeckNameId(deckId))?.focus();
   joinDeck(deckId);
 }
 
 function leaveDeckAndFocusName(deckId: number): void {
-  focusDeckName(deckId);
+  document.getElementById(getDeckNameId(deckId))?.focus();
   leaveDeck(deckId);
 }
 </script>

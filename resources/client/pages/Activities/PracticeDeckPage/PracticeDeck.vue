@@ -262,7 +262,7 @@ function initPracticeSession() {
   }, 500);
 }
 
-function restartPractice(): void {
+function restartPracticeAndAnnounce(): void {
   initPracticeSession();
   announcer.polite(
     `Practice restarted. ${describeCardsLeft(cardsLeftIncludingActive.value)}`,
@@ -270,11 +270,12 @@ function restartPractice(): void {
 }
 
 async function restartPracticeAndFocusFlipButton(): Promise<void> {
-  restartPractice();
+  restartPracticeAndAnnounce();
   await nextTick();
-  // The new card starts translated below the overflow-hidden
-  // wrapper. Without preventScroll, focus() scrolls that
-  // wrapper and the card stays shifted after it slides in.
+  // The new card starts translated below its
+  // overflow-hidden wrapper. Without preventScroll, focus()
+  // scrolls that wrapper and the card stays shifted after
+  // it slides in.
   practiceCard.value?.focusFlipButton({ preventScroll: true });
 }
 
@@ -290,7 +291,7 @@ watch(
       initPracticeSession();
       return;
     }
-    restartPractice();
+    restartPracticeAndAnnounce();
   },
   { immediate: true },
 );

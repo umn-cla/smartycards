@@ -84,7 +84,7 @@
           />
           <div
             v-if="importError"
-            ref="importErrorMessage"
+            ref="importErrorAlert"
             tabindex="-1"
             class="text-red-700 my-4 flex items-center gap-2 bg-red-700/10 p-4 rounded-md text-sm"
           >
@@ -148,7 +148,7 @@ const fileInput = ref<HTMLInputElement | null>(null);
 const selectedFile = ref<File | null>(null);
 const deckIdRef = computed(() => props.deckId);
 const importError = ref<string | null>(null);
-const importErrorMessage = ref<HTMLDivElement | null>(null);
+const importErrorAlert = ref<HTMLDivElement | null>(null);
 const { data: deck } = useDeckByIdQuery(deckIdRef);
 useDeckDocumentTitle(deck);
 
@@ -186,7 +186,7 @@ async function handleImport() {
     }
 
     await nextTick();
-    importErrorMessage.value?.focus();
+    importErrorAlert.value?.focus();
   }
 }
 </script>

@@ -391,10 +391,37 @@ function describeAuditHistoryResult(
       ? "No changes match the current filters."
       : "No edit history found for this deck.";
   }
-  const count = `${meta.total} ${pluralize(meta.total, "change")}.`;
+  const changeCountSentence = `${meta.total} ${pluralize(meta.total, "change")}.`;
   return meta.last_page > 1
-    ? `${count} Page ${meta.current_page} of ${meta.last_page}.`
-    : count;
+    ? `${changeCountSentence} Page ${meta.current_page} of ${meta.last_page}.`
+    : changeCountSentence;
+}
+
+interface AuditHistoryAnnouncement {
+  message: string;
+  politeness: "polite" | "assertive";
+}
+
+function toAuditHistoryAnnouncement(query: {
+  auditHistory: DeckAuditHistoryResponse | undefined;
+  isPlaceholder: boolean;
+  isErrorWithoutData: boolean;
+  hasActiveFilters: boolean;
+}): AuditHistoryAnnouncement | null {
+  if (query.isErrorWithoutData) {
+    return {
+      message: "Could not load audit history.",
+      politeness: "assertive",
+    };
+  }
+  if (!query.auditHistory || query.isPlaceholder) return null;
+  return {
+    message: describeAuditHistoryResult(
+      query.auditHistory.meta,
+      query.hasActiveFilters,
+    ),
+    politeness: "polite",
+  };
 }
 
 watch(queryParams, () => {
@@ -403,16 +430,15 @@ watch(queryParams, () => {
 
 watch([auditHistory, isAuditHistoryPlaceholder, isErrorWithoutData], () => {
   if (!isResultAnnouncementPending) return;
-  if (isErrorWithoutData.value) {
-    isResultAnnouncementPending = false;
-    announcer.assertive("Could not load audit history.");
-    return;
-  }
-  if (!auditHistory.value || isAuditHistoryPlaceholder.value) return;
+  const announcement = toAuditHistoryAnnouncement({
+    auditHistory: auditHistory.value,
+    isPlaceholder: isAuditHistoryPlaceholder.value,
+    isErrorWithoutData: isErrorWithoutData.value,
+    hasActiveFilters: hasActiveFilters.value,
+  });
+  if (!announcement) return;
   isResultAnnouncementPending = false;
-  announcer.polite(
-    describeAuditHistoryResult(auditHistory.value.meta, hasActiveFilters.value),
-  );
+  announcer.announce(announcement.message, announcement.politeness);
 });
 
 // Actions

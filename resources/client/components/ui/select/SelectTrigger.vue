@@ -25,8 +25,10 @@ const forwardedProps = useForwardProps(delegatedProps)
   >
     <slot />
     <!--
-      as-child moves aria-hidden onto the radix icon,
-      which drops it (functional component, no props)
+      Keep as-child off. With as-child, SelectIcon passes
+      aria-hidden to CaretSortIcon, a functional component
+      that declares no props, so Vue does not render
+      aria-hidden on its svg.
     -->
     <SelectIcon class="shrink-0">
       <CaretSortIcon class="w-4 h-4 opacity-50" />

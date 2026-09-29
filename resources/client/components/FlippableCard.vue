@@ -114,7 +114,7 @@ function flipCard(): void {
 
 const flipButton = useTemplateRef<InstanceType<typeof Button>>("flipButton");
 
-function focusFlipButton(options?: FocusOptions): void {
+function focusFlipButton(options: FocusOptions): void {
   unrefElement(flipButton)?.focus(options);
 }
 

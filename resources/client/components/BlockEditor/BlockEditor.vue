@@ -29,7 +29,7 @@
               </h3>
               <button
                 class="cursor-pointer flex items-start px-3 py-3"
-                @click="removeBlock(block.id)"
+                @click="removeBlockAndFocusNeighbor(block.id)"
                 data-cy="remove-content-block-button"
               >
                 <Icons.IconX class="size-4" />
@@ -154,7 +154,7 @@ function addEditorBlock(type: ContentBlock["type"]) {
   }, 250);
 }
 
-function removeBlock(id: string): void {
+function removeBlockAndFocusNeighbor(id: string): void {
   const removedIndex = props.modelValue.findIndex((block) => block.id === id);
   const blockToFocus: ContentBlock | undefined =
     props.modelValue[removedIndex + 1] ?? props.modelValue[removedIndex - 1];
