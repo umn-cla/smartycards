@@ -150,7 +150,7 @@ const deckIdRef = computed(() => props.deckId);
 const importError = ref<string | null>(null);
 const importErrorAlert = ref<HTMLDivElement | null>(null);
 const { data: deck } = useDeckByIdQuery(deckIdRef);
-useDeckDocumentTitle(deck);
+useDeckDocumentTitle(deckIdRef, deck);
 
 const router = useRouter();
 

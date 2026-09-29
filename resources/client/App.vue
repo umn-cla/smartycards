@@ -7,32 +7,44 @@
   </div>
 </template>
 <script setup lang="ts">
-import { nextTick } from "vue";
+import { nextTick, ref, watch, watchEffect } from "vue";
 import { RouterView, START_LOCATION, useRouter } from "vue-router";
 import { useAnnouncer } from "@vue-a11y/announcer";
 import ErrorModal from "./components/ErrorModal.vue";
 import { escapeHtmlText } from "./lib/escapeHtmlText";
+import { useDocumentTitleState } from "./lib/documentTitle";
 // import { VueQueryDevtools } from '@tanstack/vue-query-devtools';
 
-const TITLE_ANNOUNCEMENT_DELAY_MS = 500;
 const { polite } = useAnnouncer();
-let pendingTitleAnnouncement: ReturnType<typeof setTimeout> | undefined;
+const documentTitleState = useDocumentTitleState();
+const isTitleAnnouncementPending = ref(false);
+
+watchEffect(() => {
+  document.title = documentTitleState.value.title;
+});
 
 useRouter().afterEach((_to, from, failure) => {
   if (failure || from === START_LOCATION) return;
-
-  clearTimeout(pendingTitleAnnouncement);
 
   nextTick(() => {
     document.getElementById("main-content")?.focus({ preventScroll: true });
   });
 
-  pendingTitleAnnouncement = setTimeout(() => {
+  isTitleAnnouncementPending.value = true;
+});
+
+watch(
+  [isTitleAnnouncementPending, documentTitleState],
+  () => {
+    const { title, isWaitingForDeck } = documentTitleState.value;
+    if (!isTitleAnnouncementPending.value || isWaitingForDeck) return;
+    isTitleAnnouncementPending.value = false;
     // VueAnnouncer sets messages as innerHTML. Without
     // escapeHtmlText, a deck name in the title becomes
     // markup and routeChange.cy.ts fails.
-    polite(escapeHtmlText(document.title));
-  }, TITLE_ANNOUNCEMENT_DELAY_MS);
-});
+    polite(escapeHtmlText(title));
+  },
+  { flush: "post" },
+);
 </script>
 <style scoped></style>

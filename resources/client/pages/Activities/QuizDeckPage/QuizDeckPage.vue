@@ -211,7 +211,7 @@ const completeHeading = useTemplateRef<HTMLHeadingElement>("completeHeading");
 const deckIdRef = computed(() => props.deckId);
 
 const { data: deck, isLoading: isDeckLoading } = useDeckByIdQuery(deckIdRef);
-useDeckDocumentTitle(deck);
+useDeckDocumentTitle(deckIdRef, deck);
 
 async function startQuiz() {
   state.quizState = "loading";

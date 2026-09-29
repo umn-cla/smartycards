@@ -191,7 +191,7 @@ const props = defineProps<{
 
 const deckIdRef = computed(() => props.deckId);
 const { data: deck } = useDeckByIdQuery(deckIdRef);
-useDeckDocumentTitle(deck);
+useDeckDocumentTitle(deckIdRef, deck);
 const { data: report } = useDeckSummaryReportQuery(deckIdRef);
 const memberships = computed(() => report.value?.memberships_with_stats ?? []);
 const cards = computed(() => report.value?.cards_with_stats ?? []);

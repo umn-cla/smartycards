@@ -106,7 +106,7 @@ const isCreateMode = computed(() => !props.cardId);
 const deckIdRef = computed(() => props.deckId);
 const cardIdRef = computed(() => props.cardId ?? null);
 const { data: deck } = useDeckByIdQuery(deckIdRef);
-useDeckDocumentTitle(deck);
+useDeckDocumentTitle(deckIdRef, deck);
 const { data: card } = useCardByIdQuery(cardIdRef);
 
 onMounted(() => {

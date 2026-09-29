@@ -83,7 +83,7 @@ const form = reactive({
 
 const deckIdRef = computed(() => props.deckId);
 const { data: deck } = useDeckByIdQuery(deckIdRef);
-useDeckDocumentTitle(deck);
+useDeckDocumentTitle(deckIdRef, deck);
 const { mutate: cloneDeck } = useCloneDeckMutation();
 
 const router = useRouter();

@@ -101,7 +101,7 @@ const deckIdRef = computed(() => props.deckId);
 // LTI context detection
 const { launchId, isDeepLinkLaunch, launchType } = useLtiContext();
 const { data: deck } = useDeckByIdQuery(deckIdRef);
-useDeckDocumentTitle(deck);
+useDeckDocumentTitle(deckIdRef, deck);
 const { mutate: createDeck } = useCreateDeckMutation();
 const { mutate: updateDeck } = useUpdateDeckMutation();
 

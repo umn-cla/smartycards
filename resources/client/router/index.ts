@@ -3,7 +3,6 @@ import HomePage from "../pages/HomePage/HomePage.vue";
 import { useQueryClient } from "@tanstack/vue-query";
 import * as api from "@/api";
 import { PROFILE_QUERY_KEY } from "@/queries/queryKeys";
-import { toDocumentTitle } from "@/lib/documentTitle";
 
 declare module "vue-router" {
   interface RouteMeta {
@@ -340,11 +339,6 @@ router.beforeEach(async (to, from, next) => {
   }
 
   next();
-});
-
-router.afterEach((to, _from, failure) => {
-  if (failure) return;
-  document.title = toDocumentTitle([to.meta.title]);
 });
 
 export default router;

@@ -67,7 +67,7 @@ const props = defineProps<{
 const deckIdRef = computed(() => props.deckId);
 
 const { data: deck } = useDeckByIdQuery(deckIdRef);
-useDeckDocumentTitle(deck);
+useDeckDocumentTitle(deckIdRef, deck);
 
 const initialCardSide = ref<T.CardSideName>("front");
 const announcer = useAnnouncer();

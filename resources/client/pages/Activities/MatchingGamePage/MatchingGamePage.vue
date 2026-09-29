@@ -68,7 +68,7 @@ const props = defineProps<{
 const deckIdRef = computed(() => props.deckId);
 
 const { data: deck, isLoading: isDeckLoading } = useDeckByIdQuery(deckIdRef);
-useDeckDocumentTitle(deck);
+useDeckDocumentTitle(deckIdRef, deck);
 const { data: deckStats } = useDeckStatsQuery(deckIdRef);
 
 const { mutate: createActivityEvent } = useCreateDeckActivityEventMutation();

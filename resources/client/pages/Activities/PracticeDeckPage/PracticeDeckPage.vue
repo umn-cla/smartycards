@@ -68,7 +68,7 @@ const {
   deckStats,
   handlePracticeComplete,
 } = usePracticeDeck({ deckId: deckIdRef });
-useDeckDocumentTitle(deck);
+useDeckDocumentTitle(deckIdRef, deck);
 </script>
 <style scoped>
 button {

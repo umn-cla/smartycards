@@ -351,7 +351,7 @@ watch(
 );
 
 const { data: deck } = useDeckByIdQuery(deckIdRef);
-useDeckDocumentTitle(deck);
+useDeckDocumentTitle(deckIdRef, deck);
 const {
   data: auditHistory,
   isError: isAuditHistoryError,

@@ -108,7 +108,7 @@ const props = defineProps<{
 
 const deckIdRef = computed(() => props.deckId);
 const { data: deck } = useDeckByIdQuery(deckIdRef);
-useDeckDocumentTitle(deck);
+useDeckDocumentTitle(deckIdRef, deck);
 const { data: deckMemberships } = useDeckMembershipsQuery(deckIdRef);
 const { data: shareViewUrl } = useDeckShareLinkQuery(deckIdRef, "view");
 const { data: shareEditUrl } = useDeckShareLinkQuery(deckIdRef, "edit");

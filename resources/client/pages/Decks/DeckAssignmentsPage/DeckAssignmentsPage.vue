@@ -110,7 +110,7 @@ const props = defineProps<{
 
 const deckIdRef = computed(() => props.deckId);
 const { data: deck } = useDeckByIdQuery(deckIdRef);
-useDeckDocumentTitle(deck);
+useDeckDocumentTitle(deckIdRef, deck);
 const { data: entries } = useDeckAssignmentsQuery(deckIdRef);
 
 const entryCount = computed(() => entries.value?.length ?? 0);

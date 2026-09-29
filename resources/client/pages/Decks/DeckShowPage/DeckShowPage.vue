@@ -198,7 +198,7 @@ const cardSearch = ref("");
 const deckIdRef = computed(() => props.deckId);
 
 const { data: deck } = useDeckByIdQuery(deckIdRef);
-useDeckDocumentTitle(deck);
+useDeckDocumentTitle(deckIdRef, deck);
 const { mutate: deleteCard } = useDeleteCardMutation();
 const { data: activityTypes } = useActivityTypesQuery();
 
