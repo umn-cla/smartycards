@@ -69,7 +69,7 @@ import Label from "@/components/ui/label/Label.vue";
 import HintTooltip from "@/components/HintTooltip.vue";
 import { useCloneDeckMutation } from "@/queries/decks/useCloneDeckMutation";
 import invariant from "tiny-invariant";
-import { hasQueryResponded, usePageTitle } from "@/lib/usePageTitle";
+import { usePageTitle } from "@/lib/usePageTitle";
 
 const props = defineProps<{
   deckId: number | null;
@@ -82,10 +82,9 @@ const form = reactive({
 });
 
 const deckIdRef = computed(() => props.deckId);
-const deckQuery = useDeckByIdQuery(deckIdRef);
-const { data: deck } = deckQuery;
+const { data: deck, isPending: isDeckPending } = useDeckByIdQuery(deckIdRef);
 usePageTitle(() => ["Clone Deck", deck.value?.name], {
-  enabled: () => hasQueryResponded(deckQuery),
+  enabled: () => !isDeckPending.value,
 });
 const { mutate: cloneDeck } = useCloneDeckMutation();
 

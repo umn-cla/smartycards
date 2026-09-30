@@ -47,7 +47,7 @@ import Alert from "@/components/Alert.vue";
 import StartingSideSelect from "@/components/StartingSideSelect.vue";
 import { usePracticeDeck } from "@/composables/usePracticeDeck";
 import { useLtiContext } from "@/composables/useLtiContext";
-import { hasQueryResponded, usePageTitle } from "@/lib/usePageTitle";
+import { usePageTitle } from "@/lib/usePageTitle";
 
 const props = defineProps<{
   deckId: number;
@@ -59,7 +59,7 @@ const { isLtiLaunch } = useLtiContext();
 const {
   initialSideName,
   deck,
-  deckQuery,
+  isDeckPending,
   isDeckLoading,
   deckStats,
   hasCompletedPractice,
@@ -67,7 +67,7 @@ const {
   handleResetPractice,
 } = usePracticeDeck({ deckId: deckIdRef, isLtiContext: isLtiLaunch });
 usePageTitle(() => ["Practice", deck.value?.name], {
-  enabled: () => hasQueryResponded(deckQuery),
+  enabled: () => !isDeckPending.value,
 });
 </script>
 <style scoped>

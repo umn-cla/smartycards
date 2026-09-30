@@ -80,7 +80,7 @@ import { Label } from "@/components/ui/label";
 import SelectLanguage from "@/components/SelectLanguage.vue";
 import * as T from "@/types";
 import { useLtiContext } from "@/composables/useLtiContext";
-import { hasQueryResponded, usePageTitle } from "@/lib/usePageTitle";
+import { usePageTitle } from "@/lib/usePageTitle";
 
 const props = defineProps<{
   deckId: number | null;
@@ -100,12 +100,11 @@ const deckIdRef = computed(() => props.deckId);
 
 // LTI context detection
 const { launchId, isDeepLinkLaunch, launchType } = useLtiContext();
-const deckQuery = useDeckByIdQuery(deckIdRef);
-const { data: deck } = deckQuery;
+const { data: deck, isPending: isDeckPending } = useDeckByIdQuery(deckIdRef);
 usePageTitle(
   () => [isCreateMode.value ? "Create Deck" : "Edit Deck", deck.value?.name],
   {
-    enabled: () => hasQueryResponded(deckQuery),
+    enabled: () => !isDeckPending.value,
   },
 );
 const { mutate: createDeck } = useCreateDeckMutation();

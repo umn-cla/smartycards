@@ -42,7 +42,7 @@ import { useDeckStatsQuery } from "@/queries/decks/useDeckStatsQuery";
 import * as T from "@/types";
 import ActivityPageHeader from "../ActivityPageHeader.vue";
 import DeckContextProvider from "@/components/DeckContextProvider.vue";
-import { hasQueryResponded, usePageTitle } from "@/lib/usePageTitle";
+import { usePageTitle } from "@/lib/usePageTitle";
 
 const props = defineProps<{
   deckId: number;
@@ -50,10 +50,9 @@ const props = defineProps<{
 
 const deckIdRef = computed(() => props.deckId);
 
-const deckQuery = useDeckByIdQuery(deckIdRef);
-const { data: deck } = deckQuery;
+const { data: deck, isPending: isDeckPending } = useDeckByIdQuery(deckIdRef);
 usePageTitle(() => ["Matching", deck.value?.name], {
-  enabled: () => hasQueryResponded(deckQuery),
+  enabled: () => !isDeckPending.value,
 });
 const { data: deckStats } = useDeckStatsQuery(deckIdRef);
 

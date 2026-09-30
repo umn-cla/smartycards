@@ -58,7 +58,7 @@ import { useJoinCommunityDeckMutation } from "@/queries/community";
 import { useLeaveDeckMutation } from "@/queries/deckMemberships";
 import { useRouter } from "vue-router";
 import { useAnnouncer } from "@vue-a11y/announcer";
-import { hasQueryResponded, usePageTitle } from "@/lib/usePageTitle";
+import { usePageTitle } from "@/lib/usePageTitle";
 
 const props = defineProps<{
   deckId: number;
@@ -66,10 +66,9 @@ const props = defineProps<{
 
 const deckIdRef = computed(() => props.deckId);
 
-const deckQuery = useDeckByIdQuery(deckIdRef);
-const { data: deck } = deckQuery;
+const { data: deck, isPending: isDeckPending } = useDeckByIdQuery(deckIdRef);
 usePageTitle(() => ["Preview Deck", deck.value?.name], {
-  enabled: () => hasQueryResponded(deckQuery),
+  enabled: () => !isDeckPending.value,
 });
 
 const initialCardSide = ref<T.CardSideName>("front");
