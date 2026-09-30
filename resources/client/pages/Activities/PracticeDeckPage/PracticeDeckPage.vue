@@ -53,6 +53,7 @@ import LevelProgress from "@/components/LevelProgress.vue";
 import PracticeDeck from "./PracticeDeck.vue";
 import StartingSideSelect from "@/components/StartingSideSelect.vue";
 import { usePracticeDeck } from "@/composables/usePracticeDeck";
+import { usePageTitle } from "@/lib/usePageTitle";
 
 const props = defineProps<{
   deckId: number;
@@ -67,6 +68,7 @@ const {
   deckStats,
   handlePracticeComplete,
 } = usePracticeDeck({ deckId: deckIdRef });
+usePageTitle(() => ["Practice", deck.value?.name]);
 </script>
 <style scoped>
 button {

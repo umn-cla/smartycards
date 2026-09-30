@@ -25,6 +25,9 @@ import PageHeader from "@/components/PageHeader.vue";
 import Tuple from "@/components/Tuple.vue";
 import { Button } from "@/components/ui/button";
 import config from "@/config";
+import { usePageTitle } from "@/lib/usePageTitle";
+
+usePageTitle(["Profile"]);
 
 const { data: currentUser } = useAuthQuery();
 </script>

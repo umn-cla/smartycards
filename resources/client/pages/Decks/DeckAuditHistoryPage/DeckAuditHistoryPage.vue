@@ -72,8 +72,9 @@
                 <TableHead class="w-8 py-2">
                   <Button
                     v-if="hasActiveFilters"
+                    data-cy="audit-clear-filters-button"
                     title="Clear filters"
-                    @click="clearFilters"
+                    @click="clearFiltersAndFocusObjectFilter"
                     class="uppercase text-[0.66rem] px-2 py-0.5 font-semibold rounded"
                   >
                     Clear
@@ -81,7 +82,9 @@
                 </TableHead>
                 <TableHead class="py-2">
                   <select
+                    ref="objectFilterSelect"
                     v-model="filterObject"
+                    data-cy="audit-object-filter-select"
                     class="text-base md:text-xs border-none rounded px-1.5 py-1 bg-brand-maroon-900/5 w-20 font-medium"
                   >
                     <option value="">All</option>
@@ -177,11 +180,12 @@
                         {{ audit.auditable_id }},
                         {{ formatDateTime(audit.created_at) }}
                       </span>
-                      <ChevronDownIcon
-                        aria-hidden="true"
-                        class="size-4 text-brand-maroon-900/50 transition-transform"
-                        :class="{ 'rotate-180': expandedRows.has(audit.id) }"
-                      />
+                      <span aria-hidden="true">
+                        <ChevronDownIcon
+                          class="size-4 text-brand-maroon-900/50 transition-transform"
+                          :class="{ 'rotate-180': expandedRows.has(audit.id) }"
+                        />
+                      </span>
                     </Button>
                   </TableCell>
                   <TableCell>
@@ -265,6 +269,8 @@ import { useDeckByIdQuery } from "@/queries/decks";
 import { useDeckAuditHistoryQuery } from "@/queries/decks/useDeckAuditHistoryQuery";
 import { computed, ref, watch } from "vue";
 import { refDebounced } from "@vueuse/core";
+import { useAnnouncer } from "@vue-a11y/announcer";
+import { pluralize } from "@/utils/pluralize";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -280,7 +286,12 @@ import AuditEventBadge from "./AuditEventBadge.vue";
 import AuditValuesDiff from "./AuditValuesDiff.vue";
 import SortableHeader from "./SortableHeader.vue";
 import { ChevronDownIcon } from "@radix-icons/vue";
-import type { AuditEvent, AuditableType } from "@/types";
+import type {
+  AuditEvent,
+  AuditableType,
+  DeckAuditHistoryResponse,
+} from "@/types";
+import { usePageTitle } from "@/lib/usePageTitle";
 
 const props = defineProps<{
   deckId: number;
@@ -340,8 +351,12 @@ watch(
 );
 
 const { data: deck } = useDeckByIdQuery(deckIdRef);
-const { data: auditHistory, isError: isAuditHistoryError } =
-  useDeckAuditHistoryQuery(deckIdRef, queryParams);
+usePageTitle(() => ["Deck History", deck.value?.name]);
+const {
+  data: auditHistory,
+  isError: isAuditHistoryError,
+  isPlaceholderData: isAuditHistoryPlaceholder,
+} = useDeckAuditHistoryQuery(deckIdRef, queryParams);
 
 // Computed helpers
 const hasActiveFilters = computed(() =>
@@ -363,8 +378,78 @@ const isErrorWithoutData = computed(
 
 const isLoadedAndEmpty = computed(() => auditHistory.value?.data.length === 0);
 
+const isQueryFiltered = computed(() => {
+  const { object, id, action, user, from, to } = queryParams.value;
+  return [object, id, action, user, from, to].some(Boolean);
+});
+
+const announcer = useAnnouncer();
+let isResultAnnouncementPending = false;
+
+function describeAuditHistoryResult(
+  meta: DeckAuditHistoryResponse["meta"],
+  hasActiveFilters: boolean,
+): string {
+  if (meta.total === 0) {
+    return hasActiveFilters
+      ? "No changes match the current filters."
+      : "No edit history found for this deck.";
+  }
+  const changeCountSentence = `${meta.total} ${pluralize(meta.total, "change")}.`;
+  return meta.last_page > 1
+    ? `${changeCountSentence} Page ${meta.current_page} of ${meta.last_page}.`
+    : changeCountSentence;
+}
+
+interface AuditHistoryAnnouncement {
+  message: string;
+  politeness: "polite" | "assertive";
+}
+
+function toAuditHistoryAnnouncement(query: {
+  auditHistory: DeckAuditHistoryResponse | undefined;
+  isPlaceholder: boolean;
+  isErrorWithoutData: boolean;
+  hasActiveFilters: boolean;
+}): AuditHistoryAnnouncement | null {
+  if (query.isErrorWithoutData) {
+    return {
+      message: "Could not load audit history.",
+      politeness: "assertive",
+    };
+  }
+  if (!query.auditHistory || query.isPlaceholder) return null;
+  return {
+    message: describeAuditHistoryResult(
+      query.auditHistory.meta,
+      query.hasActiveFilters,
+    ),
+    politeness: "polite",
+  };
+}
+
+watch(queryParams, () => {
+  isResultAnnouncementPending = true;
+});
+
+watch([auditHistory, isAuditHistoryPlaceholder, isErrorWithoutData], () => {
+  if (!isResultAnnouncementPending) return;
+  const announcement = toAuditHistoryAnnouncement({
+    auditHistory: auditHistory.value,
+    isPlaceholder: isAuditHistoryPlaceholder.value,
+    isErrorWithoutData: isErrorWithoutData.value,
+    hasActiveFilters: isQueryFiltered.value,
+  });
+  if (!announcement) return;
+  isResultAnnouncementPending = false;
+  announcer.announce(announcement.message, announcement.politeness);
+});
+
 // Actions
-function clearFilters() {
+const objectFilterSelect = ref<HTMLSelectElement | null>(null);
+
+function clearFiltersAndFocusObjectFilter() {
+  objectFilterSelect.value?.focus();
   filterObject.value = "";
   filterId.value = "";
   filterAction.value = "";

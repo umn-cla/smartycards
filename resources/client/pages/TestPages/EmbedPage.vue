@@ -36,6 +36,9 @@
 <script setup lang="ts">
 import { Textarea } from "@/components/ui/textarea";
 import { reactive } from "vue";
+import { usePageTitle } from "@/lib/usePageTitle";
+
+usePageTitle(["Test Embed"]);
 
 // these will have to change if app key changes, but saving me time now
 const PRACTICE_EMBED = `<iframe src="https://localhost/decks/1/invite?fromUserId=1&redirectTo=%2Fdecks%2F1%2Fpractice%2Fembed&role=viewer&token=mvZugOYD2ByaIi6V3Kc7meFRIePd9uCY&signature=c8319b633a8c0a812d5c0cb883beef93792d85a7684a61a1d7d065a5a8a39364" width="100%" height="640px" frameborder="0" allowfullscreen></iframe>`;

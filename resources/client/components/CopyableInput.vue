@@ -9,7 +9,7 @@
     />
     <Button
       :icon="copied ? 'check' : 'content_copy'"
-      @click="copy()"
+      @click="copyAndAnnounce"
       class="flex gap-2"
       variant="outline"
     >
@@ -23,6 +23,7 @@
 <script setup lang="ts">
 import { toRef } from "vue";
 import { useClipboard } from "@vueuse/core";
+import { useAnnouncer } from "@vue-a11y/announcer";
 import { IconCopy, IconCheck } from "./icons";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
@@ -37,5 +38,13 @@ const valueRef = toRef(props, "value");
 const { copy, copied } = useClipboard({
   source: valueRef,
 });
+
+const announcer = useAnnouncer();
+
+async function copyAndAnnounce(): Promise<void> {
+  await copy();
+  if (!copied.value) return;
+  announcer.polite("Copied to clipboard.");
+}
 </script>
 <style scoped></style>

@@ -27,6 +27,7 @@
       >
         <div class="flex items-center">
           <svg
+            aria-hidden="true"
             class="animate-spin h-5 w-5 mr-2 text-blue-500"
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -71,7 +72,7 @@
       </div>
       <button
         class="absolute top-0 right-0 bg-neutral-700 hover:bg-brand-maroon-800 text-neutral-100 rounded-full w-6 h-6 flex items-center justify-center transition-colors"
-        @click="$emit('update:modelValue', '')"
+        @click="clearAudioAndFocusUrlInput"
       >
         <IconX />
         <span class="sr-only">Clear</span>
@@ -80,7 +81,7 @@
 
     <p class="text-neutral-400 text-xs text-center mt-4">— or —</p>
     <div class="mb-2">
-      <Label :for="makeInputId('image-url')" class="sr-only">Audio Url</Label>
+      <Label :for="makeInputId('audio-url')" class="sr-only">Audio Url</Label>
       <Input
         :id="makeInputId('audio-url')"
         :modelValue="modelValue"
@@ -93,7 +94,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from "vue";
+import { ref, computed, nextTick } from "vue";
 import * as api from "@/api";
 import { ContentBlock } from "@/types";
 import { Label } from "@/components/ui/label";
@@ -108,6 +109,8 @@ import "filepond/dist/filepond.min.css";
 import "filepond-plugin-image-preview/dist/filepond-plugin-image-preview.min.css";
 import { useMakeInputId } from "@/composables/useMakeInputId";
 import { useErrorStore } from "@/stores/useErrorStore";
+import { useAnnouncer } from "@vue-a11y/announcer";
+import { focusIfNothingIsFocused } from "@/lib/focusIfNothingIsFocused";
 
 const props = defineProps<{
   id: ContentBlock["id"];
@@ -124,6 +127,16 @@ const FilePond = vueFilePond(FilePondPluginFileValidateType);
 const myFiles = ref<string[]>([]);
 const isUploading = ref(false);
 const isValidUrlComputed = computed(() => isValidUrl(props.modelValue));
+const announcer = useAnnouncer();
+
+function getAudioUrlInput(): HTMLElement | null {
+  return document.getElementById(makeInputId("audio-url"));
+}
+
+function clearAudioAndFocusUrlInput(): void {
+  getAudioUrlInput()?.focus();
+  emit("update:modelValue", "");
+}
 
 function onFileChange(file: File) {
   return api.uploadFile(file);
@@ -143,6 +156,10 @@ async function handleProcessAudio(
   load(fileInfo.url);
 
   emit("update:modelValue", fileInfo.url);
+  announcer.polite("Audio file uploaded.");
+  // Without nextTick, FilePond still holds focus and
+  // focusIfNothingIsFocused skips the URL input.
+  nextTick(() => focusIfNothingIsFocused(getAudioUrlInput()));
 
   return { abort };
 }
@@ -158,8 +175,11 @@ async function handleRecordingComplete({
   url: string;
   mimeType: string;
 }) {
+  getAudioUrlInput()?.focus();
+
   try {
     isUploading.value = true;
+    announcer.polite("Uploading recording.");
 
     // determine the file extension based on the MIME type
     const extension = mimeType.split("/")[1];
@@ -175,6 +195,7 @@ async function handleRecordingComplete({
 
     // Update the model value with the new URL
     emit("update:modelValue", fileInfo.url);
+    announcer.polite("Recording uploaded.");
 
     // Clean up the temporary object URL
     URL.revokeObjectURL(url);

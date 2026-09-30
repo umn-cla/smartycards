@@ -39,6 +39,10 @@ describe("DeckShowPage", () => {
       cy.contains(/Back side \d/);
       markCorrectAndWaitForCardToLeave(cardText);
     });
+    cy.get("#announcer").should(
+      "have.text",
+      "Card removed from this session. 2 cards left.",
+    );
 
     // card 2
     cy.contains(/Front side \d/).then(($el: JQuery<HTMLElement>) => {
@@ -48,6 +52,10 @@ describe("DeckShowPage", () => {
       cardsSeen.add(cardText);
       markCorrectAndWaitForCardToLeave(cardText);
     });
+    cy.get("#announcer").should(
+      "have.text",
+      "Card removed from this session. 1 card left.",
+    );
 
     // card 3
     cy.contains(/Front side \d/).then(($el: JQuery<HTMLElement>) => {
@@ -65,6 +73,10 @@ describe("DeckShowPage", () => {
 
     // we should see the retry button
     cy.contains("Practice Again").click();
+    cy.get("#announcer").should(
+      "have.text",
+      "Practice restarted. 3 cards left.",
+    );
 
     // we should see the first card again
     cy.contains(/Front side \d/);
@@ -78,6 +90,10 @@ describe("DeckShowPage", () => {
 
     // select back
     cy.get("#starting-side-select").select("Back");
+    cy.get("#announcer").should(
+      "have.text",
+      "Practice restarted. 3 cards left.",
+    );
 
     // expect back side now
     cy.contains(/Back side \d/);

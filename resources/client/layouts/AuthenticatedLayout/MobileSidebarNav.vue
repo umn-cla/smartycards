@@ -66,10 +66,15 @@
                   <li>
                     <ul role="list" class="-mx-2 space-y-1">
                       <li v-for="item in navigation" :key="item.name">
+                        <!-- An href on RouterLink, even
+                          undefined, replaces its own, so
+                          Tab skips the link and
+                          routeChange.cy.ts fails. -->
                         <component
                           :is="item.to ? RouterLink : 'a'"
-                          :to="item.to"
-                          :href="!item.to ? item.href : undefined"
+                          v-bind="
+                            item.to ? { to: item.to } : { href: item.href }
+                          "
                           activeClass="!bg-brand-maroon-950 !text-brand-oatmeal-50"
                           :class="[
                             'text-brand-oatmeal-50/50 hover:bg-brand-maroon-950/25 hover:text-brand-oatmeal-50 cursor-pointer',

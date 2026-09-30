@@ -87,6 +87,7 @@ import { useAnnouncer } from "@vue-a11y/announcer";
 import invariant from "tiny-invariant";
 import { clamp, move } from "ramda";
 import TTSContextProvider from "@/components/TTSContextProvider.vue";
+import { usePageTitle } from "@/lib/usePageTitle";
 
 const props = defineProps<{
   deckId: number;
@@ -105,6 +106,10 @@ const isCreateMode = computed(() => !props.cardId);
 const deckIdRef = computed(() => props.deckId);
 const cardIdRef = computed(() => props.cardId ?? null);
 const { data: deck } = useDeckByIdQuery(deckIdRef);
+usePageTitle(() => [
+  isCreateMode.value ? "Create Card" : "Edit Card",
+  deck.value?.name,
+]);
 const { data: card } = useCardByIdQuery(cardIdRef);
 
 onMounted(() => {
@@ -168,6 +173,7 @@ function handleSave({ saveAndAddAnother = false } = {}) {
       form.back = backTypes.length
         ? backTypes.map(makeContentBlock)
         : [makeContentBlock("text")];
+      announcer.polite("Card created. Form cleared for the next card.");
       return;
     }
 

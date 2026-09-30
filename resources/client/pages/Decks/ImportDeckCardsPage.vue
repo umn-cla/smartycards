@@ -38,7 +38,9 @@
                 href="/examples/french-english.csv"
                 download
               >
-                <DownloadIcon class="size-4 mr-2" />
+                <span aria-hidden="true">
+                  <DownloadIcon class="size-4 mr-2" />
+                </span>
                 Download
               </Button>
             </div>
@@ -82,6 +84,8 @@
           />
           <div
             v-if="importError"
+            ref="importErrorAlert"
+            tabindex="-1"
             class="text-red-700 my-4 flex items-center gap-2 bg-red-700/10 p-4 rounded-md text-sm"
           >
             <IconExclamationTriangle class="size-6 flex-shrink-0" />
@@ -113,7 +117,7 @@
   </AuthenticatedLayout>
 </template>
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { computed, nextTick, ref } from "vue";
 import { AuthenticatedLayout } from "@/layouts/AuthenticatedLayout";
 import * as api from "@/api";
 import { useRouter } from "vue-router";
@@ -134,6 +138,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { DownloadIcon } from "@radix-icons/vue";
+import { usePageTitle } from "@/lib/usePageTitle";
 
 const props = defineProps<{
   deckId: number;
@@ -143,7 +148,9 @@ const fileInput = ref<HTMLInputElement | null>(null);
 const selectedFile = ref<File | null>(null);
 const deckIdRef = computed(() => props.deckId);
 const importError = ref<string | null>(null);
+const importErrorAlert = ref<HTMLDivElement | null>(null);
 const { data: deck } = useDeckByIdQuery(deckIdRef);
+usePageTitle(() => ["Import Cards", deck.value?.name]);
 
 const router = useRouter();
 
@@ -177,6 +184,9 @@ async function handleImport() {
     if (fileInput.value) {
       fileInput.value.value = "";
     }
+
+    await nextTick();
+    importErrorAlert.value?.focus();
   }
 }
 </script>

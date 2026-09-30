@@ -105,6 +105,9 @@ import { ref, computed, watch, onMounted } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { useAllDecksQuery } from "@/queries/decks";
 import { SimpleSelect, SelectOption } from "@/components/SimpleSelect";
+import { usePageTitle } from "@/lib/usePageTitle";
+
+usePageTitle(["Create Assignment"]);
 
 // Get LTI launch data from window
 const ltiData = window.SmartyCards.ltiDeepLink;

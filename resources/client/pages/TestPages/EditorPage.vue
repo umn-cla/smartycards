@@ -13,6 +13,9 @@
 import { ref } from 'vue';
 import { BlockEditor } from '@/components/BlockEditor';
 import type { ContentBlock } from '@/types';
+import { usePageTitle } from "@/lib/usePageTitle";
+
+usePageTitle(["Test Editor"]);
 
 const blocks = ref<ContentBlock[]>([]);
 </script>

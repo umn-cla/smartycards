@@ -36,4 +36,27 @@ describe("DeckAuditHistoryPage", () => {
     cy.wait("@userFilteredAuditHistory");
     cy.focused().should("have.attr", "data-cy", "audit-user-filter-input");
   });
+
+  it("announces the result count after a filter change", () => {
+    cy.intercept({ ...auditHistoryRoute, query: { user: "zzz" } }).as(
+      "unmatchedUserAuditHistory",
+    );
+
+    cy.get('[data-cy="audit-user-filter-input"]').type("zzz");
+
+    cy.wait("@unmatchedUserAuditHistory");
+    cy.get("#announcer").should(
+      "have.text",
+      "No changes match the current filters.",
+    );
+  });
+
+  it("keeps keyboard focus in the filter row after Clear", () => {
+    cy.get('[data-cy="audit-user-filter-input"]').type("u");
+    cy.get('[data-cy="audit-clear-filters-button"]').focus();
+
+    cy.realPress("Enter");
+
+    cy.focused().should("have.attr", "data-cy", "audit-object-filter-select");
+  });
 });

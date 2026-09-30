@@ -69,6 +69,7 @@ import Label from "@/components/ui/label/Label.vue";
 import HintTooltip from "@/components/HintTooltip.vue";
 import { useCloneDeckMutation } from "@/queries/decks/useCloneDeckMutation";
 import invariant from "tiny-invariant";
+import { usePageTitle } from "@/lib/usePageTitle";
 
 const props = defineProps<{
   deckId: number | null;
@@ -82,6 +83,7 @@ const form = reactive({
 
 const deckIdRef = computed(() => props.deckId);
 const { data: deck } = useDeckByIdQuery(deckIdRef);
+usePageTitle(() => ["Clone Deck", deck.value?.name]);
 const { mutate: cloneDeck } = useCloneDeckMutation();
 
 const router = useRouter();

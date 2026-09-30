@@ -4,8 +4,10 @@
       v-if="!state.activeCard"
       class="flex flex-col items-center justify-center py-12 bg-brand-oatmeal-50 rounded-md shadow-sm"
     >
-      <p>You have completed this practice session.</p>
-      <Button @click="initPracticeSession" class="my-4">
+      <p ref="completionMessage" tabindex="-1">
+        You have completed this practice session.
+      </p>
+      <Button @click="restartPracticeAndFocusFlipButton" class="my-4">
         Practice Again
       </Button>
       <Button asChild variant="secondary">
@@ -19,6 +21,7 @@
     </div>
     <div v-else class="overflow-hidden">
       <FlippableCard
+        ref="practiceCard"
         :front="state.isTransitiongToNext ? [] : state.activeCard?.front"
         :back="state.isTransitiongToNext ? [] : state.activeCard?.back"
         :showLabels="true"
@@ -31,7 +34,7 @@
         }"
       />
       <CardStackVisualization
-        :total-cards="cardsRemaining + (state.activeCard ? 1 : 0)"
+        :total-cards="cardsLeftIncludingActive"
         :animation-state="state.stackAnimationState"
         :reinsertion-index="state.lastReinsertionIndex"
       />
@@ -53,9 +56,19 @@ import CardAttemptChoices from "@/components/CardAttemptChoices.vue";
 import CardStackVisualization from "@/components/CardStackVisualization.vue";
 import FlippableCard from "@/components/FlippableCard.vue";
 import { Button } from "@/components/ui/button";
-import { reactive, watch, onMounted, computed } from "vue";
+import {
+  reactive,
+  watch,
+  onMounted,
+  computed,
+  nextTick,
+  useTemplateRef,
+} from "vue";
 import { toShuffled, getRandomIntInclusive } from "@/lib/utils";
 import { partition } from "ramda";
+import { useAnnouncer } from "@vue-a11y/announcer";
+import { pluralize } from "@/utils/pluralize";
+import { focusIfNothingIsFocused } from "@/lib/focusIfNothingIsFocused";
 
 const props = defineProps<{
   deck: T.DeckWithCards;
@@ -81,7 +94,26 @@ const state = reactive({
   lastReinsertionIndex: null as number | null,
 });
 
-const cardsRemaining = computed(() => state.cardsToPractice.length);
+const cardsLeftIncludingActive = computed(
+  () => state.cardsToPractice.length + (state.activeCard ? 1 : 0),
+);
+
+const announcer = useAnnouncer();
+
+const announcementByScore: Record<number, string> = {
+  1: "Card returns soon.",
+  2: "Card returns later.",
+  3: "Card removed from this session.",
+};
+
+function describeCardsLeft(count: number): string {
+  return `${count} ${pluralize(count, "card")} left.`;
+}
+
+const completionMessage =
+  useTemplateRef<HTMLParagraphElement>("completionMessage");
+const practiceCard =
+  useTemplateRef<InstanceType<typeof FlippableCard>>("practiceCard");
 
 function getInitialSideName(card: T.Card): T.CardSideName {
   return props.initialSideName === "random"
@@ -168,6 +200,11 @@ function handleAnswer(score: number) {
   // if there is no active card, we've completed the session
   if (!state.activeCard) {
     emit("complete", props.deck.cards.length);
+    nextTick(() => focusIfNothingIsFocused(completionMessage.value));
+  } else {
+    announcer.polite(
+      `${announcementByScore[score]} ${describeCardsLeft(cardsLeftIncludingActive.value)}`,
+    );
   }
 
   // after animation is complete, show the initial side
@@ -225,16 +262,36 @@ function initPracticeSession() {
   }, 500);
 }
 
+function restartPracticeAndAnnounce(): void {
+  initPracticeSession();
+  announcer.polite(
+    `Practice restarted. ${describeCardsLeft(cardsLeftIncludingActive.value)}`,
+  );
+}
+
+async function restartPracticeAndFocusFlipButton(): Promise<void> {
+  restartPracticeAndAnnounce();
+  await nextTick();
+  // The new card starts translated below its
+  // overflow-hidden wrapper. Without preventScroll, focus()
+  // scrolls that wrapper and the card stays shifted after
+  // it slides in.
+  practiceCard.value?.focusFlipButton({ preventScroll: true });
+}
+
 onMounted(() => {
   initPracticeSession();
 });
 
 watch(
   () => props.initialSideName,
-  () => {
-    // reinit the practice session
-    // if the side changes
-    initPracticeSession();
+  (_sideName, previousSideName) => {
+    const isInitialRun = previousSideName === undefined;
+    if (isInitialRun) {
+      initPracticeSession();
+      return;
+    }
+    restartPracticeAndAnnounce();
   },
   { immediate: true },
 );

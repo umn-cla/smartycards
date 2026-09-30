@@ -1,7 +1,13 @@
 <template>
   <div class="flex items-center justify-center">
-    <IconCheckCircle v-if="modelValue" class="text-brand-teal-300" />
-    <span v-else> - </span>
+    <template v-if="modelValue">
+      <IconCheckCircle class="text-brand-teal-300" />
+      <span class="sr-only">Yes</span>
+    </template>
+    <template v-else>
+      <span aria-hidden="true">-</span>
+      <span class="sr-only">No</span>
+    </template>
   </div>
 </template>
 <script setup lang="ts">

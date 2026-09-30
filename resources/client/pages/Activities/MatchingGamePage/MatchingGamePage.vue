@@ -59,6 +59,7 @@ import LevelProgress from "@/components/LevelProgress.vue";
 import { useDeckStatsQuery } from "@/queries/decks/useDeckStatsQuery";
 import * as T from "@/types";
 import DeckContextProvider from "@/components/DeckContextProvider.vue";
+import { usePageTitle } from "@/lib/usePageTitle";
 
 const props = defineProps<{
   deckId: number;
@@ -66,7 +67,8 @@ const props = defineProps<{
 
 const deckIdRef = computed(() => props.deckId);
 
-const { data: deck, isLoading: isDeckLoading } = useDeckByIdQuery(deckIdRef);
+const { data: deck } = useDeckByIdQuery(deckIdRef);
+usePageTitle(() => ["Matching", deck.value?.name]);
 const { data: deckStats } = useDeckStatsQuery(deckIdRef);
 
 const { mutate: createActivityEvent } = useCreateDeckActivityEventMutation();

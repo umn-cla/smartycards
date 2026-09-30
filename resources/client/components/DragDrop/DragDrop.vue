@@ -49,7 +49,7 @@ const isDragging = ref(false);
 </script>
 <style>
 .dragdrop__container .ghost,
-.dragdrop__container .drag-drop__list-item:has(.drag-handle:focus) {
+.dragdrop__container .drag-drop__list-item:has(.drag-handle:focus-visible) {
   opacity: 0.75;
   background: #c8ebfb;
 }

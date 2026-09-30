@@ -156,6 +156,7 @@ import { useDeckStatsQuery } from "@/queries/decks/useDeckStatsQuery";
 import LevelProgress from "@/components/LevelProgress.vue";
 import { IconExclamationTriangle } from "@/components/icons";
 import ActivityPageHeader from "../ActivityPageHeader.vue";
+import { usePageTitle } from "@/lib/usePageTitle";
 
 const props = defineProps<{
   deckId: number;
@@ -181,6 +182,7 @@ const completeHeading = useTemplateRef<HTMLHeadingElement>("completeHeading");
 const deckIdRef = computed(() => props.deckId);
 
 const { data: deck } = useDeckByIdQuery(deckIdRef);
+usePageTitle(() => ["Quiz", deck.value?.name]);
 
 async function startQuiz() {
   state.quizState = "loading";

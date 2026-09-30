@@ -12,6 +12,9 @@ import axios from "@/api/axios";
 import { AuthenticatedLayout } from "@/layouts/AuthenticatedLayout";
 import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
+import { usePageTitle } from "@/lib/usePageTitle";
+
+usePageTitle(["Deck Invite"]);
 
 const props = defineProps<{
   deckId: number;

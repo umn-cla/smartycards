@@ -21,6 +21,9 @@ import { Textarea } from "@/components/ui/textarea";
 import AuthenticatedLayout from "@/layouts/AuthenticatedLayout/AuthenticatedLayout.vue";
 import { ref } from "vue";
 import { useTextToSpeech } from "@/composables/useTextToSpeech";
+import { usePageTitle } from "@/lib/usePageTitle";
+
+usePageTitle(["Test TTS"]);
 
 const text = ref("");
 

@@ -15,7 +15,13 @@
             <article
               class="bg-brand-oatmeal-50 p-4 rounded-lg border border-brand-oatmeal-300/75"
             >
-              <h2 class="text-lg font-bold">{{ deck.name }}</h2>
+              <h2
+                :id="getDeckNameId(deck.id)"
+                tabindex="-1"
+                class="text-lg font-bold"
+              >
+                {{ deck.name }}
+              </h2>
               <p class="text-sm text-stone-400 mb-4">{{ deck.description }}</p>
 
               <div v-if="deck.current_user_role" class="flex gap-2 justify-end">
@@ -31,7 +37,7 @@
                 </Button>
                 <Button
                   v-if="deck.capabilities.canLeave"
-                  @click="leaveDeck(deck.id)"
+                  @click="leaveDeckAndFocusName(deck.id)"
                   variant="destructive"
                   >Leave</Button
                 >
@@ -50,7 +56,7 @@
                 </Button>
                 <Button
                   v-if="deck.capabilities.canJoinAsViewer"
-                  @click="joinDeck(deck.id)"
+                  @click="joinDeckAndFocusName(deck.id)"
                   >Join</Button
                 >
               </div>
@@ -68,9 +74,26 @@ import { useCommunityDecksQuery } from "@/queries/community/useCommunityDecksQue
 import { Button } from "@/components/ui/button";
 import { useJoinCommunityDeckMutation } from "@/queries/community";
 import { useLeaveDeckMutation } from "@/queries/deckMemberships";
+import { usePageTitle } from "@/lib/usePageTitle";
+
+usePageTitle(["Community Decks"]);
 
 const { data: communityDecks, isLoading } = useCommunityDecksQuery();
 const { mutate: joinDeck } = useJoinCommunityDeckMutation();
 const { mutate: leaveDeck } = useLeaveDeckMutation();
+
+function getDeckNameId(deckId: number): string {
+  return `community-deck-name-${deckId}`;
+}
+
+function joinDeckAndFocusName(deckId: number): void {
+  document.getElementById(getDeckNameId(deckId))?.focus();
+  joinDeck(deckId);
+}
+
+function leaveDeckAndFocusName(deckId: number): void {
+  document.getElementById(getDeckNameId(deckId))?.focus();
+  leaveDeck(deckId);
+}
 </script>
 <style scoped></style>

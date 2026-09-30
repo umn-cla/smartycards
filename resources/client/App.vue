@@ -7,8 +7,17 @@
   </div>
 </template>
 <script setup lang="ts">
-import { RouterView } from "vue-router";
+import { nextTick } from "vue";
+import { RouterView, START_LOCATION, useRouter } from "vue-router";
 import ErrorModal from "./components/ErrorModal.vue";
 // import { VueQueryDevtools } from '@tanstack/vue-query-devtools';
+
+useRouter().afterEach((_to, from, failure) => {
+  if (failure || from === START_LOCATION) return;
+
+  nextTick(() => {
+    document.getElementById("main-content")?.focus({ preventScroll: true });
+  });
+});
 </script>
 <style scoped></style>

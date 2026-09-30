@@ -14,7 +14,7 @@
       class="h-20 bg-brand-maroon-900/5 border-none font-mono text-xs flex-1"
     />
     <Button
-      @click="handleCopy(mode)"
+      @click="copyEmbedCodeAndAnnounce(mode)"
       variant="outline"
       class="flex gap-1 text-xs"
     >
@@ -32,6 +32,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { IconCopy, IconCheck } from "@/components/icons";
 import { useClipboard } from "@vueuse/core";
+import { useAnnouncer } from "@vue-a11y/announcer";
 import { useDeckShareLinkQuery } from "@/queries/deckMemberships";
 
 const props = defineProps<{
@@ -85,7 +86,8 @@ const embedCodes = computed((): PracticeEmbedCodes => {
   };
 });
 
-const { copy } = useClipboard();
+const { copy, copied } = useClipboard();
+const announcer = useAnnouncer();
 
 const isEmbedCopied = reactive<Record<EmbedMode, boolean>>({
   practice: false,
@@ -93,10 +95,12 @@ const isEmbedCopied = reactive<Record<EmbedMode, boolean>>({
   matching: false,
 });
 
-function handleCopy(mode: EmbedMode) {
+async function copyEmbedCodeAndAnnounce(mode: EmbedMode): Promise<void> {
   const embedCodeForMode = embedCodes.value[mode];
-  copy(embedCodeForMode);
+  await copy(embedCodeForMode);
+  if (!copied.value) return;
   isEmbedCopied[mode] = true;
+  announcer.polite(`${capitalize(mode)} embed code copied.`);
 
   setTimeout(() => {
     isEmbedCopied[mode] = false;

@@ -51,6 +51,7 @@
     <Button asChild variant="secondary">
       <RouterLink :to="`/decks/${deck.id}`">
         <IconArrowRight class="w-5 h-5" />
+        <span class="sr-only">Open {{ deck.name }}</span>
       </RouterLink>
     </Button>
   </div>

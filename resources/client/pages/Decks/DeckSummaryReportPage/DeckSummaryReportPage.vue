@@ -183,6 +183,7 @@ import { useDeckSummaryReportQuery } from "@/queries/decks/useDeckSummaryReportQ
 import DeckContextProvider from "@/components/DeckContextProvider.vue";
 import { RouterLink } from "vue-router";
 import Button from "@/components/ui/button/Button.vue";
+import { usePageTitle } from "@/lib/usePageTitle";
 
 const props = defineProps<{
   deckId: number;
@@ -190,6 +191,7 @@ const props = defineProps<{
 
 const deckIdRef = computed(() => props.deckId);
 const { data: deck } = useDeckByIdQuery(deckIdRef);
+usePageTitle(() => ["Summary Report", deck.value?.name]);
 const { data: report } = useDeckSummaryReportQuery(deckIdRef);
 const memberships = computed(() => report.value?.memberships_with_stats ?? []);
 const cards = computed(() => report.value?.cards_with_stats ?? []);

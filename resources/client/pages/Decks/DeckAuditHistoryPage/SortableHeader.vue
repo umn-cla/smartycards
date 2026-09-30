@@ -5,7 +5,7 @@
     @click="$emit('sort', field)"
   >
     <span>{{ label }}</span>
-    <span class="flex flex-col text-brand-maroon-900">
+    <span class="flex flex-col text-brand-maroon-900" aria-hidden="true">
       <CaretUpIcon
         class="size-4"
         :class="isActive && currentDirection === 'asc' ? 'block' : 'hidden'"
