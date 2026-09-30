@@ -66,10 +66,8 @@ const props = defineProps<{
 
 const deckIdRef = computed(() => props.deckId);
 
-const { data: deck, isPending: isDeckPending } = useDeckByIdQuery(deckIdRef);
-usePageTitle(() => ["Preview Deck", deck.value?.name], {
-  enabled: () => !isDeckPending.value,
-});
+const { data: deck } = useDeckByIdQuery(deckIdRef);
+usePageTitle(() => ["Preview Deck", deck.value?.name]);
 
 const initialCardSide = ref<T.CardSideName>("front");
 const announcer = useAnnouncer();

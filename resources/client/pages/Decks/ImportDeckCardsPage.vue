@@ -149,10 +149,8 @@ const selectedFile = ref<File | null>(null);
 const deckIdRef = computed(() => props.deckId);
 const importError = ref<string | null>(null);
 const importErrorAlert = ref<HTMLDivElement | null>(null);
-const { data: deck, isPending: isDeckPending } = useDeckByIdQuery(deckIdRef);
-usePageTitle(() => ["Import Cards", deck.value?.name], {
-  enabled: () => !isDeckPending.value,
-});
+const { data: deck } = useDeckByIdQuery(deckIdRef);
+usePageTitle(() => ["Import Cards", deck.value?.name]);
 
 const router = useRouter();
 

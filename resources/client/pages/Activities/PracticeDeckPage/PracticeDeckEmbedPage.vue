@@ -59,16 +59,13 @@ const { isLtiLaunch } = useLtiContext();
 const {
   initialSideName,
   deck,
-  isDeckPending,
   isDeckLoading,
   deckStats,
   hasCompletedPractice,
   handlePracticeComplete,
   handleResetPractice,
 } = usePracticeDeck({ deckId: deckIdRef, isLtiContext: isLtiLaunch });
-usePageTitle(() => ["Practice", deck.value?.name], {
-  enabled: () => !isDeckPending.value,
-});
+usePageTitle(() => ["Practice", deck.value?.name]);
 </script>
 <style scoped>
 button {

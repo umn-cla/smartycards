@@ -100,12 +100,9 @@ const deckIdRef = computed(() => props.deckId);
 
 // LTI context detection
 const { launchId, isDeepLinkLaunch, launchType } = useLtiContext();
-const { data: deck, isPending: isDeckPending } = useDeckByIdQuery(deckIdRef);
-usePageTitle(
-  () => [isCreateMode.value ? "Create Deck" : "Edit Deck", deck.value?.name],
-  {
-    enabled: () => !isDeckPending.value,
-  },
+const { data: deck } = useDeckByIdQuery(deckIdRef);
+usePageTitle(() =>
+  isCreateMode.value ? ["Create Deck"] : ["Edit Deck", deck.value?.name],
 );
 const { mutate: createDeck } = useCreateDeckMutation();
 const { mutate: updateDeck } = useUpdateDeckMutation();

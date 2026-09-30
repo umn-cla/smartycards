@@ -19,14 +19,6 @@ describe("Route change", () => {
     cy.title().should("equal", "Community Decks - SmartyCards");
   });
 
-  it("does not announce the first page load", () => {
-    cy.visit("/decks");
-    cy.title().should("equal", "Decks - SmartyCards");
-
-    cy.wait(500);
-    cy.get("#announcer").should("have.text", "");
-  });
-
   it("focuses the main content and announces the page after keyboard navigation", () => {
     cy.visit("/decks");
     cy.contains("nav a", "Community").focus();
@@ -59,7 +51,7 @@ describe("Route change", () => {
     );
   });
 
-  it("announces a deck page whose deck request fails", () => {
+  it("moves focus into an error dialog when the deck request fails", () => {
     cy.createDeckForUser("user", { name: "Spanish 101" }).then((deck) => {
       cy.intercept(
         { method: "GET", pathname: `/api/decks/${deck.id}` },
@@ -71,10 +63,9 @@ describe("Route change", () => {
     });
 
     cy.wait("@missingDeck");
-    cy.get("#announcer", { timeout: 15000 }).should(
-      "have.text",
-      "Deck - SmartyCards",
-    );
+    cy.focused()
+      .closest('[role="dialog"]')
+      .should("contain.text", "Error: 404");
   });
 
   it("announces the new deck when moving from one deck page to another", () => {

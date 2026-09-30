@@ -50,10 +50,8 @@ const props = defineProps<{
 
 const deckIdRef = computed(() => props.deckId);
 
-const { data: deck, isPending: isDeckPending } = useDeckByIdQuery(deckIdRef);
-usePageTitle(() => ["Matching", deck.value?.name], {
-  enabled: () => !isDeckPending.value,
-});
+const { data: deck } = useDeckByIdQuery(deckIdRef);
+usePageTitle(() => ["Matching", deck.value?.name]);
 const { data: deckStats } = useDeckStatsQuery(deckIdRef);
 
 const { mutate: createActivityEvent } = useCreateDeckActivityEventMutation();

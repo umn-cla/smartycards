@@ -64,14 +64,11 @@ const deckIdRef = computed(() => props.deckId);
 const {
   initialSideName,
   deck,
-  isDeckPending,
   isDeckLoading,
   deckStats,
   handlePracticeComplete,
 } = usePracticeDeck({ deckId: deckIdRef });
-usePageTitle(() => ["Practice", deck.value?.name], {
-  enabled: () => !isDeckPending.value,
-});
+usePageTitle(() => ["Practice", deck.value?.name]);
 </script>
 <style scoped>
 button {

@@ -105,13 +105,11 @@ const form = reactive<{
 const isCreateMode = computed(() => !props.cardId);
 const deckIdRef = computed(() => props.deckId);
 const cardIdRef = computed(() => props.cardId ?? null);
-const { data: deck, isPending: isDeckPending } = useDeckByIdQuery(deckIdRef);
-usePageTitle(
-  () => [isCreateMode.value ? "Create Card" : "Edit Card", deck.value?.name],
-  {
-    enabled: () => !isDeckPending.value,
-  },
-);
+const { data: deck } = useDeckByIdQuery(deckIdRef);
+usePageTitle(() => [
+  isCreateMode.value ? "Create Card" : "Edit Card",
+  deck.value?.name,
+]);
 const { data: card } = useCardByIdQuery(cardIdRef);
 
 onMounted(() => {

@@ -82,10 +82,8 @@ const form = reactive({
 });
 
 const deckIdRef = computed(() => props.deckId);
-const { data: deck, isPending: isDeckPending } = useDeckByIdQuery(deckIdRef);
-usePageTitle(() => ["Clone Deck", deck.value?.name], {
-  enabled: () => !isDeckPending.value,
-});
+const { data: deck } = useDeckByIdQuery(deckIdRef);
+usePageTitle(() => ["Clone Deck", deck.value?.name]);
 const { mutate: cloneDeck } = useCloneDeckMutation();
 
 const router = useRouter();

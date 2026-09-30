@@ -190,10 +190,8 @@ const props = defineProps<{
 }>();
 
 const deckIdRef = computed(() => props.deckId);
-const { data: deck, isPending: isDeckPending } = useDeckByIdQuery(deckIdRef);
-usePageTitle(() => ["Summary Report", deck.value?.name], {
-  enabled: () => !isDeckPending.value,
-});
+const { data: deck } = useDeckByIdQuery(deckIdRef);
+usePageTitle(() => ["Summary Report", deck.value?.name]);
 const { data: report } = useDeckSummaryReportQuery(deckIdRef);
 const memberships = computed(() => report.value?.memberships_with_stats ?? []);
 const cards = computed(() => report.value?.cards_with_stats ?? []);

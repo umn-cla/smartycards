@@ -350,10 +350,8 @@ watch(
   },
 );
 
-const { data: deck, isPending: isDeckPending } = useDeckByIdQuery(deckIdRef);
-usePageTitle(() => ["Deck History", deck.value?.name], {
-  enabled: () => !isDeckPending.value,
-});
+const { data: deck } = useDeckByIdQuery(deckIdRef);
+usePageTitle(() => ["Deck History", deck.value?.name]);
 const {
   data: auditHistory,
   isError: isAuditHistoryError,

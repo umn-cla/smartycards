@@ -107,10 +107,8 @@ const props = defineProps<{
 }>();
 
 const deckIdRef = computed(() => props.deckId);
-const { data: deck, isPending: isDeckPending } = useDeckByIdQuery(deckIdRef);
-usePageTitle(() => ["Share Deck", deck.value?.name], {
-  enabled: () => !isDeckPending.value,
-});
+const { data: deck } = useDeckByIdQuery(deckIdRef);
+usePageTitle(() => ["Share Deck", deck.value?.name]);
 const { data: deckMemberships } = useDeckMembershipsQuery(deckIdRef);
 const { data: shareViewUrl } = useDeckShareLinkQuery(deckIdRef, "view");
 const { data: shareEditUrl } = useDeckShareLinkQuery(deckIdRef, "edit");

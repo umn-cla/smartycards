@@ -109,10 +109,8 @@ const props = defineProps<{
 }>();
 
 const deckIdRef = computed(() => props.deckId);
-const { data: deck, isPending: isDeckPending } = useDeckByIdQuery(deckIdRef);
-usePageTitle(() => ["Assignments", deck.value?.name], {
-  enabled: () => !isDeckPending.value,
-});
+const { data: deck } = useDeckByIdQuery(deckIdRef);
+usePageTitle(() => ["Assignments", deck.value?.name]);
 const { data: entries } = useDeckAssignmentsQuery(deckIdRef);
 
 const entryCount = computed(() => entries.value?.length ?? 0);

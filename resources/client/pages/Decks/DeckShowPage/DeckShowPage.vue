@@ -197,10 +197,8 @@ const props = defineProps<{
 const cardSearch = ref("");
 const deckIdRef = computed(() => props.deckId);
 
-const { data: deck, isPending: isDeckPending } = useDeckByIdQuery(deckIdRef);
-usePageTitle(() => ["Deck", deck.value?.name], {
-  enabled: () => !isDeckPending.value,
-});
+const { data: deck } = useDeckByIdQuery(deckIdRef);
+usePageTitle(() => ["Deck", deck.value?.name]);
 const { mutate: deleteCard } = useDeleteCardMutation();
 const { data: activityTypes } = useActivityTypesQuery();
 

@@ -18,11 +18,7 @@ export function usePracticeDeck(options: UsePracticeDeckOptions) {
   const initialSideName = ref<T.CardSideName | "random">("front");
   const hasCompletedPractice = ref(false);
 
-  const {
-    data: deck,
-    isLoading: isDeckLoading,
-    isPending: isDeckPending,
-  } = useDeckByIdQuery(deckId);
+  const { data: deck, isLoading: isDeckLoading } = useDeckByIdQuery(deckId);
   const { data: deckStats } = useDeckStatsQuery(deckId);
   const { mutate: createActivityEvent } = useCreateDeckActivityEventMutation();
 
@@ -47,7 +43,6 @@ export function usePracticeDeck(options: UsePracticeDeckOptions) {
     initialSideName,
     deck,
     isDeckLoading,
-    isDeckPending,
     deckStats,
     hasCompletedPractice,
     handlePracticeComplete,
