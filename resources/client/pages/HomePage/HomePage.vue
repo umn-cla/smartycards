@@ -73,6 +73,9 @@ import AudioDemoCard from "./DemoCards/AudioDemoCard.vue";
 import TextDemoCard from "./DemoCards/TextDemoCard.vue";
 import VideoDemoCard from "./DemoCards/VideoDemoCard.vue";
 import SmartycardsWordmark from "@/components/SmartycardsWordmark.vue";
+import { usePageTitle } from "@/lib/usePageTitle";
+
+usePageTitle([]);
 </script>
 <style scoped>
 .home-page {

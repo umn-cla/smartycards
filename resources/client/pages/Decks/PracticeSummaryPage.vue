@@ -15,6 +15,9 @@
 <script setup lang="ts">
 import { AuthenticatedLayout } from '@/layouts/AuthenticatedLayout';
 import { RouterLink } from 'vue-router';
+import { usePageTitle } from "@/lib/usePageTitle";
+
+usePageTitle(["Practice Summary"]);
 
 defineProps<{
   deckId: number;

@@ -87,6 +87,7 @@ import { useAnnouncer } from "@vue-a11y/announcer";
 import invariant from "tiny-invariant";
 import { clamp, move } from "ramda";
 import TTSContextProvider from "@/components/TTSContextProvider.vue";
+import { hasQueryResponded, usePageTitle } from "@/lib/usePageTitle";
 
 const props = defineProps<{
   deckId: number;
@@ -104,7 +105,14 @@ const form = reactive<{
 const isCreateMode = computed(() => !props.cardId);
 const deckIdRef = computed(() => props.deckId);
 const cardIdRef = computed(() => props.cardId ?? null);
-const { data: deck } = useDeckByIdQuery(deckIdRef);
+const deckQuery = useDeckByIdQuery(deckIdRef);
+const { data: deck } = deckQuery;
+usePageTitle(
+  () => [isCreateMode.value ? "Create Card" : "Edit Card", deck.value?.name],
+  {
+    enabled: () => hasQueryResponded(deckQuery),
+  },
+);
 const { data: card } = useCardByIdQuery(cardIdRef);
 
 onMounted(() => {

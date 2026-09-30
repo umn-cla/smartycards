@@ -100,13 +100,18 @@ import DeckMembership from "@/components/DeckMembership.vue";
 import BackLink from "@/components/BackLink.vue";
 import ShareLink from "@/components/ShareLink.vue";
 import EmbedDeckSection from "@/components/EmbedDeckSection.vue";
+import { hasQueryResponded, usePageTitle } from "@/lib/usePageTitle";
 
 const props = defineProps<{
   deckId: number;
 }>();
 
 const deckIdRef = computed(() => props.deckId);
-const { data: deck } = useDeckByIdQuery(deckIdRef);
+const deckQuery = useDeckByIdQuery(deckIdRef);
+const { data: deck } = deckQuery;
+usePageTitle(() => ["Share Deck", deck.value?.name], {
+  enabled: () => hasQueryResponded(deckQuery),
+});
 const { data: deckMemberships } = useDeckMembershipsQuery(deckIdRef);
 const { data: shareViewUrl } = useDeckShareLinkQuery(deckIdRef, "view");
 const { data: shareEditUrl } = useDeckShareLinkQuery(deckIdRef, "edit");

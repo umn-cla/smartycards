@@ -7,5 +7,8 @@
 </template>
 <script setup lang="ts">
 import GuestLayout from "@/layouts/GuestLayout.vue";
+import { usePageTitle } from "@/lib/usePageTitle";
+
+usePageTitle(["Forbidden"]);
 </script>
 <style scoped></style>

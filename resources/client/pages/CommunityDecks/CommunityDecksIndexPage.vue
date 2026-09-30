@@ -74,6 +74,9 @@ import { useCommunityDecksQuery } from "@/queries/community/useCommunityDecksQue
 import { Button } from "@/components/ui/button";
 import { useJoinCommunityDeckMutation } from "@/queries/community";
 import { useLeaveDeckMutation } from "@/queries/deckMemberships";
+import { usePageTitle } from "@/lib/usePageTitle";
+
+usePageTitle(["Community Decks"]);
 
 const { data: communityDecks, isLoading } = useCommunityDecksQuery();
 const { mutate: joinDeck } = useJoinCommunityDeckMutation();

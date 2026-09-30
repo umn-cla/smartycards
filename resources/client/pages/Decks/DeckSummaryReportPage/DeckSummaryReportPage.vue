@@ -183,13 +183,18 @@ import { useDeckSummaryReportQuery } from "@/queries/decks/useDeckSummaryReportQ
 import DeckContextProvider from "@/components/DeckContextProvider.vue";
 import { RouterLink } from "vue-router";
 import Button from "@/components/ui/button/Button.vue";
+import { hasQueryResponded, usePageTitle } from "@/lib/usePageTitle";
 
 const props = defineProps<{
   deckId: number;
 }>();
 
 const deckIdRef = computed(() => props.deckId);
-const { data: deck } = useDeckByIdQuery(deckIdRef);
+const deckQuery = useDeckByIdQuery(deckIdRef);
+const { data: deck } = deckQuery;
+usePageTitle(() => ["Summary Report", deck.value?.name], {
+  enabled: () => hasQueryResponded(deckQuery),
+});
 const { data: report } = useDeckSummaryReportQuery(deckIdRef);
 const memberships = computed(() => report.value?.memberships_with_stats ?? []);
 const cards = computed(() => report.value?.cards_with_stats ?? []);

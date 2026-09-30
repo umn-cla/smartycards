@@ -138,6 +138,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { DownloadIcon } from "@radix-icons/vue";
+import { hasQueryResponded, usePageTitle } from "@/lib/usePageTitle";
 
 const props = defineProps<{
   deckId: number;
@@ -148,7 +149,11 @@ const selectedFile = ref<File | null>(null);
 const deckIdRef = computed(() => props.deckId);
 const importError = ref<string | null>(null);
 const importErrorAlert = ref<HTMLDivElement | null>(null);
-const { data: deck } = useDeckByIdQuery(deckIdRef);
+const deckQuery = useDeckByIdQuery(deckIdRef);
+const { data: deck } = deckQuery;
+usePageTitle(() => ["Import Cards", deck.value?.name], {
+  enabled: () => hasQueryResponded(deckQuery),
+});
 
 const router = useRouter();
 

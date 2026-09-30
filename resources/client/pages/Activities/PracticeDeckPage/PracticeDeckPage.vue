@@ -53,6 +53,7 @@ import LevelProgress from "@/components/LevelProgress.vue";
 import PracticeDeck from "./PracticeDeck.vue";
 import StartingSideSelect from "@/components/StartingSideSelect.vue";
 import { usePracticeDeck } from "@/composables/usePracticeDeck";
+import { hasQueryResponded, usePageTitle } from "@/lib/usePageTitle";
 
 const props = defineProps<{
   deckId: number;
@@ -63,10 +64,14 @@ const deckIdRef = computed(() => props.deckId);
 const {
   initialSideName,
   deck,
+  deckQuery,
   isDeckLoading,
   deckStats,
   handlePracticeComplete,
 } = usePracticeDeck({ deckId: deckIdRef });
+usePageTitle(() => ["Practice", deck.value?.name], {
+  enabled: () => hasQueryResponded(deckQuery),
+});
 </script>
 <style scoped>
 button {

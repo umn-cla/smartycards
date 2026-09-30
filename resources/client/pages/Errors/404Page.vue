@@ -32,6 +32,9 @@
 import GuestLayout from "@/layouts/GuestLayout.vue";
 import FlippableCardSimple from "@/components/FlippableCardSimple.vue";
 import { Button } from "@/components/ui/button";
+import { usePageTitle } from "@/lib/usePageTitle";
+
+usePageTitle(["Page Not Found"]);
 </script>
 <style scoped>
 .not-found-page__text-container {

@@ -291,6 +291,7 @@ import type {
   AuditableType,
   DeckAuditHistoryResponse,
 } from "@/types";
+import { hasQueryResponded, usePageTitle } from "@/lib/usePageTitle";
 
 const props = defineProps<{
   deckId: number;
@@ -349,7 +350,11 @@ watch(
   },
 );
 
-const { data: deck } = useDeckByIdQuery(deckIdRef);
+const deckQuery = useDeckByIdQuery(deckIdRef);
+const { data: deck } = deckQuery;
+usePageTitle(() => ["Deck History", deck.value?.name], {
+  enabled: () => hasQueryResponded(deckQuery),
+});
 const {
   data: auditHistory,
   isError: isAuditHistoryError,

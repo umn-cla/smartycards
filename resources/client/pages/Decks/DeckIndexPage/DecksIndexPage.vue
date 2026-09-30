@@ -44,6 +44,9 @@ import { computed } from "vue";
 import * as T from "@/types";
 import PageHeader from "@/components/PageHeader.vue";
 import { IconPlusFilled } from "@/components/icons";
+import { usePageTitle } from "@/lib/usePageTitle";
+
+usePageTitle(["Decks"]);
 
 const { data: decks } = useAllDecksQuery();
 

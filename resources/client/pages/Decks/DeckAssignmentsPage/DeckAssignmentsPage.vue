@@ -102,13 +102,18 @@ import Tuple from "@/components/Tuple.vue";
 import DeckContextProvider from "@/components/DeckContextProvider.vue";
 import type * as T from "@/types";
 import { ExternalLinkIcon } from "@radix-icons/vue";
+import { hasQueryResponded, usePageTitle } from "@/lib/usePageTitle";
 
 const props = defineProps<{
   deckId: number;
 }>();
 
 const deckIdRef = computed(() => props.deckId);
-const { data: deck } = useDeckByIdQuery(deckIdRef);
+const deckQuery = useDeckByIdQuery(deckIdRef);
+const { data: deck } = deckQuery;
+usePageTitle(() => ["Assignments", deck.value?.name], {
+  enabled: () => hasQueryResponded(deckQuery),
+});
 const { data: entries } = useDeckAssignmentsQuery(deckIdRef);
 
 const entryCount = computed(() => entries.value?.length ?? 0);

@@ -188,6 +188,7 @@ import { useAnnouncer } from "@vue-a11y/announcer";
 import { watchDebounced } from "@vueuse/core";
 import { pluralize } from "@/utils/pluralize";
 import MoreCardActions from "./MoreCardActions.vue";
+import { hasQueryResponded, usePageTitle } from "@/lib/usePageTitle";
 
 const props = defineProps<{
   deckId: number;
@@ -196,7 +197,11 @@ const props = defineProps<{
 const cardSearch = ref("");
 const deckIdRef = computed(() => props.deckId);
 
-const { data: deck } = useDeckByIdQuery(deckIdRef);
+const deckQuery = useDeckByIdQuery(deckIdRef);
+const { data: deck } = deckQuery;
+usePageTitle(() => ["Deck", deck.value?.name], {
+  enabled: () => hasQueryResponded(deckQuery),
+});
 const { mutate: deleteCard } = useDeleteCardMutation();
 const { data: activityTypes } = useActivityTypesQuery();
 
