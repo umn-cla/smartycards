@@ -66,6 +66,21 @@ describe("Route change", () => {
     cy.get("#announcer").should("have.text", "Deck - SmartyCards");
   });
 
+  it("announces the new deck when moving from one deck page to another", () => {
+    cy.createDeckForUser("user", { name: "Spanish 101" }).then((firstDeck) => {
+      cy.createDeckForUser("user", { name: "French 201" }).then(
+        (secondDeck) => {
+          cy.visit(`/decks/${firstDeck.id}`);
+          cy.get("#main-content").should("contain.text", "Spanish 101");
+
+          cy.get(`nav a[href="/decks/${secondDeck.id}"]`).click();
+        },
+      );
+    });
+
+    cy.get("#announcer").should("have.text", "Deck - French 201 - SmartyCards");
+  });
+
   it("announces a deck name containing HTML as text", () => {
     const markupDeckName = '<img src="x" data-cy="injected">';
     cy.createDeckForUser("user", { name: markupDeckName }).then((deck) => {
