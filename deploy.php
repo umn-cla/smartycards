@@ -11,6 +11,7 @@ set('cachetool_args', '--tmp-dir=/var/www/smartycards');
 set('repository', 'git@github.com:umn-cla/smartycards-api.git');
 set('ssh_type', 'native');
 set('update_code_strategy', 'clone');
+set('keep_releases', 5);
 
 add('shared_files', []);
 add('shared_dirs', []);
@@ -49,6 +50,11 @@ task('assets:generate', function () {
     run('npm run build');
 })->desc('Assets generation');
 after('deploy:vendors', 'assets:generate');
+
+task('npm:remove_node_modules', function () {
+    run('rm -rf {{release_path}}/node_modules');
+})->desc('Remove node_modules after assets are built');
+after('assets:generate', 'npm:remove_node_modules');
 
 after('deploy:failed', 'deploy:unlock');
 after('deploy:symlink', 'cachetool:clear:opcache');
