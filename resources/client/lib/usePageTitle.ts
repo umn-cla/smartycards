@@ -67,7 +67,7 @@ export function usePageTitle(
       polite(escapeHtmlText(title));
     },
     // Run after render, when a reused deck page's query has
-    // moved to the new deck, not while it holds the old one.
+    // moved to the new deck, not while it has the old one.
     { immediate: true, flush: "post" },
   );
 }
