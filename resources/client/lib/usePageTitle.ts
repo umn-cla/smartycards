@@ -66,10 +66,8 @@ export function usePageTitle(
       // markup and routeChange.cy.ts fails.
       polite(escapeHtmlText(title));
     },
-    // A pre-flush run reads a reused deck page's query
-    // before it moves to the new deck, so going from one
-    // deck to another announces the previous deck's name
-    // and routeChange.cy.ts fails.
+    // Run after render, when a reused deck page's query has
+    // moved to the new deck, not while it holds the old one.
     { immediate: true, flush: "post" },
   );
 }
